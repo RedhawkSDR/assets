@@ -1,0 +1,708 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file
+distributed with this source distribution.
+
+This file is part of REDHAWK rh.MSDD.
+
+REDHAWK rh.MSDD is free software: you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+REDHAWK rh.MSDD is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License along
+with this program.  If not, see http://www.gnu.org/licenses/.
+-->
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
+<properties>
+  <simple id="DCE:cdc5ee18-7ceb-4ae6-bf4c-31f983179b4d" mode="readonly" name="device_kind" type="string">
+    <description>This specifies the device kind</description>
+    <value>FRONTEND::TUNER</value>
+    <units></units>
+    <kind kindtype="allocation"/>
+    <kind kindtype="property"/>
+    <action type="eq"/>
+  </simple>
+  <simple id="DCE:0f99b2e4-9903-4631-9846-ff349d18ecfb" mode="readonly" name="device_model" type="string">
+    <description> This specifies the specific device</description>
+    <value>MSDD3000</value>
+    <kind kindtype="allocation"/>
+    <kind kindtype="property"/>
+    <action type="eq"/>
+  </simple>
+  <simple id="frontend_group_id" mode="readwrite" type="string">
+    <value></value>
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="clock_ref" mode="readwrite" name="clock_ref" type="short">
+    <value>10</value>
+    <enumerations>
+      <enumeration label="INTERNAL" value="0"/>
+      <enumeration label="EXTERNAL" value="10"/>
+    </enumerations>
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <struct id="advanced" mode="readwrite">
+    <simple id="advanced::enable_msdd_advanced_debugging_tools" name="enable_msdd_advanced_debugging_tools" type="boolean">
+      <description>WARNING: ENABLING THIS AND RUNNING COMMANDS OUTSIDE THE DEVICE DRIVER COULD RENDER THIS UNIT UNOPERABLE. USE CAUTION</description>
+      <value>False</value>
+    </simple>
+    <simple id="advanced::allow_internal_allocations" name="allow_internal_allocations" type="boolean">
+      <description>This can automatically allocate sub-tuners for use with other sub-tuners. May be needed to acquire lower sample rates</description>
+      <value>True</value>
+    </simple>
+    <simple id="advanced::udp_timeout" name="udp_timeout" type="double">
+      <description>Timeout to receive data after a command is sent</description>
+      <value>1.0</value>
+      <units>seconds</units>
+    </simple>
+    <simple id="advanced::rcvr_mode" name="rcvr_mode" type="short">
+      <value>0</value>
+      <enumerations>
+        <enumeration label="Not allocatable" value="0"/>
+        <enumeration label="RX Only" value="8"/>
+      </enumerations>
+    </simple>
+    <simple id="advanced::wb_ddc_mode" name="wb_ddc_mode" type="short">
+      <value>6</value>
+      <enumerations>
+        <enumeration label="Not allocatable" value="0"/>
+        <enumeration label="DDC Only" value="1"/>
+        <enumeration label="RX_DIGITIZER_CHANNELIZER Only" value="2"/>
+        <enumeration label="RX_DIGITIZER_CHANNELIZER or DDC" value="3"/>
+        <enumeration label="RX_DIGITIZER Only" value="4"/>
+        <enumeration label="RX_DIGITIZER or DDC" value="5"/>
+        <enumeration label="RX_DIGITIZER or RX_DIGITIZER_CHANNELIZER" value="6"/>
+        <enumeration label="RX_DIGITIZER or RX_DIGITIZER_CHANNELIZER or DDC" value="7"/>
+      </enumerations>
+    </simple>
+    <simple id="advanced::hw_ddc_mode" name="hw_ddc_mode" type="short">
+      <value>7</value>
+      <enumerations>
+        <enumeration label="Not allocatable" value="0"/>
+        <enumeration label="DDC Only" value="1"/>
+        <enumeration label="RX_DIGITIZER_CHANNELIZER Only" value="2"/>
+        <enumeration label="RX_DIGITIZER_CHANNELIZER or DDC" value="3"/>
+        <enumeration label="RX_DIGITIZER Only" value="4"/>
+        <enumeration label="RX_DIGITIZER or DDC" value="5"/>
+        <enumeration label="RX_DIGITIZER or RX_DIGITIZER_CHANNELIZER" value="6"/>
+        <enumeration label="RX_DIGITIZER or RX_DIGITIZER_CHANNELIZER or DDC" value="7"/>
+      </enumerations>
+    </simple>
+    <simple id="advanced::sw_ddc_mode" name="sw_ddc_mode" type="short">
+      <value>1</value>
+      <enumerations>
+        <enumeration label="Not allocatable" value="0"/>
+        <enumeration label="DDC Only" value="1"/>
+        <enumeration label="RX_DIGITIZER_CHANNELIZER Only" value="2"/>
+        <enumeration label="RX_DIGITIZER_CHANNELIZER or DDC" value="3"/>
+        <enumeration label="RX_DIGITIZER Only" value="4"/>
+        <enumeration label="RX_DIGITIZER or DDC" value="5"/>
+        <enumeration label="RX_DIGITIZER or RX_DIGITIZER_CHANNELIZER" value="6"/>
+        <enumeration label="RX_DIGITIZER or RX_DIGITIZER_CHANNELIZER or DDC" value="7"/>
+      </enumerations>
+    </simple>
+    <simple id="advanced::psd_mode" name="psd_mode" type="short">
+      <value>0</value>
+      <enumerations>
+        <enumeration label="Not allocatable" value="0"/>
+        <enumeration label="PSD Only (NOT ENABLED - 16)" value="0"/>
+      </enumerations>
+    </simple>
+    <simple id="advanced::spc_mode" name="spc_mode" type="short">
+      <value>0</value>
+      <enumerations>
+        <enumeration label="Not allocatable" value="0"/>
+        <enumeration label="Enable SPC Mode" value="32"/>
+      </enumerations>
+    </simple>
+    <simple id="minimum_connected_nic_rate" mode="readwrite" type="float">
+      <description>If the MSDD is connected at a lower rate, then error the connection</description>
+      <value>1000</value>
+      <units>Mbps</units>
+      <action type="external"/>
+    </simple>
+    <configurationkind kindtype="property"/>
+  </struct>
+  <struct id="msdd_configuration" mode="readwrite">
+    <simple id="msdd_configuration::msdd_ip_address" mode="readwrite" name="msdd_ip_address" type="string">
+      <value>127.0.0.1</value>
+      <action type="external"/>
+    </simple>
+    <simple id="msdd_configuration::msdd_port" mode="readwrite" name="msdd_port" type="string">
+      <description>Always should be port 23</description>
+      <value>23</value>
+      <action type="external"/>
+    </simple>
+    <configurationkind kindtype="property"/>
+  </struct>
+  <struct id="msdd_time_of_day_configuration" mode="readwrite">
+    <simple id="msdd_time_of_day_configuration::mode" mode="readwrite" name="mode" type="string">
+      <value>SIM</value>
+      <enumerations>
+        <enumeration label="SIMULATED" value="SIM"/>
+        <enumeration label="ONE PPS" value="ONEPPS"/>
+        <enumeration label="IRIG" value="IRIGB"/>
+        <enumeration label="NAV (IF AVAILABLE)" value="NAV"/>
+        <enumeration label="TFN (IF AVAILABLE)" value="TFN"/>
+      </enumerations>
+      <action type="external"/>
+    </simple>
+    <simple id="msdd_time_of_day_configuration::reference_adjust" mode="readwrite" name="reference_adjust" type="short">
+      <value>0</value>
+      <units>ns/sec drift</units>
+      <action type="external"/>
+    </simple>
+    <simple id="msdd_time_of_day_configuration::reference_track" mode="readwrite" name="reference_track" type="short">
+      <description></description>
+      <value>0</value>
+      <enumerations>
+        <enumeration label="OFF" value="0"/>
+        <enumeration label="CALIBRATE" value="1"/>
+        <enumeration label="TRACK" value="2"/>
+      </enumerations>
+      <action type="external"/>
+    </simple>
+    <simple id="msdd_time_of_day_configuration::toy" mode="readwrite" name="toy" type="short">
+      <description>Time of year offset</description>
+      <value>0</value>
+      <enumerations>
+        <enumeration label="24 Hour offset from IRIGB" value="0"/>
+        <enumeration label="Direct from IRIGB" value="1"/>
+      </enumerations>
+      <action type="external"/>
+    </simple>
+    <configurationkind kindtype="property"/>
+  </struct>
+  <structsequence id="msdd_output_configuration" mode="readwrite">
+    <struct id="msdd_output_configuration_struct">
+      <simple id="msdd_output_configuration::tuner_number" name="tuner_number" type="short">
+        <description>Tuner number from the frontend_tuner_status property</description>
+        <value>0</value>
+      </simple>
+      <simple id="msdd_output_configuration::protocol" name="protocol" type="string">
+        <value>UDP_SDDS</value>
+        <enumerations>
+          <enumeration label="SDDS" value="UDP_SDDS"/>
+          <enumeration label="SDDSX" value="UDP_SDDSX"/>
+          <enumeration label="SDDSA" value="UDP_SDDSA"/>
+          <enumeration label="RAW" value="UDP_RAW"/>
+          <enumeration label="VITA49" value="UDP_VITA49"/>
+        </enumerations>
+      </simple>
+      <simple id="msdd_output_configuration::ip_address" name="ip_address" type="string">
+        <value></value>
+      </simple>
+      <simple id="msdd_output_configuration::port" name="port" type="short">
+        <value>8800</value>
+      </simple>
+      <simple id="msdd_output_configuration::vlan" name="vlan" type="short">
+        <description>vlan &lt;= 0 disables vlan tagging</description>
+        <value>-1</value>
+      </simple>
+      <simple id="msdd_output_configuration::enabled" name="enabled" type="boolean">
+        <value>True</value>
+      </simple>
+      <simple id="msdd_output_configuration::timestamp_offset" name="timestamp_offset" type="short">
+        <value>0</value>
+      </simple>
+      <simple id="msdd_output_configuration::endianess" name="endianess" type="short">
+        <value>1</value>
+        <enumerations>
+          <enumeration label="BIG ENDIAN" value="0"/>
+          <enumeration label="LITTLE ENDIAN" value="1"/>
+        </enumerations>
+      </simple>
+      <simple id="msdd_output_configuration::mfp_flush" name="mfp_flush" type="long">
+        <description>Determine what paramters will initiate a packet flush.
+
+Bit 0: IF Frequency Offset
+Bit 1: RF Tuned Frequency
+Bit 2: Scan Stop Frequency
+Bit 3: Number of spectral Bins
+Bit 4: Digital Decimation
+Bit 5: Digital Interpolation
+Bit 6: Digital Gain
+Bit 7: RF Gain
+</description>
+        <value>63</value>
+        <range max="255" min="0"/>
+      </simple>
+      <simple id="msdd_output_configuration::vlan_enable" name="vlan_enable" type="boolean">
+        <description>This property will enable vlan tagging on the msdd if set to True. When set to false, the sdds output port will still pass the vlan tag on a push.  Set this value as false if you want the vlan tagging to occur elsewhere, such as an access mode port on a switch.</description>
+        <value>True</value>
+      </simple>
+    </struct>
+    <configurationkind kindtype="property"/>
+  </structsequence>
+  <structsequence id="msdd_block_output_configuration" mode="readwrite">
+    <struct id="msdd_block_output_configuration_struct">
+      <simple id="msdd_block_output_configuration::tuner_number_start" name="tuner_number_start" type="short">
+        <value>0</value>
+      </simple>
+      <simple id="msdd_block_output_configuration::tuner_number_stop" name="tuner_number_stop" type="short">
+        <value>0</value>
+      </simple>
+      <simple id="msdd_block_output_configuration::protocol" name="protocol" type="string">
+        <value>UDP_SDDS</value>
+        <enumerations>
+          <enumeration label="SDDS" value="UDP_SDDS"/>
+          <enumeration label="SDDSX" value="UDP_SDDSX"/>
+          <enumeration label="SDDSA" value="UDP_SDDSA"/>
+          <enumeration label="RAW" value="UDP_RAW"/>
+          <enumeration label="VITA49" value="UDP_VITA49"/>
+        </enumerations>
+      </simple>
+      <simple id="msdd_block_output_configuration::ip_address" name="ip_address" type="string">
+        <value></value>
+      </simple>
+      <simple id="msdd_block_output_configuration::increment_ip_address" name="increment_ip_address" type="boolean">
+        <value>False</value>
+      </simple>
+      <simple id="msdd_block_output_configuration::port" name="port" type="short">
+        <value>8800</value>
+      </simple>
+      <simple id="msdd_block_output_configuration::increment_port" name="increment_port" type="boolean">
+        <value>True</value>
+      </simple>
+      <simple id="msdd_block_output_configuration::vlan" name="vlan" type="short">
+        <description>vlan &lt;= 0 disables vlan tagging</description>
+        <value>-1</value>
+      </simple>
+      <simple id="msdd_block_output_configuration::increment_vlan" name="increment_vlan" type="boolean">
+        <value>False</value>
+      </simple>
+      <simple id="msdd_block_output_configuration::enabled" name="enabled" type="boolean">
+        <value>True</value>
+      </simple>
+      <simple id="msdd_block_output_configuration::timestamp_offset" name="timestamp_offset" type="short">
+        <value>0</value>
+      </simple>
+      <simple id="msdd_block_output_configuration::endianess" name="endianess" type="short">
+        <value>1</value>
+        <enumerations>
+          <enumeration label="BIG ENDIAN" value="0"/>
+          <enumeration label="LITTLE ENDIAN" value="1"/>
+        </enumerations>
+      </simple>
+      <simple id="msdd_block_output_configuration:mfp_flush" name="mfp_flush" type="long">
+        <description>Determine what paramters will initiate a packet flush.
+
+Bit 0: IF Frequency Offset
+Bit 1: RF Tuned Frequency
+Bit 2: Scan Stop Frequency
+Bit 3: Number of spectral Bins
+Bit 4: Digital Decimation
+Bit 5: Digital Interpolation
+Bit 6: Digital Gain
+Bit 7: RF Gain
+</description>
+        <value>63</value>
+        <range max="255" min="0"/>
+      </simple>
+      <simple id="msdd_block_output_configuration:vlan_enable" name="vlan_enable" type="boolean">
+        <description>This property will enable vlan tagging on the msdd if set to True. When set to false, the sdds output port will still pass the vlan tag on a push.  Set this value as false if you want the vlan tagging to occur elsewhere, such as an access mode port on a switch.</description>
+        <value>True</value>
+      </simple>
+    </struct>
+    <configurationkind kindtype="property"/>
+  </structsequence>
+  <struct id="msdd_psd_configuration" mode="readwrite">
+    <description>This is global across all fft modules.</description>
+    <simple id="msdd_psd_configuration::fft_size" name="fft_size" type="double">
+      <description>fft_size</description>
+      <value>32768</value>
+    </simple>
+    <simple id="msdd_psd_configuration::time_average" name="time_average" type="double">
+      <description>Value &lt;= 0 means no averaging will take place</description>
+      <value>0.10</value>
+      <units>s</units>
+    </simple>
+    <simple id="msdd_psd_configuration::time_between_ffts" name="time_between_ffts" type="double">
+      <description>Time between fft sets</description>
+      <value>0.0</value>
+      <units>ms</units>
+    </simple>
+    <simple id="msdd_psd_configuration::output_bin_size" name="output_bin_size" type="double">
+      <description>Sets the number of bins that will be output for a set. A setting of 0 will output the
+native FFT bin size. The number of native fft bins may be expanded or
+compressed. Linear interpolation is preformed on the log date when the native
+bins are expanded. When the data is compressed the receiver will take the
+highest bin (there more elegant ways to compress bins but why do a larger FFT
+and comprise it unless you looking for the strongest signal.</description>
+      <value>0</value>
+    </simple>
+    <simple id="msdd_psd_configuration::window_type" name="window_type" type="string">
+      <description>HANNING,HAMMING,BLACKMAN,RECT</description>
+      <value>HAMMING</value>
+      <enumerations>
+        <enumeration label="HANNING" value="HANNING"/>
+        <enumeration label="HAMMING" value="HAMMING"/>
+        <enumeration label="BLACKMAN" value="BLACKMAN"/>
+        <enumeration label="RECT" value="RECT"/>
+      </enumerations>
+    </simple>
+    <simple id="msdd_psd_configuration::peak_mode" name="peak_mode" type="string">
+      <description>INST,PEAK,BOTH</description>
+      <value>INST</value>
+      <enumerations>
+        <enumeration label="INST" value="INST"/>
+        <enumeration label="PEAK" value="PEAK"/>
+        <enumeration label="BOTH" value="BOTH"/>
+      </enumerations>
+    </simple>
+    <configurationkind kindtype="property"/>
+  </struct>
+  <struct id="msdd_spc_configuration" mode="readwrite">
+    <description>This is for configuration of the spectral scanning.</description>
+    <simple id="msdd_spc_configuration::fft_size" name="fft_size" type="short">
+      <description>fft_size</description>
+      <value>8192</value>
+    </simple>
+    <simple id="msdd_spc_configuration::num_fft_averages" name="num_fft_averages" type="short">
+      <description>Represents how many FFT averages will be computed per FFT set.  Value &lt;= 0 means no averaging will take place</description>
+      <value>0</value>
+    </simple>
+    <simple id="msdd_spc_configuration::time_between_ffts" name="time_between_ffts" type="double">
+      <description>Time between fft sets</description>
+      <value>200.0</value>
+      <units>ms</units>
+    </simple>
+    <simple id="msdd_spc_configuration::output_bin_size" name="output_bin_size" type="short">
+      <description>Sets the number of bins that will be output for a set. A setting of 0 will output the
+native FFT bin size. The number of native fft bins may be expanded or
+compressed. Linear interpolation is performed on the log date when the native
+bins are expanded. When the data is compressed the receiver will take the
+highest bin (there more elegant ways to compress bins but why do a larger FFT
+and comprise it unless you looking for the strongest signal.</description>
+      <value>4096</value>
+    </simple>
+    <simple id="msdd_spc_configuration::window_type" name="window_type" type="string">
+      <description>HANNING,HAMMING,BLACKMAN,RECT</description>
+      <value>HAMMING</value>
+      <enumerations>
+        <enumeration label="HANNING" value="HANNING"/>
+        <enumeration label="HAMMING" value="HAMMING"/>
+        <enumeration label="BLACKMAN" value="BLACKMAN"/>
+        <enumeration label="RECT" value="RECT"/>
+      </enumerations>
+    </simple>
+    <simple id="msdd_spc_configuration::peak_mode" name="peak_mode" type="string">
+      <description>INST,PEAK,BOTH</description>
+      <value>INST</value>
+      <enumerations>
+        <enumeration label="INST" value="INST"/>
+        <enumeration label="PEAK" value="PEAK"/>
+        <enumeration label="BOTH" value="BOTH"/>
+      </enumerations>
+    </simple>
+    <simple id="msdd_spc_configuration::start_frequency" name="start_frequency" type="double">
+      <description>Start Frequency for scanning</description>
+      <value>100000000.0</value>
+      <units>Hz</units>
+    </simple>
+    <simple id="msdd_spc_configuration::stop_frequency" name="stop_frequency" type="double">
+      <description>Stop Frequency for scanning</description>
+      <value>1000000000.0</value>
+      <units>Hz</units>
+    </simple>
+    <configurationkind kindtype="property"/>
+  </struct>
+  <structsequence id="FRONTEND::tuner_status" mode="readonly" name="frontend_tuner_status">
+    <description>Status of each tuner, including entries for both allocated and un-allocated tuners. </description>
+    <struct id="FRONTEND::tuner_status_struct" name="frontend_tuner_status_struct">
+      <simple id="FRONTEND::tuner_status::allocation_id_csv" name="allocation_id_csv" type="string">
+        <description>Comma separated list of current Allocation IDs.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::available_bandwidth" name="available_bandwidth" type="string">
+        <description>Available bandwidth (Hz) in range (XX-YY) or csv (X,Y,Z) format. Do not put units in field.</description>
+        <units>Hz</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::available_frequency" name="available_frequency" type="string">
+        <description>Available frequencies (Hz) in range (XX-YY) or csv (X,Y,Z) format. Do not put units in field.</description>
+        <units>Hz</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::available_gain" name="available_gain" type="string">
+        <description>Available gain (dB) in range (XX-YY) or csv (X,Y,Z) format. Do not put units in field.</description>
+        <units>dB</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::available_sample_rate" name="available_sample_rate" type="string">
+        <description>Available sample_rate (sps) in range (XX-YY) or csv (X,Y,Z) format. Do not put units in field.</description>
+        <units>sps</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::bandwidth" name="bandwidth" type="double">
+        <description>Current bandwidth in Hz</description>
+        <units>Hz</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::center_frequency" name="center_frequency" type="double">
+        <description>Current center frequency in Hz.</description>
+        <units>Hz</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::complex" name="complex" type="boolean">
+        <description>Indicates if the output data is complex.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::decimation" name="decimation" type="long">
+        <description>Current decimation of tuner. For DDC tuners, this is the ratio of input sample rate to output sample rate regardless of data format.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::enabled" name="enabled" type="boolean">
+        <description>Indicates if tuner is enabled, in reference to the output state of the tuner.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::gain" name="gain" type="double">
+        <description>Current gain in dB.</description>
+        <units>dB</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::group_id" name="group_id" type="string">
+        <description>Unique ID that specifies a group of Device.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::output_format" name="output_format" type="string">
+        <description>Indicates the SDDS digraph that describes the current output data format.</description>
+        <enumerations>
+          <enumeration label="SP" value="SP"/>
+          <enumeration label="SB" value="SB"/>
+          <enumeration label="SI" value="SI"/>
+          <enumeration label="SL" value="SL"/>
+          <enumeration label="SX" value="SX"/>
+          <enumeration label="SF" value="SF"/>
+          <enumeration label="SD" value="SD"/>
+          <enumeration label="CB" value="CB"/>
+          <enumeration label="CI" value="CI"/>
+          <enumeration label="CL" value="CL"/>
+          <enumeration label="CX" value="CX"/>
+          <enumeration label="CF" value="CF"/>
+          <enumeration label="CD" value="CD"/>
+        </enumerations>
+      </simple>
+      <simple id="FRONTEND::tuner_status::output_multicast" name="output_multicast" type="string">
+        <description>Multicast address for SDDS output.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::output_port" name="output_port" type="long">
+        <description>Port number for SDDS output.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::output_vlan" name="output_vlan" type="long">
+        <description>VLAN number for SDDS output. A value of zero (0) indicates no VLAN is used.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::rf_flow_id" name="rf_flow_id" type="string">
+        <description>Specifies a certain RF flow to allocate against.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::sample_rate" name="sample_rate" type="double">
+        <description>Current sample rate in samples per second.</description>
+        <units>sps</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::tuner_number" name="tuner_number" type="short">
+        <description>Physical tuner ID.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::tuner_type" name="tuner_type" type="string">
+        <description>Example Tuner Types: TX, RX, CHANNELIZER, DDC, RX_DIGITIZER, RX_DIGTIZIER_CHANNELIZER</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::available_decimation" mode="readwrite" name="available_decimation" type="string">
+        <description>Available sample rates in range (XX-YY) or csv (X,Y,Z) format. Do not put units in field</description>
+        <value></value>
+      </simple>
+      <simple id="FRONTEND::tuner_status::msdd_channel_type" mode="readonly" name="msdd_channel_type" type="string">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::msdd_installation_name_csv" mode="readonly" name="msdd_installation_name_csv" type="string">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::msdd_registration_name_csv" mode="readonly" name="msdd_registration_name_csv" type="string">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::bits_per_sample" mode="readonly" name="bits_per_sample" type="short">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::adc_meter_values" mode="readonly" name="adc_meter_values" type="string">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::rcvr_gain" mode="readonly" name="rcvr_gain" type="float">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::ddc_gain" mode="readonly" name="ddc_gain" type="float">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::allocated" mode="readonly" name="allocated" type="boolean">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::input_sample_rate" mode="readonly" name="input_sample_rate" type="double">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::output_channel" mode="readonly" name="output_channel" type="string">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::output_enabled" mode="readonly" name="output_enabled" type="boolean">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::output_protocol" mode="readonly" name="output_protocol" type="string">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::output_vlan_enabled" mode="readonly" name="output_vlan_enabled" type="boolean">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::output_vlan_tci" mode="readonly" name="output_vlan_tci" type="string">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::output_flow" mode="readonly" name="output_flow" type="string">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::output_timestamp_offset" mode="readonly" name="output_timestamp_offset" type="string">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::output_endianess" name="output_endianess" type="short">
+        <value>1</value>
+        <enumerations>
+          <enumeration label="BIG ENDIAN" value="0"/>
+          <enumeration label="LITTLE ENDIAN" value="1"/>
+        </enumerations>
+      </simple>
+      <simple id="FRONTEND::tuner_status::output_mfp_flush" mode="readonly" name="output_mfp_flush" type="long">
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::psd_fft_size" name="psd_fft_size" type="double"/>
+      <simple id="FRONTEND::tuner_status::psd_averages" name="psd_averages" type="double"/>
+      <simple id="FRONTEND::tuner_status::psd_time_between_ffts" name="psd_time_between_ffts" type="double">
+        <units>ms</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::psd_output_bin_size" name="psd_output_bin_size" type="double"/>
+      <simple id="FRONTEND::tuner_status::psd_window_type" name="psd_window_type" type="string"/>
+      <simple id="FRONTEND::tuner_status::psd_peak_mode" name="psd_peak_mode" type="string"/>
+      <simple id="FRONTEND::tuner_status::spc_fft_size" name="spc_fft_size" type="short"/>
+      <simple id="FRONTEND::tuner_status::spc_averages" name="spc_averages" type="short"/>
+      <simple id="FRONTEND::tuner_status::spc_time_between_ffts" name="spc_time_between_ffts" type="double">
+        <units>ms</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::spc_output_bin_size" name="spc_output_bin_size" type="short"/>
+      <simple id="FRONTEND::tuner_status::spc_window_type" name="spc_window_type" type="string"/>
+      <simple id="FRONTEND::tuner_status::spc_peak_mode" name="spc_peak_mode" type="string"/>
+      <simple id="FRONTEND::tuner_status::spc_start_frequency" name="spc_start_frequency" type="double"/>
+      <simple id="FRONTEND::tuner_status::available_tuner_type" mode="readwrite" name="available_tuner_type" type="string">
+        <kind kindtype="property"/>
+        <action type="external"/>
+      </simple>
+      <simple id="FRONTEND::tuner_status::spc_stop_frequency" name="spc_stop_frequency" type="double"/>
+      <configurationkind kindtype="configure"/>
+    </struct>
+    <configurationkind kindtype="property"/>
+  </structsequence>
+  <struct id="msdd_status" mode="readonly">
+    <simple id="msdd_status::connected" name="connected" type="boolean"/>
+    <simple id="msdd_status::ip_address" name="ip_address" type="string"/>
+    <simple id="msdd_status::port" name="port" type="string"/>
+    <simple id="msdd_status::model" name="model" type="string"/>
+    <simple id="msdd_status::serial" name="serial" type="string"/>
+    <simple id="msdd_status::software_part_number" name="software_part_number" type="string"/>
+    <simple id="msdd_status::rf_board_type" name="rf_board_type" type="string"/>
+    <simple id="msdd_status::fpga_type" name="fpga_type" type="string"/>
+    <simple id="msdd_status::dsp_type" name="dsp_type" type="string"/>
+    <simple id="msdd_status::minimum_frequency_hz" name="minimum_frequency_hz" type="string"/>
+    <simple id="msdd_status::maximum_frequency_hz" name="maximum_frequency_hz" type="string"/>
+    <simple id="msdd_status::dsp_reference_frequency_hz" name="dsp_reference_frequency_hz" type="string"/>
+    <simple id="msdd_status::adc_clock_frequency_hz" name="adc_clock_frequency_hz" type="string"/>
+    <simple id="msdd_status::num_if_ports" name="num_if_ports" type="string"/>
+    <simple id="msdd_status::num_eth_ports" name="num_eth_ports" type="string"/>
+    <simple id="msdd_status::cpu_type" name="cpu_type" type="string"/>
+    <simple id="msdd_status::cpu_rate" name="cpu_rate" type="string"/>
+    <simple id="msdd_status::cpu_load" name="cpu_load" type="string"/>
+    <simple id="msdd_status::pps_termination" name="pps_termination" type="string"/>
+    <simple id="msdd_status::pps_voltage" name="pps_voltage" type="string"/>
+    <simple id="msdd_status::number_wb_ddc_channels" name="number_wb_ddc_channels" type="string"/>
+    <simple id="msdd_status::number_nb_ddc_channels" name="number_nb_ddc_channels" type="string"/>
+    <simple id="msdd_status::filename_app" name="filename_app" type="string"/>
+    <simple id="msdd_status::filename_fpga" name="filename_fpga" type="string"/>
+    <simple id="msdd_status::filename_batch" name="filename_batch" type="string"/>
+    <simple id="msdd_status::filename_boot" name="filename_boot" type="string"/>
+    <simple id="msdd_status::filename_loader" name="filename_loader" type="string"/>
+    <simple id="msdd_status::filename_config" name="filename_config" type="string"/>
+    <simple id="msdd_status::tod_module" name="tod_module" type="string"/>
+    <simple id="msdd_status::tod_available_module" name="tod_available_module" type="string"/>
+    <simple id="msdd_status::tod_meter_list" name="tod_meter_list" type="string"/>
+    <simple id="msdd_status::tod_reference_adjust" name="tod_tod_reference_adjust" type="string"/>
+    <simple id="msdd_status::tod_track_mode_state" name="tod_track_mode_state" type="string"/>
+    <simple id="msdd_status::tod_bit_state" name="tod_bit_state" type="string"/>
+    <simple id="msdd_status::tod_toy" name="tod_toy" type="string"/>
+    <configurationkind kindtype="property"/>
+  </struct>
+  <struct id="msdd_advanced_debugging_tools" mode="readwrite">
+    <simple id="msdd_advanced_debugging_tools::command" name="command" type="string"/>
+    <simple id="msdd_advanced_debugging_tools::response" name="response" type="string"/>
+    <configurationkind kindtype="property"/>
+  </struct>
+  <struct id="msdd_gain_configuration" mode="readwrite">
+    <simple id="msdd_gain_configuration::rcvr_gain" name="rcvr_gain" type="float">
+      <value>0</value>
+      <units>dB</units>
+    </simple>
+    <simple id="msdd_gain_configuration::wb_ddc_gain" name="wb_ddc_gain" type="float">
+      <value>0</value>
+      <units>dB</units>
+    </simple>
+    <simple id="msdd_gain_configuration::hw_ddc_gain" name="hw_ddc_gain" type="float">
+      <value>0</value>
+      <units>dB</units>
+    </simple>
+    <simple id="msdd_gain_configuration::sw_ddc_gain" name="sw_ddc_gain" type="float">
+      <value>0</value>
+      <units>dB</units>
+    </simple>
+    <configurationkind kindtype="property"/>
+  </struct>
+  <struct id="FRONTEND::listener_allocation" mode="writeonly" name="frontend_listener_allocation">
+    <description>Frontend Interfaces v2 listener allocation structure</description>
+    <simple id="FRONTEND::listener_allocation::existing_allocation_id" type="string"/>
+    <simple id="FRONTEND::listener_allocation::listener_allocation_id" type="string"/>
+    <configurationkind kindtype="allocation"/>
+  </struct>
+  <struct id="FRONTEND::tuner_allocation" mode="writeonly" name="frontend_tuner_allocation">
+    <description>Frontend Interfaces v2 main allocation structure</description>
+    <simple id="FRONTEND::tuner_allocation::tuner_type" name="tuner_type" type="string">
+      <description>Example Tuner Types: TX, RX, CHANNELIZER, DDC, RX_DIGITIZER, RX_DIGTIZIER_CHANNELIZER</description>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::allocation_id" name="allocation_id" type="string">
+      <description>The allocation_id set by the caller. Used by the caller to reference the allocation uniquely</description>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::center_frequency" name="center_frequency" type="double">
+      <description>Requested center frequency</description>
+      <units>Hz</units>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::bandwidth" name="bandwidth" type="double">
+      <description>Requested bandwidth (+/- the tolerance)</description>
+      <units>Hz</units>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::bandwidth_tolerance" name="bandwidth_tolerance" type="double">
+      <description>Allowable Percent above requested bandwidth  (ie - 100 would be up to twice)</description>
+      <units>percent</units>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::sample_rate" name="sample_rate" type="double">
+      <description>Requested sample rate (+/- the tolerance). This can be ignored for such devices as analog tuners</description>
+      <units>Hz</units>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::sample_rate_tolerance" name="sample_rate_tolerance" type="double">
+      <description>Allowable Percent above requested sample rate (ie - 100 would be up to twice)</description>
+      <units>percent</units>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::device_control" name="device_control" type="boolean">
+      <description>True: Has control over the device to make changes
+False: Does not need control and can just attach to any currently tasked device that satisfies the parameters (essentually a listener)</description>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::group_id" name="group_id" type="string">
+      <description>Unique identifier that specifies the group a device must be in. Must match group_id on the device</description>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::rf_flow_id" name="rf_flow_id" type="string">
+      <description>Optional. Specifies the RF flow of a specific input source to allocate against. If left empty, it will match all FrontEnd devices.</description>
+    </simple>
+    <configurationkind kindtype="allocation"/>
+  </struct>
+  <structsequence id="connectionTable" mode="readonly">
+    <struct id="connectionTable::connection_descriptor" name="connection_descriptor">
+      <simple id="connectionTable::connection_id" name="connection_id" type="string"/>
+      <simple id="connectionTable::stream_id" name="stream_id" type="string"/>
+      <simple id="connectionTable::port_name" name="port_name" type="string"/>
+    </struct>
+    <configurationkind kindtype="property"/>
+  </structsequence>
+</properties>

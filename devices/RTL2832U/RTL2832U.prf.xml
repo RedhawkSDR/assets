@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file
+distributed with this source distribution.
+
+This file is part of RTL2832U Device.
+
+RTL2832U Device is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+RTL2832U Device is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+-->
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
+<properties>
+  <simple id="DCE:cdc5ee18-7ceb-4ae6-bf4c-31f983179b4d" mode="readonly" name="device_kind" type="string">
+    <description>This specifies the device kind</description>
+    <value>FRONTEND::TUNER</value>
+    <kind kindtype="configure"/>
+    <kind kindtype="allocation"/>
+    <action type="eq"/>
+  </simple>
+  <simple id="DCE:0f99b2e4-9903-4631-9846-ff349d18ecfb" mode="readonly" name="device_model" type="string">
+    <description> This specifies the specific device</description>
+    <value>RTL2832U</value>
+    <kind kindtype="configure"/>
+    <kind kindtype="allocation"/>
+    <action type="eq"/>
+  </simple>
+  <structsequence id="FRONTEND::tuner_status" mode="readonly" name="frontend_tuner_status">
+    <description>Status of each tuner, including entries for both allocated and un-allocated tuners. Each entry represents a single tuner.</description>
+    <struct id="FRONTEND::tuner_status_struct" name="frontend_tuner_status_struct">
+      <simple id="FRONTEND::tuner_status::agc" name="agc" type="boolean">
+        <description>Indicates if the tuner has Automatic Gain Control enabled.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::allocation_id_csv" name="allocation_id_csv" type="string">
+        <description>Comma separated list of current Allocation IDs.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::available_frequency" name="available_frequency" type="string">
+        <description>Available frequencies (Hz) in range (XX-YY) or csv (X,Y,Z) format. Do not put units in field.</description>
+        <units>Hz</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::available_gain" name="available_gain" type="string">
+        <description>Available gain (dB) in range (XX-YY) or csv (X,Y,Z) format. Do not put units in field.</description>
+        <units>dB</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::available_sample_rate" name="available_sample_rate" type="string">
+        <description>Available sample_rate (sps) in range (XX-YY) or csv (X,Y,Z) format. Do not put units in field.</description>
+        <units>sps</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::bandwidth" name="bandwidth" type="double">
+        <description>Current bandwidth in Hz</description>
+        <units>Hz</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::center_frequency" name="center_frequency" type="double">
+        <description>Current center frequency in Hz.</description>
+        <units>Hz</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::complex" name="complex" type="boolean">
+        <description>Indicates if the output data is complex.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::enabled" name="enabled" type="boolean">
+        <description>Indicates if tuner is enabled, in reference to the output state of the tuner.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::gain" name="gain" type="double">
+        <description>Current gain in dB.</description>
+        <units>dB</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::group_id" name="group_id" type="string">
+        <description>Unique ID that specifies a group of Device.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::rf_flow_id" name="rf_flow_id" type="string">
+        <description>Specifies a certain RF flow to allocate against.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::sample_rate" name="sample_rate" type="double">
+        <description>Current sample rate in samples per second.</description>
+        <units>sps</units>
+      </simple>
+      <simple id="FRONTEND::tuner_status::tuner_number" name="tuner_number" type="short">
+        <description>Physical tuner ID.</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::tuner_type" name="tuner_type" type="string">
+        <description>Example Tuner Types: TX, RX, CHANNELIZER, DDC, RX_DIGITIZER, RX_DIGTIZIER_CHANNELIZER</description>
+      </simple>
+      <simple id="FRONTEND::tuner_status::stream_id" name="stream_id" type="string">
+        <description>Stream ID associated with tuner/allocation</description>
+      </simple>
+    </struct>
+    <configurationkind kindtype="configure"/>
+  </structsequence>
+  <struct id="FRONTEND::listener_allocation" mode="writeonly" name="frontend_listener_allocation">
+    <description>Allocates a listener (subscriber) based off a previous allocation </description>
+    <simple id="FRONTEND::listener_allocation::existing_allocation_id" name="existing_allocation_id" type="string">
+      <description></description>
+    </simple>
+    <simple id="FRONTEND::listener_allocation::listener_allocation_id" name="listener_allocation_id" type="string">
+      <description></description>
+    </simple>
+    <configurationkind kindtype="allocation"/>
+  </struct>
+  <struct id="FRONTEND::tuner_allocation" mode="writeonly" name="frontend_tuner_allocation">
+    <description>Frontend Interfaces v2.0 main allocation structure</description>
+    <simple id="FRONTEND::tuner_allocation::tuner_type" name="tuner_type" type="string">
+      <description>Example Tuner Types: TX, RX, CHANNELIZER, DDC, RX_DIGITIZER, RX_DIGTIZIER_CHANNELIZER</description>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::allocation_id" name="allocation_id" type="string">
+      <description>The allocation_id set by the caller. Used by the caller to reference the device uniquely</description>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::center_frequency" name="center_frequency" type="double">
+      <description>Requested center frequency.</description>
+      <value>0.0</value>
+      <units>Hz</units>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::bandwidth" name="bandwidth" type="double">
+      <description>Requested Bandwidth</description>
+      <value>0.0</value>
+      <units>Hz</units>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::bandwidth_tolerance" name="bandwidth_tolerance" type="double">
+      <description>Allowable Percent above requested bandwidth  (ie - 100 would be up to twice)</description>
+      <value>10.0</value>
+      <units>percent</units>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::sample_rate" name="sample_rate" type="double">
+      <description>Requested sample rate. This can be ignored for such devices as analog tuners</description>
+      <value>0.0</value>
+      <units>sps</units>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::sample_rate_tolerance" name="sample_rate_tolerance" type="double">
+      <description>Allowable Percent above requested sample rate (ie - 100 would be up to twice)</description>
+      <value>10.0</value>
+      <units>percent</units>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::device_control" name="device_control" type="boolean">
+      <description>True: Has control over the device to make changes
+False: Does not need control and can just attach to any currently tasked device that satisfies the parameters (essentually a listener)</description>
+      <value>true</value>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::group_id" name="group_id" type="string">
+      <description>Unique identifier that specifies a group of device. Must match group_id on the device</description>
+    </simple>
+    <simple id="FRONTEND::tuner_allocation::rf_flow_id" name="rf_flow_id" type="string">
+      <description>Optional. Specifies a certain RF flow to allocate against. If left empty, it will match all frontend devices.</description>
+    </simple>
+    <configurationkind kindtype="allocation"/>
+  </struct>
+  <structsequence id="available_devices" mode="readonly" name="available_devices">
+    <description>A list of the available RTL devices connected to the host</description>
+    <struct id="available_devices::rtl_device_struct" name="rtl_device_struct">
+      <description>An available rtl dongle connected to the localhost</description>
+      <simple id="available_devices::rtl::name" name="name" type="string">
+        <description>The name of the rtl dongle</description>
+      </simple>
+      <simple id="available_devices::rtl::vendor" name="vendor" type="string">
+        <description>The vendor of the rtl dongle</description>
+      </simple>
+      <simple id="available_devices::rtl::product" name="product" type="string">
+        <description>The product number of the rtl dongle</description>
+      </simple>
+      <simple id="available_devices::rtl::serial" name="serial" type="string">
+        <description>The serial number of the rtl dongle</description>
+      </simple>
+      <simple id="available_devices::rtl::index" name="index" type="ushort">
+        <description>The index of the rtl dongle</description>
+      </simple>
+    </struct>
+    <configurationkind kindtype="configure"/>
+  </structsequence>
+  <struct id="target_device" mode="readwrite" name="target_device">
+    <description>Information used to specify a particular RTL device to target. All fields are optional. First device found that meets the specified criteria is selected.</description>
+    <simple id="target::name" name="name" type="string">
+      <description>The name of the rtl dongle</description>
+      <value></value>
+    </simple>
+    <simple id="target::serial" name="serial" type="string">
+      <description>The serial number of the rtl dongle</description>
+      <value></value>
+    </simple>
+    <simple id="target::index" name="index" type="short">
+      <description>The index of the rtl dongle (-1 if don't care)</description>
+      <value>-1</value>
+    </simple>
+    <simple id="target::vendor" name="vendor" type="string">
+      <description>The vendor of the rtl dongle</description>
+      <value></value>
+    </simple>
+    <simple id="target::product" name="product" type="string">
+      <description>The product number of the rtl dongle</description>
+      <value></value>
+    </simple>
+    <configurationkind kindtype="configure"/>
+  </struct>
+  <struct id="current_device" mode="readonly" name="current_device">
+    <description>Information about the currently targeted rtl dongle</description>
+    <simple id="current::rtl::name" name="name" type="string">
+      <description>The name of the rtl dongle</description>
+    </simple>
+    <simple id="current::rtl::vendor" name="vendor" type="string">
+      <description>The vendor of the rtl dongle</description>
+    </simple>
+    <simple id="current::rtl::product" name="product" type="string">
+      <description>The product number of the rtl dongle</description>
+    </simple>
+    <simple id="current::rtl::serial" name="serial" type="string">
+      <description>The serial number of the rtl dongle</description>
+    </simple>
+    <simple id="current::rtl::index" name="index" type="ushort">
+      <description>The index of the rtl dongle</description>
+    </simple>
+    <configurationkind kindtype="configure"/>
+  </struct>
+  <simple id="update_available_devices" mode="readwrite" name="update_available_devices" type="boolean">
+    <description>When set to true, the available_devices property will be updated with all available RTL devices found on the host.</description>
+    <value>False</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="group_id" mode="readwrite" name="group_id" type="string">
+    <description>The group id for all tuners controlled by the device</description>
+    <value></value>
+    <kind kindtype="configure"/>
+    <kind kindtype="execparam"/>
+    <action type="external"/>
+  </simple>
+  <simple id="digital_agc_enable" mode="readwrite" name="digital_agc_enable" type="boolean">
+    <description>Sets the digital AGC mode of the RTL2832U chip, which is different from the gain mode of the tuner. Gain mode of the tuner is set using the tuner port setTunerAgcEnable function.</description>
+    <value>False</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="frequency_correction" mode="readwrite" name="frequency_correction" type="short">
+    <description>Actual frequency correction value of the device.</description>
+    <value>0</value>
+    <units>ppm</units>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+</properties>

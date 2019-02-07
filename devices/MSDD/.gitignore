@@ -1,0 +1,14 @@
+# build files
+*.pyc
+/python/nbproject/private/
+python/Makefile
+python/Makefile.in
+python/acinclude.m4
+python/aclocal.m4
+python/autom4te.cache/
+python/config.log
+python/config.status
+python/configure
+python/install-sh
+python/ltmain.sh
+python/missing

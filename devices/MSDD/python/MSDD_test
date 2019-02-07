@@ -1,0 +1,245 @@
+#!/usr/bin/python
+
+import socket
+import struct
+import platform
+import sys
+import fcntl
+import array
+from msddcontroller import MSDDRadio
+from optparse import OptionParser
+
+# linux kernel flags 
+SIOCGIFCONF = 0x8912
+SIOCGIFFLAGS = 0x8913
+IFF_MULTICAST = 0x1000
+
+
+#message class
+class Message(object):
+    def __init__(self,num = 0):
+        self.num = num
+        self.mess = None
+        if self.num == 0:
+            self.mess = 'Your interface may not be correctly set up.\nCheck /etc/sysconfig/network-scripts for the correct ifcfg script'
+        elif self.num == 1:
+            self.mess = 'check the switch configuration'
+        elif self.num == 2:
+            self.mess = '----------------------\nCannot reach the MSDD configuration ip\nCheck that the MSDD is configured correctly \nAnd that it is pingable\n----------------------'
+        else:        
+            self.mess = 'check your ip tables are allowing multicast through,\nalso check /etc/sysctrl.conf for the following fields: \n->  net.ipv4.conf.default.rp_filter = 0 \n->  net.ipv4.conf.all.rp_filter = 0 \n->  net.ipv4.ip_forward = 1 \n *** sysctl -n net.ipv4.conf.default.rp_filter'
+    def __str__(self):
+        return self.mess
+
+
+class Error(Exception):
+    pass
+class MulticastError(Error):
+    pass
+
+#interface class
+class _interface:
+    def __init__(self, name):
+        self.name = name
+        self.addresses = []
+        self.up = False
+        self.multicast = False
+    def _first_ip(self):
+        try:
+            return self.addresses[0]
+        except IndexError:
+            return None
+    ip = property(_first_ip)
+
+
+class MSDDTest(object):
+
+    def __init__(self, radio_ip = '192.168.100.102', 
+                radio_port = 23,
+                multicast_group = '224.1.1.2',
+                multicast_port = 8880,
+                interface_names = ['em2','em3','em4'],
+                vlan = None):
+        # vars to be brought in via optPars 
+        self.RADIO_IP = radio_ip
+        self.RADIO_PORT = radio_port
+        self.MCAST_GRP = multicast_group
+        self.MCAST_PORT = multicast_port
+        self.INT_NAMES = interface_names
+        self.VLAN = vlan
+
+    def setRadio(self):
+        # Parse current radio settings
+        try:
+            radio = MSDDRadio(self.RADIO_IP, self.RADIO_PORT)
+        except:
+            if str(sys.exc_info()[1]) == 'socket timed out':
+                print 'ERROR: could not talk to radio over configuation socket'
+                print str(Message(2))
+                sys.exit()
+            else:
+                raise
+        self.old_out_enable = radio.out_modules[0].object.getEnable()
+        self.old_ip = radio.out_modules[0].object.getIPP_IP()
+        self.old_port = radio.out_modules[0].object.getIPP_Port()
+        self.old_vlan_enable = radio.out_modules[0].object.getEnableVlanTagging()
+        self.old_vlan_tci =  radio.out_modules[0].object.getVlanTci()
+        self.old_ddc_enable = radio.wb_ddc_modules[0].object.getEnable()
+
+        #Set radio setting needed to enable output
+        radio.out_modules[0].object.setEnable(True)
+        radio.out_modules[0].object.setIP('224.1.1.2', 8880)
+        radio.out_modules[0].object.setEnableVlanTagging(True)
+        radio.out_modules[0].object.setVlanTci(102)
+        radio.wb_ddc_modules[0].object.setEnable(True)
+
+    def getInterfaces(self):
+        #determine offset
+        arch = platform.architecture()[0]
+        if arch == "32bit": offsets = (32, 32)
+        elif arch == "64bit": offsets = (16, 40)
+        else: raise OSError ( "Unsupported architecture: %s" % (arch) )
+        
+        #Get the list of all network interfaces
+        _socket = socket.socket (socket.AF_INET, socket.SOCK_DGRAM)
+        buffer = array.array ( 'B', '\0' * 128 * offsets[1] )
+        reply_length = struct.unpack ( 'iL', fcntl.ioctl(_socket.fileno(), SIOCGIFCONF, struct.pack ('iL', 4096, buffer.buffer_info()[0])))[0]
+        if_list = buffer.tostring()    
+        if_list = filter(lambda x: len(x[0]) > 0, [ (if_list[i:i+offsets[0]].split('\0', 1)[0], socket.inet_ntoa(if_list[i+20:i+24])) for i in range(0, 4096, offsets[1])])
+    
+        #Get ip addresses for each interface
+        self.iff = {}
+        for (ifname, addr) in if_list:
+            self.iff[ifname] = self.iff.get (ifname, _interface(ifname) );
+            flags, = struct.unpack ( 'H', fcntl.ioctl(_socket.fileno(), SIOCGIFFLAGS, ifname + '\0'*256)[16:18])
+            self.iff[ifname].addresses.append ( addr )
+            self.iff[ifname].up = bool(flags & 1)
+            self.iff[ifname].multicast = bool(flags & IFF_MULTICAST)
+
+        #close socket        
+        _socket.close()
+
+    def joinMulticast(self):
+        localInterface = None
+        for interface in self.INT_NAMES:
+            intName = interface
+            if self.VLAN != None:
+                intName = interface+'.'+str(self.VLAN)
+            try:
+                localInterface = self.iff[intName]
+            except KeyError as e:
+                print 'ERROR: The following interface does not exist: ', e
+                print Message(0)
+                sys.exit()
+
+            if not localInterface.multicast:
+                raise MulticastError('Multicast Not Enabled For Interface: ' + localInterface.name)
+            print '---------- '+localInterface.name+' ('+str(localInterface.ip)+') ----------'
+            int_ip = str(localInterface.ip)
+
+            # open socket and join multicast group
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+            sock.setsockopt(socket.SOL_IP, socket.IP_MULTICAST_IF, socket.inet_aton(int_ip))
+            sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(self.MCAST_GRP) + socket.inet_aton(int_ip))
+            sock.bind(('', self.MCAST_PORT))
+
+            # test packets are being recieved and they are the proper length 
+            passed = True
+            for ii in range(10):
+                sock.settimeout(1)
+                try:
+                    x = sock.recv(10240)
+                except:
+                    if str(sys.exc_info()[1]) == 'timed out':
+                        print 'ERROR: recieve call timed out for ' + str(localInterface.name)
+                        sys.exit()
+                    else:
+                        raise
+                if len(x) != 1080:      
+                    passed = False
+            if passed: 
+                print 'PASSED'
+            else:
+                print 'FAILED: interface ' + 'localInterface.name'
+
+            # un-join the multicast membership and close socket 
+            sock.setsockopt(socket.SOL_IP, socket.IP_DROP_MEMBERSHIP, socket.inet_aton(self.MCAST_GRP) + socket.inet_aton(int_ip))
+            sock.close()
+
+    def resetRadio(self):
+        try:
+            radio = MSDDRadio(self.RADIO_IP, self.RADIO_PORT)
+        except:
+            if str(sys.exc_info()[1]) == 'socket timed out':
+                print 'ERROR: could not talk to radio over configuation socket'
+                print str(Message(2))
+                sys.exit()
+            else:
+                raise
+        # set radio params back to what they were
+        radio.out_modules[0].object.setEnable(self.old_out_enable)
+        radio.out_modules[0].object.setIP(self.old_ip, self.old_port)
+        radio.out_modules[0].object.setEnableVlanTagging(self.old_vlan_enable)
+        radio.out_modules[0].object.setVlanTci(self.old_vlan_tci)
+        radio.wb_ddc_modules[0].object.setEnable(self.old_ddc_enable)
+
+    def run(self):
+        self.setRadio()
+        self.getInterfaces()
+        self.joinMulticast()
+        self.resetRadio()
+
+
+class CustomOptionParser(OptionParser): 
+    def format_description(self, formatter): 
+        return self.description
+
+def processFlags(parser):     
+    """ 
+    Builds the OptionParser, runs it, and returns the options dictionary. 
+
+    Parameters:
+        parser: The OptionParser object that will be used to parse the args
+    Return: 
+        The options object holding the parsed command line variables.
+    """
+    help = "This script assists with checking the network configuration, "
+    help += "specifically when using the stock MSDD node.\n\n" 
+    help += "It taskes as arguments all the fields necessary to " 
+    help += "connect to and configure the MSDD device to transmit " 
+    help += "multicast data, and then tries to join to the multicast " 
+    help += "group on each interface specified, it then tries to clean " 
+    help += "up after itself and reconfigure the interfaces and device "
+    help += "the state before the script was run. The final arguments "
+    help += "to provide are the interfaces to want to test \n\n"
+    help += "eg.# ./MSDD_test -r192.168.100.102 -p23 -g224.1.1.2 -m8880 "
+    help += "-v102  em2 em3 em4 "
+
+
+    parser.description = help
+    parser.add_option("-r", "--radioip", dest="radio_ip")
+    parser.add_option("-p", "--radioport", dest="radio_port")
+    parser.add_option("-g", "--multicastgrp", dest="multicast_group")
+    parser.add_option("-m", "--multicastport", dest="multicast_port")
+    parser.add_option("-v", "--vlan", dest="vlan")
+    (options, args) = parser.parse_args()
+    return (options,args)
+
+def main(): 
+    parser = CustomOptionParser()
+    try: 
+        # Get the command line options and run
+        (options, args) = processFlags(parser)
+        MSDD_test = MSDDTest(str(options.radio_ip), int(options.radio_port),
+                  str(options.multicast_group), int(options.multicast_port),
+                  list(args), options.vlan)
+        MSDD_test.run()
+    except KeyboardInterrupt: 
+        pass #Silently quit
+    except RuntimeError, e: 
+        print "Error: " + e.message
+        parser.print_help()
+        sys.exit(1)
+
+if __name__ == '__main__': 
+    main()

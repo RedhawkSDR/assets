@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file
+distributed with this source distribution.
+
+This file is part of REDHAWK rh.MSDD.
+
+REDHAWK rh.MSDD is free software: you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+REDHAWK rh.MSDD is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License along
+with this program.  If not, see http://www.gnu.org/licenses/.
+-->
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:b95bd700-711c-49e7-a25a-6dc542d6b703" name="rh.MSDD" type="2.0.5" version="3.0.1">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <description>Device for the MSDD-X000 series receivers</description>
+  <propertyfile type="PRF">
+    <localfile name="MSDD.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="MSDD.scd.xml"/>
+  </descriptor>
+  <implementation id="python">
+    <description>This device is a FRONTEND Interfaces compliant device for the Midwest Microwave MSDD-3000/6000 receiver.</description>
+    <code type="Executable">
+      <localfile name="python"/>
+      <entrypoint>python/MSDD.py</entrypoint>
+    </code>
+    <programminglanguage name="Python"/>
+    <humanlanguage name="EN"/>
+    <runtime name="python" version="2.6.6"/>
+    <os name="Linux"/>
+  </implementation>
+</softpkg>
