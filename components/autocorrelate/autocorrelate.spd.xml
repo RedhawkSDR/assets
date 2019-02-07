@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<!-- 
+This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
+source distribution.
+
+This file is part of REDHAWK Basic Components autocorrelate.
+
+REDHAWK Basic Components autocorrelate is free software: you can redistribute it and/or modify it under the terms of 
+the GNU General Public License as published by the Free Software Foundation, either 
+version 3 of the License, or (at your option) any later version.
+
+REDHAWK Basic Components autocorrelate is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this 
+program.  If not, see http://www.gnu.org/licenses/.
+-->
+<softpkg id="DCE:c691b54e-16d3-11e5-86bf-3417ebc4aab5" name="rh.autocorrelate" type="2.0.0" version="2.0.0">
+  <title></title>
+  <author>
+    <name>REDHAWK</name>
+  </author>
+  <description>Frequency domain implemenation of a windowed autocorrelation algorithim.  This algorthim works by windowing the input data to break it up into separate frames.  Each frame is independently autocorrelated with each other using a &quot;full&quot; autocorrelation which includes the full transient response.  This is efficiently computed in the frequency domain.</description>
+  <propertyfile type="PRF">
+    <localfile name="autocorrelate.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="autocorrelate.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>C++ implementation</description>
+    <code type="Executable">
+      <localfile name="cpp/autocorrelate"/>
+      <entrypoint>cpp/autocorrelate</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="runtime_requirements">
+      <softpkgref>
+        <localfile name="/deps/rh/dsp/dsp.spd.xml"/>
+        <implref refid="cpp"/>
+      </softpkgref>
+    </dependency>
+    <dependency type="runtime_requirements">
+      <softpkgref>
+        <localfile name="/deps/rh/fftlib/fftlib.spd.xml"/>
+        <implref refid="cpp"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

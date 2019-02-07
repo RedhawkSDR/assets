@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="ASCII"?>
+<codegen:WaveDevSettings xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:codegen="http://www.redhawk.gov/model/codegen">
+  <implSettings key="cpp">
+    <value outputDir="cpp" template="redhawk.codegen.jinja.cpp.component.pull" generatorId="gov.redhawk.ide.codegen.jinja.cplusplus.CplusplusGenerator" primary="true">
+      <generatedFileCRCs crc="1746641546" file="reconf"/>
+      <generatedFileCRCs crc="452462999" file="port_impl.cpp"/>
+      <generatedFileCRCs crc="2991592437" file="DataConverter_base.cpp"/>
+      <generatedFileCRCs crc="864280150" file="build.sh"/>
+      <generatedFileCRCs crc="1849436628" file="configure.ac"/>
+      <generatedFileCRCs crc="1245452392" file="port_impl.h"/>
+      <generatedFileCRCs crc="2066219302" file="main.cpp"/>
+      <generatedFileCRCs crc="665625286" file="struct_props.h"/>
+      <generatedFileCRCs crc="1351845716" file="DataConverter.cpp"/>
+      <generatedFileCRCs crc="739153206" file="DataConverter_base.h"/>
+      <generatedFileCRCs crc="324556319" file="../DataConverter.spec"/>
+      <generatedFileCRCs crc="180059289" file="DataConverter.h"/>
+      <generatedFileCRCs crc="3061690019" file="Makefile.am"/>
+    </value>
+  </implSettings>
+</codegen:WaveDevSettings>

@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file
+distributed with this source distribution.
+
+This file is part of REDHAWK psk_soft.
+
+REDHAWK psk_soft is free software: you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+REDHAWK psk_soft is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License along
+with this program.  If not, see http://www.gnu.org/licenses/.
+-->
+<!DOCTYPE softwarecomponent PUBLIC "-//JTRS//DTD SCA V2.2.2 SCD//EN" "softwarecomponent.dtd">
+<softwarecomponent>
+  <corbaversion>2.2</corbaversion>
+  <componentrepid repid="IDL:CF/Resource:1.0"/>
+  <componenttype>resource</componenttype>
+  <componentfeatures>
+    <supportsinterface repid="IDL:CF/Resource:1.0" supportsname="Resource"/>
+    <supportsinterface repid="IDL:CF/LifeCycle:1.0" supportsname="LifeCycle"/>
+    <supportsinterface repid="IDL:CF/PortSupplier:1.0" supportsname="PortSupplier"/>
+    <supportsinterface repid="IDL:CF/PropertySet:1.0" supportsname="PropertySet"/>
+    <supportsinterface repid="IDL:CF/TestableObject:1.0" supportsname="TestableObject"/>
+    <ports>
+      <provides repid="IDL:BULKIO/dataFloat:1.0" providesname="dataFloat_in">
+        <description>Float input for complex baseband data to be demodulated. </description>
+        <porttype type="data"/>
+      </provides>
+      <uses repid="IDL:BULKIO/dataFloat:1.0" usesname="softDecision_dataFloat_out">
+        <description>Complex Soft-Decision output. </description>
+        <porttype type="data"/>
+      </uses>
+      <uses repid="IDL:BULKIO/dataShort:1.0" usesname="bits_dataShort_out">
+        <description>Short output for bits, zero or one. Differential Decoding can be turned on with a property setting.
+Symbol to Bit Mapping as follows:
+2 Symbols: 	Phase: 0 		Bit: 0
+					Phase: pi		Bit: 1
+
+4 Symbols: 
+					Phase: pi/4 		Bit: 0
+					Phase: 3pi/4	Bit: 01
+					Phase: 5pi/4	Bit: 10
+					Phase: 7pi/4	Bit: 11
+
+8 Symbols: 
+					Phase: 0			Bit: 000
+					Phase: pi/4		Bit: 001
+					Phase: pi/2		Bit: 010
+					Phase: 3pi/4	Bit: 011
+					Phase: pi 		Bit: 100
+					Phase: 5pi/4	Bit: 101
+					Phase: 3pi/2	Bit: 110
+					Phase: 7pi/4	Bit: 111
+
+</description>
+        <porttype type="data"/>
+      </uses>
+      <uses repid="IDL:BULKIO/dataFloat:1.0" usesname="phase_dataFloat_out">
+        <description>Float output containing phase estimate for debugging. One phase estimate per symbol output. Phase is unwrapped.   
+</description>
+      </uses>
+      <uses repid="IDL:BULKIO/dataShort:1.0" usesname="sampleIndex_dataShort_out">
+        <description>Index of sample used in timing recovery chosen for symbol output. Will range from 0 to samplesPerBaud-1.  </description>
+      </uses>
+    </ports>
+  </componentfeatures>
+  <interfaces>
+    <interface name="Resource" repid="IDL:CF/Resource:1.0">
+      <inheritsinterface repid="IDL:CF/LifeCycle:1.0"/>
+      <inheritsinterface repid="IDL:CF/PortSupplier:1.0"/>
+      <inheritsinterface repid="IDL:CF/PropertySet:1.0"/>
+      <inheritsinterface repid="IDL:CF/TestableObject:1.0"/>
+    </interface>
+    <interface name="LifeCycle" repid="IDL:CF/LifeCycle:1.0"/>
+    <interface name="PortSupplier" repid="IDL:CF/PortSupplier:1.0"/>
+    <interface name="PropertySet" repid="IDL:CF/PropertySet:1.0"/>
+    <interface name="TestableObject" repid="IDL:CF/TestableObject:1.0"/>
+    <interface name="ProvidesPortStatisticsProvider" repid="IDL:BULKIO/ProvidesPortStatisticsProvider:1.0"/>
+    <interface name="updateSRI" repid="IDL:BULKIO/updateSRI:1.0"/>
+    <interface name="dataFloat" repid="IDL:BULKIO/dataFloat:1.0">
+      <inheritsinterface repid="IDL:BULKIO/ProvidesPortStatisticsProvider:1.0"/>
+      <inheritsinterface repid="IDL:BULKIO/updateSRI:1.0"/>
+    </interface>
+    <interface name="dataShort" repid="IDL:BULKIO/dataShort:1.0">
+      <inheritsinterface repid="IDL:BULKIO/ProvidesPortStatisticsProvider:1.0"/>
+      <inheritsinterface repid="IDL:BULKIO/updateSRI:1.0"/>
+    </interface>
+  </interfaces>
+</softwarecomponent>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<!--
+     This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this
+     source distribution.
+
+This file is part of REDHAWK Basic Components sourcesocket.
+
+REDHAWK Basic Components sourcesocket is free software: you can redistribute it and/or modify it under the terms of
+the GNU Lesser General Public License as published by the Free Software Foundation, either
+version 3 of the License, or (at your option) any later version.
+
+REDHAWK Basic Components sourcesocket is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
+PURPOSE.  See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License along with this
+program.  If not, see http://www.gnu.org/licenses/.
+-->
+<softpkg id="DCE:c83fa2c0-16d3-11e5-9199-3417ebc4aab5" name="rh.sourcesocket" type="2.0.2" version="2.1.1">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <description>Reads data from a TCP socket and writes it to a BULKIO port.</description>
+  <propertyfile type="PRF">
+    <localfile name="sourcesocket.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="sourcesocket.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <code type="Executable">
+      <localfile name="cpp/sourcesocket"/>
+      <entrypoint>cpp/sourcesocket</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+  </implementation>
+</softpkg>

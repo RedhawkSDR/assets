@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This file is protected by Copyright. Please refer to the COPYRIGHT file
+distributed with this source distribution.
+
+This file is part of REDHAWK Basic Components FileWriter.
+
+REDHAWK Basic Components FileWriter is free software: you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+REDHAWK Basic Components FileWriter is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
+for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+-->
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:c93b9094-16d3-11e5-99de-3417ebc4aab5" name="rh.FileWriter" type="2.0.6" version="4.1.0">
+  <title></title>
+  <author>
+    <name></name>
+  </author>
+  <description>This component takes in data from the provides ports and writes the data to a file.</description>
+  <propertyfile type="PRF">
+    <localfile name="FileWriter.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="FileWriter.scd.xml"/>
+  </descriptor>
+  <implementation id="cpp">
+    <description>The implementation contains descriptive information about the template for a software component.</description>
+    <code type="Executable">
+      <localfile name="cpp/FileWriter"/>
+      <entrypoint>cpp/FileWriter</entrypoint>
+    </code>
+    <compiler name="/usr/bin/gcc" version="4.1.2"/>
+    <programminglanguage name="C++"/>
+    <humanlanguage name="EN"/>
+    <os name="Linux"/>
+    <processor name="x86"/>
+    <processor name="x86_64"/>
+    <dependency type="runtime_requirements">
+      <softpkgref>
+        <localfile name="/deps/rh/RedhawkDevUtils/RedhawkDevUtils.spd.xml"/>
+        <implref refid="cpp"/>
+      </softpkgref>
+    </dependency>
+    <dependency type="runtime_requirements">
+      <softpkgref>
+        <localfile name="/deps/rh/blueFileLib/blueFileLib.spd.xml"/>
+        <implref refid="cpp"/>
+      </softpkgref>
+    </dependency>
+  </implementation>
+</softpkg>

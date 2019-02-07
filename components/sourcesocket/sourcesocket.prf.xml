@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+     This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
+     source distribution.
+
+This file is part of REDHAWK Basic Components sourcesocket.
+
+REDHAWK Basic Components sourcesocket is free software: you can redistribute it and/or modify it under the terms of 
+the GNU Lesser General Public License as published by the Free Software Foundation, either 
+version 3 of the License, or (at your option) any later version.
+
+REDHAWK Basic Components sourcesocket is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+PURPOSE.  See the GNU Lesser General Public License for more details.
+
+You should have received a copy of the GNU Lesser General Public License along with this 
+program.  If not, see http://www.gnu.org/licenses/.
+-->
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
+<properties>
+  <simple id="connection_type" mode="readwrite" type="string">
+    <description>Is the socket a server or client?</description>
+    <value>server</value>
+    <enumerations>
+      <enumeration label="server" value="server"/>
+      <enumeration label="client" value="client"/>
+    </enumerations>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="ip_address" mode="readwrite" type="string">
+    <description>IP address to connect to in client mode</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="port" mode="readwrite" type="ushort">
+    <description>Port to listen on for server mode, or port to connect to for client mode.</description>
+    <range max="65535" min="1"/>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="status" mode="readonly" type="string">
+    <description>Current status of socket connection</description>
+    <enumerations>
+      <enumeration label="startup" value="startup"/>
+      <enumeration label="not_connected" value="not_connected"/>
+      <enumeration label="connected" value="connected"/>
+    </enumerations>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="total_bytes" mode="readonly" type="double">
+    <description>Total bytes received on socket</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="bytes_per_sec" mode="readonly" type="float">
+    <description>Bytes per second received on socket</description>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="max_bytes" mode="readwrite" type="ulong">
+    <description>Maximum bytes to send out in one BULKIO output packet</description>
+    <value>16384</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="min_bytes" mode="readwrite" type="ulong">
+    <description>Minimum bytes to send out in one BULKIO output packet</description>
+    <value>16384</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="byte_swap" mode="readwrite" type="ushort">
+    <description>Swap Bytes in data stream.  You can explicitly set the word size.  
+If you set 0 -- no swapping is done.
+If you set 1 -- swapping is done acording to the data size for each port
+Otherwise data will be swapped according to this value
+	</description>
+    <value>0</value>
+    <kind kindtype="configure"/>
+  </simple>
+  <simple id="internal_buffer_size" mode="readwrite" name="internal_buffer_size" type="ulong">
+    <description>Number of full socket receive buffers to be able to store.</description>
+    <value>64</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <struct id="socket_settings" mode="readwrite" name="socket_settings">
+    <description>Advanced socket settings</description>
+    <simple id="socket::enable" name="enable" type="boolean">
+      <description>If true, socket settings to be applied to the kernel socket buffer. Otherwise system defaults will be used for kernel socket buffer size and tcp nodelay.</description>
+      <value>False</value>
+    </simple>
+    <simple id="socket::receive_buffer_size" mode="readwrite" name="receive_buffer_size" type="ulong">
+      <description>Set the maximum number of bytes to read from the socket at one time.
+
+If enable is set to True, this will also set the kernel socket receive buffer size. Small sizes (i.e. 16384 Bytes) will significantly reduce throughput.</description>
+      <value>65536</value>
+      <units>Bytes</units>
+      <kind kindtype="configure"/>
+      <action type="external"/>
+    </simple>
+    <simple id="socket::tcp_nodelay" mode="readwrite" name="tcp_nodelay" type="boolean">
+      <description>If enable is set to true, this sets TCP_NODELAY on socket, which disables the Nagle algorithm.</description>
+      <value>False</value>
+      <kind kindtype="configure"/>
+      <action type="external"/>
+    </simple>
+    <configurationkind kindtype="configure"/>
+  </struct>
+  <struct id="sri" mode="readwrite">
+    <description>bulkio sri metadata for this bulkio stream</description>
+    <simple id="xstart" type="double">
+      <description>bulkio sri xstart value</description>
+      <value>0.0</value>
+    </simple>
+    <simple id="xdelta" type="double">
+      <description>bulkio sri xdelta value.  This is 1.0/sampleRate</description>
+      <value>1.0</value>
+    </simple>
+    <simple id="mode" type="short">
+      <description>bulkio sri mode value - 0 for real data and 1 for complex data</description>
+      <value>0</value>
+    </simple>
+    <simple id="streamID" type="string">
+      <description>bulkio sri streamID for data stream</description>
+      <value>default_stream_id</value>
+    </simple>
+    <simple id="blocking" type="boolean">
+      <description>bulkio sri blocking value.  Should backpressure be applied if data rate exceeeds processing rate.</description>
+      <value>True</value>
+    </simple>
+    <configurationkind kindtype="configure"/>
+  </struct>
+</properties>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
+source distribution.
+
+This file is part of REDHAWK Basic Components autocorrelate.
+
+REDHAWK Basic Components autocorrelate is free software: you can redistribute it and/or modify it under the terms of 
+the GNU General Public License as published by the Free Software Foundation, either 
+version 3 of the License, or (at your option) any later version.
+
+REDHAWK Basic Components autocorrelate is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this 
+program.  If not, see http://www.gnu.org/licenses/.
+-->
+<!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
+<properties>
+  <simple id="correlationSize" mode="readwrite" type="ulong">
+    <description>Size of correlation window in samples.</description>
+    <value>4096</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="inputOverlap" mode="readwrite" type="long">
+    <description>Input overlap in samples.  Must be smaller then correlationSize.  Negative numbers are allowed which means you skip input data between corelation windows</description>
+    <value>0</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="numAverages" mode="readwrite" type="ulong">
+    <description>Block average output frames.  How many averages on each output.  Use numAverages&lt;=1 for no output averaging.</description>
+    <value>1</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="outputType" mode="readwrite" type="string">
+    <description>NORMAL is the standard autocorrelation layout where the center spike is in the middle of the output frame and you have 2*correlationSize+1 points
+
+ROTATED flips the front and back of the display.  This puts the center spike at index 0 and frame index corresponds exactly to the delay.  This makes it easy to measure the correlation delay.  There are still 2*correlationSize+1 points per output frame.
+
+SUPERIMPOSED is like ROTATED but the 2nd half of the output frame is flipped and added to the first half.  This means the output frame consists of exactly correlationSize output samples.  Autocorrelation will be approximately symmetric for indicies close to 0 since the correlation output for a delay of N is approximately the same as an advance of N for small N.  The superposition adds the correlation output for the delay as well as the advace to get twice the averaging effect.</description>
+    <value>NORMAL</value>
+    <enumerations>
+      <enumeration label="NORMAL" value="NORMAL"/>
+      <enumeration label="ROTATED" value="ROTATED"/>
+      <enumeration label="SUPERIMPOSED" value="SUPERIMPOSED"/>
+    </enumerations>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="zeroMean" mode="readwrite" type="boolean">
+    <description>Remove mean prior to correlating.  If there is a mean this causes a bias in the output frame shape since more samples are available for correlation for smaller delays than larger delays.</description>
+    <value>true</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+  <simple id="zeroCenter" mode="readwrite" type="boolean">
+    <description>Zero out the output value corresponding to no delay.  This will always be a &quot;huge&quot; value.  So zero it out so it doesn't overshaddow the rest of the outputs.</description>
+    <value>false</value>
+    <kind kindtype="configure"/>
+    <action type="external"/>
+  </simple>
+</properties>
