@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file
+distributed with this source distribution.
+
+This file is part of REDHAWK socket_loopback_demo.
+
+REDHAWK socket_loopback_demo is free software: you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+REDHAWK socket_loopback_demo is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License along
+with this program.  If not, see http://www.gnu.org/licenses/.
+-->
+<!DOCTYPE softwareassembly PUBLIC "-//JTRS//DTD SCA V2.2.2 SAD//EN" "softwareassembly.dtd">
+<softwareassembly id="DCE:ce4e7646-1a25-11e5-a972-3417ebc4aab5" name="rh.socket_loopback_demo" version="1.0.2">
+  <componentfiles>
+    <componentfile id="SigGen_64d0a3a5-633c-4875-b33d-223ebf7e261f" type="SPD">
+      <localfile name="/components/rh/SigGen/SigGen.spd.xml"/>
+    </componentfile>
+    <componentfile id="sinksocket_936454bb-d05d-479a-a9b3-ab03d9c7fe5a" type="SPD">
+      <localfile name="/components/rh/sinksocket/sinksocket.spd.xml"/>
+    </componentfile>
+    <componentfile id="sourcesocket_5b892418-08c8-438c-a2db-912c0d4079c9" type="SPD">
+      <localfile name="/components/rh/sourcesocket/sourcesocket.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="SigGen_64d0a3a5-633c-4875-b33d-223ebf7e261f"/>
+      <componentinstantiation id="SigGen_1" startorder="0">
+        <usagename>SigGen_1</usagename>
+        <componentproperties>
+          <simpleref refid="sample_rate" value="50000.0"/>
+          <simpleref refid="xfer_len" value="50000"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="SigGen_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="sinksocket_936454bb-d05d-479a-a9b3-ab03d9c7fe5a"/>
+      <componentinstantiation id="sinksocket_1" startorder="1">
+        <usagename>sinksocket_1</usagename>
+        <componentproperties>
+          <structsequenceref refid="Connections">
+            <structvalue>
+              <simpleref refid="Connection::connection_type" value="server"/>
+              <simpleref refid="Connection::ip_address" value=""/>
+              <simplesequenceref refid="Connection::byte_swap">
+                <values>
+                  <value>0</value>
+                </values>
+              </simplesequenceref>
+              <simplesequenceref refid="Connection::ports">
+                <values>
+                  <value>12344</value>
+                </values>
+              </simplesequenceref>
+            </structvalue>
+          </structsequenceref>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="sinksocket_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="sourcesocket_5b892418-08c8-438c-a2db-912c0d4079c9"/>
+      <componentinstantiation id="sourcesocket_1" startorder="2">
+        <usagename>sourcesocket_1</usagename>
+        <componentproperties>
+          <simpleref refid="port" value="12344"/>
+          <simpleref refid="max_bytes" value="100000"/>
+          <simpleref refid="ip_address" value="127.0.0.1"/>
+          <simpleref refid="min_bytes" value="100000"/>
+          <simpleref refid="connection_type" value="client"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="sourcesocket_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <assemblycontroller>
+    <componentinstantiationref refid="SigGen_1"/>
+  </assemblycontroller>
+  <connections>
+    <connectinterface id="connection_1">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="SigGen_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="sinksocket_1"/>
+      </providesport>
+    </connectinterface>
+  </connections>
+  <externalproperties>
+    <property comprefid="sinksocket_1" propid="ConnectionStats" externalpropid="sinkConnectionStats"/>
+    <property comprefid="sourcesocket_1" propid="sri" externalpropid="source_sri"/>
+    <property comprefid="sourcesocket_1" propid="status" externalpropid="source_status"/>
+    <property comprefid="sourcesocket_1" propid="total_bytes" externalpropid="source_total_bytes"/>
+    <property comprefid="sourcesocket_1" propid="bytes_per_sec" externalpropid="source_bytes_per_sec"/>
+    <property comprefid="sinksocket_1" propid="bytes_per_sec" externalpropid="sink_bytes_per_sec"/>
+    <property comprefid="sinksocket_1" propid="total_bytes" externalpropid="sink_total_bytes"/>
+  </externalproperties>
+</softwareassembly>

@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file
+distributed with this source distribution.
+
+This file is part of REDHAWK FM_RBDS_demo.
+
+REDHAWK FM_RBDS_demo is free software: you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+REDHAWK FM_RBDS_demo is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License along
+with this program.  If not, see http://www.gnu.org/licenses/.
+-->
+<!DOCTYPE softwareassembly PUBLIC "-//JTRS//DTD SCA V2.2.2 SAD//EN" "softwareassembly.dtd">
+<softwareassembly id="DCE:8fe2091e-1a24-11e5-a687-3417ebc4aab5" name="rh.FM_RBDS_demo" version="1.0.3">
+  <componentfiles>
+    <componentfile id="TuneFilterDecimate_94023254-44aa-4d1b-9e49-dbb214586a4b" type="SPD">
+      <localfile name="/components/rh/TuneFilterDecimate/TuneFilterDecimate.spd.xml"/>
+    </componentfile>
+    <componentfile id="fastfilter_73ad70df-4b48-410d-b236-0a9adbfcb7a1" type="SPD">
+      <localfile name="/components/rh/fastfilter/fastfilter.spd.xml"/>
+    </componentfile>
+    <componentfile id="RBDSDecoder_5d7dec30-b0e9-42bc-a940-705fa44b73bb" type="SPD">
+      <localfile name="/components/rh/RBDSDecoder/RBDSDecoder.spd.xml"/>
+    </componentfile>
+    <componentfile id="AmFmPmBasebandDemod_2694bd80-14d9-4172-8d3d-497d5eb18ab0" type="SPD">
+      <localfile name="/components/rh/AmFmPmBasebandDemod/AmFmPmBasebandDemod.spd.xml"/>
+    </componentfile>
+    <componentfile id="psk_soft_6a05ce0f-5d55-47fe-89ba-b0a4ac52d161" type="SPD">
+      <localfile name="/components/rh/psk_soft/psk_soft.spd.xml"/>
+    </componentfile>
+    <componentfile id="ArbitraryRateResampler_0b05d9fb-eeaf-42b7-a90a-33ad68d23806" type="SPD">
+      <localfile name="/components/rh/ArbitraryRateResampler/ArbitraryRateResampler.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="TuneFilterDecimate_94023254-44aa-4d1b-9e49-dbb214586a4b"/>
+      <componentinstantiation id="TuneFilterDecimate_1" startorder="0">
+        <usagename>TuneFilterDecimate_1</usagename>
+        <componentproperties>
+          <structref refid="filterProps">
+            <simpleref refid="Ripple" value="0.5"/>
+          </structref>
+          <simpleref refid="FilterBW" value="256500.0"/>
+          <simpleref refid="DesiredOutputRate" value="256500.0"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="TuneFilterDecimate_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="RBDSDecoder_5d7dec30-b0e9-42bc-a940-705fa44b73bb"/>
+      <componentinstantiation id="RBDSDecoder_1" startorder="6">
+        <usagename>RBDSDecoder_1</usagename>
+        <findcomponent>
+          <namingservice name="RBDSDecoder_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="AmFmPmBasebandDemod_2694bd80-14d9-4172-8d3d-497d5eb18ab0"/>
+      <componentinstantiation id="AmFmPmBasebandDemod_1" startorder="1">
+        <usagename>AmFmPmBasebandDemod_1</usagename>
+        <componentproperties>
+          <simpleref refid="freqDeviation" value="15000.0"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="AmFmPmBasebandDemod_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="TuneFilterDecimate_94023254-44aa-4d1b-9e49-dbb214586a4b"/>
+      <componentinstantiation id="TuneFilterDecimate_2" startorder="2">
+        <usagename>TuneFilterDecimate_2</usagename>
+        <componentproperties>
+          <simpleref refid="TuningIF" value="57000.0"/>
+          <simpleref refid="FilterBW" value="4000.0"/>
+          <simpleref refid="TuneMode" value="IF"/>
+          <simpleref refid="DesiredOutputRate" value="9500.0"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="TuneFilterDecimate_2"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="psk_soft_6a05ce0f-5d55-47fe-89ba-b0a4ac52d161"/>
+      <componentinstantiation id="psk_soft_1" startorder="5">
+        <usagename>psk_soft_1</usagename>
+        <componentproperties>
+          <simpleref refid="differentialDecoding" value="true"/>
+          <simpleref refid="samplesPerBaud" value="8"/>
+          <simpleref refid="constelationSize" value="2"/>
+          <simpleref refid="phaseAvg" value="100"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="psk_soft_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="fastfilter_73ad70df-4b48-410d-b236-0a9adbfcb7a1"/>
+      <componentinstantiation id="MatchedFilter" startorder="4">
+        <usagename>MatchedFilter</usagename>
+        <componentproperties>
+          <simplesequenceref refid="realFilterCoefficients">
+            <values>
+              <value>-4.17856731714e-18</value>
+              <value>0.00391067678624</value>
+              <value>6.82484994444e-18</value>
+              <value>-0.00633157193963</value>
+              <value>1.62006669626e-17</value>
+              <value>0.0113063784636</value>
+              <value>-7.01900795452e-17</value>
+              <value>-0.0235172672043</value>
+              <value>5.45908246266e-17</value>
+              <value>0.0646724848119</value>
+              <value>-1.12105278128e-16</value>
+              <value>-0.388034908872</value>
+              <value>-1.0</value>
+              <value>-1.35812218105</value>
+              <value>-1.0</value>
+              <value>0.0</value>
+              <value>1.0</value>
+              <value>1.35812218105</value>
+              <value>1.0</value>
+              <value>0.388034908872</value>
+              <value>1.12105278128e-16</value>
+              <value>-0.0646724848119</value>
+              <value>-5.45908246266e-17</value>
+              <value>0.0235172672043</value>
+              <value>7.01900795452e-17</value>
+              <value>-0.0113063784636</value>
+              <value>-1.62006669626e-17</value>
+              <value>0.00633157193963</value>
+              <value>-6.82484994444e-18</value>
+              <value>-0.00391067678624</value>
+              <value>4.17856731714e-18</value>
+            </values>
+          </simplesequenceref>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="MatchedFilter"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="ArbitraryRateResampler_0b05d9fb-eeaf-42b7-a90a-33ad68d23806"/>
+      <componentinstantiation id="ArbitraryRateResampler_1" startorder="3">
+        <usagename>ArbitraryRateResampler_1</usagename>
+        <componentproperties>
+          <simpleref refid="outputRate" value="9500.0"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="ArbitraryRateResampler_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <assemblycontroller>
+    <componentinstantiationref refid="TuneFilterDecimate_1"/>
+  </assemblycontroller>
+  <connections>
+    <connectinterface id="connection_22">
+      <usesport>
+        <usesidentifier>messageEvent_out</usesidentifier>
+        <componentinstantiationref refid="RBDSDecoder_1"/>
+      </usesport>
+      <findby>
+        <domainfinder name="RBDS_Channel" type="eventchannel"/>
+      </findby>
+    </connectinterface>
+    <connectinterface id="connection_3">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="TuneFilterDecimate_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="AmFmPmBasebandDemod_1"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_8">
+      <usesport>
+        <usesidentifier>fm_dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="AmFmPmBasebandDemod_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="TuneFilterDecimate_2"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_11">
+      <usesport>
+        <usesidentifier>bits_dataShort_out</usesidentifier>
+        <componentinstantiationref refid="psk_soft_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataShort_in</providesidentifier>
+        <componentinstantiationref refid="RBDSDecoder_1"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_10">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="MatchedFilter"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="psk_soft_1"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_1">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="TuneFilterDecimate_2"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="ArbitraryRateResampler_1"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_2">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="ArbitraryRateResampler_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="MatchedFilter"/>
+      </providesport>
+    </connectinterface>
+  </connections>
+  <externalports>
+    <port externalname="tunerFloat_in">
+      <providesidentifier>dataFloat_in</providesidentifier>
+      <componentinstantiationref refid="TuneFilterDecimate_1"/>
+    </port>
+    <port externalname="rbdsMessage_out">
+      <usesidentifier>messageEvent_out</usesidentifier>
+      <componentinstantiationref refid="RBDSDecoder_1"/>
+    </port>
+  </externalports>
+</softwareassembly>

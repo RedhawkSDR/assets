@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file
+distributed with this source distribution.
+
+This file is part of REDHAWK short_file_to_float_file.
+
+REDHAWK short_file_to_float_file is free software: you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+REDHAWK short_file_to_float_file is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License along
+with this program.  If not, see http://www.gnu.org/licenses/.
+-->
+<!DOCTYPE softwareassembly PUBLIC "-//JTRS//DTD SCA V2.2.2 SAD//EN" "softwareassembly.dtd">
+<softwareassembly id="DCE:8e80198a-1a1f-11e5-8416-3417ebc4aab5" name="rh.short_file_to_float_file" version="1.0.2">
+  <componentfiles>
+    <componentfile id="FileReader_be173f25-6da2-419a-83aa-04169df7b32e" type="SPD">
+      <localfile name="/components/rh/FileReader/FileReader.spd.xml"/>
+    </componentfile>
+    <componentfile id="DataConverter_a03beed0-6f62-4b0c-a1e9-9c1e55313270" type="SPD">
+      <localfile name="/components/rh/DataConverter/DataConverter.spd.xml"/>
+    </componentfile>
+    <componentfile id="FileWriter_6ac646a1-3f37-45d1-8246-1eb0758f7158" type="SPD">
+      <localfile name="/components/rh/FileWriter/FileWriter.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="FileReader_be173f25-6da2-419a-83aa-04169df7b32e"/>
+      <componentinstantiation id="FileReader_1" startorder="0">
+        <usagename>FileReader_1</usagename>
+        <findcomponent>
+          <namingservice name="FileReader_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="DataConverter_a03beed0-6f62-4b0c-a1e9-9c1e55313270"/>
+      <componentinstantiation id="DataConverter_1" startorder="1">
+        <usagename>DataConverter_1</usagename>
+        <componentproperties>
+          <structref refid="normalize_floating_point">
+            <simpleref refid="normalize_floating_point::output" value="false"/>
+          </structref>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="DataConverter_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="FileWriter_6ac646a1-3f37-45d1-8246-1eb0758f7158"/>
+      <componentinstantiation id="FileWriter_1" startorder="2">
+        <usagename>FileWriter_1</usagename>
+        <componentproperties>
+          <simpleref refid="destination_uri" value="file:///tmp/my_floats.raw"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="FileWriter_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <assemblycontroller>
+    <componentinstantiationref refid="FileReader_1"/>
+  </assemblycontroller>
+  <connections>
+    <connectinterface id="connection_1">
+      <usesport>
+        <usesidentifier>dataShort_out</usesidentifier>
+        <componentinstantiationref refid="FileReader_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataShort</providesidentifier>
+        <componentinstantiationref refid="DataConverter_1"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_2">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="DataConverter_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="FileWriter_1"/>
+      </providesport>
+    </connectinterface>
+  </connections>
+  <externalproperties>
+    <property comprefid="FileWriter_1" propid="destination_uri" externalpropid="destination_uri"/>
+    <property comprefid="FileWriter_1" propid="destination_uri_suffix" externalpropid="destination_uri_suffix"/>
+    <property comprefid="FileWriter_1" propid="file_format" externalpropid="destination_file_format"/>
+    <property comprefid="FileReader_1" propid="file_format" externalpropid="souce_file_format"/>
+  </externalproperties>
+</softwareassembly>

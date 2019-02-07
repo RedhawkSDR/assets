@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file
+distributed with this source distribution.
+
+This file is part of REDHAWK basic_components_demo.
+
+REDHAWK basic_components_demo is free software: you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+REDHAWK basic_components_demo is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License along
+with this program.  If not, see http://www.gnu.org/licenses/.
+-->
+<!DOCTYPE softwareassembly PUBLIC "-//JTRS//DTD SCA V2.2.2 SAD//EN" "softwareassembly.dtd">
+<softwareassembly id="DCE:d4d99400-1a11-11e5-a6ce-3417ebc4aab5" name="rh.basic_components_demo" version="1.0.2">
+  <componentfiles>
+    <componentfile id="SigGen_d9ff93be-19ce-4352-aaaa-e6a30c4fa7eb" type="SPD">
+      <localfile name="/components/rh/SigGen/SigGen.spd.xml"/>
+    </componentfile>
+    <componentfile id="HardLimit_208d4fe4-ea4f-4245-9032-9a50588ff6d5" type="SPD">
+      <localfile name="/components/rh/HardLimit/HardLimit.spd.xml"/>
+    </componentfile>
+    <componentfile id="agc_03eaf8db-5d78-48a5-9884-0330bbd01614" type="SPD">
+      <localfile name="/components/rh/agc/agc.spd.xml"/>
+    </componentfile>
+    <componentfile id="fcalc_7d5ef2d9-c08c-40b9-874e-30c17e496a2e" type="SPD">
+      <localfile name="/components/rh/fcalc/fcalc.spd.xml"/>
+    </componentfile>
+    <componentfile id="autocorrelate_2d516c19-a098-4547-a0d8-7a4055c0d2c5" type="SPD">
+      <localfile name="/components/rh/autocorrelate/autocorrelate.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="SigGen_d9ff93be-19ce-4352-aaaa-e6a30c4fa7eb"/>
+      <componentinstantiation id="SigGen_sine" startorder="0">
+        <usagename>SigGen_sine</usagename>
+        <componentproperties>
+          <simpleref refid="sample_rate" value="10000.0"/>
+          <simpleref refid="sri_blocking" value="true"/>
+          <simpleref refid="stream_id" value="sineStream"/>
+          <simpleref refid="frequency" value="100.0"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="SigGen_sine"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="HardLimit_208d4fe4-ea4f-4245-9032-9a50588ff6d5"/>
+      <componentinstantiation id="HardLimit_1" startorder="2">
+        <usagename>HardLimit_1</usagename>
+        <componentproperties>
+          <simpleref refid="upper_limit" value="50.0"/>
+          <simpleref refid="lower_limit" value="-50.0"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="HardLimit_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="agc_03eaf8db-5d78-48a5-9884-0330bbd01614"/>
+      <componentinstantiation id="agc_1" startorder="4">
+        <usagename>agc_1</usagename>
+        <componentproperties>
+          <simpleref refid="avgPower" value="0.6"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="agc_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="fcalc_7d5ef2d9-c08c-40b9-874e-30c17e496a2e"/>
+      <componentinstantiation id="sum" startorder="3">
+        <usagename>sum</usagename>
+        <componentproperties>
+          <simpleref refid="equation" value="a+b"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="sum"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="autocorrelate_2d516c19-a098-4547-a0d8-7a4055c0d2c5"/>
+      <componentinstantiation id="autocorrelate_1" startorder="5">
+        <usagename>autocorrelate_1</usagename>
+        <findcomponent>
+          <namingservice name="autocorrelate_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="SigGen_d9ff93be-19ce-4352-aaaa-e6a30c4fa7eb"/>
+      <componentinstantiation id="SigGen_noise" startorder="1">
+        <usagename>SigGen_noise</usagename>
+        <componentproperties>
+          <simpleref refid="sample_rate" value="10000.0"/>
+          <simpleref refid="magnitude" value="1.0"/>
+          <simpleref refid="sri_blocking" value="true"/>
+          <simpleref refid="stream_id" value="noiseStream"/>
+          <simpleref refid="shape" value="whitenoise"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="SigGen_noise"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <assemblycontroller>
+    <componentinstantiationref refid="SigGen_sine"/>
+  </assemblycontroller>
+  <connections>
+    <connectinterface id="connection_1">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="SigGen_sine"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="HardLimit_1"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_2">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="HardLimit_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>a</providesidentifier>
+        <componentinstantiationref refid="sum"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_3">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="SigGen_noise"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>b</providesidentifier>
+        <componentinstantiationref refid="sum"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_4">
+      <usesport>
+        <usesidentifier>out</usesidentifier>
+        <componentinstantiationref refid="sum"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="agc_1"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_5">
+      <usesport>
+        <usesidentifier>out</usesidentifier>
+        <componentinstantiationref refid="sum"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="autocorrelate_1"/>
+      </providesport>
+    </connectinterface>
+  </connections>
+  <externalproperties>
+    <property comprefid="HardLimit_1" propid="upper_limit" externalpropid="upper_limit"/>
+    <property comprefid="HardLimit_1" propid="lower_limit" externalpropid="lower_limit"/>
+    <property comprefid="agc_1" propid="avgPower" externalpropid="avgPower"/>
+    <property comprefid="SigGen_noise" propid="magnitude" externalpropid="noise_magnitude"/>
+  </externalproperties>
+</softwareassembly>

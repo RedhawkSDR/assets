@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file
+distributed with this source distribution.
+
+This file is part of REDHAWK FM_mono_demo.
+
+REDHAWK FM_mono_demo is free software: you can redistribute it and/or modify it under
+the terms of the GNU Lesser General Public License as published by the Free
+Software Foundation, either version 3 of the License, or (at your option) any
+later version.
+
+REDHAWK FM_mono_demo is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+details.
+
+You should have received a copy of the GNU Lesser General Public License along
+with this program.  If not, see http://www.gnu.org/licenses/.
+
+-->
+<!DOCTYPE softwareassembly PUBLIC "-//JTRS//DTD SCA V2.2.2 SAD//EN" "softwareassembly.dtd">
+<softwareassembly id="DCE:4ab8b652-1a25-11e5-b285-3417ebc4aab5" name="rh.FM_mono_demo" version="1.0.3">
+  <componentfiles>
+    <componentfile id="TuneFilterDecimate_95a97531-8b9a-4ee4-af1f-8eec61810e37" type="SPD">
+      <localfile name="/components/rh/TuneFilterDecimate/TuneFilterDecimate.spd.xml"/>
+    </componentfile>
+    <componentfile id="psd_ffe043d1-81dc-4ecf-8d4c-027597956b05" type="SPD">
+      <localfile name="/components/rh/psd/psd.spd.xml"/>
+    </componentfile>
+    <componentfile id="fastfilter_3be7b283-5946-4ab1-a13a-786b4583bad1" type="SPD">
+      <localfile name="/components/rh/fastfilter/fastfilter.spd.xml"/>
+    </componentfile>
+    <componentfile id="ArbitraryRateResampler_4dc03247-5804-4f8b-8e01-4aa1d8e8e51e" type="SPD">
+      <localfile name="/components/rh/ArbitraryRateResampler/ArbitraryRateResampler.spd.xml"/>
+    </componentfile>
+    <componentfile id="AmFmPmBasebandDemod_2694bd80-14d9-4172-8d3d-497d5eb18ab0" type="SPD">
+      <localfile name="/components/rh/AmFmPmBasebandDemod/AmFmPmBasebandDemod.spd.xml"/>
+    </componentfile>
+  </componentfiles>
+  <partitioning>
+    <componentplacement>
+      <componentfileref refid="TuneFilterDecimate_95a97531-8b9a-4ee4-af1f-8eec61810e37"/>
+      <componentinstantiation id="TuneFilterDecimate_1" startorder="0">
+        <usagename>TuneFilterDecimate_1</usagename>
+        <componentproperties>
+          <structref refid="filterProps">
+            <simpleref refid="Ripple" value="0.5"/>
+          </structref>
+          <simpleref refid="FilterBW" value="256500.0"/>
+          <simpleref refid="DesiredOutputRate" value="256500.0"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="TuneFilterDecimate_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="psd_ffe043d1-81dc-4ecf-8d4c-027597956b05"/>
+      <componentinstantiation id="narrowband_psd" startorder="4">
+        <usagename>narrowband_psd</usagename>
+        <componentproperties>
+          <simpleref refid="fftSize" value="8192"/>
+          <simpleref refid="numAvg" value="5"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="narrowband_psd"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="psd_ffe043d1-81dc-4ecf-8d4c-027597956b05"/>
+      <componentinstantiation id="fm_psd" startorder="5">
+        <usagename>fm_psd</usagename>
+        <componentproperties>
+          <simpleref refid="fftSize" value="8192"/>
+          <simpleref refid="numAvg" value="20"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="psd_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="fastfilter_3be7b283-5946-4ab1-a13a-786b4583bad1"/>
+      <componentinstantiation id="fastfilter_1" startorder="2">
+        <usagename>fastfilter_1</usagename>
+        <componentproperties>
+          <structref refid="filterProps">
+            <simpleref refid="Type" value="lowpass"/>
+            <simpleref refid="Ripple" value="0.5"/>
+            <simpleref refid="freq1" value="16000.0"/>
+          </structref>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="fastfilter_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="ArbitraryRateResampler_4dc03247-5804-4f8b-8e01-4aa1d8e8e51e"/>
+      <componentinstantiation id="ArbitraryRateResampler_1" startorder="3">
+        <usagename>ArbitraryRateResampler_1</usagename>
+        <componentproperties>
+          <simpleref refid="outputRate" value="32000.0"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="ArbitraryRateResampler_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+    <componentplacement>
+      <componentfileref refid="AmFmPmBasebandDemod_2694bd80-14d9-4172-8d3d-497d5eb18ab0"/>
+      <componentinstantiation id="AmFmPmBasebandDemod_1" startorder="1">
+        <usagename>AmFmPmBasebandDemod_1</usagename>
+        <componentproperties>
+          <simpleref refid="freqDeviation" value="15000.0"/>
+        </componentproperties>
+        <findcomponent>
+          <namingservice name="AmFmPmBasebandDemod_1"/>
+        </findcomponent>
+      </componentinstantiation>
+    </componentplacement>
+  </partitioning>
+  <assemblycontroller>
+    <componentinstantiationref refid="TuneFilterDecimate_1"/>
+  </assemblycontroller>
+  <connections>
+    <connectinterface id="connection_2">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="TuneFilterDecimate_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="narrowband_psd"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_5">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="fastfilter_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="ArbitraryRateResampler_1"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_3">
+      <usesport>
+        <usesidentifier>dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="TuneFilterDecimate_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="AmFmPmBasebandDemod_1"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_4">
+      <usesport>
+        <usesidentifier>fm_dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="AmFmPmBasebandDemod_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="fm_psd"/>
+      </providesport>
+    </connectinterface>
+    <connectinterface id="connection_7">
+      <usesport>
+        <usesidentifier>fm_dataFloat_out</usesidentifier>
+        <componentinstantiationref refid="AmFmPmBasebandDemod_1"/>
+      </usesport>
+      <providesport>
+        <providesidentifier>dataFloat_in</providesidentifier>
+        <componentinstantiationref refid="fastfilter_1"/>
+      </providesport>
+    </connectinterface>
+  </connections>
+  <externalports>
+    <port externalname="tunerFloat_in">
+      <providesidentifier>dataFloat_in</providesidentifier>
+      <componentinstantiationref refid="TuneFilterDecimate_1"/>
+    </port>
+    <port externalname="audioFloat_out">
+      <usesidentifier>dataFloat_out</usesidentifier>
+      <componentinstantiationref refid="ArbitraryRateResampler_1"/>
+    </port>
+  </externalports>
+  <externalproperties>
+    <property comprefid="fm_psd" propid="fftSize" externalpropid="fm_psd_fftSize"/>
+    <property comprefid="narrowband_psd" propid="fftSize" externalpropid="narrowband_psd_fftSize"/>
+    <property comprefid="ArbitraryRateResampler_1" propid="outputRate" externalpropid="audio_outputRate"/>
+    <property comprefid="narrowband_psd" propid="numAvg" externalpropid="narrowband_psd_numAvg"/>
+    <property comprefid="fm_psd" propid="numAvg" externalpropid="fm_psd_numAvg"/>
+  </externalproperties>
+</softwareassembly>
