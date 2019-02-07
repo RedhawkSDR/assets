@@ -1,0 +1,62 @@
+#
+# ===================== COPYRIGHT NOTICE =====================
+# This file is protected by Copyright. Please refer to the COPYRIGHT file
+# distributed with this source distribution.
+#
+# This file is part of REDHAWK.
+#
+# REDHAWK is free software: you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published by the
+# Free Software Foundation, either version 3 of the License, or (at your
+# option) any later version.
+#
+# REDHAWK is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+# for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program. If not, see http://www.gnu.org/licenses/.
+# ============================================================
+#
+# Files to exclude from the git repository.
+#
+
+# Directories created during build process
+bin/
+cpp_doc/
+cpp_lib/
+java_doc/
+java_lib/
+pkt_doc/
+
+# Build products (generic)
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# Build products (auto-generated code)
+cpp_src/vrt/lib/PackUnpack.cc
+cpp_src/vrt/lib/PackUnpack.h
+cpp_src/vrt/libm/
+java_src/nxm/vrt/lib/PackUnpack.java
+java_src/nxm/vrt/lib/nxm_vrt_lib_PackUnpack.h
+java_src/nxm/vrt/lib/nxm_vrt_lib_PackUnpack.cc
+java_src/nxm/vrt/libm/
+
+# Build products (auto-generated manifest files)
+java_src/manifest.mf
+/java_src/jni_manifest.mf
+java_src/nxm/vita/cfg/manifest.mf
+java_src/nxm/vrt/cfg/manifest.mf
+java_test/manifest.mf
+
+# Temp files created by vi, gedit, NetBeans, etc.
+*~
+.project
+.cproject
+.settings
+*.swp
+

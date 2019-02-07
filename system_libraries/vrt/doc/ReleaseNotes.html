@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<!--
+===================== COPYRIGHT NOTICE =====================
+This file is protected by Copyright. Please refer to the COPYRIGHT file
+distributed with this source distribution.
+
+This file is part of REDHAWK.
+
+REDHAWK is free software: you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
+
+REDHAWK is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+for more details.
+
+You should have received a copy of the GNU Lesser General Public License
+along with this program. If not, see http://www.gnu.org/licenses/.
+============================================================
+-->
+<html>
+  <head>
+    <title>Release Notes</title>
+    <link rel="StyleSheet" href="style.css" title="StyleSheet">
+    <link rel="icon" type="image/x-icon" href="favicon.png?v=1" />
+  </head>
+  <body bgcolor="#FFFFFF">
+    <h1>LibVRT 1.1.0 Release Notes</h1>
+
+    <h2>Table of Contents</h2>
+    <p>
+       This page:
+    </p>
+    <ul>
+      <li><a href="#SupportedConfig">Supported Configurations</a></li>
+      <li><a href="#TestedConfig">Tested Configurations</a></li>
+    </ul>
+
+    <h2><a name="SupportedConfig">Supported Configurations</a></h2>
+    <p>
+      The table below shows the various configurations options supported by
+      <u>this version</u> of the libraries.
+    </p>
+    <table border='1'>
+      <tr>
+        <th>&nbsp;</th>
+        <th>Platform</th>
+        <th>Java Compiler/VM</th>
+        <th>C++ Compiler</th>
+      </tr>
+      <tr>
+        <td><font size='+0.75'><b>Full Support</b></font><br>
+            (best choice)</td>
+        <td><b>CentOS/RHEL 6 (x86_64)</b><br>
+            <b>CentOS/RHEL 6 (x86)</b></td>
+        <td><b>Oracle JDK 7</b></td>
+        <td><b>GNU G++ 4.4.7</b>  [Linux only]<br>
+            <b>Intel 14.0.2</b>   [Linux only]</td>
+      </tr>
+      <tr>
+        <td><font size='+0.75'><b>Limited Support</b></font><br>
+            (older configurations or those with known limitations)</td>
+        <td><b>CentOS/RHEL 5</b><br>
+            <b>Windows 8</b> [pre-built JAR only]</td>
+        <td><b>OpenJDK 7</b><br>
+            <b>Oracle JDK 6</b></td>
+        <td><b>Clang 2.8</b> [Linux only]</td>
+      </tr>
+      <tr>
+        <td><font size='+0.75'><b>Unofficial Support</b></font><br>
+            (user-tested configurations, use at your own risk)</td>
+        <td><b>OS X 10.9</b></td>
+        <td>&nbsp;</td>
+        <td><b>Clang 3.4</b> [OS X only]</td>
+      </tr>
+    </table>
+
+    <h2><a name="TestedConfig">Tested Configurations</a></h2>
+    <p>
+      The following is a list of the specific test configurations used during
+      testing of <u>this version</u> of the libraries prior to their release.
+      The configuration numbers with a plus ('+') following the number indicate
+      the configuration was used for networking tests in addition to testing
+      the core libraries. Configuration numbers without a plus ('+') were only
+      used for testing the core library functions.
+    </p>
+    <table border='1'>
+      <tr>
+        <th>&nbsp;</th>
+        <th>Platform</th>
+        <th>Java Complier/VM</th>
+        <th>C++ Complier</th>
+      </tr>
+      <tr>
+        <th>1</th>
+        <td>CentOS 6.5 (x86_64)</td>
+        <td>Oracle JDK 1.7.0_51</td>
+        <td>Clang 2.8</td>
+      </tr>
+      <tr>
+        <th>2</th>
+        <td>CentOS 6.5 (x86_64)</td>
+        <td>Oracle JDK 1.7.0_51</td>
+        <td>GNU G++ 4.4.7</td>
+      </tr>
+      <tr>
+        <th>3</th>
+        <td>CentOS 6.5 (x86_64)</td>
+        <td>Oracle JDK 1.7.0_51</td>
+        <td>Intel C++ 14.0.2</td>
+      </tr>
+      <tr>
+        <th>4</th>
+        <td>CentOS 6.5 (x86_64)</td>
+        <td>OpenJDK 1.7.0_51</td>
+        <td>GNU G++ 4.4.7</td>
+      </tr>
+      <tr>
+        <th>5</th>
+        <td>CentOS 6.5 (x86_64)</td>
+        <td>OpenJDK 1.6.0_45</td>
+        <td>GNU G++ 4.4.7</td>
+      </tr>
+    <dl>
+  </body>
+</html>

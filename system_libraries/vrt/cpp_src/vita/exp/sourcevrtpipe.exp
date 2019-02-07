@@ -1,0 +1,122 @@
+SOURCEVRTPIPE - Reads a VRT packet stream from a midas pipe and writes it to
+            a Midas pipe.
+
+<PIPE>  - The midas pipe to read from.
+
+
+Keyword-Only Parameters:
+  [STREAM0]     - Pipe to write VRT stream 0 to
+  [STREAM1]     - Pipe to write VRT stream 1 to
+     :
+  [STREAMn]     - Pipe to write VRT stream n to
+  [ALLSTREAMS]  - Pipe to write *all* VRT streams to (must be used with
+                  /PACKET, assumes that subsequent primitives will demultiplex
+                  the streams)
+  [DATASTREAM]  - Pipe to write the data stream to (can not be combined with
+                  any of the STREAMn entries as this will automatically look
+                  through all streams coming in and then create a STREAMn
+                  entry that matches the data stream).  For archive mode,
+                  this should be a filename and can include identifiers to
+                  include the date, time, cut number, and frequency in the
+                  filename.
+
+Description:
+  Reads VITA-49.0 (VRT) packets from a midas pipe source and write them to a
+  pipe or archive. The VRT packets may optionally be enclosed in a VRL (VITA-49.1)
+  frame, this primitive will auto-detect between VRT and VRL on the input stream
+  (the use of VRL does not adversely impact the output, it simply enables extra
+  error checking).
+
+  This primitive can run in one of two modes: DATA and PACKET (controlled by
+  the /PACKET switch). In DATA mode, the output will be the numeric content
+  from any data packets received. In PACKET mode, the raw packets will be
+  written to the output pipes; this requires readers of the pipes to be able
+  to handle VRT packets as input, but offers the advantage of allowing them
+  to see all of the packets (especially the context packets).
+
+  VRT packets are the result of 0 or 1 data streams and 0 to N context streams
+  multiplexed together. This primitive allows selection of which streams are
+  to be read.
+
+  When in archive mode (CUTPERIOD > 0), the pipe must be a filename, and can
+  include identifiers:
+    ${DATE}  - Date in YYYYMMDD format
+    ${TIME}  - Time in HHMMSS format
+    ${FREQ}  - Frequency rounded to the nearest hz
+    ${CUTNO} - Cut number since primitive started running
+
+  If these identifiers are in the filename, they will be replaced by the
+  value corresponding with the first data sample written to the file.
+
+Notes:
+  - When not in /PACKET mode, it is assumed that every stream has both data
+    (IF Data or Extension Data) and a standard (IF) Context Packet which gives
+    the data payload format. The context packet is mandatory, without it there
+    is no way to properly format the data (i.e. it is not possible to convert
+    network-byte-order to host-byte-order without this information).
+  - The format of the output pipes can be set using the FC= qualifier (e.g.
+    "_mypipe(FC=CF)" for a ComplexFloat file). If the output format does not
+    match the data coming in it will be reformatted. The input type is assumed
+    to me constant over the life of a stream, but will be reset when the MODE
+    widget is set to START.
+  - All pipe names will be converted to uppercase as a workaround for X-Midas
+    DR 501655-5 (Pipe names are occasionally case-sensitive).
+
+Examples:
+  1. Read VRT stream 0 from midas pipe _sourcepipe and write to _mypipe:
+
+        xm> sourcevrtpipe _sourcepipe STREAM0=_mypipe
+
+  2. Read VRT stream 0 from midas pipe _sourcepipe and write in archive
+  mode to /data/midas/archive/rx1_${DATE}_${TIME}_${FREQ}_${CUTNO} in one
+  second chunks.
+
+		xm> sourcevrtpipe/CUTPERIOD=1 _sourcepipe STREAM0=/data/midas/archive/rx1_${DATE}_${TIME}_${FREQ}_${CUTNO}
+
+Switches:
+
+  /KEYWORDS=<res>  Gives the name of a result that contains static keywords to be
+  				   inserted into the pipe/file.
+
+  /FILL            If packets are dropped, zero-fill as necessary to account for
+                   lost packet. This is enabled by default in the X-Midas
+                   version.
+
+  /FORCE1000       Force data received as 2D data to be treated as a Type 1000
+                   pipe.
+
+  /CUTPERIOD=<sec> Enables archive mode and sets the file size, in seconds.
+  				   If the file size is an integer, files will always be cut
+  				   at the top of the second.  Notes: 1. In archive mode, the
+  				   filename should always refer to a file, and should contain
+  				   identifiers to allow for dynamic filename creation.
+
+  /DEBUG           Enables debug mode.  In this mode, additional debug information
+                   is output to the terminal.
+
+  /DEBUGPERIOD=<sec> Configures the period between periodic debug outputs.
+
+  /TL=<bytes>      This switch is ignored. The transfer length used will match
+                   the size of the VRT packets (which are always less than
+                   64KiB when IPv4 is used).
+
+Copyright:
+  ===================== COPYRIGHT NOTICE =====================
+  This file is protected by Copyright. Please refer to the COPYRIGHT file
+  distributed with this source distribution.
+
+  This file is part of REDHAWK.
+
+  REDHAWK is free software: you can redistribute it and/or modify it
+  under the terms of the GNU Lesser General Public License as published by the
+  Free Software Foundation, either version 3 of the License, or (at your
+  option) any later version.
+
+  REDHAWK is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+  FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+  for more details.
+
+  You should have received a copy of the GNU Lesser General Public License
+  along with this program. If not, see http://www.gnu.org/licenses/.
+  ============================================================

@@ -1,0 +1,62 @@
+! ===================== COPYRIGHT NOTICE =====================
+! This file is protected by Copyright. Please refer to the COPYRIGHT file
+! distributed with this source distribution.
+!
+! This file is part of REDHAWK.
+!
+! REDHAWK is free software: you can redistribute it and/or modify it
+! under the terms of the GNU Lesser General Public License as published by the
+! Free Software Foundation, either version 3 of the License, or (at your
+! option) any later version.
+!
+! REDHAWK is distributed in the hope that it will be useful, but WITHOUT
+! ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+! FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License
+! for more details.
+!
+! You should have received a copy of the GNU Lesser General Public License
+! along with this program. If not, see http://www.gnu.org/licenses/.
+! ============================================================
+!
+! Test case for SINKVRT and SOURCEVRT.
+!
+startmacro/np=16 a:inHostPort["237.88.29.1:9999"] a:outHostPort["237.88.29.1:9998"]
+  sedit  inHostPort  inMCAST ELEM 1 ":"
+  sedit  inHostPort  inPort  ELEM 2 ":"
+  sedit outHostPort outMCAST ELEM 1 ":"
+  sedit outHostPort outPort  ELEM 2 ":"
+
+
+  xpipe/setup=1/controls on
+!    sourcevrt/PFX=in/CTAG=(1:inMode) "^inHostPort" STREAM0=_pipe0(PS=5M)
+    sourcevrt/PFX=in/CTAG=(1:inMode) ,, STREAM0=_pipe0(FC=CF)(PS=5M)
+
+
+    mfft _pipe0 _pipe1 1K "HANN" 0
+
+    xrtplot/xs=2   _pipe0 -150 150 REAL ,,,0e-6 1000e-6
+    xrtplot/xs=2   _pipe0
+    xrtraster/xs=3 _pipe1
+
+    sinkvrt/TL=8K/PFX=out/CTAG=(1:outMode) "^outHostPort" STREAM0=_pipe1
+  xpipe off
+endmacro
+
+
+startcontrols
+  xcontrol/lab=Application  MENU appMode    0     "Application;Exit"
+  xcontrol/lab=MulticastIn  MENU  inMode  inMode  "MulticastIn;NoChange,Start,Stop"
+  xcontrol/lab=MulticastOut MENU outMode outMode "MulticastOut;NoChange,Start,Stop"
+
+  label Application
+    stop
+  return
+
+  label MulticastIn
+    ! already handled since inMode maps to the control in sourcevrt
+  return
+
+  label MulticastOut
+    ! already handled since outMode maps to the control in sinkvrt
+  return
+endcontrols

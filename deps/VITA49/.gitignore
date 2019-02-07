@@ -1,0 +1,31 @@
+# Ignore automake/etc generated files
+.dirstamp
+.deps/
+.libs/
+m4/
+Makefile
+Makefile.in
+acinclude.m4
+aclocal.m4
+autom4te.cache/
+config.log
+config.status
+config/
+configure
+libtool
+config.guess
+config.sub
+depcomp
+install-sh
+ltmain.sh
+missing
+
+# Ignore vim/gvim temporary files
+*.swp
+
+# Ignore Generated Files
+rh.VITA49.pc
+*.o
+*.so
+*.lo
+*.la
