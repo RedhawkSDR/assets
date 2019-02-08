@@ -27,8 +27,8 @@
 %define _infodir       %{_prefix}/info
 
 Name:           rh.fftlib
-Version:        2.0.0
-Release:        4%{?dist}
+Version:        2.1.1
+Release:        1%{?dist}
 Summary:        REDHAWK shared library %{name}
 
 Group:          REDHAWK/Shared Libraries
@@ -55,10 +55,13 @@ Summary:        REDHAWK shared library %{name}
 Group:          REDHAWK/Shared Libraries
 Requires:       %{name} = %{version}-%{release}
 Requires:       fftw-devel >= 3
+Requires:       rh.dsp-devel >= 2.0
 Obsoletes:      fftlib-devel < 2.0.0
 
 %description devel
 Libraries and header files for REDHAWK shared library %{name}
+ * Commit: __REVISION__
+ * Source Date/Time: __DATETIME__
 
 %prep
 %setup -q
@@ -103,6 +106,8 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/include
 
 %changelog
+* Wed Jun 21 2017 Ryan Bauman - 2.0.1-1
+- Update version post release
 * Wed Jun 21 2017 Ryan Bauman - 2.0.0-2
 - Mass rebuild for REDHAWK 2.1.1
 
