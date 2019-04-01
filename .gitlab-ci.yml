@@ -10,7 +10,7 @@ stages:
   - deploy
 
 include:
-  - local: /.gitlab-ci-components.yml
+  - local: "/.gitlab-ci-components.yml"
 
 #Global before script, determine if this is a tag and handle rpm release field accordingly
 before_script:
