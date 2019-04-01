@@ -9,9 +9,6 @@ stages:
   - test
   - deploy
 
-include:
-  - local: "/.gitlab-ci-components.yml"
-
 #Global before script, determine if this is a tag and handle rpm release field accordingly
 before_script:
     - safe_version=$(echo ${short_version} | tr -d -)
@@ -170,6 +167,9 @@ deploy:
     latest_version: 2.2-nightly
     release_version: $rh_22_release
     short_version: '2.2'
+
+include:
+  - local: "/.gitlab-ci-components.yml"
 
 package:el6:rh2.0:
   extends: .template_el6
