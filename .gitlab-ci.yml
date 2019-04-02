@@ -135,2863 +135,3679 @@ deploy:
     - repomanage --keep=2 --old $arch| xargs rm -f; createrepo --update $arch
     - /usr/bin/s3cmd sync -F -v --delete-removed $arch s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/rh${short_version}/$dist/  && s3cmd setacl -v s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/rh${short_version}/$dist --acl-public --recursive || true
 
-.template_el6:
+package:el6:rh2.0:AmFmPmBasebandDemod:
   variables:
     dist: el6
     arch: x86_64
-.template_el7:
-  variables:
-    dist: el7
-    arch: x86_64
-.template_el6-i386:
-  variables:
-    dist: el6
-    arch: i686
-.template_rh2.0:
-  variables:
     latest_version: 2.0-nightly
     release_version: $rh_20_release
     short_version: '2.0'
-.template_rh2.2:
-  variables:
-    latest_version: 2.2-nightly
-    release_version: $rh_22_release
-    short_version: '2.2'
-
-# include:
-#   - local: "/.gitlab-ci-components.yml"
-
-#================= begin AmFmPmBasebandDemod
-
-.template_AmFmPmBasebandDemod:
-  variables:
-   asset_name: AmFmPmBasebandDemod
-   lowercase_asset_name: amfmpmbasebanddemod
-
-package:el6:rh2.0:AmFmPmBasebandDemod:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_AmFmPmBasebandDemod
+    asset_name: AmFmPmBasebandDemod
+    lowercase_asset_name: amfmpmbasebanddemod
   <<: *package
 
-package:el6-i386:rh2.0:AmFmPmBasebandDemod:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_AmFmPmBasebandDemod
+package:el6:rh2.0:AmFmPmBasebandDemod:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: AmFmPmBasebandDemod
+    lowercase_asset_name: amfmpmbasebanddemod
   <<: *package
 
 package:el7:rh2.0:AmFmPmBasebandDemod:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_AmFmPmBasebandDemod
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: AmFmPmBasebandDemod
+    lowercase_asset_name: amfmpmbasebanddemod
   <<: *package
 
 package:el6:rh2.2:AmFmPmBasebandDemod:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_AmFmPmBasebandDemod
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: AmFmPmBasebandDemod
+    lowercase_asset_name: amfmpmbasebanddemod
   <<: *package
 
-package:el6-i386:rh2.2:AmFmPmBasebandDemod:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_AmFmPmBasebandDemod
-  <<: *package
-
-package:el7:rh2.2:AmFmPmBasebandDemod:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_AmFmPmBasebandDemod
+package:el6:rh2.2:AmFmPmBasebandDemod:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: AmFmPmBasebandDemod
+    lowercase_asset_name: amfmpmbasebanddemod
   <<: *package
 
 test:el6:rh2.0:AmFmPmBasebandDemod:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_AmFmPmBasebandDemod
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: AmFmPmBasebandDemod
+    lowercase_asset_name: amfmpmbasebanddemod
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:AmFmPmBasebandDemod:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_AmFmPmBasebandDemod
+test:el6:rh2.0:AmFmPmBasebandDemod:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: AmFmPmBasebandDemod
+    lowercase_asset_name: amfmpmbasebanddemod
   <<: *test
 
 test:el7:rh2.0:AmFmPmBasebandDemod:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_AmFmPmBasebandDemod
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: AmFmPmBasebandDemod
+    lowercase_asset_name: amfmpmbasebanddemod
   <<: *test
 
 test:el6:rh2.2:AmFmPmBasebandDemod:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_AmFmPmBasebandDemod
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: AmFmPmBasebandDemod
+    lowercase_asset_name: amfmpmbasebanddemod
   <<: *test
 
-test:el6-i386:rh2.2:AmFmPmBasebandDemod:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_AmFmPmBasebandDemod
+test:el6:rh2.2:AmFmPmBasebandDemod:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: AmFmPmBasebandDemod
+    lowercase_asset_name: amfmpmbasebanddemod
   <<: *test
 
-test:el7:rh2.2:AmFmPmBasebandDemod:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_AmFmPmBasebandDemod
-  <<: *test
-
-deploy-el7-2.2:AmFmPmBasebandDemod:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_AmFmPmBasebandDemod
+deploy-el6-2.0:AmFmPmBasebandDemod:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: AmFmPmBasebandDemod
+    lowercase_asset_name: amfmpmbasebanddemod
   dependencies:
-    - package:el7:rh2.2:AmFmPmBasebandDemod
+    - package:el6:rh2.0:AmFmPmBasebandDemod
+  <<: *s3
+
+deploy-el6-2.0:AmFmPmBasebandDemod:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: AmFmPmBasebandDemod
+    lowercase_asset_name: amfmpmbasebanddemod
+  dependencies:
+    - package:el6:rh2.0:AmFmPmBasebandDemod
   <<: *s3
 
 deploy-el7-2.0:AmFmPmBasebandDemod:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_AmFmPmBasebandDemod
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: AmFmPmBasebandDemod
+    lowercase_asset_name: amfmpmbasebanddemod
   dependencies:
     - package:el7:rh2.0:AmFmPmBasebandDemod
   <<: *s3
 
 deploy-el6-2.2:AmFmPmBasebandDemod:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_AmFmPmBasebandDemod
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: AmFmPmBasebandDemod
+    lowercase_asset_name: amfmpmbasebanddemod
   dependencies:
     - package:el6:rh2.2:AmFmPmBasebandDemod
   <<: *s3
 
-deploy-el6-2.0:AmFmPmBasebandDemod:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_AmFmPmBasebandDemod
-  dependencies:
-    - package:el6:rh2.0:AmFmPmBasebandDemod
-  <<: *s3
-
-deploy-el6-i386-2.2:AmFmPmBasebandDemod:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_AmFmPmBasebandDemod
-  dependencies:
-    - package:el6-i386:rh2.2:AmFmPmBasebandDemod
-  <<: *s3
-
-deploy-el6-i386-2.0:AmFmPmBasebandDemod:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_AmFmPmBasebandDemod
-  dependencies:
-    - package:el6-i386:rh2.0:AmFmPmBasebandDemod
-  <<: *s3
-
-#================= end AmFmPmBasebandDemod
-#================= begin ArbitraryRateResampler
-
-.template_ArbitraryRateResampler:
+deploy-el6-2.2:AmFmPmBasebandDemod:
   variables:
-   asset_name: ArbitraryRateResampler
-   lowercase_asset_name: arbitraryrateresampler
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: AmFmPmBasebandDemod
+    lowercase_asset_name: amfmpmbasebanddemod
+  dependencies:
+    - package:el6:rh2.2:AmFmPmBasebandDemod
+  <<: *s3
 
 package:el6:rh2.0:ArbitraryRateResampler:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_ArbitraryRateResampler
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
   <<: *package
 
-package:el6-i386:rh2.0:ArbitraryRateResampler:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_ArbitraryRateResampler
+package:el6:rh2.0:ArbitraryRateResampler:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
   <<: *package
 
 package:el7:rh2.0:ArbitraryRateResampler:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_ArbitraryRateResampler
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
   <<: *package
 
 package:el6:rh2.2:ArbitraryRateResampler:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_ArbitraryRateResampler
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
   <<: *package
 
-package:el6-i386:rh2.2:ArbitraryRateResampler:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_ArbitraryRateResampler
-  <<: *package
-
-package:el7:rh2.2:ArbitraryRateResampler:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_ArbitraryRateResampler
+package:el6:rh2.2:ArbitraryRateResampler:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
   <<: *package
 
 test:el6:rh2.0:ArbitraryRateResampler:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_ArbitraryRateResampler
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:ArbitraryRateResampler:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_ArbitraryRateResampler
+test:el6:rh2.0:ArbitraryRateResampler:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
   <<: *test
 
 test:el7:rh2.0:ArbitraryRateResampler:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_ArbitraryRateResampler
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
   <<: *test
 
 test:el6:rh2.2:ArbitraryRateResampler:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_ArbitraryRateResampler
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
   <<: *test
 
-test:el6-i386:rh2.2:ArbitraryRateResampler:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_ArbitraryRateResampler
+test:el6:rh2.2:ArbitraryRateResampler:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
   <<: *test
 
-test:el7:rh2.2:ArbitraryRateResampler:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_ArbitraryRateResampler
-  <<: *test
-
-deploy-el7-2.2:ArbitraryRateResampler:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_ArbitraryRateResampler
+deploy-el6-2.0:ArbitraryRateResampler:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
   dependencies:
-    - package:el7:rh2.2:ArbitraryRateResampler
+    - package:el6:rh2.0:ArbitraryRateResampler
+  <<: *s3
+
+deploy-el6-2.0:ArbitraryRateResampler:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
+  dependencies:
+    - package:el6:rh2.0:ArbitraryRateResampler
   <<: *s3
 
 deploy-el7-2.0:ArbitraryRateResampler:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_ArbitraryRateResampler
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
   dependencies:
     - package:el7:rh2.0:ArbitraryRateResampler
   <<: *s3
 
 deploy-el6-2.2:ArbitraryRateResampler:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_ArbitraryRateResampler
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
   dependencies:
     - package:el6:rh2.2:ArbitraryRateResampler
   <<: *s3
 
-deploy-el6-2.0:ArbitraryRateResampler:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_ArbitraryRateResampler
-  dependencies:
-    - package:el6:rh2.0:ArbitraryRateResampler
-  <<: *s3
-
-deploy-el6-i386-2.2:ArbitraryRateResampler:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_ArbitraryRateResampler
-  dependencies:
-    - package:el6-i386:rh2.2:ArbitraryRateResampler
-  <<: *s3
-
-deploy-el6-i386-2.0:ArbitraryRateResampler:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_ArbitraryRateResampler
-  dependencies:
-    - package:el6-i386:rh2.0:ArbitraryRateResampler
-  <<: *s3
-
-#================= end ArbitraryRateResampler
-#================= begin FileReader
-
-.template_FileReader:
+deploy-el6-2.2:ArbitraryRateResampler:
   variables:
-   asset_name: FileReader
-   lowercase_asset_name: filereader
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
+  dependencies:
+    - package:el6:rh2.2:ArbitraryRateResampler
+  <<: *s3
 
 package:el6:rh2.0:FileReader:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_FileReader
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileReader
+    lowercase_asset_name: filereader
   <<: *package
 
-package:el6-i386:rh2.0:FileReader:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_FileReader
+package:el6:rh2.0:FileReader:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileReader
+    lowercase_asset_name: filereader
   <<: *package
 
 package:el7:rh2.0:FileReader:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_FileReader
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileReader
+    lowercase_asset_name: filereader
   <<: *package
 
 package:el6:rh2.2:FileReader:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_FileReader
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FileReader
+    lowercase_asset_name: filereader
   <<: *package
 
-package:el6-i386:rh2.2:FileReader:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_FileReader
-  <<: *package
-
-package:el7:rh2.2:FileReader:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_FileReader
+package:el6:rh2.2:FileReader:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FileReader
+    lowercase_asset_name: filereader
   <<: *package
 
 test:el6:rh2.0:FileReader:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_FileReader
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileReader
+    lowercase_asset_name: filereader
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:FileReader:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_FileReader
+test:el6:rh2.0:FileReader:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileReader
+    lowercase_asset_name: filereader
   <<: *test
 
 test:el7:rh2.0:FileReader:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_FileReader
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileReader
+    lowercase_asset_name: filereader
   <<: *test
 
 test:el6:rh2.2:FileReader:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_FileReader
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FileReader
+    lowercase_asset_name: filereader
   <<: *test
 
-test:el6-i386:rh2.2:FileReader:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_FileReader
+test:el6:rh2.2:FileReader:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FileReader
+    lowercase_asset_name: filereader
   <<: *test
 
-test:el7:rh2.2:FileReader:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_FileReader
-  <<: *test
-
-deploy-el7-2.2:FileReader:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_FileReader
+deploy-el6-2.0:FileReader:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileReader
+    lowercase_asset_name: filereader
   dependencies:
-    - package:el7:rh2.2:FileReader
+    - package:el6:rh2.0:FileReader
+  <<: *s3
+
+deploy-el6-2.0:FileReader:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileReader
+    lowercase_asset_name: filereader
+  dependencies:
+    - package:el6:rh2.0:FileReader
   <<: *s3
 
 deploy-el7-2.0:FileReader:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_FileReader
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileReader
+    lowercase_asset_name: filereader
   dependencies:
     - package:el7:rh2.0:FileReader
   <<: *s3
 
 deploy-el6-2.2:FileReader:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_FileReader
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FileReader
+    lowercase_asset_name: filereader
   dependencies:
     - package:el6:rh2.2:FileReader
   <<: *s3
 
-deploy-el6-2.0:FileReader:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_FileReader
-  dependencies:
-    - package:el6:rh2.0:FileReader
-  <<: *s3
-
-deploy-el6-i386-2.2:FileReader:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_FileReader
-  dependencies:
-    - package:el6-i386:rh2.2:FileReader
-  <<: *s3
-
-deploy-el6-i386-2.0:FileReader:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_FileReader
-  dependencies:
-    - package:el6-i386:rh2.0:FileReader
-  <<: *s3
-
-#================= end FileReader
-#================= begin FileWriter
-
-.template_FileWriter:
+deploy-el6-2.2:FileReader:
   variables:
-   asset_name: FileWriter
-   lowercase_asset_name: filewriter
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FileReader
+    lowercase_asset_name: filereader
+  dependencies:
+    - package:el6:rh2.2:FileReader
+  <<: *s3
 
 package:el6:rh2.0:FileWriter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_FileWriter
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
   <<: *package
 
-package:el6-i386:rh2.0:FileWriter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_FileWriter
+package:el6:rh2.0:FileWriter:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
   <<: *package
 
 package:el7:rh2.0:FileWriter:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_FileWriter
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
   <<: *package
 
 package:el6:rh2.2:FileWriter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_FileWriter
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
   <<: *package
 
-package:el6-i386:rh2.2:FileWriter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_FileWriter
-  <<: *package
-
-package:el7:rh2.2:FileWriter:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_FileWriter
+package:el6:rh2.2:FileWriter:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
   <<: *package
 
 test:el6:rh2.0:FileWriter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_FileWriter
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:FileWriter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_FileWriter
+test:el6:rh2.0:FileWriter:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
   <<: *test
 
 test:el7:rh2.0:FileWriter:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_FileWriter
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
   <<: *test
 
 test:el6:rh2.2:FileWriter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_FileWriter
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
   <<: *test
 
-test:el6-i386:rh2.2:FileWriter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_FileWriter
+test:el6:rh2.2:FileWriter:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
   <<: *test
 
-test:el7:rh2.2:FileWriter:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_FileWriter
-  <<: *test
-
-deploy-el7-2.2:FileWriter:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_FileWriter
+deploy-el6-2.0:FileWriter:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
   dependencies:
-    - package:el7:rh2.2:FileWriter
+    - package:el6:rh2.0:FileWriter
+  <<: *s3
+
+deploy-el6-2.0:FileWriter:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
+  dependencies:
+    - package:el6:rh2.0:FileWriter
   <<: *s3
 
 deploy-el7-2.0:FileWriter:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_FileWriter
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
   dependencies:
     - package:el7:rh2.0:FileWriter
   <<: *s3
 
 deploy-el6-2.2:FileWriter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_FileWriter
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
   dependencies:
     - package:el6:rh2.2:FileWriter
   <<: *s3
 
-deploy-el6-2.0:FileWriter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_FileWriter
-  dependencies:
-    - package:el6:rh2.0:FileWriter
-  <<: *s3
-
-deploy-el6-i386-2.2:FileWriter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_FileWriter
-  dependencies:
-    - package:el6-i386:rh2.2:FileWriter
-  <<: *s3
-
-deploy-el6-i386-2.0:FileWriter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_FileWriter
-  dependencies:
-    - package:el6-i386:rh2.0:FileWriter
-  <<: *s3
-
-#================= end FileWriter
-#================= begin HardLimit
-
-.template_HardLimit:
+deploy-el6-2.2:FileWriter:
   variables:
-   asset_name: HardLimit
-   lowercase_asset_name: hardlimit
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
+  dependencies:
+    - package:el6:rh2.2:FileWriter
+  <<: *s3
 
 package:el6:rh2.0:HardLimit:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_HardLimit
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
   <<: *package
 
-package:el6-i386:rh2.0:HardLimit:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_HardLimit
+package:el6:rh2.0:HardLimit:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
   <<: *package
 
 package:el7:rh2.0:HardLimit:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_HardLimit
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
   <<: *package
 
 package:el6:rh2.2:HardLimit:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_HardLimit
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
   <<: *package
 
-package:el6-i386:rh2.2:HardLimit:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_HardLimit
-  <<: *package
-
-package:el7:rh2.2:HardLimit:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_HardLimit
+package:el6:rh2.2:HardLimit:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
   <<: *package
 
 test:el6:rh2.0:HardLimit:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_HardLimit
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:HardLimit:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_HardLimit
+test:el6:rh2.0:HardLimit:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
   <<: *test
 
 test:el7:rh2.0:HardLimit:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_HardLimit
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
   <<: *test
 
 test:el6:rh2.2:HardLimit:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_HardLimit
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
   <<: *test
 
-test:el6-i386:rh2.2:HardLimit:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_HardLimit
+test:el6:rh2.2:HardLimit:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
   <<: *test
 
-test:el7:rh2.2:HardLimit:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_HardLimit
-  <<: *test
-
-deploy-el7-2.2:HardLimit:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_HardLimit
+deploy-el6-2.0:HardLimit:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
   dependencies:
-    - package:el7:rh2.2:HardLimit
+    - package:el6:rh2.0:HardLimit
+  <<: *s3
+
+deploy-el6-2.0:HardLimit:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
+  dependencies:
+    - package:el6:rh2.0:HardLimit
   <<: *s3
 
 deploy-el7-2.0:HardLimit:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_HardLimit
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
   dependencies:
     - package:el7:rh2.0:HardLimit
   <<: *s3
 
 deploy-el6-2.2:HardLimit:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_HardLimit
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
   dependencies:
     - package:el6:rh2.2:HardLimit
   <<: *s3
 
-deploy-el6-2.0:HardLimit:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_HardLimit
-  dependencies:
-    - package:el6:rh2.0:HardLimit
-  <<: *s3
-
-deploy-el6-i386-2.2:HardLimit:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_HardLimit
-  dependencies:
-    - package:el6-i386:rh2.2:HardLimit
-  <<: *s3
-
-deploy-el6-i386-2.0:HardLimit:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_HardLimit
-  dependencies:
-    - package:el6-i386:rh2.0:HardLimit
-  <<: *s3
-
-#================= end HardLimit
-#================= begin RBDSDecoder
-
-.template_RBDSDecoder:
+deploy-el6-2.2:HardLimit:
   variables:
-   asset_name: RBDSDecoder
-   lowercase_asset_name: rbdsdecoder
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
+  dependencies:
+    - package:el6:rh2.2:HardLimit
+  <<: *s3
 
 package:el6:rh2.0:RBDSDecoder:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_RBDSDecoder
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: RBDSDecoder
+    lowercase_asset_name: rbdsdecoder
   <<: *package
 
-package:el6-i386:rh2.0:RBDSDecoder:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_RBDSDecoder
+package:el6:rh2.0:RBDSDecoder:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: RBDSDecoder
+    lowercase_asset_name: rbdsdecoder
   <<: *package
 
 package:el7:rh2.0:RBDSDecoder:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_RBDSDecoder
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: RBDSDecoder
+    lowercase_asset_name: rbdsdecoder
   <<: *package
 
 package:el6:rh2.2:RBDSDecoder:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_RBDSDecoder
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RBDSDecoder
+    lowercase_asset_name: rbdsdecoder
   <<: *package
 
-package:el6-i386:rh2.2:RBDSDecoder:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_RBDSDecoder
-  <<: *package
-
-package:el7:rh2.2:RBDSDecoder:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_RBDSDecoder
+package:el6:rh2.2:RBDSDecoder:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RBDSDecoder
+    lowercase_asset_name: rbdsdecoder
   <<: *package
 
 test:el6:rh2.0:RBDSDecoder:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_RBDSDecoder
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: RBDSDecoder
+    lowercase_asset_name: rbdsdecoder
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:RBDSDecoder:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_RBDSDecoder
+test:el6:rh2.0:RBDSDecoder:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: RBDSDecoder
+    lowercase_asset_name: rbdsdecoder
   <<: *test
 
 test:el7:rh2.0:RBDSDecoder:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_RBDSDecoder
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: RBDSDecoder
+    lowercase_asset_name: rbdsdecoder
   <<: *test
 
 test:el6:rh2.2:RBDSDecoder:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_RBDSDecoder
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RBDSDecoder
+    lowercase_asset_name: rbdsdecoder
   <<: *test
 
-test:el6-i386:rh2.2:RBDSDecoder:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_RBDSDecoder
+test:el6:rh2.2:RBDSDecoder:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RBDSDecoder
+    lowercase_asset_name: rbdsdecoder
   <<: *test
 
-test:el7:rh2.2:RBDSDecoder:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_RBDSDecoder
-  <<: *test
-
-deploy-el7-2.2:RBDSDecoder:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_RBDSDecoder
+deploy-el6-2.0:RBDSDecoder:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: RBDSDecoder
+    lowercase_asset_name: rbdsdecoder
   dependencies:
-    - package:el7:rh2.2:RBDSDecoder
+    - package:el6:rh2.0:RBDSDecoder
+  <<: *s3
+
+deploy-el6-2.0:RBDSDecoder:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: RBDSDecoder
+    lowercase_asset_name: rbdsdecoder
+  dependencies:
+    - package:el6:rh2.0:RBDSDecoder
   <<: *s3
 
 deploy-el7-2.0:RBDSDecoder:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_RBDSDecoder
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: RBDSDecoder
+    lowercase_asset_name: rbdsdecoder
   dependencies:
     - package:el7:rh2.0:RBDSDecoder
   <<: *s3
 
 deploy-el6-2.2:RBDSDecoder:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_RBDSDecoder
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RBDSDecoder
+    lowercase_asset_name: rbdsdecoder
   dependencies:
     - package:el6:rh2.2:RBDSDecoder
   <<: *s3
 
-deploy-el6-2.0:RBDSDecoder:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_RBDSDecoder
-  dependencies:
-    - package:el6:rh2.0:RBDSDecoder
-  <<: *s3
-
-deploy-el6-i386-2.2:RBDSDecoder:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_RBDSDecoder
-  dependencies:
-    - package:el6-i386:rh2.2:RBDSDecoder
-  <<: *s3
-
-deploy-el6-i386-2.0:RBDSDecoder:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_RBDSDecoder
-  dependencies:
-    - package:el6-i386:rh2.0:RBDSDecoder
-  <<: *s3
-
-#================= end RBDSDecoder
-#================= begin SigGen
-
-.template_SigGen:
+deploy-el6-2.2:RBDSDecoder:
   variables:
-   asset_name: SigGen
-   lowercase_asset_name: siggen
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RBDSDecoder
+    lowercase_asset_name: rbdsdecoder
+  dependencies:
+    - package:el6:rh2.2:RBDSDecoder
+  <<: *s3
 
 package:el6:rh2.0:SigGen:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_SigGen
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SigGen
+    lowercase_asset_name: siggen
   <<: *package
 
-package:el6-i386:rh2.0:SigGen:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_SigGen
+package:el6:rh2.0:SigGen:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SigGen
+    lowercase_asset_name: siggen
   <<: *package
 
 package:el7:rh2.0:SigGen:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_SigGen
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SigGen
+    lowercase_asset_name: siggen
   <<: *package
 
 package:el6:rh2.2:SigGen:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_SigGen
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SigGen
+    lowercase_asset_name: siggen
   <<: *package
 
-package:el6-i386:rh2.2:SigGen:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_SigGen
-  <<: *package
-
-package:el7:rh2.2:SigGen:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_SigGen
+package:el6:rh2.2:SigGen:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SigGen
+    lowercase_asset_name: siggen
   <<: *package
 
 test:el6:rh2.0:SigGen:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_SigGen
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SigGen
+    lowercase_asset_name: siggen
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:SigGen:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_SigGen
+test:el6:rh2.0:SigGen:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SigGen
+    lowercase_asset_name: siggen
   <<: *test
 
 test:el7:rh2.0:SigGen:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_SigGen
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SigGen
+    lowercase_asset_name: siggen
   <<: *test
 
 test:el6:rh2.2:SigGen:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_SigGen
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SigGen
+    lowercase_asset_name: siggen
   <<: *test
 
-test:el6-i386:rh2.2:SigGen:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_SigGen
+test:el6:rh2.2:SigGen:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SigGen
+    lowercase_asset_name: siggen
   <<: *test
 
-test:el7:rh2.2:SigGen:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_SigGen
-  <<: *test
-
-deploy-el7-2.2:SigGen:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_SigGen
+deploy-el6-2.0:SigGen:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SigGen
+    lowercase_asset_name: siggen
   dependencies:
-    - package:el7:rh2.2:SigGen
+    - package:el6:rh2.0:SigGen
+  <<: *s3
+
+deploy-el6-2.0:SigGen:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SigGen
+    lowercase_asset_name: siggen
+  dependencies:
+    - package:el6:rh2.0:SigGen
   <<: *s3
 
 deploy-el7-2.0:SigGen:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_SigGen
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SigGen
+    lowercase_asset_name: siggen
   dependencies:
     - package:el7:rh2.0:SigGen
   <<: *s3
 
 deploy-el6-2.2:SigGen:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_SigGen
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SigGen
+    lowercase_asset_name: siggen
   dependencies:
     - package:el6:rh2.2:SigGen
   <<: *s3
 
-deploy-el6-2.0:SigGen:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_SigGen
-  dependencies:
-    - package:el6:rh2.0:SigGen
-  <<: *s3
-
-deploy-el6-i386-2.2:SigGen:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_SigGen
-  dependencies:
-    - package:el6-i386:rh2.2:SigGen
-  <<: *s3
-
-deploy-el6-i386-2.0:SigGen:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_SigGen
-  dependencies:
-    - package:el6-i386:rh2.0:SigGen
-  <<: *s3
-
-#================= end SigGen
-#================= begin SinkSDDS
-
-.template_SinkSDDS:
+deploy-el6-2.2:SigGen:
   variables:
-   asset_name: SinkSDDS
-   lowercase_asset_name: sinksdds
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SigGen
+    lowercase_asset_name: siggen
+  dependencies:
+    - package:el6:rh2.2:SigGen
+  <<: *s3
 
 package:el6:rh2.0:SinkSDDS:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_SinkSDDS
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
   <<: *package
 
-package:el6-i386:rh2.0:SinkSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_SinkSDDS
+package:el6:rh2.0:SinkSDDS:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
   <<: *package
 
 package:el7:rh2.0:SinkSDDS:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_SinkSDDS
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
   <<: *package
 
 package:el6:rh2.2:SinkSDDS:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_SinkSDDS
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
   <<: *package
 
-package:el6-i386:rh2.2:SinkSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_SinkSDDS
-  <<: *package
-
-package:el7:rh2.2:SinkSDDS:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_SinkSDDS
+package:el6:rh2.2:SinkSDDS:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
   <<: *package
 
 test:el6:rh2.0:SinkSDDS:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_SinkSDDS
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:SinkSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_SinkSDDS
+test:el6:rh2.0:SinkSDDS:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
   <<: *test
 
 test:el7:rh2.0:SinkSDDS:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_SinkSDDS
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
   <<: *test
 
 test:el6:rh2.2:SinkSDDS:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_SinkSDDS
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
   <<: *test
 
-test:el6-i386:rh2.2:SinkSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_SinkSDDS
+test:el6:rh2.2:SinkSDDS:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
   <<: *test
 
-test:el7:rh2.2:SinkSDDS:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_SinkSDDS
-  <<: *test
-
-deploy-el7-2.2:SinkSDDS:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_SinkSDDS
+deploy-el6-2.0:SinkSDDS:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
   dependencies:
-    - package:el7:rh2.2:SinkSDDS
+    - package:el6:rh2.0:SinkSDDS
+  <<: *s3
+
+deploy-el6-2.0:SinkSDDS:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
+  dependencies:
+    - package:el6:rh2.0:SinkSDDS
   <<: *s3
 
 deploy-el7-2.0:SinkSDDS:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_SinkSDDS
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
   dependencies:
     - package:el7:rh2.0:SinkSDDS
   <<: *s3
 
 deploy-el6-2.2:SinkSDDS:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_SinkSDDS
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
   dependencies:
     - package:el6:rh2.2:SinkSDDS
   <<: *s3
 
-deploy-el6-2.0:SinkSDDS:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_SinkSDDS
-  dependencies:
-    - package:el6:rh2.0:SinkSDDS
-  <<: *s3
-
-deploy-el6-i386-2.2:SinkSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_SinkSDDS
-  dependencies:
-    - package:el6-i386:rh2.2:SinkSDDS
-  <<: *s3
-
-deploy-el6-i386-2.0:SinkSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_SinkSDDS
-  dependencies:
-    - package:el6-i386:rh2.0:SinkSDDS
-  <<: *s3
-
-#================= end SinkSDDS
-#================= begin SinkVITA49
-
-.template_SinkVITA49:
+deploy-el6-2.2:SinkSDDS:
   variables:
-   asset_name: SinkVITA49
-   lowercase_asset_name: sinkvita49
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
+  dependencies:
+    - package:el6:rh2.2:SinkSDDS
+  <<: *s3
 
 package:el6:rh2.0:SinkVITA49:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_SinkVITA49
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
   <<: *package
 
-package:el6-i386:rh2.0:SinkVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_SinkVITA49
+package:el6:rh2.0:SinkVITA49:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
   <<: *package
 
 package:el7:rh2.0:SinkVITA49:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_SinkVITA49
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
   <<: *package
 
 package:el6:rh2.2:SinkVITA49:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_SinkVITA49
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
   <<: *package
 
-package:el6-i386:rh2.2:SinkVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_SinkVITA49
-  <<: *package
-
-package:el7:rh2.2:SinkVITA49:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_SinkVITA49
+package:el6:rh2.2:SinkVITA49:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
   <<: *package
 
 test:el6:rh2.0:SinkVITA49:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_SinkVITA49
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:SinkVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_SinkVITA49
+test:el6:rh2.0:SinkVITA49:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
   <<: *test
 
 test:el7:rh2.0:SinkVITA49:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_SinkVITA49
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
   <<: *test
 
 test:el6:rh2.2:SinkVITA49:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_SinkVITA49
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
   <<: *test
 
-test:el6-i386:rh2.2:SinkVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_SinkVITA49
+test:el6:rh2.2:SinkVITA49:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
   <<: *test
 
-test:el7:rh2.2:SinkVITA49:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_SinkVITA49
-  <<: *test
-
-deploy-el7-2.2:SinkVITA49:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_SinkVITA49
+deploy-el6-2.0:SinkVITA49:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
   dependencies:
-    - package:el7:rh2.2:SinkVITA49
+    - package:el6:rh2.0:SinkVITA49
+  <<: *s3
+
+deploy-el6-2.0:SinkVITA49:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
+  dependencies:
+    - package:el6:rh2.0:SinkVITA49
   <<: *s3
 
 deploy-el7-2.0:SinkVITA49:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_SinkVITA49
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
   dependencies:
     - package:el7:rh2.0:SinkVITA49
   <<: *s3
 
 deploy-el6-2.2:SinkVITA49:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_SinkVITA49
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
   dependencies:
     - package:el6:rh2.2:SinkVITA49
   <<: *s3
 
-deploy-el6-2.0:SinkVITA49:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_SinkVITA49
-  dependencies:
-    - package:el6:rh2.0:SinkVITA49
-  <<: *s3
-
-deploy-el6-i386-2.2:SinkVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_SinkVITA49
-  dependencies:
-    - package:el6-i386:rh2.2:SinkVITA49
-  <<: *s3
-
-deploy-el6-i386-2.0:SinkVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_SinkVITA49
-  dependencies:
-    - package:el6-i386:rh2.0:SinkVITA49
-  <<: *s3
-
-#================= end SinkVITA49
-#================= begin SourceSDDS
-
-.template_SourceSDDS:
+deploy-el6-2.2:SinkVITA49:
   variables:
-   asset_name: SourceSDDS
-   lowercase_asset_name: sourcesdds
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
+  dependencies:
+    - package:el6:rh2.2:SinkVITA49
+  <<: *s3
 
 package:el6:rh2.0:SourceSDDS:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_SourceSDDS
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceSDDS
+    lowercase_asset_name: sourcesdds
   <<: *package
 
-package:el6-i386:rh2.0:SourceSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_SourceSDDS
+package:el6:rh2.0:SourceSDDS:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceSDDS
+    lowercase_asset_name: sourcesdds
   <<: *package
 
 package:el7:rh2.0:SourceSDDS:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_SourceSDDS
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceSDDS
+    lowercase_asset_name: sourcesdds
   <<: *package
 
 package:el6:rh2.2:SourceSDDS:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_SourceSDDS
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SourceSDDS
+    lowercase_asset_name: sourcesdds
   <<: *package
 
-package:el6-i386:rh2.2:SourceSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_SourceSDDS
-  <<: *package
-
-package:el7:rh2.2:SourceSDDS:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_SourceSDDS
+package:el6:rh2.2:SourceSDDS:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SourceSDDS
+    lowercase_asset_name: sourcesdds
   <<: *package
 
 test:el6:rh2.0:SourceSDDS:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_SourceSDDS
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceSDDS
+    lowercase_asset_name: sourcesdds
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:SourceSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_SourceSDDS
+test:el6:rh2.0:SourceSDDS:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceSDDS
+    lowercase_asset_name: sourcesdds
   <<: *test
 
 test:el7:rh2.0:SourceSDDS:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_SourceSDDS
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceSDDS
+    lowercase_asset_name: sourcesdds
   <<: *test
 
 test:el6:rh2.2:SourceSDDS:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_SourceSDDS
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SourceSDDS
+    lowercase_asset_name: sourcesdds
   <<: *test
 
-test:el6-i386:rh2.2:SourceSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_SourceSDDS
+test:el6:rh2.2:SourceSDDS:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SourceSDDS
+    lowercase_asset_name: sourcesdds
   <<: *test
 
-test:el7:rh2.2:SourceSDDS:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_SourceSDDS
-  <<: *test
-
-deploy-el7-2.2:SourceSDDS:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_SourceSDDS
+deploy-el6-2.0:SourceSDDS:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceSDDS
+    lowercase_asset_name: sourcesdds
   dependencies:
-    - package:el7:rh2.2:SourceSDDS
+    - package:el6:rh2.0:SourceSDDS
+  <<: *s3
+
+deploy-el6-2.0:SourceSDDS:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceSDDS
+    lowercase_asset_name: sourcesdds
+  dependencies:
+    - package:el6:rh2.0:SourceSDDS
   <<: *s3
 
 deploy-el7-2.0:SourceSDDS:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_SourceSDDS
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceSDDS
+    lowercase_asset_name: sourcesdds
   dependencies:
     - package:el7:rh2.0:SourceSDDS
   <<: *s3
 
 deploy-el6-2.2:SourceSDDS:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_SourceSDDS
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SourceSDDS
+    lowercase_asset_name: sourcesdds
   dependencies:
     - package:el6:rh2.2:SourceSDDS
   <<: *s3
 
-deploy-el6-2.0:SourceSDDS:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_SourceSDDS
-  dependencies:
-    - package:el6:rh2.0:SourceSDDS
-  <<: *s3
-
-deploy-el6-i386-2.2:SourceSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_SourceSDDS
-  dependencies:
-    - package:el6-i386:rh2.2:SourceSDDS
-  <<: *s3
-
-deploy-el6-i386-2.0:SourceSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_SourceSDDS
-  dependencies:
-    - package:el6-i386:rh2.0:SourceSDDS
-  <<: *s3
-
-#================= end SourceSDDS
-#================= begin SourceVITA49
-
-.template_SourceVITA49:
+deploy-el6-2.2:SourceSDDS:
   variables:
-   asset_name: SourceVITA49
-   lowercase_asset_name: sourcevita49
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SourceSDDS
+    lowercase_asset_name: sourcesdds
+  dependencies:
+    - package:el6:rh2.2:SourceSDDS
+  <<: *s3
 
 package:el6:rh2.0:SourceVITA49:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_SourceVITA49
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
   <<: *package
 
-package:el6-i386:rh2.0:SourceVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_SourceVITA49
+package:el6:rh2.0:SourceVITA49:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
   <<: *package
 
 package:el7:rh2.0:SourceVITA49:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_SourceVITA49
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
   <<: *package
 
 package:el6:rh2.2:SourceVITA49:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_SourceVITA49
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
   <<: *package
 
-package:el6-i386:rh2.2:SourceVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_SourceVITA49
-  <<: *package
-
-package:el7:rh2.2:SourceVITA49:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_SourceVITA49
+package:el6:rh2.2:SourceVITA49:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
   <<: *package
 
 test:el6:rh2.0:SourceVITA49:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_SourceVITA49
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:SourceVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_SourceVITA49
+test:el6:rh2.0:SourceVITA49:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
   <<: *test
 
 test:el7:rh2.0:SourceVITA49:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_SourceVITA49
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
   <<: *test
 
 test:el6:rh2.2:SourceVITA49:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_SourceVITA49
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
   <<: *test
 
-test:el6-i386:rh2.2:SourceVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_SourceVITA49
+test:el6:rh2.2:SourceVITA49:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
   <<: *test
 
-test:el7:rh2.2:SourceVITA49:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_SourceVITA49
-  <<: *test
-
-deploy-el7-2.2:SourceVITA49:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_SourceVITA49
+deploy-el6-2.0:SourceVITA49:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
   dependencies:
-    - package:el7:rh2.2:SourceVITA49
+    - package:el6:rh2.0:SourceVITA49
+  <<: *s3
+
+deploy-el6-2.0:SourceVITA49:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
+  dependencies:
+    - package:el6:rh2.0:SourceVITA49
   <<: *s3
 
 deploy-el7-2.0:SourceVITA49:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_SourceVITA49
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
   dependencies:
     - package:el7:rh2.0:SourceVITA49
   <<: *s3
 
 deploy-el6-2.2:SourceVITA49:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_SourceVITA49
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
   dependencies:
     - package:el6:rh2.2:SourceVITA49
   <<: *s3
 
-deploy-el6-2.0:SourceVITA49:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_SourceVITA49
-  dependencies:
-    - package:el6:rh2.0:SourceVITA49
-  <<: *s3
-
-deploy-el6-i386-2.2:SourceVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_SourceVITA49
-  dependencies:
-    - package:el6-i386:rh2.2:SourceVITA49
-  <<: *s3
-
-deploy-el6-i386-2.0:SourceVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_SourceVITA49
-  dependencies:
-    - package:el6-i386:rh2.0:SourceVITA49
-  <<: *s3
-
-#================= end SourceVITA49
-#================= begin TuneFilterDecimate
-
-.template_TuneFilterDecimate:
+deploy-el6-2.2:SourceVITA49:
   variables:
-   asset_name: TuneFilterDecimate
-   lowercase_asset_name: tunefilterdecimate
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
+  dependencies:
+    - package:el6:rh2.2:SourceVITA49
+  <<: *s3
 
 package:el6:rh2.0:TuneFilterDecimate:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_TuneFilterDecimate
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
   <<: *package
 
-package:el6-i386:rh2.0:TuneFilterDecimate:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_TuneFilterDecimate
+package:el6:rh2.0:TuneFilterDecimate:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
   <<: *package
 
 package:el7:rh2.0:TuneFilterDecimate:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_TuneFilterDecimate
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
   <<: *package
 
 package:el6:rh2.2:TuneFilterDecimate:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_TuneFilterDecimate
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
   <<: *package
 
-package:el6-i386:rh2.2:TuneFilterDecimate:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_TuneFilterDecimate
-  <<: *package
-
-package:el7:rh2.2:TuneFilterDecimate:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_TuneFilterDecimate
+package:el6:rh2.2:TuneFilterDecimate:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
   <<: *package
 
 test:el6:rh2.0:TuneFilterDecimate:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_TuneFilterDecimate
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:TuneFilterDecimate:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_TuneFilterDecimate
+test:el6:rh2.0:TuneFilterDecimate:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
   <<: *test
 
 test:el7:rh2.0:TuneFilterDecimate:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_TuneFilterDecimate
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
   <<: *test
 
 test:el6:rh2.2:TuneFilterDecimate:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_TuneFilterDecimate
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
   <<: *test
 
-test:el6-i386:rh2.2:TuneFilterDecimate:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_TuneFilterDecimate
+test:el6:rh2.2:TuneFilterDecimate:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
   <<: *test
 
-test:el7:rh2.2:TuneFilterDecimate:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_TuneFilterDecimate
-  <<: *test
-
-deploy-el7-2.2:TuneFilterDecimate:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_TuneFilterDecimate
+deploy-el6-2.0:TuneFilterDecimate:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
   dependencies:
-    - package:el7:rh2.2:TuneFilterDecimate
+    - package:el6:rh2.0:TuneFilterDecimate
+  <<: *s3
+
+deploy-el6-2.0:TuneFilterDecimate:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
+  dependencies:
+    - package:el6:rh2.0:TuneFilterDecimate
   <<: *s3
 
 deploy-el7-2.0:TuneFilterDecimate:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_TuneFilterDecimate
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
   dependencies:
     - package:el7:rh2.0:TuneFilterDecimate
   <<: *s3
 
 deploy-el6-2.2:TuneFilterDecimate:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_TuneFilterDecimate
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
   dependencies:
     - package:el6:rh2.2:TuneFilterDecimate
   <<: *s3
 
-deploy-el6-2.0:TuneFilterDecimate:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_TuneFilterDecimate
-  dependencies:
-    - package:el6:rh2.0:TuneFilterDecimate
-  <<: *s3
-
-deploy-el6-i386-2.2:TuneFilterDecimate:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_TuneFilterDecimate
-  dependencies:
-    - package:el6-i386:rh2.2:TuneFilterDecimate
-  <<: *s3
-
-deploy-el6-i386-2.0:TuneFilterDecimate:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_TuneFilterDecimate
-  dependencies:
-    - package:el6-i386:rh2.0:TuneFilterDecimate
-  <<: *s3
-
-#================= end TuneFilterDecimate
-#================= begin agc
-
-.template_agc:
+deploy-el6-2.2:TuneFilterDecimate:
   variables:
-   asset_name: agc
-   lowercase_asset_name: agc
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
+  dependencies:
+    - package:el6:rh2.2:TuneFilterDecimate
+  <<: *s3
 
 package:el6:rh2.0:agc:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_agc
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: agc
+    lowercase_asset_name: agc
   <<: *package
 
-package:el6-i386:rh2.0:agc:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_agc
+package:el6:rh2.0:agc:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: agc
+    lowercase_asset_name: agc
   <<: *package
 
 package:el7:rh2.0:agc:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_agc
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: agc
+    lowercase_asset_name: agc
   <<: *package
 
 package:el6:rh2.2:agc:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_agc
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: agc
+    lowercase_asset_name: agc
   <<: *package
 
-package:el6-i386:rh2.2:agc:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_agc
-  <<: *package
-
-package:el7:rh2.2:agc:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_agc
+package:el6:rh2.2:agc:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: agc
+    lowercase_asset_name: agc
   <<: *package
 
 test:el6:rh2.0:agc:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_agc
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: agc
+    lowercase_asset_name: agc
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:agc:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_agc
+test:el6:rh2.0:agc:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: agc
+    lowercase_asset_name: agc
   <<: *test
 
 test:el7:rh2.0:agc:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_agc
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: agc
+    lowercase_asset_name: agc
   <<: *test
 
 test:el6:rh2.2:agc:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_agc
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: agc
+    lowercase_asset_name: agc
   <<: *test
 
-test:el6-i386:rh2.2:agc:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_agc
+test:el6:rh2.2:agc:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: agc
+    lowercase_asset_name: agc
   <<: *test
 
-test:el7:rh2.2:agc:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_agc
-  <<: *test
-
-deploy-el7-2.2:agc:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_agc
+deploy-el6-2.0:agc:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: agc
+    lowercase_asset_name: agc
   dependencies:
-    - package:el7:rh2.2:agc
+    - package:el6:rh2.0:agc
+  <<: *s3
+
+deploy-el6-2.0:agc:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: agc
+    lowercase_asset_name: agc
+  dependencies:
+    - package:el6:rh2.0:agc
   <<: *s3
 
 deploy-el7-2.0:agc:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_agc
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: agc
+    lowercase_asset_name: agc
   dependencies:
     - package:el7:rh2.0:agc
   <<: *s3
 
 deploy-el6-2.2:agc:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_agc
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: agc
+    lowercase_asset_name: agc
   dependencies:
     - package:el6:rh2.2:agc
   <<: *s3
 
-deploy-el6-2.0:agc:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_agc
-  dependencies:
-    - package:el6:rh2.0:agc
-  <<: *s3
-
-deploy-el6-i386-2.2:agc:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_agc
-  dependencies:
-    - package:el6-i386:rh2.2:agc
-  <<: *s3
-
-deploy-el6-i386-2.0:agc:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_agc
-  dependencies:
-    - package:el6-i386:rh2.0:agc
-  <<: *s3
-
-#================= end agc
-#================= begin autocorrelate
-
-.template_autocorrelate:
+deploy-el6-2.2:agc:
   variables:
-   asset_name: autocorrelate
-   lowercase_asset_name: autocorrelate
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: agc
+    lowercase_asset_name: agc
+  dependencies:
+    - package:el6:rh2.2:agc
+  <<: *s3
 
 package:el6:rh2.0:autocorrelate:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_autocorrelate
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
   <<: *package
 
-package:el6-i386:rh2.0:autocorrelate:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_autocorrelate
+package:el6:rh2.0:autocorrelate:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
   <<: *package
 
 package:el7:rh2.0:autocorrelate:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_autocorrelate
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
   <<: *package
 
 package:el6:rh2.2:autocorrelate:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_autocorrelate
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
   <<: *package
 
-package:el6-i386:rh2.2:autocorrelate:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_autocorrelate
-  <<: *package
-
-package:el7:rh2.2:autocorrelate:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_autocorrelate
+package:el6:rh2.2:autocorrelate:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
   <<: *package
 
 test:el6:rh2.0:autocorrelate:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_autocorrelate
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:autocorrelate:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_autocorrelate
+test:el6:rh2.0:autocorrelate:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
   <<: *test
 
 test:el7:rh2.0:autocorrelate:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_autocorrelate
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
   <<: *test
 
 test:el6:rh2.2:autocorrelate:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_autocorrelate
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
   <<: *test
 
-test:el6-i386:rh2.2:autocorrelate:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_autocorrelate
+test:el6:rh2.2:autocorrelate:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
   <<: *test
 
-test:el7:rh2.2:autocorrelate:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_autocorrelate
-  <<: *test
-
-deploy-el7-2.2:autocorrelate:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_autocorrelate
+deploy-el6-2.0:autocorrelate:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
   dependencies:
-    - package:el7:rh2.2:autocorrelate
+    - package:el6:rh2.0:autocorrelate
+  <<: *s3
+
+deploy-el6-2.0:autocorrelate:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
+  dependencies:
+    - package:el6:rh2.0:autocorrelate
   <<: *s3
 
 deploy-el7-2.0:autocorrelate:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_autocorrelate
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
   dependencies:
     - package:el7:rh2.0:autocorrelate
   <<: *s3
 
 deploy-el6-2.2:autocorrelate:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_autocorrelate
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
   dependencies:
     - package:el6:rh2.2:autocorrelate
   <<: *s3
 
-deploy-el6-2.0:autocorrelate:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_autocorrelate
-  dependencies:
-    - package:el6:rh2.0:autocorrelate
-  <<: *s3
-
-deploy-el6-i386-2.2:autocorrelate:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_autocorrelate
-  dependencies:
-    - package:el6-i386:rh2.2:autocorrelate
-  <<: *s3
-
-deploy-el6-i386-2.0:autocorrelate:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_autocorrelate
-  dependencies:
-    - package:el6-i386:rh2.0:autocorrelate
-  <<: *s3
-
-#================= end autocorrelate
-#================= begin fastfilter
-
-.template_fastfilter:
+deploy-el6-2.2:autocorrelate:
   variables:
-   asset_name: fastfilter
-   lowercase_asset_name: fastfilter
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
+  dependencies:
+    - package:el6:rh2.2:autocorrelate
+  <<: *s3
 
 package:el6:rh2.0:fastfilter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_fastfilter
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
   <<: *package
 
-package:el6-i386:rh2.0:fastfilter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_fastfilter
+package:el6:rh2.0:fastfilter:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
   <<: *package
 
 package:el7:rh2.0:fastfilter:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_fastfilter
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
   <<: *package
 
 package:el6:rh2.2:fastfilter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_fastfilter
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
   <<: *package
 
-package:el6-i386:rh2.2:fastfilter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_fastfilter
-  <<: *package
-
-package:el7:rh2.2:fastfilter:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_fastfilter
+package:el6:rh2.2:fastfilter:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
   <<: *package
 
 test:el6:rh2.0:fastfilter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_fastfilter
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:fastfilter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_fastfilter
+test:el6:rh2.0:fastfilter:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
   <<: *test
 
 test:el7:rh2.0:fastfilter:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_fastfilter
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
   <<: *test
 
 test:el6:rh2.2:fastfilter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_fastfilter
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
   <<: *test
 
-test:el6-i386:rh2.2:fastfilter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_fastfilter
+test:el6:rh2.2:fastfilter:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
   <<: *test
 
-test:el7:rh2.2:fastfilter:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_fastfilter
-  <<: *test
-
-deploy-el7-2.2:fastfilter:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_fastfilter
+deploy-el6-2.0:fastfilter:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
   dependencies:
-    - package:el7:rh2.2:fastfilter
+    - package:el6:rh2.0:fastfilter
+  <<: *s3
+
+deploy-el6-2.0:fastfilter:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
+  dependencies:
+    - package:el6:rh2.0:fastfilter
   <<: *s3
 
 deploy-el7-2.0:fastfilter:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_fastfilter
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
   dependencies:
     - package:el7:rh2.0:fastfilter
   <<: *s3
 
 deploy-el6-2.2:fastfilter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_fastfilter
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
   dependencies:
     - package:el6:rh2.2:fastfilter
   <<: *s3
 
-deploy-el6-2.0:fastfilter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_fastfilter
-  dependencies:
-    - package:el6:rh2.0:fastfilter
-  <<: *s3
-
-deploy-el6-i386-2.2:fastfilter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_fastfilter
-  dependencies:
-    - package:el6-i386:rh2.2:fastfilter
-  <<: *s3
-
-deploy-el6-i386-2.0:fastfilter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_fastfilter
-  dependencies:
-    - package:el6-i386:rh2.0:fastfilter
-  <<: *s3
-
-#================= end fastfilter
-#================= begin fcalc
-
-.template_fcalc:
+deploy-el6-2.2:fastfilter:
   variables:
-   asset_name: fcalc
-   lowercase_asset_name: fcalc
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
+  dependencies:
+    - package:el6:rh2.2:fastfilter
+  <<: *s3
 
 package:el6:rh2.0:fcalc:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_fcalc
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
   <<: *package
 
-package:el6-i386:rh2.0:fcalc:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_fcalc
+package:el6:rh2.0:fcalc:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
   <<: *package
 
 package:el7:rh2.0:fcalc:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_fcalc
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
   <<: *package
 
 package:el6:rh2.2:fcalc:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_fcalc
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
   <<: *package
 
-package:el6-i386:rh2.2:fcalc:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_fcalc
-  <<: *package
-
-package:el7:rh2.2:fcalc:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_fcalc
+package:el6:rh2.2:fcalc:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
   <<: *package
 
 test:el6:rh2.0:fcalc:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_fcalc
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:fcalc:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_fcalc
+test:el6:rh2.0:fcalc:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
   <<: *test
 
 test:el7:rh2.0:fcalc:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_fcalc
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
   <<: *test
 
 test:el6:rh2.2:fcalc:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_fcalc
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
   <<: *test
 
-test:el6-i386:rh2.2:fcalc:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_fcalc
+test:el6:rh2.2:fcalc:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
   <<: *test
 
-test:el7:rh2.2:fcalc:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_fcalc
-  <<: *test
-
-deploy-el7-2.2:fcalc:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_fcalc
+deploy-el6-2.0:fcalc:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
   dependencies:
-    - package:el7:rh2.2:fcalc
+    - package:el6:rh2.0:fcalc
+  <<: *s3
+
+deploy-el6-2.0:fcalc:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
+  dependencies:
+    - package:el6:rh2.0:fcalc
   <<: *s3
 
 deploy-el7-2.0:fcalc:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_fcalc
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
   dependencies:
     - package:el7:rh2.0:fcalc
   <<: *s3
 
 deploy-el6-2.2:fcalc:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_fcalc
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
   dependencies:
     - package:el6:rh2.2:fcalc
   <<: *s3
 
-deploy-el6-2.0:fcalc:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_fcalc
-  dependencies:
-    - package:el6:rh2.0:fcalc
-  <<: *s3
-
-deploy-el6-i386-2.2:fcalc:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_fcalc
-  dependencies:
-    - package:el6-i386:rh2.2:fcalc
-  <<: *s3
-
-deploy-el6-i386-2.0:fcalc:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_fcalc
-  dependencies:
-    - package:el6-i386:rh2.0:fcalc
-  <<: *s3
-
-#================= end fcalc
-#================= begin psd
-
-.template_psd:
+deploy-el6-2.2:fcalc:
   variables:
-   asset_name: psd
-   lowercase_asset_name: psd
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
+  dependencies:
+    - package:el6:rh2.2:fcalc
+  <<: *s3
 
 package:el6:rh2.0:psd:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_psd
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psd
+    lowercase_asset_name: psd
   <<: *package
 
-package:el6-i386:rh2.0:psd:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_psd
+package:el6:rh2.0:psd:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psd
+    lowercase_asset_name: psd
   <<: *package
 
 package:el7:rh2.0:psd:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_psd
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psd
+    lowercase_asset_name: psd
   <<: *package
 
 package:el6:rh2.2:psd:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_psd
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: psd
+    lowercase_asset_name: psd
   <<: *package
 
-package:el6-i386:rh2.2:psd:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_psd
-  <<: *package
-
-package:el7:rh2.2:psd:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_psd
+package:el6:rh2.2:psd:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: psd
+    lowercase_asset_name: psd
   <<: *package
 
 test:el6:rh2.0:psd:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_psd
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psd
+    lowercase_asset_name: psd
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:psd:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_psd
+test:el6:rh2.0:psd:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psd
+    lowercase_asset_name: psd
   <<: *test
 
 test:el7:rh2.0:psd:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_psd
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psd
+    lowercase_asset_name: psd
   <<: *test
 
 test:el6:rh2.2:psd:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_psd
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: psd
+    lowercase_asset_name: psd
   <<: *test
 
-test:el6-i386:rh2.2:psd:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_psd
+test:el6:rh2.2:psd:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: psd
+    lowercase_asset_name: psd
   <<: *test
 
-test:el7:rh2.2:psd:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_psd
-  <<: *test
-
-deploy-el7-2.2:psd:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_psd
+deploy-el6-2.0:psd:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psd
+    lowercase_asset_name: psd
   dependencies:
-    - package:el7:rh2.2:psd
+    - package:el6:rh2.0:psd
+  <<: *s3
+
+deploy-el6-2.0:psd:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psd
+    lowercase_asset_name: psd
+  dependencies:
+    - package:el6:rh2.0:psd
   <<: *s3
 
 deploy-el7-2.0:psd:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_psd
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psd
+    lowercase_asset_name: psd
   dependencies:
     - package:el7:rh2.0:psd
   <<: *s3
 
 deploy-el6-2.2:psd:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_psd
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: psd
+    lowercase_asset_name: psd
   dependencies:
     - package:el6:rh2.2:psd
   <<: *s3
 
-deploy-el6-2.0:psd:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_psd
-  dependencies:
-    - package:el6:rh2.0:psd
-  <<: *s3
-
-deploy-el6-i386-2.2:psd:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_psd
-  dependencies:
-    - package:el6-i386:rh2.2:psd
-  <<: *s3
-
-deploy-el6-i386-2.0:psd:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_psd
-  dependencies:
-    - package:el6-i386:rh2.0:psd
-  <<: *s3
-
-#================= end psd
-#================= begin psk_soft
-
-.template_psk_soft:
+deploy-el6-2.2:psd:
   variables:
-   asset_name: psk_soft
-   lowercase_asset_name: psk_soft
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: psd
+    lowercase_asset_name: psd
+  dependencies:
+    - package:el6:rh2.2:psd
+  <<: *s3
 
 package:el6:rh2.0:psk_soft:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_psk_soft
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
   <<: *package
 
-package:el6-i386:rh2.0:psk_soft:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_psk_soft
+package:el6:rh2.0:psk_soft:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
   <<: *package
 
 package:el7:rh2.0:psk_soft:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_psk_soft
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
   <<: *package
 
 package:el6:rh2.2:psk_soft:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_psk_soft
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
   <<: *package
 
-package:el6-i386:rh2.2:psk_soft:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_psk_soft
-  <<: *package
-
-package:el7:rh2.2:psk_soft:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_psk_soft
+package:el6:rh2.2:psk_soft:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
   <<: *package
 
 test:el6:rh2.0:psk_soft:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_psk_soft
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:psk_soft:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_psk_soft
+test:el6:rh2.0:psk_soft:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
   <<: *test
 
 test:el7:rh2.0:psk_soft:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_psk_soft
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
   <<: *test
 
 test:el6:rh2.2:psk_soft:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_psk_soft
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
   <<: *test
 
-test:el6-i386:rh2.2:psk_soft:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_psk_soft
+test:el6:rh2.2:psk_soft:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
   <<: *test
 
-test:el7:rh2.2:psk_soft:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_psk_soft
-  <<: *test
-
-deploy-el7-2.2:psk_soft:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_psk_soft
+deploy-el6-2.0:psk_soft:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
   dependencies:
-    - package:el7:rh2.2:psk_soft
+    - package:el6:rh2.0:psk_soft
+  <<: *s3
+
+deploy-el6-2.0:psk_soft:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
+  dependencies:
+    - package:el6:rh2.0:psk_soft
   <<: *s3
 
 deploy-el7-2.0:psk_soft:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_psk_soft
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
   dependencies:
     - package:el7:rh2.0:psk_soft
   <<: *s3
 
 deploy-el6-2.2:psk_soft:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_psk_soft
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
   dependencies:
     - package:el6:rh2.2:psk_soft
   <<: *s3
 
-deploy-el6-2.0:psk_soft:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_psk_soft
-  dependencies:
-    - package:el6:rh2.0:psk_soft
-  <<: *s3
-
-deploy-el6-i386-2.2:psk_soft:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_psk_soft
-  dependencies:
-    - package:el6-i386:rh2.2:psk_soft
-  <<: *s3
-
-deploy-el6-i386-2.0:psk_soft:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_psk_soft
-  dependencies:
-    - package:el6-i386:rh2.0:psk_soft
-  <<: *s3
-
-#================= end psk_soft
-#================= begin sinksocket
-
-.template_sinksocket:
+deploy-el6-2.2:psk_soft:
   variables:
-   asset_name: sinksocket
-   lowercase_asset_name: sinksocket
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
+  dependencies:
+    - package:el6:rh2.2:psk_soft
+  <<: *s3
 
 package:el6:rh2.0:sinksocket:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_sinksocket
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
   <<: *package
 
-package:el6-i386:rh2.0:sinksocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_sinksocket
+package:el6:rh2.0:sinksocket:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
   <<: *package
 
 package:el7:rh2.0:sinksocket:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_sinksocket
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
   <<: *package
 
 package:el6:rh2.2:sinksocket:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_sinksocket
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
   <<: *package
 
-package:el6-i386:rh2.2:sinksocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_sinksocket
-  <<: *package
-
-package:el7:rh2.2:sinksocket:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_sinksocket
+package:el6:rh2.2:sinksocket:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
   <<: *package
 
 test:el6:rh2.0:sinksocket:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_sinksocket
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:sinksocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_sinksocket
+test:el6:rh2.0:sinksocket:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
   <<: *test
 
 test:el7:rh2.0:sinksocket:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_sinksocket
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
   <<: *test
 
 test:el6:rh2.2:sinksocket:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_sinksocket
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
   <<: *test
 
-test:el6-i386:rh2.2:sinksocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_sinksocket
+test:el6:rh2.2:sinksocket:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
   <<: *test
 
-test:el7:rh2.2:sinksocket:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_sinksocket
-  <<: *test
-
-deploy-el7-2.2:sinksocket:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_sinksocket
+deploy-el6-2.0:sinksocket:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
   dependencies:
-    - package:el7:rh2.2:sinksocket
+    - package:el6:rh2.0:sinksocket
+  <<: *s3
+
+deploy-el6-2.0:sinksocket:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
+  dependencies:
+    - package:el6:rh2.0:sinksocket
   <<: *s3
 
 deploy-el7-2.0:sinksocket:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_sinksocket
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
   dependencies:
     - package:el7:rh2.0:sinksocket
   <<: *s3
 
 deploy-el6-2.2:sinksocket:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_sinksocket
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
   dependencies:
     - package:el6:rh2.2:sinksocket
   <<: *s3
 
-deploy-el6-2.0:sinksocket:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_sinksocket
-  dependencies:
-    - package:el6:rh2.0:sinksocket
-  <<: *s3
-
-deploy-el6-i386-2.2:sinksocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_sinksocket
-  dependencies:
-    - package:el6-i386:rh2.2:sinksocket
-  <<: *s3
-
-deploy-el6-i386-2.0:sinksocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_sinksocket
-  dependencies:
-    - package:el6-i386:rh2.0:sinksocket
-  <<: *s3
-
-#================= end sinksocket
-#================= begin sourcesocket
-
-.template_sourcesocket:
+deploy-el6-2.2:sinksocket:
   variables:
-   asset_name: sourcesocket
-   lowercase_asset_name: sourcesocket
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
+  dependencies:
+    - package:el6:rh2.2:sinksocket
+  <<: *s3
 
 package:el6:rh2.0:sourcesocket:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_sourcesocket
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
   <<: *package
 
-package:el6-i386:rh2.0:sourcesocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_sourcesocket
+package:el6:rh2.0:sourcesocket:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
   <<: *package
 
 package:el7:rh2.0:sourcesocket:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_sourcesocket
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
   <<: *package
 
 package:el6:rh2.2:sourcesocket:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_sourcesocket
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
   <<: *package
 
-package:el6-i386:rh2.2:sourcesocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_sourcesocket
-  <<: *package
-
-package:el7:rh2.2:sourcesocket:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_sourcesocket
+package:el6:rh2.2:sourcesocket:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
   <<: *package
 
 test:el6:rh2.0:sourcesocket:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_sourcesocket
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:sourcesocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_sourcesocket
+test:el6:rh2.0:sourcesocket:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
   <<: *test
 
 test:el7:rh2.0:sourcesocket:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_sourcesocket
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
   <<: *test
 
 test:el6:rh2.2:sourcesocket:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_sourcesocket
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
   <<: *test
 
-test:el6-i386:rh2.2:sourcesocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_sourcesocket
+test:el6:rh2.2:sourcesocket:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
   <<: *test
 
-test:el7:rh2.2:sourcesocket:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_sourcesocket
-  <<: *test
-
-deploy-el7-2.2:sourcesocket:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_sourcesocket
+deploy-el6-2.0:sourcesocket:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
   dependencies:
-    - package:el7:rh2.2:sourcesocket
+    - package:el6:rh2.0:sourcesocket
+  <<: *s3
+
+deploy-el6-2.0:sourcesocket:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
+  dependencies:
+    - package:el6:rh2.0:sourcesocket
   <<: *s3
 
 deploy-el7-2.0:sourcesocket:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_sourcesocket
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
   dependencies:
     - package:el7:rh2.0:sourcesocket
   <<: *s3
 
 deploy-el6-2.2:sourcesocket:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_sourcesocket
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
   dependencies:
     - package:el6:rh2.2:sourcesocket
   <<: *s3
 
-deploy-el6-2.0:sourcesocket:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_sourcesocket
-  dependencies:
-    - package:el6:rh2.0:sourcesocket
-  <<: *s3
-
-deploy-el6-i386-2.2:sourcesocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_sourcesocket
-  dependencies:
-    - package:el6-i386:rh2.2:sourcesocket
-  <<: *s3
-
-deploy-el6-i386-2.0:sourcesocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_sourcesocket
-  dependencies:
-    - package:el6-i386:rh2.0:sourcesocket
-  <<: *s3
-
-#================= end sourcesocket
-#================= begin DataConverter
-
-.template_DataConverter:
+deploy-el6-2.2:sourcesocket:
   variables:
-   asset_name: DataConverter
-   lowercase_asset_name: dataconverter
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
+  dependencies:
+    - package:el6:rh2.2:sourcesocket
+  <<: *s3
 
 package:el6:rh2.0:DataConverter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_DataConverter
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
   <<: *package
 
-package:el6-i386:rh2.0:DataConverter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_DataConverter
+package:el6:rh2.0:DataConverter:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
   <<: *package
 
 package:el7:rh2.0:DataConverter:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_DataConverter
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
   <<: *package
 
 package:el6:rh2.2:DataConverter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_DataConverter
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
   <<: *package
 
-package:el6-i386:rh2.2:DataConverter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_DataConverter
-  <<: *package
-
-package:el7:rh2.2:DataConverter:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_DataConverter
+package:el6:rh2.2:DataConverter:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
   <<: *package
 
 test:el6:rh2.0:DataConverter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_DataConverter
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
   <<: *test
-  only:
-    - branches
 
-test:el6-i386:rh2.0:DataConverter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_DataConverter
+test:el6:rh2.0:DataConverter:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
   <<: *test
 
 test:el7:rh2.0:DataConverter:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_DataConverter
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
   <<: *test
 
 test:el6:rh2.2:DataConverter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_DataConverter
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
   <<: *test
 
-test:el6-i386:rh2.2:DataConverter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_DataConverter
+test:el6:rh2.2:DataConverter:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
   <<: *test
 
-test:el7:rh2.2:DataConverter:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_DataConverter
-  <<: *test
-
-deploy-el7-2.2:DataConverter:
-  extends: .template_el7
-  extends: .template_rh2.2
-  extends: .template_DataConverter
+deploy-el6-2.0:DataConverter:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
   dependencies:
-    - package:el7:rh2.2:DataConverter
+    - package:el6:rh2.0:DataConverter
+  <<: *s3
+
+deploy-el6-2.0:DataConverter:
+  variables:
+    dist: el6
+    arch: i386
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
+  dependencies:
+    - package:el6:rh2.0:DataConverter
   <<: *s3
 
 deploy-el7-2.0:DataConverter:
-  extends: .template_el7
-  extends: .template_rh2.0
-  extends: .template_DataConverter
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: 2.0-nightly
+    release_version: $rh_20_release
+    short_version: '2.0'
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
   dependencies:
     - package:el7:rh2.0:DataConverter
   <<: *s3
 
 deploy-el6-2.2:DataConverter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  extends: .template_DataConverter
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
   dependencies:
     - package:el6:rh2.2:DataConverter
   <<: *s3
 
-deploy-el6-2.0:DataConverter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  extends: .template_DataConverter
+deploy-el6-2.2:DataConverter:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: 2.2-nightly
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
   dependencies:
-    - package:el6:rh2.0:DataConverter
+    - package:el6:rh2.2:DataConverter
   <<: *s3
 
-deploy-el6-i386-2.2:DataConverter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  extends: .template_DataConverter
-  dependencies:
-    - package:el6-i386:rh2.2:DataConverter
-  <<: *s3
 
-deploy-el6-i386-2.0:DataConverter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  extends: .template_DataConverter
-  dependencies:
-    - package:el6-i386:rh2.0:DataConverter
-  <<: *s3
-
-#================= end DataConverter
-
-# package:el6:rh2.0:
-#   extends: .template_el6
-#   extends: .template_rh2.0
-#   <<: *package
-# 
-# package:el6-i386:rh2.0:
-#   extends: .template_el6-i386
-#   extends: .template_rh2.0
-#   <<: *package
-# 
-# package:el7:rh2.0:
-#   extends: .template_el7
-#   extends: .template_rh2.0
-#   <<: *package
-# 
-# package:el6:rh2.2:
-#   extends: .template_el6
-#   extends: .template_rh2.2
-#   <<: *package
-# 
-# package:el6-i386:rh2.2:
-#   extends: .template_el6-i386
-#   extends: .template_rh2.2
-#   <<: *package
-# 
-# package:el7:rh2.2:
-#   extends: .template_el7
-#   extends: .template_rh2.2
-#   <<: *package
-# 
-# test:el6:rh2.0:
-#   extends: .template_el6
-#   extends: .template_rh2.0
-#   <<: *test
-#   only:
-#     - branches
-# 
-# test:el6-i386:rh2.0:
-#   extends: .template_el6-i386
-#   extends: .template_rh2.0
-#   <<: *test
-# 
-# test:el7:rh2.0:
-#   extends: .template_el7
-#   extends: .template_rh2.0
-#   <<: *test
-# 
-# test:el6:rh2.2:
-#   extends: .template_el6
-#   extends: .template_rh2.2
-#   <<: *test
-# 
-# test:el6-i386:rh2.2:
-#   extends: .template_el6-i386
-#   extends: .template_rh2.2
-#   <<: *test
-# 
-# test:el7:rh2.2:
-#   extends: .template_el7
-#   extends: .template_rh2.2
-#   <<: *test
-# 
-# deploy-el7-2.2:
-#   extends: .template_el7
-#   extends: .template_rh2.2
-#   dependencies:
-#     - package:el7:rh2.2
-#   <<: *s3
-# 
-# deploy-el7-2.0:
-#   extends: .template_el7
-#   extends: .template_rh2.0
-#   dependencies:
-#     - package:el7:rh2.0
-#   <<: *s3
-# 
-# deploy-el6-2.2:
-#   extends: .template_el6
-#   extends: .template_rh2.2
-#   dependencies:
-#     - package:el6:rh2.2
-#   <<: *s3
-# 
-# deploy-el6-2.0:
-#   extends: .template_el6
-#   extends: .template_rh2.0
-#   dependencies:
-#     - package:el6:rh2.0
-#   <<: *s3
-# 
-# deploy-el6-i386-2.2:
-#   extends: .template_el6-i386
-#   extends: .template_rh2.2
-#   dependencies:
-#     - package:el6-i386:rh2.2
-#   <<: *s3
-# 
-# deploy-el6-i386-2.0:
-#   extends: .template_el6-i386
-#   extends: .template_rh2.0
-#   dependencies:
-#     - package:el6-i386:rh2.0
-#   <<: *s3
