@@ -51,6 +51,8 @@ before_script:
   script:
      #- for name in redhawk redhawk-no-log4cxx redhawk-no-java redhawk-no-sqlite bulkio burstio codegen gpp; do
      #  done
+     - echo `pwd`
+     - echo `ls`
      - datetime=$(git show -s --format=%ci ${CI_COMMIT_SHA})
      - sed -i -e "s/__REVISION__/${CI_COMMIT_SHA}/" ${namespace}$asset_name.spec
      - sed -i -e "s/__DATETIME__/${datetime}/" ${namespace}$asset_name.spec
