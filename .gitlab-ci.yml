@@ -1410,7 +1410,7 @@ deploy-el7-2.2:SinkVITA49:
   variables:
    asset_name: SinkVITA49
   dependencies:
-    - package:el7:rh2.2SinkVITA49
+    - package:el7:rh2.2:SinkVITA49
   <<: *s3
 
 deploy-el7-2.0:SinkVITA49:
@@ -1419,7 +1419,7 @@ deploy-el7-2.0:SinkVITA49:
   variables:
    asset_name: SinkVITA49
   dependencies:
-    - package:el7:rh2.0SinkVITA49
+    - package:el7:rh2.0:SinkVITA49
   <<: *s3
 
 deploy-el6-2.2:SinkVITA49:
@@ -1428,7 +1428,7 @@ deploy-el6-2.2:SinkVITA49:
   variables:
    asset_name: SinkVITA49
   dependencies:
-    - package:el6:rh2.2SinkVITA49
+    - package:el6:rh2.2:SinkVITA49
   <<: *s3
 
 deploy-el6-2.0:SinkVITA49:
@@ -1437,7 +1437,7 @@ deploy-el6-2.0:SinkVITA49:
   variables:
    asset_name: SinkVITA49
   dependencies:
-    - package:el6:rh2.0SinkVITA49
+    - package:el6:rh2.0:SinkVITA49
   <<: *s3
 
 deploy-el6-i386-2.2:SinkVITA49:
@@ -1446,7 +1446,7 @@ deploy-el6-i386-2.2:SinkVITA49:
   variables:
    asset_name: SinkVITA49
   dependencies:
-    - package:el6-i386:rh2.2SinkVITA49
+    - package:el6-i386:rh2.2:SinkVITA49
   <<: *s3
 
 deploy-el6-i386-2.0:SinkVITA49:
@@ -1455,7 +1455,7 @@ deploy-el6-i386-2.0:SinkVITA49:
   variables:
    asset_name: SinkVITA49
   dependencies:
-    - package:el6-i386:rh2.0SinkVITA49
+    - package:el6-i386:rh2.0:SinkVITA49
   <<: *s3
 
 #================= end SinkVITA49
