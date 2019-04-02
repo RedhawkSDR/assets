@@ -24,24 +24,6 @@ before_script:
     - redhawk_repo=$s3_repo_url/redhawk/cf-and-deps/yum/$redhawk_version/$dist/$arch
     - asset_repo=$s3_repo_url/redhawk/assets/yum/$redhawk_version/rh${safe_version}/$dist/$arch
 
-# .build_docker_image: &build_docker_image |
-#     datetime=$(git show -s --format=%ci ${CI_COMMIT_SHA})
-#     sed -i -e "s/__REVISION__/${CI_COMMIT_SHA}/" ${namespace}$name.spec
-#     sed -i -e "s/__DATETIME__/${datetime}/" ${namespace}$name.spec
-#     printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
-#     docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
-#     docker image build --pull
-#                             --tag=$CI_PROJECT_PATH_SLUG-$safe_ref-$dist-$arch-rh${safe_version}
-#                             --build-arg "project=$name"
-#                             --build-arg "rpm_release=$rpm_release"
-#                             --build-arg "spec_file=${namespace}$name.spec"
-#                             --build-arg "arch=$arch"
-#                             --build-arg "other_repos=$redhawk_repo asset_repo" .
-#     id=$(docker container create $CI_PROJECT_PATH_SLUG-$safe_ref-$dist-$arch-rh${safe_version})
-#     docker container cp $id:/root/rpmbuild/RPMS/ output/
-#     docker container rm -f $id || true
-#     docker image rm -f $CI_PROJECT_PATH_SLUG-$safe_ref-$dist-$arch-rh${safe_version} || true
-
 .package: &package
   image: ${docker_registry}${docker_rpm_repository}docker:latest
   stage: build
@@ -51,11 +33,9 @@ before_script:
   script:
      #- for name in redhawk redhawk-no-log4cxx redhawk-no-java redhawk-no-sqlite bulkio burstio codegen gpp; do
      #  done
-     - echo `pwd`
-     - echo `ls`
-     - datetime=$(git show -s --format=%ci ${CI_COMMIT_SHA})
-     - sed -i -e "s/__REVISION__/${CI_COMMIT_SHA}/" ${namespace}$asset_name.spec
-     - sed -i -e "s/__DATETIME__/${datetime}/" ${namespace}$asset_name.spec
+     #- datetime=$(git show -s --format=%ci ${CI_COMMIT_SHA})
+     #- sed -i -e "s/__REVISION__/${CI_COMMIT_SHA}/" ${namespace}$asset_name.spec
+     #- sed -i -e "s/__DATETIME__/${datetime}/" ${namespace}$asset_name.spec
      - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
      - docker image build --pull
