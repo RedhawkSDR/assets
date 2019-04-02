@@ -42,7 +42,8 @@ before_script:
 #     docker image rm -f $CI_PROJECT_PATH_SLUG-$safe_ref-$dist-$arch-rh${safe_version} || true
 
 .package: &package
-  image: ${docker_registry}${docker_rpm_repository}docker:latest-rpm
+  image: ${docker_registry}${docker_rpm_repository}docker:latest
+  #image: ${docker_registry}${docker_rpm_repository}docker:latest-rpm
   stage: build
   tags:
     - ca
