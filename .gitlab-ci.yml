@@ -39,7 +39,7 @@ before_script:
      - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
      - docker image build --pull
-                          --tag=$CI_PROJECT_PATH_SLUG-components-$asset_name-$safe_ref-$dist-$arch-rh${safe_version}
+                          --tag=$CI_PROJECT_PATH_SLUG-components-${asset_name,,}-$safe_ref-$dist-$arch-rh${safe_version}
                           --build-arg "project=$asset_name"
                           --build-arg "rpm_release=$rpm_release"
                           --build-arg "spec_file=${namespace}$asset_name.spec"
