@@ -2,6 +2,7 @@ variables:
   rh_20_release: '2-0-8'
   rh_22_release: '2-2-0'
   namespace: rh.
+  asset_name: none
   #test_suite: test_$CI_PROJECT_NAME.py
 
 stages:
@@ -43,30 +44,29 @@ before_script:
 
 .package: &package
   image: ${docker_registry}${docker_rpm_repository}docker:latest
-  #image: ${docker_registry}${docker_rpm_repository}docker:latest-rpm
   stage: build
   tags:
     - ca
     - docker
   script:
-     - for name in redhawk redhawk-no-log4cxx redhawk-no-java redhawk-no-sqlite bulkio burstio codegen gpp; do
+     #- for name in redhawk redhawk-no-log4cxx redhawk-no-java redhawk-no-sqlite bulkio burstio codegen gpp; do
+     #  done
      - datetime=$(git show -s --format=%ci ${CI_COMMIT_SHA})
-     - sed -i -e "s/__REVISION__/${CI_COMMIT_SHA}/" ${namespace}$CI_PROJECT_NAME.spec
-     - sed -i -e "s/__DATETIME__/${datetime}/" ${namespace}$CI_PROJECT_NAME.spec
+     - sed -i -e "s/__REVISION__/${CI_COMMIT_SHA}/" ${namespace}$asset_name.spec
+     - sed -i -e "s/__DATETIME__/${datetime}/" ${namespace}$asset_name.spec
      - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
      - docker image build --pull
-                          --tag=$CI_PROJECT_PATH_SLUG-$safe_ref-$dist-$arch-rh${safe_version}
-                          --build-arg "project=$CI_PROJECT_NAME"
+                          --tag=$CI_PROJECT_PATH_SLUG-components-$asset_name-$safe_ref-$dist-$arch-rh${safe_version}
+                          --build-arg "project=$asset_name"
                           --build-arg "rpm_release=$rpm_release"
-                          --build-arg "spec_file=${namespace}$CI_PROJECT_NAME.spec"
+                          --build-arg "spec_file=${namespace}$asset_name.spec"
                           --build-arg "arch=$arch"
                           --build-arg "other_repos=$redhawk_repo asset_repo" .
-     - id=$(docker container create $CI_PROJECT_PATH_SLUG-$safe_ref-$dist-$arch-rh${safe_version})
+     - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-$asset_name-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ output/
      - docker container rm -f $id || true
-     - docker image rm -f $CI_PROJECT_PATH_SLUG-$safe_ref-$dist-$arch-rh${safe_version} || true
-       done
+     - docker image rm -f $CI_PROJECT_PATH_SLUG-components-$asset_name-$safe_ref-$dist-$arch-rh${safe_version} || true
   artifacts:
     paths:
       - output/*/*.rpm
@@ -86,26 +86,26 @@ before_script:
     - . /usr/local/redhawk/python-virtualenv/bin/activate
     - yum-config-manager --add-repo $redhawk_repo
     - yum-config-manager --add-repo asset_repo
-    - touch /var/lib/rpm/* && yum-builddep --nogpgcheck -y ${namespace}$CI_PROJECT_NAME.spec
+    - touch /var/lib/rpm/* && yum-builddep --nogpgcheck -y ${namespace}$asset_name.spec
     - source /etc/profile.d/redhawk.sh
     - export SDRROOT=/var/redhawk/sdr
     - if [ -d cpp ] && [ "${dist}" == "el7" ]; then
         export CXXFLAGS='-g -Og -fprofile-arcs -ftest-coverage' V=1;
       fi
     - ./build.sh
-    - cd tests
-    - env | tee -a ../$CI_PROJECT_NAME-$CI_COMMIT_SHA-tests.log
-    - pip list | tee -a ../$CI_PROJECT_NAME-$CI_COMMIT_SHA-tests.log
-    - python $test_suite 2>&1 | tee -a ../$CI_PROJECT_NAME-$CI_COMMIT_SHA-tests.log
-    - cd ..
+    - cd sdr/components/$asset_name/tests
+    - env | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
+    - pip list | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
+    - python $test_suite 2>&1 | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
+    - cd ../../../..
     - if [ -d cpp ]; then
         gcovr -r . --xml --exclude-directories=tests > gcovr.xml;
         cppcheck --enable=all --xml-version=2 -i tests . 2> cppcheck-results.xml;
       fi
-    - find * -name '*.cpp' -o -name '*.h' -o -name '*.xml' -o -name '*.py' -o -name '*.java' -o -name '*.log' | tar czvf $CI_PROJECT_DIR/output.tar.gz --files-from -
+    - find * -name '*.cpp' -o -name '*.h' -o -name '*.xml' -o -name '*.py' -o -name '*.java' -o -name '*.log' | tar czvf sdr/components/$asset_name/output.tar.gz --files-from -
   artifacts:
     paths:
-      - $CI_PROJECT_DIR/output.tar.gz
+      - sdr/components/$asset_name/output.tar.gz
     expire_in: 2 days
   except:
     - master
@@ -3176,106 +3176,106 @@ deploy-el6-i386-2.0:DataConverter:
 
 #================= end DataConverter
 
-package:el6:rh2.0:
-  extends: .template_el6
-  extends: .template_rh2.0
-  <<: *package
-
-package:el6-i386:rh2.0:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  <<: *package
-
-package:el7:rh2.0:
-  extends: .template_el7
-  extends: .template_rh2.0
-  <<: *package
-
-package:el6:rh2.2:
-  extends: .template_el6
-  extends: .template_rh2.2
-  <<: *package
-
-package:el6-i386:rh2.2:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  <<: *package
-
-package:el7:rh2.2:
-  extends: .template_el7
-  extends: .template_rh2.2
-  <<: *package
-
-test:el6:rh2.0:
-  extends: .template_el6
-  extends: .template_rh2.0
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  <<: *test
-
-test:el7:rh2.0:
-  extends: .template_el7
-  extends: .template_rh2.0
-  <<: *test
-
-test:el6:rh2.2:
-  extends: .template_el6
-  extends: .template_rh2.2
-  <<: *test
-
-test:el6-i386:rh2.2:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  <<: *test
-
-test:el7:rh2.2:
-  extends: .template_el7
-  extends: .template_rh2.2
-  <<: *test
-
-deploy-el7-2.2:
-  extends: .template_el7
-  extends: .template_rh2.2
-  dependencies:
-    - package:el7:rh2.2
-  <<: *s3
-
-deploy-el7-2.0:
-  extends: .template_el7
-  extends: .template_rh2.0
-  dependencies:
-    - package:el7:rh2.0
-  <<: *s3
-
-deploy-el6-2.2:
-  extends: .template_el6
-  extends: .template_rh2.2
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:
-  extends: .template_el6
-  extends: .template_rh2.0
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
+# package:el6:rh2.0:
+#   extends: .template_el6
+#   extends: .template_rh2.0
+#   <<: *package
+# 
+# package:el6-i386:rh2.0:
+#   extends: .template_el6-i386
+#   extends: .template_rh2.0
+#   <<: *package
+# 
+# package:el7:rh2.0:
+#   extends: .template_el7
+#   extends: .template_rh2.0
+#   <<: *package
+# 
+# package:el6:rh2.2:
+#   extends: .template_el6
+#   extends: .template_rh2.2
+#   <<: *package
+# 
+# package:el6-i386:rh2.2:
+#   extends: .template_el6-i386
+#   extends: .template_rh2.2
+#   <<: *package
+# 
+# package:el7:rh2.2:
+#   extends: .template_el7
+#   extends: .template_rh2.2
+#   <<: *package
+# 
+# test:el6:rh2.0:
+#   extends: .template_el6
+#   extends: .template_rh2.0
+#   <<: *test
+#   only:
+#     - branches
+# 
+# test:el6-i386:rh2.0:
+#   extends: .template_el6-i386
+#   extends: .template_rh2.0
+#   <<: *test
+# 
+# test:el7:rh2.0:
+#   extends: .template_el7
+#   extends: .template_rh2.0
+#   <<: *test
+# 
+# test:el6:rh2.2:
+#   extends: .template_el6
+#   extends: .template_rh2.2
+#   <<: *test
+# 
+# test:el6-i386:rh2.2:
+#   extends: .template_el6-i386
+#   extends: .template_rh2.2
+#   <<: *test
+# 
+# test:el7:rh2.2:
+#   extends: .template_el7
+#   extends: .template_rh2.2
+#   <<: *test
+# 
+# deploy-el7-2.2:
+#   extends: .template_el7
+#   extends: .template_rh2.2
+#   dependencies:
+#     - package:el7:rh2.2
+#   <<: *s3
+# 
+# deploy-el7-2.0:
+#   extends: .template_el7
+#   extends: .template_rh2.0
+#   dependencies:
+#     - package:el7:rh2.0
+#   <<: *s3
+# 
+# deploy-el6-2.2:
+#   extends: .template_el6
+#   extends: .template_rh2.2
+#   dependencies:
+#     - package:el6:rh2.2
+#   <<: *s3
+# 
+# deploy-el6-2.0:
+#   extends: .template_el6
+#   extends: .template_rh2.0
+#   dependencies:
+#     - package:el6:rh2.0
+#   <<: *s3
+# 
+# deploy-el6-i386-2.2:
+#   extends: .template_el6-i386
+#   extends: .template_rh2.2
+#   dependencies:
+#     - package:el6-i386:rh2.2
+#   <<: *s3
+# 
+# deploy-el6-i386-2.0:
+#   extends: .template_el6-i386
+#   extends: .template_rh2.0
+#   dependencies:
+#     - package:el6-i386:rh2.0
+#   <<: *s3
