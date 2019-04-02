@@ -39,6 +39,12 @@ before_script:
      #- sed -i -e "s/__DATETIME__/${datetime}/" ${namespace}$asset_name.spec
      - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
+     - echo $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
+     - echo build-arg "project=${asset_name}"
+     - echo build-arg "rpm_release=$rpm_release"
+     - echo build-arg "spec_file=${namespace}${asset_name}.spec"
+     - echo build-arg "arch=$arch"
+     - echo build-arg "other_repos=$redhawk_repo $asset_repo" .
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
                           --build-arg "project=${asset_name}"
