@@ -138,3679 +138,879 @@ deploy:
     - repomanage --keep=2 --old $arch| xargs rm -f; createrepo --update $arch
     - /usr/bin/s3cmd sync -F -v --delete-removed $arch s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/rh${short_version}/$dist/  && s3cmd setacl -v s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/rh${short_version}/$dist --acl-public --recursive || true
 
-package:el6:rh2.0:AmFmPmBasebandDemod:
+package:el6:rh2.0:RedhawkDevUtils:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
+    asset_name: RedhawkDevUtils
+    lowercase_asset_name: redhawkdevutils
   <<: *package
 
-package:el6:rh2.0:AmFmPmBasebandDemod:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  <<: *package
-
-package:el7:rh2.0:AmFmPmBasebandDemod:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  <<: *package
-
-package:el6:rh2.2:AmFmPmBasebandDemod:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  <<: *package
-
-package:el6:rh2.2:AmFmPmBasebandDemod:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  <<: *package
-
-test:el6:rh2.0:AmFmPmBasebandDemod:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  <<: *test
-
-test:el6:rh2.0:AmFmPmBasebandDemod:
+package:el6:rh2.0:RedhawkDevUtils:
   variables:
     dist: el6
     arch: i686
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  <<: *test
+    asset_name: RedhawkDevUtils
+    lowercase_asset_name: redhawkdevutils
+  <<: *package
 
-test:el7:rh2.0:AmFmPmBasebandDemod:
+package:el7:rh2.0:RedhawkDevUtils:
   variables:
     dist: el7
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  <<: *test
+    asset_name: RedhawkDevUtils
+    lowercase_asset_name: redhawkdevutils
+  <<: *package
 
-test:el6:rh2.2:AmFmPmBasebandDemod:
+package:el6:rh2.2:RedhawkDevUtils:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  <<: *test
+    asset_name: RedhawkDevUtils
+    lowercase_asset_name: redhawkdevutils
+  <<: *package
 
-test:el6:rh2.2:AmFmPmBasebandDemod:
+package:el6:rh2.2:RedhawkDevUtils:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  <<: *test
+    asset_name: RedhawkDevUtils
+    lowercase_asset_name: redhawkdevutils
+  <<: *package
 
-deploy-el6-2.0:AmFmPmBasebandDemod:
+test:el6:rh2.0:RedhawkDevUtils:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  dependencies:
-    - package:el6:rh2.0:AmFmPmBasebandDemod
-  <<: *s3
+    asset_name: RedhawkDevUtils
+    lowercase_asset_name: redhawkdevutils
+  <<: *test
 
-deploy-el6-2.0:AmFmPmBasebandDemod:
+test:el6:rh2.0:RedhawkDevUtils:
   variables:
     dist: el6
     arch: i686
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  dependencies:
-    - package:el6:rh2.0:AmFmPmBasebandDemod
-  <<: *s3
+    asset_name: RedhawkDevUtils
+    lowercase_asset_name: redhawkdevutils
+  <<: *test
 
-deploy-el7-2.0:AmFmPmBasebandDemod:
+test:el7:rh2.0:RedhawkDevUtils:
   variables:
     dist: el7
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  dependencies:
-    - package:el7:rh2.0:AmFmPmBasebandDemod
-  <<: *s3
+    asset_name: RedhawkDevUtils
+    lowercase_asset_name: redhawkdevutils
+  <<: *test
 
-deploy-el6-2.2:AmFmPmBasebandDemod:
+test:el6:rh2.2:RedhawkDevUtils:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  dependencies:
-    - package:el6:rh2.2:AmFmPmBasebandDemod
-  <<: *s3
+    asset_name: RedhawkDevUtils
+    lowercase_asset_name: redhawkdevutils
+  <<: *test
 
-deploy-el6-2.2:AmFmPmBasebandDemod:
+test:el6:rh2.2:RedhawkDevUtils:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  dependencies:
-    - package:el6:rh2.2:AmFmPmBasebandDemod
-  <<: *s3
+    asset_name: RedhawkDevUtils
+    lowercase_asset_name: redhawkdevutils
+  <<: *test
 
-package:el6:rh2.0:ArbitraryRateResampler:
+deploy-el6-2.0:RedhawkDevUtils:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  <<: *package
+    asset_name: RedhawkDevUtils
+    lowercase_asset_name: redhawkdevutils
+  dependencies:
+    - package:el6:rh2.0:RedhawkDevUtils
+  <<: *s3
 
-package:el6:rh2.0:ArbitraryRateResampler:
+deploy-el6-2.0:RedhawkDevUtils:
   variables:
     dist: el6
     arch: i686
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  <<: *package
+    asset_name: RedhawkDevUtils
+    lowercase_asset_name: redhawkdevutils
+  dependencies:
+    - package:el6:rh2.0:RedhawkDevUtils
+  <<: *s3
 
-package:el7:rh2.0:ArbitraryRateResampler:
+deploy-el7-2.0:RedhawkDevUtils:
   variables:
     dist: el7
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  <<: *package
+    asset_name: RedhawkDevUtils
+    lowercase_asset_name: redhawkdevutils
+  dependencies:
+    - package:el7:rh2.0:RedhawkDevUtils
+  <<: *s3
 
-package:el6:rh2.2:ArbitraryRateResampler:
+deploy-el6-2.2:RedhawkDevUtils:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  <<: *package
+    asset_name: RedhawkDevUtils
+    lowercase_asset_name: redhawkdevutils
+  dependencies:
+    - package:el6:rh2.2:RedhawkDevUtils
+  <<: *s3
 
-package:el6:rh2.2:ArbitraryRateResampler:
+deploy-el6-2.2:RedhawkDevUtils:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  <<: *package
+    asset_name: RedhawkDevUtils
+    lowercase_asset_name: redhawkdevutils
+  dependencies:
+    - package:el6:rh2.2:RedhawkDevUtils
+  <<: *s3
 
-test:el6:rh2.0:ArbitraryRateResampler:
+package:el6:rh2.0:VITA49:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  <<: *test
+    asset_name: VITA49
+    lowercase_asset_name: vita49
+  <<: *package
 
-test:el6:rh2.0:ArbitraryRateResampler:
+package:el6:rh2.0:VITA49:
   variables:
     dist: el6
     arch: i686
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  <<: *test
+    asset_name: VITA49
+    lowercase_asset_name: vita49
+  <<: *package
 
-test:el7:rh2.0:ArbitraryRateResampler:
+package:el7:rh2.0:VITA49:
   variables:
     dist: el7
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  <<: *test
+    asset_name: VITA49
+    lowercase_asset_name: vita49
+  <<: *package
 
-test:el6:rh2.2:ArbitraryRateResampler:
+package:el6:rh2.2:VITA49:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  <<: *test
+    asset_name: VITA49
+    lowercase_asset_name: vita49
+  <<: *package
 
-test:el6:rh2.2:ArbitraryRateResampler:
+package:el6:rh2.2:VITA49:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  <<: *test
+    asset_name: VITA49
+    lowercase_asset_name: vita49
+  <<: *package
 
-deploy-el6-2.0:ArbitraryRateResampler:
+test:el6:rh2.0:VITA49:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  dependencies:
-    - package:el6:rh2.0:ArbitraryRateResampler
-  <<: *s3
+    asset_name: VITA49
+    lowercase_asset_name: vita49
+  <<: *test
 
-deploy-el6-2.0:ArbitraryRateResampler:
+test:el6:rh2.0:VITA49:
   variables:
     dist: el6
     arch: i686
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  dependencies:
-    - package:el6:rh2.0:ArbitraryRateResampler
-  <<: *s3
+    asset_name: VITA49
+    lowercase_asset_name: vita49
+  <<: *test
 
-deploy-el7-2.0:ArbitraryRateResampler:
+test:el7:rh2.0:VITA49:
   variables:
     dist: el7
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  dependencies:
-    - package:el7:rh2.0:ArbitraryRateResampler
-  <<: *s3
+    asset_name: VITA49
+    lowercase_asset_name: vita49
+  <<: *test
 
-deploy-el6-2.2:ArbitraryRateResampler:
+test:el6:rh2.2:VITA49:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  dependencies:
-    - package:el6:rh2.2:ArbitraryRateResampler
-  <<: *s3
+    asset_name: VITA49
+    lowercase_asset_name: vita49
+  <<: *test
 
-deploy-el6-2.2:ArbitraryRateResampler:
+test:el6:rh2.2:VITA49:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  dependencies:
-    - package:el6:rh2.2:ArbitraryRateResampler
-  <<: *s3
+    asset_name: VITA49
+    lowercase_asset_name: vita49
+  <<: *test
 
-package:el6:rh2.0:FileReader:
+deploy-el6-2.0:VITA49:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileReader
-    lowercase_asset_name: filereader
-  <<: *package
+    asset_name: VITA49
+    lowercase_asset_name: vita49
+  dependencies:
+    - package:el6:rh2.0:VITA49
+  <<: *s3
 
-package:el6:rh2.0:FileReader:
+deploy-el6-2.0:VITA49:
   variables:
     dist: el6
     arch: i686
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileReader
-    lowercase_asset_name: filereader
-  <<: *package
+    asset_name: VITA49
+    lowercase_asset_name: vita49
+  dependencies:
+    - package:el6:rh2.0:VITA49
+  <<: *s3
 
-package:el7:rh2.0:FileReader:
+deploy-el7-2.0:VITA49:
   variables:
     dist: el7
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileReader
-    lowercase_asset_name: filereader
-  <<: *package
+    asset_name: VITA49
+    lowercase_asset_name: vita49
+  dependencies:
+    - package:el7:rh2.0:VITA49
+  <<: *s3
 
-package:el6:rh2.2:FileReader:
+deploy-el6-2.2:VITA49:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: FileReader
-    lowercase_asset_name: filereader
-  <<: *package
+    asset_name: VITA49
+    lowercase_asset_name: vita49
+  dependencies:
+    - package:el6:rh2.2:VITA49
+  <<: *s3
 
-package:el6:rh2.2:FileReader:
+deploy-el6-2.2:VITA49:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: FileReader
-    lowercase_asset_name: filereader
-  <<: *package
+    asset_name: VITA49
+    lowercase_asset_name: vita49
+  dependencies:
+    - package:el6:rh2.2:VITA49
+  <<: *s3
 
-test:el6:rh2.0:FileReader:
+package:el6:rh2.0:blueFileLib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileReader
-    lowercase_asset_name: filereader
-  <<: *test
+    asset_name: blueFileLib
+    lowercase_asset_name: bluefilelib
+  <<: *package
 
-test:el6:rh2.0:FileReader:
+package:el6:rh2.0:blueFileLib:
   variables:
     dist: el6
     arch: i686
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileReader
-    lowercase_asset_name: filereader
-  <<: *test
+    asset_name: blueFileLib
+    lowercase_asset_name: bluefilelib
+  <<: *package
 
-test:el7:rh2.0:FileReader:
+package:el7:rh2.0:blueFileLib:
   variables:
     dist: el7
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileReader
-    lowercase_asset_name: filereader
-  <<: *test
+    asset_name: blueFileLib
+    lowercase_asset_name: bluefilelib
+  <<: *package
 
-test:el6:rh2.2:FileReader:
+package:el6:rh2.2:blueFileLib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: FileReader
-    lowercase_asset_name: filereader
-  <<: *test
+    asset_name: blueFileLib
+    lowercase_asset_name: bluefilelib
+  <<: *package
 
-test:el6:rh2.2:FileReader:
+package:el6:rh2.2:blueFileLib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: FileReader
-    lowercase_asset_name: filereader
-  <<: *test
+    asset_name: blueFileLib
+    lowercase_asset_name: bluefilelib
+  <<: *package
 
-deploy-el6-2.0:FileReader:
+test:el6:rh2.0:blueFileLib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileReader
-    lowercase_asset_name: filereader
-  dependencies:
-    - package:el6:rh2.0:FileReader
-  <<: *s3
+    asset_name: blueFileLib
+    lowercase_asset_name: bluefilelib
+  <<: *test
 
-deploy-el6-2.0:FileReader:
+test:el6:rh2.0:blueFileLib:
   variables:
     dist: el6
     arch: i686
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileReader
-    lowercase_asset_name: filereader
-  dependencies:
-    - package:el6:rh2.0:FileReader
-  <<: *s3
+    asset_name: blueFileLib
+    lowercase_asset_name: bluefilelib
+  <<: *test
 
-deploy-el7-2.0:FileReader:
+test:el7:rh2.0:blueFileLib:
   variables:
     dist: el7
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileReader
-    lowercase_asset_name: filereader
-  dependencies:
-    - package:el7:rh2.0:FileReader
-  <<: *s3
+    asset_name: blueFileLib
+    lowercase_asset_name: bluefilelib
+  <<: *test
 
-deploy-el6-2.2:FileReader:
+test:el6:rh2.2:blueFileLib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: FileReader
-    lowercase_asset_name: filereader
-  dependencies:
-    - package:el6:rh2.2:FileReader
-  <<: *s3
+    asset_name: blueFileLib
+    lowercase_asset_name: bluefilelib
+  <<: *test
 
-deploy-el6-2.2:FileReader:
+test:el6:rh2.2:blueFileLib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: FileReader
-    lowercase_asset_name: filereader
-  dependencies:
-    - package:el6:rh2.2:FileReader
-  <<: *s3
+    asset_name: blueFileLib
+    lowercase_asset_name: bluefilelib
+  <<: *test
 
-package:el6:rh2.0:FileWriter:
+deploy-el6-2.0:blueFileLib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileWriter
-    lowercase_asset_name: filewriter
-  <<: *package
+    asset_name: blueFileLib
+    lowercase_asset_name: bluefilelib
+  dependencies:
+    - package:el6:rh2.0:blueFileLib
+  <<: *s3
 
-package:el6:rh2.0:FileWriter:
+deploy-el6-2.0:blueFileLib:
   variables:
     dist: el6
     arch: i686
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileWriter
-    lowercase_asset_name: filewriter
-  <<: *package
+    asset_name: blueFileLib
+    lowercase_asset_name: bluefilelib
+  dependencies:
+    - package:el6:rh2.0:blueFileLib
+  <<: *s3
 
-package:el7:rh2.0:FileWriter:
+deploy-el7-2.0:blueFileLib:
   variables:
     dist: el7
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileWriter
-    lowercase_asset_name: filewriter
-  <<: *package
+    asset_name: blueFileLib
+    lowercase_asset_name: bluefilelib
+  dependencies:
+    - package:el7:rh2.0:blueFileLib
+  <<: *s3
 
-package:el6:rh2.2:FileWriter:
+deploy-el6-2.2:blueFileLib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: FileWriter
-    lowercase_asset_name: filewriter
-  <<: *package
+    asset_name: blueFileLib
+    lowercase_asset_name: bluefilelib
+  dependencies:
+    - package:el6:rh2.2:blueFileLib
+  <<: *s3
 
-package:el6:rh2.2:FileWriter:
+deploy-el6-2.2:blueFileLib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: FileWriter
-    lowercase_asset_name: filewriter
-  <<: *package
+    asset_name: blueFileLib
+    lowercase_asset_name: bluefilelib
+  dependencies:
+    - package:el6:rh2.2:blueFileLib
+  <<: *s3
 
-test:el6:rh2.0:FileWriter:
+package:el6:rh2.0:dsp:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileWriter
-    lowercase_asset_name: filewriter
-  <<: *test
+    asset_name: dsp
+    lowercase_asset_name: dsp
+  <<: *package
 
-test:el6:rh2.0:FileWriter:
+package:el6:rh2.0:dsp:
   variables:
     dist: el6
     arch: i686
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileWriter
-    lowercase_asset_name: filewriter
-  <<: *test
+    asset_name: dsp
+    lowercase_asset_name: dsp
+  <<: *package
 
-test:el7:rh2.0:FileWriter:
+package:el7:rh2.0:dsp:
   variables:
     dist: el7
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileWriter
-    lowercase_asset_name: filewriter
-  <<: *test
+    asset_name: dsp
+    lowercase_asset_name: dsp
+  <<: *package
 
-test:el6:rh2.2:FileWriter:
+package:el6:rh2.2:dsp:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: FileWriter
-    lowercase_asset_name: filewriter
-  <<: *test
+    asset_name: dsp
+    lowercase_asset_name: dsp
+  <<: *package
 
-test:el6:rh2.2:FileWriter:
+package:el6:rh2.2:dsp:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: FileWriter
-    lowercase_asset_name: filewriter
-  <<: *test
+    asset_name: dsp
+    lowercase_asset_name: dsp
+  <<: *package
 
-deploy-el6-2.0:FileWriter:
+test:el6:rh2.0:dsp:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileWriter
-    lowercase_asset_name: filewriter
-  dependencies:
-    - package:el6:rh2.0:FileWriter
-  <<: *s3
+    asset_name: dsp
+    lowercase_asset_name: dsp
+  <<: *test
 
-deploy-el6-2.0:FileWriter:
+test:el6:rh2.0:dsp:
   variables:
     dist: el6
     arch: i686
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileWriter
-    lowercase_asset_name: filewriter
-  dependencies:
-    - package:el6:rh2.0:FileWriter
-  <<: *s3
+    asset_name: dsp
+    lowercase_asset_name: dsp
+  <<: *test
 
-deploy-el7-2.0:FileWriter:
+test:el7:rh2.0:dsp:
   variables:
     dist: el7
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: FileWriter
-    lowercase_asset_name: filewriter
-  dependencies:
-    - package:el7:rh2.0:FileWriter
-  <<: *s3
+    asset_name: dsp
+    lowercase_asset_name: dsp
+  <<: *test
 
-deploy-el6-2.2:FileWriter:
+test:el6:rh2.2:dsp:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: FileWriter
-    lowercase_asset_name: filewriter
-  dependencies:
-    - package:el6:rh2.2:FileWriter
-  <<: *s3
+    asset_name: dsp
+    lowercase_asset_name: dsp
+  <<: *test
 
-deploy-el6-2.2:FileWriter:
+test:el6:rh2.2:dsp:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: FileWriter
-    lowercase_asset_name: filewriter
-  dependencies:
-    - package:el6:rh2.2:FileWriter
-  <<: *s3
+    asset_name: dsp
+    lowercase_asset_name: dsp
+  <<: *test
 
-package:el6:rh2.0:HardLimit:
+deploy-el6-2.0:dsp:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: HardLimit
-    lowercase_asset_name: hardlimit
-  <<: *package
+    asset_name: dsp
+    lowercase_asset_name: dsp
+  dependencies:
+    - package:el6:rh2.0:dsp
+  <<: *s3
 
-package:el6:rh2.0:HardLimit:
+deploy-el6-2.0:dsp:
   variables:
     dist: el6
     arch: i686
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: HardLimit
-    lowercase_asset_name: hardlimit
-  <<: *package
+    asset_name: dsp
+    lowercase_asset_name: dsp
+  dependencies:
+    - package:el6:rh2.0:dsp
+  <<: *s3
 
-package:el7:rh2.0:HardLimit:
+deploy-el7-2.0:dsp:
   variables:
     dist: el7
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: HardLimit
-    lowercase_asset_name: hardlimit
-  <<: *package
+    asset_name: dsp
+    lowercase_asset_name: dsp
+  dependencies:
+    - package:el7:rh2.0:dsp
+  <<: *s3
 
-package:el6:rh2.2:HardLimit:
+deploy-el6-2.2:dsp:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: HardLimit
-    lowercase_asset_name: hardlimit
-  <<: *package
+    asset_name: dsp
+    lowercase_asset_name: dsp
+  dependencies:
+    - package:el6:rh2.2:dsp
+  <<: *s3
 
-package:el6:rh2.2:HardLimit:
+deploy-el6-2.2:dsp:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: HardLimit
-    lowercase_asset_name: hardlimit
-  <<: *package
+    asset_name: dsp
+    lowercase_asset_name: dsp
+  dependencies:
+    - package:el6:rh2.2:dsp
+  <<: *s3
 
-test:el6:rh2.0:HardLimit:
+package:el6:rh2.0:fftlib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: HardLimit
-    lowercase_asset_name: hardlimit
-  <<: *test
+    asset_name: fftlib
+    lowercase_asset_name: fftlib
+  <<: *package
 
-test:el6:rh2.0:HardLimit:
+package:el6:rh2.0:fftlib:
   variables:
     dist: el6
     arch: i686
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: HardLimit
-    lowercase_asset_name: hardlimit
-  <<: *test
+    asset_name: fftlib
+    lowercase_asset_name: fftlib
+  <<: *package
 
-test:el7:rh2.0:HardLimit:
+package:el7:rh2.0:fftlib:
   variables:
     dist: el7
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: HardLimit
-    lowercase_asset_name: hardlimit
-  <<: *test
+    asset_name: fftlib
+    lowercase_asset_name: fftlib
+  <<: *package
 
-test:el6:rh2.2:HardLimit:
+package:el6:rh2.2:fftlib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: HardLimit
-    lowercase_asset_name: hardlimit
-  <<: *test
+    asset_name: fftlib
+    lowercase_asset_name: fftlib
+  <<: *package
 
-test:el6:rh2.2:HardLimit:
+package:el6:rh2.2:fftlib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: HardLimit
-    lowercase_asset_name: hardlimit
-  <<: *test
+    asset_name: fftlib
+    lowercase_asset_name: fftlib
+  <<: *package
 
-deploy-el6-2.0:HardLimit:
+test:el6:rh2.0:fftlib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: HardLimit
-    lowercase_asset_name: hardlimit
-  dependencies:
-    - package:el6:rh2.0:HardLimit
-  <<: *s3
+    asset_name: fftlib
+    lowercase_asset_name: fftlib
+  <<: *test
 
-deploy-el6-2.0:HardLimit:
+test:el6:rh2.0:fftlib:
   variables:
     dist: el6
     arch: i686
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: HardLimit
-    lowercase_asset_name: hardlimit
-  dependencies:
-    - package:el6:rh2.0:HardLimit
-  <<: *s3
+    asset_name: fftlib
+    lowercase_asset_name: fftlib
+  <<: *test
 
-deploy-el7-2.0:HardLimit:
+test:el7:rh2.0:fftlib:
   variables:
     dist: el7
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: HardLimit
-    lowercase_asset_name: hardlimit
-  dependencies:
-    - package:el7:rh2.0:HardLimit
-  <<: *s3
+    asset_name: fftlib
+    lowercase_asset_name: fftlib
+  <<: *test
 
-deploy-el6-2.2:HardLimit:
+test:el6:rh2.2:fftlib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: HardLimit
-    lowercase_asset_name: hardlimit
-  dependencies:
-    - package:el6:rh2.2:HardLimit
-  <<: *s3
+    asset_name: fftlib
+    lowercase_asset_name: fftlib
+  <<: *test
 
-deploy-el6-2.2:HardLimit:
+test:el6:rh2.2:fftlib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: HardLimit
-    lowercase_asset_name: hardlimit
-  dependencies:
-    - package:el6:rh2.2:HardLimit
-  <<: *s3
+    asset_name: fftlib
+    lowercase_asset_name: fftlib
+  <<: *test
 
-package:el6:rh2.0:RBDSDecoder:
+deploy-el6-2.0:fftlib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: RBDSDecoder
-    lowercase_asset_name: rbdsdecoder
-  <<: *package
+    asset_name: fftlib
+    lowercase_asset_name: fftlib
+  dependencies:
+    - package:el6:rh2.0:fftlib
+  <<: *s3
 
-package:el6:rh2.0:RBDSDecoder:
+deploy-el6-2.0:fftlib:
   variables:
     dist: el6
     arch: i686
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: RBDSDecoder
-    lowercase_asset_name: rbdsdecoder
-  <<: *package
+    asset_name: fftlib
+    lowercase_asset_name: fftlib
+  dependencies:
+    - package:el6:rh2.0:fftlib
+  <<: *s3
 
-package:el7:rh2.0:RBDSDecoder:
+deploy-el7-2.0:fftlib:
   variables:
     dist: el7
     arch: x86_64
     latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
-    asset_name: RBDSDecoder
-    lowercase_asset_name: rbdsdecoder
-  <<: *package
-
-package:el6:rh2.2:RBDSDecoder:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: RBDSDecoder
-    lowercase_asset_name: rbdsdecoder
-  <<: *package
-
-package:el6:rh2.2:RBDSDecoder:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: RBDSDecoder
-    lowercase_asset_name: rbdsdecoder
-  <<: *package
-
-test:el6:rh2.0:RBDSDecoder:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: RBDSDecoder
-    lowercase_asset_name: rbdsdecoder
-  <<: *test
-
-test:el6:rh2.0:RBDSDecoder:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: RBDSDecoder
-    lowercase_asset_name: rbdsdecoder
-  <<: *test
-
-test:el7:rh2.0:RBDSDecoder:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: RBDSDecoder
-    lowercase_asset_name: rbdsdecoder
-  <<: *test
-
-test:el6:rh2.2:RBDSDecoder:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: RBDSDecoder
-    lowercase_asset_name: rbdsdecoder
-  <<: *test
-
-test:el6:rh2.2:RBDSDecoder:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: RBDSDecoder
-    lowercase_asset_name: rbdsdecoder
-  <<: *test
-
-deploy-el6-2.0:RBDSDecoder:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: RBDSDecoder
-    lowercase_asset_name: rbdsdecoder
-  dependencies:
-    - package:el6:rh2.0:RBDSDecoder
-  <<: *s3
-
-deploy-el6-2.0:RBDSDecoder:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: RBDSDecoder
-    lowercase_asset_name: rbdsdecoder
-  dependencies:
-    - package:el6:rh2.0:RBDSDecoder
-  <<: *s3
-
-deploy-el7-2.0:RBDSDecoder:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: RBDSDecoder
-    lowercase_asset_name: rbdsdecoder
-  dependencies:
-    - package:el7:rh2.0:RBDSDecoder
-  <<: *s3
-
-deploy-el6-2.2:RBDSDecoder:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: RBDSDecoder
-    lowercase_asset_name: rbdsdecoder
-  dependencies:
-    - package:el6:rh2.2:RBDSDecoder
-  <<: *s3
-
-deploy-el6-2.2:RBDSDecoder:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: RBDSDecoder
-    lowercase_asset_name: rbdsdecoder
-  dependencies:
-    - package:el6:rh2.2:RBDSDecoder
-  <<: *s3
-
-package:el6:rh2.0:SigGen:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SigGen
-    lowercase_asset_name: siggen
-  <<: *package
-
-package:el6:rh2.0:SigGen:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SigGen
-    lowercase_asset_name: siggen
-  <<: *package
-
-package:el7:rh2.0:SigGen:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SigGen
-    lowercase_asset_name: siggen
-  <<: *package
-
-package:el6:rh2.2:SigGen:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SigGen
-    lowercase_asset_name: siggen
-  <<: *package
-
-package:el6:rh2.2:SigGen:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SigGen
-    lowercase_asset_name: siggen
-  <<: *package
-
-test:el6:rh2.0:SigGen:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SigGen
-    lowercase_asset_name: siggen
-  <<: *test
-
-test:el6:rh2.0:SigGen:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SigGen
-    lowercase_asset_name: siggen
-  <<: *test
-
-test:el7:rh2.0:SigGen:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SigGen
-    lowercase_asset_name: siggen
-  <<: *test
-
-test:el6:rh2.2:SigGen:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SigGen
-    lowercase_asset_name: siggen
-  <<: *test
-
-test:el6:rh2.2:SigGen:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SigGen
-    lowercase_asset_name: siggen
-  <<: *test
-
-deploy-el6-2.0:SigGen:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SigGen
-    lowercase_asset_name: siggen
-  dependencies:
-    - package:el6:rh2.0:SigGen
-  <<: *s3
-
-deploy-el6-2.0:SigGen:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SigGen
-    lowercase_asset_name: siggen
-  dependencies:
-    - package:el6:rh2.0:SigGen
-  <<: *s3
-
-deploy-el7-2.0:SigGen:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SigGen
-    lowercase_asset_name: siggen
-  dependencies:
-    - package:el7:rh2.0:SigGen
-  <<: *s3
-
-deploy-el6-2.2:SigGen:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SigGen
-    lowercase_asset_name: siggen
-  dependencies:
-    - package:el6:rh2.2:SigGen
-  <<: *s3
-
-deploy-el6-2.2:SigGen:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SigGen
-    lowercase_asset_name: siggen
-  dependencies:
-    - package:el6:rh2.2:SigGen
-  <<: *s3
-
-package:el6:rh2.0:SinkSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkSDDS
-    lowercase_asset_name: sinksdds
-  <<: *package
-
-package:el6:rh2.0:SinkSDDS:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkSDDS
-    lowercase_asset_name: sinksdds
-  <<: *package
-
-package:el7:rh2.0:SinkSDDS:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkSDDS
-    lowercase_asset_name: sinksdds
-  <<: *package
-
-package:el6:rh2.2:SinkSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SinkSDDS
-    lowercase_asset_name: sinksdds
-  <<: *package
-
-package:el6:rh2.2:SinkSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SinkSDDS
-    lowercase_asset_name: sinksdds
-  <<: *package
-
-test:el6:rh2.0:SinkSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkSDDS
-    lowercase_asset_name: sinksdds
-  <<: *test
-
-test:el6:rh2.0:SinkSDDS:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkSDDS
-    lowercase_asset_name: sinksdds
-  <<: *test
-
-test:el7:rh2.0:SinkSDDS:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkSDDS
-    lowercase_asset_name: sinksdds
-  <<: *test
-
-test:el6:rh2.2:SinkSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SinkSDDS
-    lowercase_asset_name: sinksdds
-  <<: *test
-
-test:el6:rh2.2:SinkSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SinkSDDS
-    lowercase_asset_name: sinksdds
-  <<: *test
-
-deploy-el6-2.0:SinkSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkSDDS
-    lowercase_asset_name: sinksdds
-  dependencies:
-    - package:el6:rh2.0:SinkSDDS
-  <<: *s3
-
-deploy-el6-2.0:SinkSDDS:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkSDDS
-    lowercase_asset_name: sinksdds
-  dependencies:
-    - package:el6:rh2.0:SinkSDDS
-  <<: *s3
-
-deploy-el7-2.0:SinkSDDS:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkSDDS
-    lowercase_asset_name: sinksdds
-  dependencies:
-    - package:el7:rh2.0:SinkSDDS
-  <<: *s3
-
-deploy-el6-2.2:SinkSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SinkSDDS
-    lowercase_asset_name: sinksdds
-  dependencies:
-    - package:el6:rh2.2:SinkSDDS
-  <<: *s3
-
-deploy-el6-2.2:SinkSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SinkSDDS
-    lowercase_asset_name: sinksdds
-  dependencies:
-    - package:el6:rh2.2:SinkSDDS
-  <<: *s3
-
-package:el6:rh2.0:SinkVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkVITA49
-    lowercase_asset_name: sinkvita49
-  <<: *package
-
-package:el6:rh2.0:SinkVITA49:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkVITA49
-    lowercase_asset_name: sinkvita49
-  <<: *package
-
-package:el7:rh2.0:SinkVITA49:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkVITA49
-    lowercase_asset_name: sinkvita49
-  <<: *package
-
-package:el6:rh2.2:SinkVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SinkVITA49
-    lowercase_asset_name: sinkvita49
-  <<: *package
-
-package:el6:rh2.2:SinkVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SinkVITA49
-    lowercase_asset_name: sinkvita49
-  <<: *package
-
-test:el6:rh2.0:SinkVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkVITA49
-    lowercase_asset_name: sinkvita49
-  <<: *test
-
-test:el6:rh2.0:SinkVITA49:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkVITA49
-    lowercase_asset_name: sinkvita49
-  <<: *test
-
-test:el7:rh2.0:SinkVITA49:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkVITA49
-    lowercase_asset_name: sinkvita49
-  <<: *test
-
-test:el6:rh2.2:SinkVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SinkVITA49
-    lowercase_asset_name: sinkvita49
-  <<: *test
-
-test:el6:rh2.2:SinkVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SinkVITA49
-    lowercase_asset_name: sinkvita49
-  <<: *test
-
-deploy-el6-2.0:SinkVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkVITA49
-    lowercase_asset_name: sinkvita49
-  dependencies:
-    - package:el6:rh2.0:SinkVITA49
-  <<: *s3
-
-deploy-el6-2.0:SinkVITA49:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkVITA49
-    lowercase_asset_name: sinkvita49
-  dependencies:
-    - package:el6:rh2.0:SinkVITA49
-  <<: *s3
-
-deploy-el7-2.0:SinkVITA49:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SinkVITA49
-    lowercase_asset_name: sinkvita49
-  dependencies:
-    - package:el7:rh2.0:SinkVITA49
-  <<: *s3
-
-deploy-el6-2.2:SinkVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SinkVITA49
-    lowercase_asset_name: sinkvita49
-  dependencies:
-    - package:el6:rh2.2:SinkVITA49
-  <<: *s3
-
-deploy-el6-2.2:SinkVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SinkVITA49
-    lowercase_asset_name: sinkvita49
-  dependencies:
-    - package:el6:rh2.2:SinkVITA49
-  <<: *s3
-
-package:el6:rh2.0:SourceSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceSDDS
-    lowercase_asset_name: sourcesdds
-  <<: *package
-
-package:el6:rh2.0:SourceSDDS:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceSDDS
-    lowercase_asset_name: sourcesdds
-  <<: *package
-
-package:el7:rh2.0:SourceSDDS:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceSDDS
-    lowercase_asset_name: sourcesdds
-  <<: *package
-
-package:el6:rh2.2:SourceSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SourceSDDS
-    lowercase_asset_name: sourcesdds
-  <<: *package
-
-package:el6:rh2.2:SourceSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SourceSDDS
-    lowercase_asset_name: sourcesdds
-  <<: *package
-
-test:el6:rh2.0:SourceSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceSDDS
-    lowercase_asset_name: sourcesdds
-  <<: *test
-
-test:el6:rh2.0:SourceSDDS:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceSDDS
-    lowercase_asset_name: sourcesdds
-  <<: *test
-
-test:el7:rh2.0:SourceSDDS:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceSDDS
-    lowercase_asset_name: sourcesdds
-  <<: *test
-
-test:el6:rh2.2:SourceSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SourceSDDS
-    lowercase_asset_name: sourcesdds
-  <<: *test
-
-test:el6:rh2.2:SourceSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SourceSDDS
-    lowercase_asset_name: sourcesdds
-  <<: *test
-
-deploy-el6-2.0:SourceSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceSDDS
-    lowercase_asset_name: sourcesdds
-  dependencies:
-    - package:el6:rh2.0:SourceSDDS
-  <<: *s3
-
-deploy-el6-2.0:SourceSDDS:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceSDDS
-    lowercase_asset_name: sourcesdds
-  dependencies:
-    - package:el6:rh2.0:SourceSDDS
-  <<: *s3
-
-deploy-el7-2.0:SourceSDDS:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceSDDS
-    lowercase_asset_name: sourcesdds
-  dependencies:
-    - package:el7:rh2.0:SourceSDDS
-  <<: *s3
-
-deploy-el6-2.2:SourceSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SourceSDDS
-    lowercase_asset_name: sourcesdds
-  dependencies:
-    - package:el6:rh2.2:SourceSDDS
-  <<: *s3
-
-deploy-el6-2.2:SourceSDDS:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SourceSDDS
-    lowercase_asset_name: sourcesdds
-  dependencies:
-    - package:el6:rh2.2:SourceSDDS
-  <<: *s3
-
-package:el6:rh2.0:SourceVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceVITA49
-    lowercase_asset_name: sourcevita49
-  <<: *package
-
-package:el6:rh2.0:SourceVITA49:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceVITA49
-    lowercase_asset_name: sourcevita49
-  <<: *package
-
-package:el7:rh2.0:SourceVITA49:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceVITA49
-    lowercase_asset_name: sourcevita49
-  <<: *package
-
-package:el6:rh2.2:SourceVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SourceVITA49
-    lowercase_asset_name: sourcevita49
-  <<: *package
-
-package:el6:rh2.2:SourceVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SourceVITA49
-    lowercase_asset_name: sourcevita49
-  <<: *package
-
-test:el6:rh2.0:SourceVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceVITA49
-    lowercase_asset_name: sourcevita49
-  <<: *test
-
-test:el6:rh2.0:SourceVITA49:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceVITA49
-    lowercase_asset_name: sourcevita49
-  <<: *test
-
-test:el7:rh2.0:SourceVITA49:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceVITA49
-    lowercase_asset_name: sourcevita49
-  <<: *test
-
-test:el6:rh2.2:SourceVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SourceVITA49
-    lowercase_asset_name: sourcevita49
-  <<: *test
-
-test:el6:rh2.2:SourceVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SourceVITA49
-    lowercase_asset_name: sourcevita49
-  <<: *test
-
-deploy-el6-2.0:SourceVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceVITA49
-    lowercase_asset_name: sourcevita49
-  dependencies:
-    - package:el6:rh2.0:SourceVITA49
-  <<: *s3
-
-deploy-el6-2.0:SourceVITA49:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceVITA49
-    lowercase_asset_name: sourcevita49
-  dependencies:
-    - package:el6:rh2.0:SourceVITA49
-  <<: *s3
-
-deploy-el7-2.0:SourceVITA49:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: SourceVITA49
-    lowercase_asset_name: sourcevita49
-  dependencies:
-    - package:el7:rh2.0:SourceVITA49
-  <<: *s3
-
-deploy-el6-2.2:SourceVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SourceVITA49
-    lowercase_asset_name: sourcevita49
-  dependencies:
-    - package:el6:rh2.2:SourceVITA49
-  <<: *s3
-
-deploy-el6-2.2:SourceVITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: SourceVITA49
-    lowercase_asset_name: sourcevita49
-  dependencies:
-    - package:el6:rh2.2:SourceVITA49
-  <<: *s3
-
-package:el6:rh2.0:TuneFilterDecimate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: TuneFilterDecimate
-    lowercase_asset_name: tunefilterdecimate
-  <<: *package
-
-package:el6:rh2.0:TuneFilterDecimate:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: TuneFilterDecimate
-    lowercase_asset_name: tunefilterdecimate
-  <<: *package
-
-package:el7:rh2.0:TuneFilterDecimate:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: TuneFilterDecimate
-    lowercase_asset_name: tunefilterdecimate
-  <<: *package
-
-package:el6:rh2.2:TuneFilterDecimate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: TuneFilterDecimate
-    lowercase_asset_name: tunefilterdecimate
-  <<: *package
-
-package:el6:rh2.2:TuneFilterDecimate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: TuneFilterDecimate
-    lowercase_asset_name: tunefilterdecimate
-  <<: *package
-
-test:el6:rh2.0:TuneFilterDecimate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: TuneFilterDecimate
-    lowercase_asset_name: tunefilterdecimate
-  <<: *test
-
-test:el6:rh2.0:TuneFilterDecimate:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: TuneFilterDecimate
-    lowercase_asset_name: tunefilterdecimate
-  <<: *test
-
-test:el7:rh2.0:TuneFilterDecimate:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: TuneFilterDecimate
-    lowercase_asset_name: tunefilterdecimate
-  <<: *test
-
-test:el6:rh2.2:TuneFilterDecimate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: TuneFilterDecimate
-    lowercase_asset_name: tunefilterdecimate
-  <<: *test
-
-test:el6:rh2.2:TuneFilterDecimate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: TuneFilterDecimate
-    lowercase_asset_name: tunefilterdecimate
-  <<: *test
-
-deploy-el6-2.0:TuneFilterDecimate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: TuneFilterDecimate
-    lowercase_asset_name: tunefilterdecimate
-  dependencies:
-    - package:el6:rh2.0:TuneFilterDecimate
-  <<: *s3
-
-deploy-el6-2.0:TuneFilterDecimate:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: TuneFilterDecimate
-    lowercase_asset_name: tunefilterdecimate
-  dependencies:
-    - package:el6:rh2.0:TuneFilterDecimate
-  <<: *s3
-
-deploy-el7-2.0:TuneFilterDecimate:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: TuneFilterDecimate
-    lowercase_asset_name: tunefilterdecimate
-  dependencies:
-    - package:el7:rh2.0:TuneFilterDecimate
-  <<: *s3
-
-deploy-el6-2.2:TuneFilterDecimate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: TuneFilterDecimate
-    lowercase_asset_name: tunefilterdecimate
-  dependencies:
-    - package:el6:rh2.2:TuneFilterDecimate
-  <<: *s3
-
-deploy-el6-2.2:TuneFilterDecimate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: TuneFilterDecimate
-    lowercase_asset_name: tunefilterdecimate
-  dependencies:
-    - package:el6:rh2.2:TuneFilterDecimate
-  <<: *s3
-
-package:el6:rh2.0:agc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: agc
-    lowercase_asset_name: agc
-  <<: *package
-
-package:el6:rh2.0:agc:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: agc
-    lowercase_asset_name: agc
-  <<: *package
-
-package:el7:rh2.0:agc:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: agc
-    lowercase_asset_name: agc
-  <<: *package
-
-package:el6:rh2.2:agc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: agc
-    lowercase_asset_name: agc
-  <<: *package
-
-package:el6:rh2.2:agc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: agc
-    lowercase_asset_name: agc
-  <<: *package
-
-test:el6:rh2.0:agc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: agc
-    lowercase_asset_name: agc
-  <<: *test
-
-test:el6:rh2.0:agc:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: agc
-    lowercase_asset_name: agc
-  <<: *test
-
-test:el7:rh2.0:agc:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: agc
-    lowercase_asset_name: agc
-  <<: *test
-
-test:el6:rh2.2:agc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: agc
-    lowercase_asset_name: agc
-  <<: *test
-
-test:el6:rh2.2:agc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: agc
-    lowercase_asset_name: agc
-  <<: *test
-
-deploy-el6-2.0:agc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: agc
-    lowercase_asset_name: agc
-  dependencies:
-    - package:el6:rh2.0:agc
-  <<: *s3
-
-deploy-el6-2.0:agc:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: agc
-    lowercase_asset_name: agc
-  dependencies:
-    - package:el6:rh2.0:agc
-  <<: *s3
-
-deploy-el7-2.0:agc:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: agc
-    lowercase_asset_name: agc
-  dependencies:
-    - package:el7:rh2.0:agc
-  <<: *s3
-
-deploy-el6-2.2:agc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: agc
-    lowercase_asset_name: agc
-  dependencies:
-    - package:el6:rh2.2:agc
-  <<: *s3
-
-deploy-el6-2.2:agc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: agc
-    lowercase_asset_name: agc
-  dependencies:
-    - package:el6:rh2.2:agc
-  <<: *s3
-
-package:el6:rh2.0:autocorrelate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: autocorrelate
-    lowercase_asset_name: autocorrelate
-  <<: *package
-
-package:el6:rh2.0:autocorrelate:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: autocorrelate
-    lowercase_asset_name: autocorrelate
-  <<: *package
-
-package:el7:rh2.0:autocorrelate:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: autocorrelate
-    lowercase_asset_name: autocorrelate
-  <<: *package
-
-package:el6:rh2.2:autocorrelate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: autocorrelate
-    lowercase_asset_name: autocorrelate
-  <<: *package
-
-package:el6:rh2.2:autocorrelate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: autocorrelate
-    lowercase_asset_name: autocorrelate
-  <<: *package
-
-test:el6:rh2.0:autocorrelate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: autocorrelate
-    lowercase_asset_name: autocorrelate
-  <<: *test
-
-test:el6:rh2.0:autocorrelate:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: autocorrelate
-    lowercase_asset_name: autocorrelate
-  <<: *test
-
-test:el7:rh2.0:autocorrelate:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: autocorrelate
-    lowercase_asset_name: autocorrelate
-  <<: *test
-
-test:el6:rh2.2:autocorrelate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: autocorrelate
-    lowercase_asset_name: autocorrelate
-  <<: *test
-
-test:el6:rh2.2:autocorrelate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: autocorrelate
-    lowercase_asset_name: autocorrelate
-  <<: *test
-
-deploy-el6-2.0:autocorrelate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: autocorrelate
-    lowercase_asset_name: autocorrelate
-  dependencies:
-    - package:el6:rh2.0:autocorrelate
-  <<: *s3
-
-deploy-el6-2.0:autocorrelate:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: autocorrelate
-    lowercase_asset_name: autocorrelate
-  dependencies:
-    - package:el6:rh2.0:autocorrelate
-  <<: *s3
-
-deploy-el7-2.0:autocorrelate:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: autocorrelate
-    lowercase_asset_name: autocorrelate
-  dependencies:
-    - package:el7:rh2.0:autocorrelate
-  <<: *s3
-
-deploy-el6-2.2:autocorrelate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: autocorrelate
-    lowercase_asset_name: autocorrelate
-  dependencies:
-    - package:el6:rh2.2:autocorrelate
-  <<: *s3
-
-deploy-el6-2.2:autocorrelate:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: autocorrelate
-    lowercase_asset_name: autocorrelate
-  dependencies:
-    - package:el6:rh2.2:autocorrelate
-  <<: *s3
-
-package:el6:rh2.0:fastfilter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fastfilter
-    lowercase_asset_name: fastfilter
-  <<: *package
-
-package:el6:rh2.0:fastfilter:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fastfilter
-    lowercase_asset_name: fastfilter
-  <<: *package
-
-package:el7:rh2.0:fastfilter:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fastfilter
-    lowercase_asset_name: fastfilter
-  <<: *package
-
-package:el6:rh2.2:fastfilter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fastfilter
-    lowercase_asset_name: fastfilter
-  <<: *package
-
-package:el6:rh2.2:fastfilter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fastfilter
-    lowercase_asset_name: fastfilter
-  <<: *package
-
-test:el6:rh2.0:fastfilter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fastfilter
-    lowercase_asset_name: fastfilter
-  <<: *test
-
-test:el6:rh2.0:fastfilter:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fastfilter
-    lowercase_asset_name: fastfilter
-  <<: *test
-
-test:el7:rh2.0:fastfilter:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fastfilter
-    lowercase_asset_name: fastfilter
-  <<: *test
-
-test:el6:rh2.2:fastfilter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fastfilter
-    lowercase_asset_name: fastfilter
-  <<: *test
-
-test:el6:rh2.2:fastfilter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fastfilter
-    lowercase_asset_name: fastfilter
-  <<: *test
-
-deploy-el6-2.0:fastfilter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fastfilter
-    lowercase_asset_name: fastfilter
-  dependencies:
-    - package:el6:rh2.0:fastfilter
-  <<: *s3
-
-deploy-el6-2.0:fastfilter:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fastfilter
-    lowercase_asset_name: fastfilter
-  dependencies:
-    - package:el6:rh2.0:fastfilter
-  <<: *s3
-
-deploy-el7-2.0:fastfilter:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fastfilter
-    lowercase_asset_name: fastfilter
-  dependencies:
-    - package:el7:rh2.0:fastfilter
-  <<: *s3
-
-deploy-el6-2.2:fastfilter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fastfilter
-    lowercase_asset_name: fastfilter
-  dependencies:
-    - package:el6:rh2.2:fastfilter
-  <<: *s3
-
-deploy-el6-2.2:fastfilter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fastfilter
-    lowercase_asset_name: fastfilter
-  dependencies:
-    - package:el6:rh2.2:fastfilter
-  <<: *s3
-
-package:el6:rh2.0:fcalc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fcalc
-    lowercase_asset_name: fcalc
-  <<: *package
-
-package:el6:rh2.0:fcalc:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fcalc
-    lowercase_asset_name: fcalc
-  <<: *package
-
-package:el7:rh2.0:fcalc:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fcalc
-    lowercase_asset_name: fcalc
-  <<: *package
-
-package:el6:rh2.2:fcalc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fcalc
-    lowercase_asset_name: fcalc
-  <<: *package
-
-package:el6:rh2.2:fcalc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fcalc
-    lowercase_asset_name: fcalc
-  <<: *package
-
-test:el6:rh2.0:fcalc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fcalc
-    lowercase_asset_name: fcalc
-  <<: *test
-
-test:el6:rh2.0:fcalc:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fcalc
-    lowercase_asset_name: fcalc
-  <<: *test
-
-test:el7:rh2.0:fcalc:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fcalc
-    lowercase_asset_name: fcalc
-  <<: *test
-
-test:el6:rh2.2:fcalc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fcalc
-    lowercase_asset_name: fcalc
-  <<: *test
-
-test:el6:rh2.2:fcalc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fcalc
-    lowercase_asset_name: fcalc
-  <<: *test
-
-deploy-el6-2.0:fcalc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fcalc
-    lowercase_asset_name: fcalc
-  dependencies:
-    - package:el6:rh2.0:fcalc
-  <<: *s3
-
-deploy-el6-2.0:fcalc:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fcalc
-    lowercase_asset_name: fcalc
-  dependencies:
-    - package:el6:rh2.0:fcalc
-  <<: *s3
-
-deploy-el7-2.0:fcalc:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fcalc
-    lowercase_asset_name: fcalc
-  dependencies:
-    - package:el7:rh2.0:fcalc
-  <<: *s3
-
-deploy-el6-2.2:fcalc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fcalc
-    lowercase_asset_name: fcalc
-  dependencies:
-    - package:el6:rh2.2:fcalc
-  <<: *s3
-
-deploy-el6-2.2:fcalc:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fcalc
-    lowercase_asset_name: fcalc
-  dependencies:
-    - package:el6:rh2.2:fcalc
-  <<: *s3
-
-package:el6:rh2.0:psd:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psd
-    lowercase_asset_name: psd
-  <<: *package
-
-package:el6:rh2.0:psd:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psd
-    lowercase_asset_name: psd
-  <<: *package
-
-package:el7:rh2.0:psd:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psd
-    lowercase_asset_name: psd
-  <<: *package
-
-package:el6:rh2.2:psd:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: psd
-    lowercase_asset_name: psd
-  <<: *package
-
-package:el6:rh2.2:psd:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: psd
-    lowercase_asset_name: psd
-  <<: *package
-
-test:el6:rh2.0:psd:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psd
-    lowercase_asset_name: psd
-  <<: *test
-
-test:el6:rh2.0:psd:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psd
-    lowercase_asset_name: psd
-  <<: *test
-
-test:el7:rh2.0:psd:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psd
-    lowercase_asset_name: psd
-  <<: *test
-
-test:el6:rh2.2:psd:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: psd
-    lowercase_asset_name: psd
-  <<: *test
-
-test:el6:rh2.2:psd:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: psd
-    lowercase_asset_name: psd
-  <<: *test
-
-deploy-el6-2.0:psd:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psd
-    lowercase_asset_name: psd
-  dependencies:
-    - package:el6:rh2.0:psd
-  <<: *s3
-
-deploy-el6-2.0:psd:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psd
-    lowercase_asset_name: psd
-  dependencies:
-    - package:el6:rh2.0:psd
-  <<: *s3
-
-deploy-el7-2.0:psd:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psd
-    lowercase_asset_name: psd
-  dependencies:
-    - package:el7:rh2.0:psd
-  <<: *s3
-
-deploy-el6-2.2:psd:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: psd
-    lowercase_asset_name: psd
-  dependencies:
-    - package:el6:rh2.2:psd
-  <<: *s3
-
-deploy-el6-2.2:psd:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: psd
-    lowercase_asset_name: psd
-  dependencies:
-    - package:el6:rh2.2:psd
-  <<: *s3
-
-package:el6:rh2.0:psk_soft:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psk_soft
-    lowercase_asset_name: psk_soft
-  <<: *package
-
-package:el6:rh2.0:psk_soft:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psk_soft
-    lowercase_asset_name: psk_soft
-  <<: *package
-
-package:el7:rh2.0:psk_soft:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psk_soft
-    lowercase_asset_name: psk_soft
-  <<: *package
-
-package:el6:rh2.2:psk_soft:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: psk_soft
-    lowercase_asset_name: psk_soft
-  <<: *package
-
-package:el6:rh2.2:psk_soft:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: psk_soft
-    lowercase_asset_name: psk_soft
-  <<: *package
-
-test:el6:rh2.0:psk_soft:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psk_soft
-    lowercase_asset_name: psk_soft
-  <<: *test
-
-test:el6:rh2.0:psk_soft:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psk_soft
-    lowercase_asset_name: psk_soft
-  <<: *test
-
-test:el7:rh2.0:psk_soft:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psk_soft
-    lowercase_asset_name: psk_soft
-  <<: *test
-
-test:el6:rh2.2:psk_soft:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: psk_soft
-    lowercase_asset_name: psk_soft
-  <<: *test
-
-test:el6:rh2.2:psk_soft:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: psk_soft
-    lowercase_asset_name: psk_soft
-  <<: *test
-
-deploy-el6-2.0:psk_soft:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psk_soft
-    lowercase_asset_name: psk_soft
-  dependencies:
-    - package:el6:rh2.0:psk_soft
-  <<: *s3
-
-deploy-el6-2.0:psk_soft:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psk_soft
-    lowercase_asset_name: psk_soft
-  dependencies:
-    - package:el6:rh2.0:psk_soft
-  <<: *s3
-
-deploy-el7-2.0:psk_soft:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: psk_soft
-    lowercase_asset_name: psk_soft
-  dependencies:
-    - package:el7:rh2.0:psk_soft
-  <<: *s3
-
-deploy-el6-2.2:psk_soft:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: psk_soft
-    lowercase_asset_name: psk_soft
-  dependencies:
-    - package:el6:rh2.2:psk_soft
-  <<: *s3
-
-deploy-el6-2.2:psk_soft:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: psk_soft
-    lowercase_asset_name: psk_soft
-  dependencies:
-    - package:el6:rh2.2:psk_soft
-  <<: *s3
-
-package:el6:rh2.0:sinksocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sinksocket
-    lowercase_asset_name: sinksocket
-  <<: *package
-
-package:el6:rh2.0:sinksocket:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sinksocket
-    lowercase_asset_name: sinksocket
-  <<: *package
-
-package:el7:rh2.0:sinksocket:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sinksocket
-    lowercase_asset_name: sinksocket
-  <<: *package
-
-package:el6:rh2.2:sinksocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: sinksocket
-    lowercase_asset_name: sinksocket
-  <<: *package
-
-package:el6:rh2.2:sinksocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: sinksocket
-    lowercase_asset_name: sinksocket
-  <<: *package
-
-test:el6:rh2.0:sinksocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sinksocket
-    lowercase_asset_name: sinksocket
-  <<: *test
-
-test:el6:rh2.0:sinksocket:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sinksocket
-    lowercase_asset_name: sinksocket
-  <<: *test
-
-test:el7:rh2.0:sinksocket:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sinksocket
-    lowercase_asset_name: sinksocket
-  <<: *test
-
-test:el6:rh2.2:sinksocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: sinksocket
-    lowercase_asset_name: sinksocket
-  <<: *test
-
-test:el6:rh2.2:sinksocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: sinksocket
-    lowercase_asset_name: sinksocket
-  <<: *test
-
-deploy-el6-2.0:sinksocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sinksocket
-    lowercase_asset_name: sinksocket
-  dependencies:
-    - package:el6:rh2.0:sinksocket
-  <<: *s3
-
-deploy-el6-2.0:sinksocket:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sinksocket
-    lowercase_asset_name: sinksocket
-  dependencies:
-    - package:el6:rh2.0:sinksocket
-  <<: *s3
-
-deploy-el7-2.0:sinksocket:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sinksocket
-    lowercase_asset_name: sinksocket
-  dependencies:
-    - package:el7:rh2.0:sinksocket
-  <<: *s3
-
-deploy-el6-2.2:sinksocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: sinksocket
-    lowercase_asset_name: sinksocket
-  dependencies:
-    - package:el6:rh2.2:sinksocket
-  <<: *s3
-
-deploy-el6-2.2:sinksocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: sinksocket
-    lowercase_asset_name: sinksocket
-  dependencies:
-    - package:el6:rh2.2:sinksocket
-  <<: *s3
-
-package:el6:rh2.0:sourcesocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sourcesocket
-    lowercase_asset_name: sourcesocket
-  <<: *package
-
-package:el6:rh2.0:sourcesocket:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sourcesocket
-    lowercase_asset_name: sourcesocket
-  <<: *package
-
-package:el7:rh2.0:sourcesocket:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sourcesocket
-    lowercase_asset_name: sourcesocket
-  <<: *package
-
-package:el6:rh2.2:sourcesocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: sourcesocket
-    lowercase_asset_name: sourcesocket
-  <<: *package
-
-package:el6:rh2.2:sourcesocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: sourcesocket
-    lowercase_asset_name: sourcesocket
-  <<: *package
-
-test:el6:rh2.0:sourcesocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sourcesocket
-    lowercase_asset_name: sourcesocket
-  <<: *test
-
-test:el6:rh2.0:sourcesocket:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sourcesocket
-    lowercase_asset_name: sourcesocket
-  <<: *test
-
-test:el7:rh2.0:sourcesocket:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sourcesocket
-    lowercase_asset_name: sourcesocket
-  <<: *test
-
-test:el6:rh2.2:sourcesocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: sourcesocket
-    lowercase_asset_name: sourcesocket
-  <<: *test
-
-test:el6:rh2.2:sourcesocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: sourcesocket
-    lowercase_asset_name: sourcesocket
-  <<: *test
-
-deploy-el6-2.0:sourcesocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sourcesocket
-    lowercase_asset_name: sourcesocket
-  dependencies:
-    - package:el6:rh2.0:sourcesocket
-  <<: *s3
-
-deploy-el6-2.0:sourcesocket:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sourcesocket
-    lowercase_asset_name: sourcesocket
-  dependencies:
-    - package:el6:rh2.0:sourcesocket
-  <<: *s3
-
-deploy-el7-2.0:sourcesocket:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: sourcesocket
-    lowercase_asset_name: sourcesocket
-  dependencies:
-    - package:el7:rh2.0:sourcesocket
-  <<: *s3
-
-deploy-el6-2.2:sourcesocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: sourcesocket
-    lowercase_asset_name: sourcesocket
-  dependencies:
-    - package:el6:rh2.2:sourcesocket
-  <<: *s3
-
-deploy-el6-2.2:sourcesocket:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: sourcesocket
-    lowercase_asset_name: sourcesocket
-  dependencies:
-    - package:el6:rh2.2:sourcesocket
-  <<: *s3
-
-package:el6:rh2.0:DataConverter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: DataConverter
-    lowercase_asset_name: dataconverter
-  <<: *package
-
-package:el6:rh2.0:DataConverter:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: DataConverter
-    lowercase_asset_name: dataconverter
-  <<: *package
-
-package:el7:rh2.0:DataConverter:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: DataConverter
-    lowercase_asset_name: dataconverter
-  <<: *package
-
-package:el6:rh2.2:DataConverter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: DataConverter
-    lowercase_asset_name: dataconverter
-  <<: *package
-
-package:el6:rh2.2:DataConverter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: DataConverter
-    lowercase_asset_name: dataconverter
-  <<: *package
-
-test:el6:rh2.0:DataConverter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: DataConverter
-    lowercase_asset_name: dataconverter
-  <<: *test
-
-test:el6:rh2.0:DataConverter:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: DataConverter
-    lowercase_asset_name: dataconverter
-  <<: *test
-
-test:el7:rh2.0:DataConverter:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: DataConverter
-    lowercase_asset_name: dataconverter
-  <<: *test
-
-test:el6:rh2.2:DataConverter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: DataConverter
-    lowercase_asset_name: dataconverter
-  <<: *test
-
-test:el6:rh2.2:DataConverter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: DataConverter
-    lowercase_asset_name: dataconverter
-  <<: *test
-
-deploy-el6-2.0:DataConverter:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: DataConverter
-    lowercase_asset_name: dataconverter
-  dependencies:
-    - package:el6:rh2.0:DataConverter
-  <<: *s3
-
-deploy-el6-2.0:DataConverter:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: DataConverter
-    lowercase_asset_name: dataconverter
-  dependencies:
-    - package:el6:rh2.0:DataConverter
-  <<: *s3
-
-deploy-el7-2.0:DataConverter:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: DataConverter
-    lowercase_asset_name: dataconverter
+    asset_name: fftlib
+    lowercase_asset_name: fftlib
   dependencies:
-    - package:el7:rh2.0:DataConverter
+    - package:el7:rh2.0:fftlib
   <<: *s3
 
-deploy-el6-2.2:DataConverter:
+deploy-el6-2.2:fftlib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: DataConverter
-    lowercase_asset_name: dataconverter
+    asset_name: fftlib
+    lowercase_asset_name: fftlib
   dependencies:
-    - package:el6:rh2.2:DataConverter
+    - package:el6:rh2.2:fftlib
   <<: *s3
 
-deploy-el6-2.2:DataConverter:
+deploy-el6-2.2:fftlib:
   variables:
     dist: el6
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
-    asset_name: DataConverter
-    lowercase_asset_name: dataconverter
+    asset_name: fftlib
+    lowercase_asset_name: fftlib
   dependencies:
-    - package:el6:rh2.2:DataConverter
+    - package:el6:rh2.2:fftlib
   <<: *s3
 
 

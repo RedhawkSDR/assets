@@ -14,7 +14,7 @@ platforms['el7']={'dist':'el7', 'arch':'x86_64'}
 versions['2.0']={'latest_version':'develop-2-0', 'release_version':'$rh_20_release', 'short_version':'2.0'}
 versions['2.2']={'latest_version':'develop-2-2', 'release_version':'$rh_22_release', 'short_version':'2.2'}
 
-base_component_dir = 'sdr/components'
+base_component_dir = 'sdr/libraries'
 candidate_components = os.listdir(base_component_dir)
 components = []
 for comp in candidate_components:
