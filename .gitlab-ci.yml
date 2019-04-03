@@ -42,14 +42,14 @@ before_script:
      - echo $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
      - echo build-arg "project=${asset_name}"
      - echo build-arg "rpm_release=$rpm_release"
-     - echo build-arg "spec_file=${namespace}${asset_name}.spec"
+     - echo build-arg "spec_file=sdr/components/${asset_name}/${namespace}${asset_name}.spec"
      - echo build-arg "arch=$arch"
      - echo build-arg "other_repos=$redhawk_repo $asset_repo" .
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
                           --build-arg "project=${asset_name}"
                           --build-arg "rpm_release=$rpm_release"
-                          --build-arg "spec_file=${namespace}${asset_name}.spec"
+                          --build-arg "spec_file=sdr/components/${asset_name}/${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
                           --build-arg "other_repos=$redhawk_repo $asset_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-$asset_name-$safe_ref-$dist-$arch-rh${safe_version})
