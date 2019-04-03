@@ -141,7 +141,7 @@ package:el6:rh2.0:AmFmPmBasebandDemod:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: AmFmPmBasebandDemod
@@ -152,7 +152,7 @@ package:el6:rh2.0:AmFmPmBasebandDemod:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: AmFmPmBasebandDemod
@@ -163,7 +163,7 @@ package:el7:rh2.0:AmFmPmBasebandDemod:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: AmFmPmBasebandDemod
@@ -174,7 +174,7 @@ package:el6:rh2.2:AmFmPmBasebandDemod:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: AmFmPmBasebandDemod
@@ -185,7 +185,7 @@ package:el6:rh2.2:AmFmPmBasebandDemod:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: AmFmPmBasebandDemod
@@ -196,7 +196,7 @@ test:el6:rh2.0:AmFmPmBasebandDemod:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: AmFmPmBasebandDemod
@@ -207,7 +207,7 @@ test:el6:rh2.0:AmFmPmBasebandDemod:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: AmFmPmBasebandDemod
@@ -218,7 +218,7 @@ test:el7:rh2.0:AmFmPmBasebandDemod:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: AmFmPmBasebandDemod
@@ -229,7 +229,7 @@ test:el6:rh2.2:AmFmPmBasebandDemod:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: AmFmPmBasebandDemod
@@ -240,7 +240,7 @@ test:el6:rh2.2:AmFmPmBasebandDemod:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: AmFmPmBasebandDemod
@@ -251,7 +251,7 @@ deploy-el6-2.0:AmFmPmBasebandDemod:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: AmFmPmBasebandDemod
@@ -264,7 +264,7 @@ deploy-el6-2.0:AmFmPmBasebandDemod:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: AmFmPmBasebandDemod
@@ -277,7 +277,7 @@ deploy-el7-2.0:AmFmPmBasebandDemod:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: AmFmPmBasebandDemod
@@ -290,7 +290,7 @@ deploy-el6-2.2:AmFmPmBasebandDemod:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: AmFmPmBasebandDemod
@@ -303,7 +303,7 @@ deploy-el6-2.2:AmFmPmBasebandDemod:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: AmFmPmBasebandDemod
@@ -316,7 +316,7 @@ package:el6:rh2.0:ArbitraryRateResampler:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: ArbitraryRateResampler
@@ -327,7 +327,7 @@ package:el6:rh2.0:ArbitraryRateResampler:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: ArbitraryRateResampler
@@ -338,7 +338,7 @@ package:el7:rh2.0:ArbitraryRateResampler:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: ArbitraryRateResampler
@@ -349,7 +349,7 @@ package:el6:rh2.2:ArbitraryRateResampler:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: ArbitraryRateResampler
@@ -360,7 +360,7 @@ package:el6:rh2.2:ArbitraryRateResampler:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: ArbitraryRateResampler
@@ -371,7 +371,7 @@ test:el6:rh2.0:ArbitraryRateResampler:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: ArbitraryRateResampler
@@ -382,7 +382,7 @@ test:el6:rh2.0:ArbitraryRateResampler:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: ArbitraryRateResampler
@@ -393,7 +393,7 @@ test:el7:rh2.0:ArbitraryRateResampler:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: ArbitraryRateResampler
@@ -404,7 +404,7 @@ test:el6:rh2.2:ArbitraryRateResampler:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: ArbitraryRateResampler
@@ -415,7 +415,7 @@ test:el6:rh2.2:ArbitraryRateResampler:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: ArbitraryRateResampler
@@ -426,7 +426,7 @@ deploy-el6-2.0:ArbitraryRateResampler:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: ArbitraryRateResampler
@@ -439,7 +439,7 @@ deploy-el6-2.0:ArbitraryRateResampler:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: ArbitraryRateResampler
@@ -452,7 +452,7 @@ deploy-el7-2.0:ArbitraryRateResampler:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: ArbitraryRateResampler
@@ -465,7 +465,7 @@ deploy-el6-2.2:ArbitraryRateResampler:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: ArbitraryRateResampler
@@ -478,7 +478,7 @@ deploy-el6-2.2:ArbitraryRateResampler:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: ArbitraryRateResampler
@@ -491,7 +491,7 @@ package:el6:rh2.0:FileReader:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileReader
@@ -502,7 +502,7 @@ package:el6:rh2.0:FileReader:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileReader
@@ -513,7 +513,7 @@ package:el7:rh2.0:FileReader:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileReader
@@ -524,7 +524,7 @@ package:el6:rh2.2:FileReader:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: FileReader
@@ -535,7 +535,7 @@ package:el6:rh2.2:FileReader:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: FileReader
@@ -546,7 +546,7 @@ test:el6:rh2.0:FileReader:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileReader
@@ -557,7 +557,7 @@ test:el6:rh2.0:FileReader:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileReader
@@ -568,7 +568,7 @@ test:el7:rh2.0:FileReader:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileReader
@@ -579,7 +579,7 @@ test:el6:rh2.2:FileReader:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: FileReader
@@ -590,7 +590,7 @@ test:el6:rh2.2:FileReader:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: FileReader
@@ -601,7 +601,7 @@ deploy-el6-2.0:FileReader:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileReader
@@ -614,7 +614,7 @@ deploy-el6-2.0:FileReader:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileReader
@@ -627,7 +627,7 @@ deploy-el7-2.0:FileReader:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileReader
@@ -640,7 +640,7 @@ deploy-el6-2.2:FileReader:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: FileReader
@@ -653,7 +653,7 @@ deploy-el6-2.2:FileReader:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: FileReader
@@ -666,7 +666,7 @@ package:el6:rh2.0:FileWriter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileWriter
@@ -677,7 +677,7 @@ package:el6:rh2.0:FileWriter:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileWriter
@@ -688,7 +688,7 @@ package:el7:rh2.0:FileWriter:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileWriter
@@ -699,7 +699,7 @@ package:el6:rh2.2:FileWriter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: FileWriter
@@ -710,7 +710,7 @@ package:el6:rh2.2:FileWriter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: FileWriter
@@ -721,7 +721,7 @@ test:el6:rh2.0:FileWriter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileWriter
@@ -732,7 +732,7 @@ test:el6:rh2.0:FileWriter:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileWriter
@@ -743,7 +743,7 @@ test:el7:rh2.0:FileWriter:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileWriter
@@ -754,7 +754,7 @@ test:el6:rh2.2:FileWriter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: FileWriter
@@ -765,7 +765,7 @@ test:el6:rh2.2:FileWriter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: FileWriter
@@ -776,7 +776,7 @@ deploy-el6-2.0:FileWriter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileWriter
@@ -789,7 +789,7 @@ deploy-el6-2.0:FileWriter:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileWriter
@@ -802,7 +802,7 @@ deploy-el7-2.0:FileWriter:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: FileWriter
@@ -815,7 +815,7 @@ deploy-el6-2.2:FileWriter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: FileWriter
@@ -828,7 +828,7 @@ deploy-el6-2.2:FileWriter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: FileWriter
@@ -841,7 +841,7 @@ package:el6:rh2.0:HardLimit:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: HardLimit
@@ -852,7 +852,7 @@ package:el6:rh2.0:HardLimit:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: HardLimit
@@ -863,7 +863,7 @@ package:el7:rh2.0:HardLimit:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: HardLimit
@@ -874,7 +874,7 @@ package:el6:rh2.2:HardLimit:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: HardLimit
@@ -885,7 +885,7 @@ package:el6:rh2.2:HardLimit:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: HardLimit
@@ -896,7 +896,7 @@ test:el6:rh2.0:HardLimit:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: HardLimit
@@ -907,7 +907,7 @@ test:el6:rh2.0:HardLimit:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: HardLimit
@@ -918,7 +918,7 @@ test:el7:rh2.0:HardLimit:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: HardLimit
@@ -929,7 +929,7 @@ test:el6:rh2.2:HardLimit:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: HardLimit
@@ -940,7 +940,7 @@ test:el6:rh2.2:HardLimit:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: HardLimit
@@ -951,7 +951,7 @@ deploy-el6-2.0:HardLimit:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: HardLimit
@@ -964,7 +964,7 @@ deploy-el6-2.0:HardLimit:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: HardLimit
@@ -977,7 +977,7 @@ deploy-el7-2.0:HardLimit:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: HardLimit
@@ -990,7 +990,7 @@ deploy-el6-2.2:HardLimit:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: HardLimit
@@ -1003,7 +1003,7 @@ deploy-el6-2.2:HardLimit:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: HardLimit
@@ -1016,7 +1016,7 @@ package:el6:rh2.0:RBDSDecoder:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: RBDSDecoder
@@ -1027,7 +1027,7 @@ package:el6:rh2.0:RBDSDecoder:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: RBDSDecoder
@@ -1038,7 +1038,7 @@ package:el7:rh2.0:RBDSDecoder:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: RBDSDecoder
@@ -1049,7 +1049,7 @@ package:el6:rh2.2:RBDSDecoder:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: RBDSDecoder
@@ -1060,7 +1060,7 @@ package:el6:rh2.2:RBDSDecoder:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: RBDSDecoder
@@ -1071,7 +1071,7 @@ test:el6:rh2.0:RBDSDecoder:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: RBDSDecoder
@@ -1082,7 +1082,7 @@ test:el6:rh2.0:RBDSDecoder:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: RBDSDecoder
@@ -1093,7 +1093,7 @@ test:el7:rh2.0:RBDSDecoder:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: RBDSDecoder
@@ -1104,7 +1104,7 @@ test:el6:rh2.2:RBDSDecoder:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: RBDSDecoder
@@ -1115,7 +1115,7 @@ test:el6:rh2.2:RBDSDecoder:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: RBDSDecoder
@@ -1126,7 +1126,7 @@ deploy-el6-2.0:RBDSDecoder:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: RBDSDecoder
@@ -1139,7 +1139,7 @@ deploy-el6-2.0:RBDSDecoder:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: RBDSDecoder
@@ -1152,7 +1152,7 @@ deploy-el7-2.0:RBDSDecoder:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: RBDSDecoder
@@ -1165,7 +1165,7 @@ deploy-el6-2.2:RBDSDecoder:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: RBDSDecoder
@@ -1178,7 +1178,7 @@ deploy-el6-2.2:RBDSDecoder:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: RBDSDecoder
@@ -1191,7 +1191,7 @@ package:el6:rh2.0:SigGen:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SigGen
@@ -1202,7 +1202,7 @@ package:el6:rh2.0:SigGen:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SigGen
@@ -1213,7 +1213,7 @@ package:el7:rh2.0:SigGen:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SigGen
@@ -1224,7 +1224,7 @@ package:el6:rh2.2:SigGen:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SigGen
@@ -1235,7 +1235,7 @@ package:el6:rh2.2:SigGen:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SigGen
@@ -1246,7 +1246,7 @@ test:el6:rh2.0:SigGen:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SigGen
@@ -1257,7 +1257,7 @@ test:el6:rh2.0:SigGen:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SigGen
@@ -1268,7 +1268,7 @@ test:el7:rh2.0:SigGen:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SigGen
@@ -1279,7 +1279,7 @@ test:el6:rh2.2:SigGen:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SigGen
@@ -1290,7 +1290,7 @@ test:el6:rh2.2:SigGen:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SigGen
@@ -1301,7 +1301,7 @@ deploy-el6-2.0:SigGen:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SigGen
@@ -1314,7 +1314,7 @@ deploy-el6-2.0:SigGen:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SigGen
@@ -1327,7 +1327,7 @@ deploy-el7-2.0:SigGen:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SigGen
@@ -1340,7 +1340,7 @@ deploy-el6-2.2:SigGen:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SigGen
@@ -1353,7 +1353,7 @@ deploy-el6-2.2:SigGen:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SigGen
@@ -1366,7 +1366,7 @@ package:el6:rh2.0:SinkSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkSDDS
@@ -1377,7 +1377,7 @@ package:el6:rh2.0:SinkSDDS:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkSDDS
@@ -1388,7 +1388,7 @@ package:el7:rh2.0:SinkSDDS:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkSDDS
@@ -1399,7 +1399,7 @@ package:el6:rh2.2:SinkSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SinkSDDS
@@ -1410,7 +1410,7 @@ package:el6:rh2.2:SinkSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SinkSDDS
@@ -1421,7 +1421,7 @@ test:el6:rh2.0:SinkSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkSDDS
@@ -1432,7 +1432,7 @@ test:el6:rh2.0:SinkSDDS:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkSDDS
@@ -1443,7 +1443,7 @@ test:el7:rh2.0:SinkSDDS:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkSDDS
@@ -1454,7 +1454,7 @@ test:el6:rh2.2:SinkSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SinkSDDS
@@ -1465,7 +1465,7 @@ test:el6:rh2.2:SinkSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SinkSDDS
@@ -1476,7 +1476,7 @@ deploy-el6-2.0:SinkSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkSDDS
@@ -1489,7 +1489,7 @@ deploy-el6-2.0:SinkSDDS:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkSDDS
@@ -1502,7 +1502,7 @@ deploy-el7-2.0:SinkSDDS:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkSDDS
@@ -1515,7 +1515,7 @@ deploy-el6-2.2:SinkSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SinkSDDS
@@ -1528,7 +1528,7 @@ deploy-el6-2.2:SinkSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SinkSDDS
@@ -1541,7 +1541,7 @@ package:el6:rh2.0:SinkVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkVITA49
@@ -1552,7 +1552,7 @@ package:el6:rh2.0:SinkVITA49:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkVITA49
@@ -1563,7 +1563,7 @@ package:el7:rh2.0:SinkVITA49:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkVITA49
@@ -1574,7 +1574,7 @@ package:el6:rh2.2:SinkVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SinkVITA49
@@ -1585,7 +1585,7 @@ package:el6:rh2.2:SinkVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SinkVITA49
@@ -1596,7 +1596,7 @@ test:el6:rh2.0:SinkVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkVITA49
@@ -1607,7 +1607,7 @@ test:el6:rh2.0:SinkVITA49:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkVITA49
@@ -1618,7 +1618,7 @@ test:el7:rh2.0:SinkVITA49:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkVITA49
@@ -1629,7 +1629,7 @@ test:el6:rh2.2:SinkVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SinkVITA49
@@ -1640,7 +1640,7 @@ test:el6:rh2.2:SinkVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SinkVITA49
@@ -1651,7 +1651,7 @@ deploy-el6-2.0:SinkVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkVITA49
@@ -1664,7 +1664,7 @@ deploy-el6-2.0:SinkVITA49:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkVITA49
@@ -1677,7 +1677,7 @@ deploy-el7-2.0:SinkVITA49:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SinkVITA49
@@ -1690,7 +1690,7 @@ deploy-el6-2.2:SinkVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SinkVITA49
@@ -1703,7 +1703,7 @@ deploy-el6-2.2:SinkVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SinkVITA49
@@ -1716,7 +1716,7 @@ package:el6:rh2.0:SourceSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceSDDS
@@ -1727,7 +1727,7 @@ package:el6:rh2.0:SourceSDDS:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceSDDS
@@ -1738,7 +1738,7 @@ package:el7:rh2.0:SourceSDDS:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceSDDS
@@ -1749,7 +1749,7 @@ package:el6:rh2.2:SourceSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SourceSDDS
@@ -1760,7 +1760,7 @@ package:el6:rh2.2:SourceSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SourceSDDS
@@ -1771,7 +1771,7 @@ test:el6:rh2.0:SourceSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceSDDS
@@ -1782,7 +1782,7 @@ test:el6:rh2.0:SourceSDDS:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceSDDS
@@ -1793,7 +1793,7 @@ test:el7:rh2.0:SourceSDDS:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceSDDS
@@ -1804,7 +1804,7 @@ test:el6:rh2.2:SourceSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SourceSDDS
@@ -1815,7 +1815,7 @@ test:el6:rh2.2:SourceSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SourceSDDS
@@ -1826,7 +1826,7 @@ deploy-el6-2.0:SourceSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceSDDS
@@ -1839,7 +1839,7 @@ deploy-el6-2.0:SourceSDDS:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceSDDS
@@ -1852,7 +1852,7 @@ deploy-el7-2.0:SourceSDDS:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceSDDS
@@ -1865,7 +1865,7 @@ deploy-el6-2.2:SourceSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SourceSDDS
@@ -1878,7 +1878,7 @@ deploy-el6-2.2:SourceSDDS:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SourceSDDS
@@ -1891,7 +1891,7 @@ package:el6:rh2.0:SourceVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceVITA49
@@ -1902,7 +1902,7 @@ package:el6:rh2.0:SourceVITA49:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceVITA49
@@ -1913,7 +1913,7 @@ package:el7:rh2.0:SourceVITA49:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceVITA49
@@ -1924,7 +1924,7 @@ package:el6:rh2.2:SourceVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SourceVITA49
@@ -1935,7 +1935,7 @@ package:el6:rh2.2:SourceVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SourceVITA49
@@ -1946,7 +1946,7 @@ test:el6:rh2.0:SourceVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceVITA49
@@ -1957,7 +1957,7 @@ test:el6:rh2.0:SourceVITA49:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceVITA49
@@ -1968,7 +1968,7 @@ test:el7:rh2.0:SourceVITA49:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceVITA49
@@ -1979,7 +1979,7 @@ test:el6:rh2.2:SourceVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SourceVITA49
@@ -1990,7 +1990,7 @@ test:el6:rh2.2:SourceVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SourceVITA49
@@ -2001,7 +2001,7 @@ deploy-el6-2.0:SourceVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceVITA49
@@ -2014,7 +2014,7 @@ deploy-el6-2.0:SourceVITA49:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceVITA49
@@ -2027,7 +2027,7 @@ deploy-el7-2.0:SourceVITA49:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: SourceVITA49
@@ -2040,7 +2040,7 @@ deploy-el6-2.2:SourceVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SourceVITA49
@@ -2053,7 +2053,7 @@ deploy-el6-2.2:SourceVITA49:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: SourceVITA49
@@ -2066,7 +2066,7 @@ package:el6:rh2.0:TuneFilterDecimate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: TuneFilterDecimate
@@ -2077,7 +2077,7 @@ package:el6:rh2.0:TuneFilterDecimate:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: TuneFilterDecimate
@@ -2088,7 +2088,7 @@ package:el7:rh2.0:TuneFilterDecimate:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: TuneFilterDecimate
@@ -2099,7 +2099,7 @@ package:el6:rh2.2:TuneFilterDecimate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: TuneFilterDecimate
@@ -2110,7 +2110,7 @@ package:el6:rh2.2:TuneFilterDecimate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: TuneFilterDecimate
@@ -2121,7 +2121,7 @@ test:el6:rh2.0:TuneFilterDecimate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: TuneFilterDecimate
@@ -2132,7 +2132,7 @@ test:el6:rh2.0:TuneFilterDecimate:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: TuneFilterDecimate
@@ -2143,7 +2143,7 @@ test:el7:rh2.0:TuneFilterDecimate:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: TuneFilterDecimate
@@ -2154,7 +2154,7 @@ test:el6:rh2.2:TuneFilterDecimate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: TuneFilterDecimate
@@ -2165,7 +2165,7 @@ test:el6:rh2.2:TuneFilterDecimate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: TuneFilterDecimate
@@ -2176,7 +2176,7 @@ deploy-el6-2.0:TuneFilterDecimate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: TuneFilterDecimate
@@ -2189,7 +2189,7 @@ deploy-el6-2.0:TuneFilterDecimate:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: TuneFilterDecimate
@@ -2202,7 +2202,7 @@ deploy-el7-2.0:TuneFilterDecimate:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: TuneFilterDecimate
@@ -2215,7 +2215,7 @@ deploy-el6-2.2:TuneFilterDecimate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: TuneFilterDecimate
@@ -2228,7 +2228,7 @@ deploy-el6-2.2:TuneFilterDecimate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: TuneFilterDecimate
@@ -2241,7 +2241,7 @@ package:el6:rh2.0:agc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: agc
@@ -2252,7 +2252,7 @@ package:el6:rh2.0:agc:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: agc
@@ -2263,7 +2263,7 @@ package:el7:rh2.0:agc:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: agc
@@ -2274,7 +2274,7 @@ package:el6:rh2.2:agc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: agc
@@ -2285,7 +2285,7 @@ package:el6:rh2.2:agc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: agc
@@ -2296,7 +2296,7 @@ test:el6:rh2.0:agc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: agc
@@ -2307,7 +2307,7 @@ test:el6:rh2.0:agc:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: agc
@@ -2318,7 +2318,7 @@ test:el7:rh2.0:agc:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: agc
@@ -2329,7 +2329,7 @@ test:el6:rh2.2:agc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: agc
@@ -2340,7 +2340,7 @@ test:el6:rh2.2:agc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: agc
@@ -2351,7 +2351,7 @@ deploy-el6-2.0:agc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: agc
@@ -2364,7 +2364,7 @@ deploy-el6-2.0:agc:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: agc
@@ -2377,7 +2377,7 @@ deploy-el7-2.0:agc:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: agc
@@ -2390,7 +2390,7 @@ deploy-el6-2.2:agc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: agc
@@ -2403,7 +2403,7 @@ deploy-el6-2.2:agc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: agc
@@ -2416,7 +2416,7 @@ package:el6:rh2.0:autocorrelate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: autocorrelate
@@ -2427,7 +2427,7 @@ package:el6:rh2.0:autocorrelate:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: autocorrelate
@@ -2438,7 +2438,7 @@ package:el7:rh2.0:autocorrelate:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: autocorrelate
@@ -2449,7 +2449,7 @@ package:el6:rh2.2:autocorrelate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: autocorrelate
@@ -2460,7 +2460,7 @@ package:el6:rh2.2:autocorrelate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: autocorrelate
@@ -2471,7 +2471,7 @@ test:el6:rh2.0:autocorrelate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: autocorrelate
@@ -2482,7 +2482,7 @@ test:el6:rh2.0:autocorrelate:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: autocorrelate
@@ -2493,7 +2493,7 @@ test:el7:rh2.0:autocorrelate:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: autocorrelate
@@ -2504,7 +2504,7 @@ test:el6:rh2.2:autocorrelate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: autocorrelate
@@ -2515,7 +2515,7 @@ test:el6:rh2.2:autocorrelate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: autocorrelate
@@ -2526,7 +2526,7 @@ deploy-el6-2.0:autocorrelate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: autocorrelate
@@ -2539,7 +2539,7 @@ deploy-el6-2.0:autocorrelate:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: autocorrelate
@@ -2552,7 +2552,7 @@ deploy-el7-2.0:autocorrelate:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: autocorrelate
@@ -2565,7 +2565,7 @@ deploy-el6-2.2:autocorrelate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: autocorrelate
@@ -2578,7 +2578,7 @@ deploy-el6-2.2:autocorrelate:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: autocorrelate
@@ -2591,7 +2591,7 @@ package:el6:rh2.0:fastfilter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fastfilter
@@ -2602,7 +2602,7 @@ package:el6:rh2.0:fastfilter:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fastfilter
@@ -2613,7 +2613,7 @@ package:el7:rh2.0:fastfilter:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fastfilter
@@ -2624,7 +2624,7 @@ package:el6:rh2.2:fastfilter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: fastfilter
@@ -2635,7 +2635,7 @@ package:el6:rh2.2:fastfilter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: fastfilter
@@ -2646,7 +2646,7 @@ test:el6:rh2.0:fastfilter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fastfilter
@@ -2657,7 +2657,7 @@ test:el6:rh2.0:fastfilter:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fastfilter
@@ -2668,7 +2668,7 @@ test:el7:rh2.0:fastfilter:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fastfilter
@@ -2679,7 +2679,7 @@ test:el6:rh2.2:fastfilter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: fastfilter
@@ -2690,7 +2690,7 @@ test:el6:rh2.2:fastfilter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: fastfilter
@@ -2701,7 +2701,7 @@ deploy-el6-2.0:fastfilter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fastfilter
@@ -2714,7 +2714,7 @@ deploy-el6-2.0:fastfilter:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fastfilter
@@ -2727,7 +2727,7 @@ deploy-el7-2.0:fastfilter:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fastfilter
@@ -2740,7 +2740,7 @@ deploy-el6-2.2:fastfilter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: fastfilter
@@ -2753,7 +2753,7 @@ deploy-el6-2.2:fastfilter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: fastfilter
@@ -2766,7 +2766,7 @@ package:el6:rh2.0:fcalc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fcalc
@@ -2777,7 +2777,7 @@ package:el6:rh2.0:fcalc:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fcalc
@@ -2788,7 +2788,7 @@ package:el7:rh2.0:fcalc:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fcalc
@@ -2799,7 +2799,7 @@ package:el6:rh2.2:fcalc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: fcalc
@@ -2810,7 +2810,7 @@ package:el6:rh2.2:fcalc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: fcalc
@@ -2821,7 +2821,7 @@ test:el6:rh2.0:fcalc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fcalc
@@ -2832,7 +2832,7 @@ test:el6:rh2.0:fcalc:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fcalc
@@ -2843,7 +2843,7 @@ test:el7:rh2.0:fcalc:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fcalc
@@ -2854,7 +2854,7 @@ test:el6:rh2.2:fcalc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: fcalc
@@ -2865,7 +2865,7 @@ test:el6:rh2.2:fcalc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: fcalc
@@ -2876,7 +2876,7 @@ deploy-el6-2.0:fcalc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fcalc
@@ -2889,7 +2889,7 @@ deploy-el6-2.0:fcalc:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fcalc
@@ -2902,7 +2902,7 @@ deploy-el7-2.0:fcalc:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: fcalc
@@ -2915,7 +2915,7 @@ deploy-el6-2.2:fcalc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: fcalc
@@ -2928,7 +2928,7 @@ deploy-el6-2.2:fcalc:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: fcalc
@@ -2941,7 +2941,7 @@ package:el6:rh2.0:psd:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psd
@@ -2952,7 +2952,7 @@ package:el6:rh2.0:psd:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psd
@@ -2963,7 +2963,7 @@ package:el7:rh2.0:psd:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psd
@@ -2974,7 +2974,7 @@ package:el6:rh2.2:psd:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: psd
@@ -2985,7 +2985,7 @@ package:el6:rh2.2:psd:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: psd
@@ -2996,7 +2996,7 @@ test:el6:rh2.0:psd:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psd
@@ -3007,7 +3007,7 @@ test:el6:rh2.0:psd:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psd
@@ -3018,7 +3018,7 @@ test:el7:rh2.0:psd:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psd
@@ -3029,7 +3029,7 @@ test:el6:rh2.2:psd:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: psd
@@ -3040,7 +3040,7 @@ test:el6:rh2.2:psd:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: psd
@@ -3051,7 +3051,7 @@ deploy-el6-2.0:psd:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psd
@@ -3064,7 +3064,7 @@ deploy-el6-2.0:psd:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psd
@@ -3077,7 +3077,7 @@ deploy-el7-2.0:psd:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psd
@@ -3090,7 +3090,7 @@ deploy-el6-2.2:psd:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: psd
@@ -3103,7 +3103,7 @@ deploy-el6-2.2:psd:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: psd
@@ -3116,7 +3116,7 @@ package:el6:rh2.0:psk_soft:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psk_soft
@@ -3127,7 +3127,7 @@ package:el6:rh2.0:psk_soft:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psk_soft
@@ -3138,7 +3138,7 @@ package:el7:rh2.0:psk_soft:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psk_soft
@@ -3149,7 +3149,7 @@ package:el6:rh2.2:psk_soft:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: psk_soft
@@ -3160,7 +3160,7 @@ package:el6:rh2.2:psk_soft:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: psk_soft
@@ -3171,7 +3171,7 @@ test:el6:rh2.0:psk_soft:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psk_soft
@@ -3182,7 +3182,7 @@ test:el6:rh2.0:psk_soft:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psk_soft
@@ -3193,7 +3193,7 @@ test:el7:rh2.0:psk_soft:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psk_soft
@@ -3204,7 +3204,7 @@ test:el6:rh2.2:psk_soft:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: psk_soft
@@ -3215,7 +3215,7 @@ test:el6:rh2.2:psk_soft:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: psk_soft
@@ -3226,7 +3226,7 @@ deploy-el6-2.0:psk_soft:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psk_soft
@@ -3239,7 +3239,7 @@ deploy-el6-2.0:psk_soft:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psk_soft
@@ -3252,7 +3252,7 @@ deploy-el7-2.0:psk_soft:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: psk_soft
@@ -3265,7 +3265,7 @@ deploy-el6-2.2:psk_soft:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: psk_soft
@@ -3278,7 +3278,7 @@ deploy-el6-2.2:psk_soft:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: psk_soft
@@ -3291,7 +3291,7 @@ package:el6:rh2.0:sinksocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sinksocket
@@ -3302,7 +3302,7 @@ package:el6:rh2.0:sinksocket:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sinksocket
@@ -3313,7 +3313,7 @@ package:el7:rh2.0:sinksocket:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sinksocket
@@ -3324,7 +3324,7 @@ package:el6:rh2.2:sinksocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: sinksocket
@@ -3335,7 +3335,7 @@ package:el6:rh2.2:sinksocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: sinksocket
@@ -3346,7 +3346,7 @@ test:el6:rh2.0:sinksocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sinksocket
@@ -3357,7 +3357,7 @@ test:el6:rh2.0:sinksocket:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sinksocket
@@ -3368,7 +3368,7 @@ test:el7:rh2.0:sinksocket:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sinksocket
@@ -3379,7 +3379,7 @@ test:el6:rh2.2:sinksocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: sinksocket
@@ -3390,7 +3390,7 @@ test:el6:rh2.2:sinksocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: sinksocket
@@ -3401,7 +3401,7 @@ deploy-el6-2.0:sinksocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sinksocket
@@ -3414,7 +3414,7 @@ deploy-el6-2.0:sinksocket:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sinksocket
@@ -3427,7 +3427,7 @@ deploy-el7-2.0:sinksocket:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sinksocket
@@ -3440,7 +3440,7 @@ deploy-el6-2.2:sinksocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: sinksocket
@@ -3453,7 +3453,7 @@ deploy-el6-2.2:sinksocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: sinksocket
@@ -3466,7 +3466,7 @@ package:el6:rh2.0:sourcesocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sourcesocket
@@ -3477,7 +3477,7 @@ package:el6:rh2.0:sourcesocket:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sourcesocket
@@ -3488,7 +3488,7 @@ package:el7:rh2.0:sourcesocket:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sourcesocket
@@ -3499,7 +3499,7 @@ package:el6:rh2.2:sourcesocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: sourcesocket
@@ -3510,7 +3510,7 @@ package:el6:rh2.2:sourcesocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: sourcesocket
@@ -3521,7 +3521,7 @@ test:el6:rh2.0:sourcesocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sourcesocket
@@ -3532,7 +3532,7 @@ test:el6:rh2.0:sourcesocket:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sourcesocket
@@ -3543,7 +3543,7 @@ test:el7:rh2.0:sourcesocket:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sourcesocket
@@ -3554,7 +3554,7 @@ test:el6:rh2.2:sourcesocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: sourcesocket
@@ -3565,7 +3565,7 @@ test:el6:rh2.2:sourcesocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: sourcesocket
@@ -3576,7 +3576,7 @@ deploy-el6-2.0:sourcesocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sourcesocket
@@ -3589,7 +3589,7 @@ deploy-el6-2.0:sourcesocket:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sourcesocket
@@ -3602,7 +3602,7 @@ deploy-el7-2.0:sourcesocket:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: sourcesocket
@@ -3615,7 +3615,7 @@ deploy-el6-2.2:sourcesocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: sourcesocket
@@ -3628,7 +3628,7 @@ deploy-el6-2.2:sourcesocket:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: sourcesocket
@@ -3641,7 +3641,7 @@ package:el6:rh2.0:DataConverter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: DataConverter
@@ -3652,7 +3652,7 @@ package:el6:rh2.0:DataConverter:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: DataConverter
@@ -3663,7 +3663,7 @@ package:el7:rh2.0:DataConverter:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: DataConverter
@@ -3674,7 +3674,7 @@ package:el6:rh2.2:DataConverter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: DataConverter
@@ -3685,7 +3685,7 @@ package:el6:rh2.2:DataConverter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: DataConverter
@@ -3696,7 +3696,7 @@ test:el6:rh2.0:DataConverter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: DataConverter
@@ -3707,7 +3707,7 @@ test:el6:rh2.0:DataConverter:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: DataConverter
@@ -3718,7 +3718,7 @@ test:el7:rh2.0:DataConverter:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: DataConverter
@@ -3729,7 +3729,7 @@ test:el6:rh2.2:DataConverter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: DataConverter
@@ -3740,7 +3740,7 @@ test:el6:rh2.2:DataConverter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: DataConverter
@@ -3751,7 +3751,7 @@ deploy-el6-2.0:DataConverter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: DataConverter
@@ -3764,7 +3764,7 @@ deploy-el6-2.0:DataConverter:
   variables:
     dist: el6
     arch: i686
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: DataConverter
@@ -3777,7 +3777,7 @@ deploy-el7-2.0:DataConverter:
   variables:
     dist: el7
     arch: x86_64
-    latest_version: develop-2.0
+    latest_version: develop-2-0
     release_version: $rh_20_release
     short_version: '2.0'
     asset_name: DataConverter
@@ -3790,7 +3790,7 @@ deploy-el6-2.2:DataConverter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: DataConverter
@@ -3803,7 +3803,7 @@ deploy-el6-2.2:DataConverter:
   variables:
     dist: el6
     arch: x86_64
-    latest_version: develop-2.2
+    latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
     asset_name: DataConverter
