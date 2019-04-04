@@ -8,6 +8,7 @@ variables:
 
 stages:
   - base_build
+  - create_repo
   - build
   - test
   - deploy
@@ -26,6 +27,17 @@ before_script:
     - redhawk_repo=$s3_repo_url/redhawk/cf-and-deps/yum/$redhawk_version/$dist/$arch
     - asset_repo=$s3_repo_url/redhawk/assets/yum/$redhawk_version/rh${safe_version}/$dist/$arch
 
+.create_local_repo: &create_local_repo
+  image: ${docker_registry}${docker_rpm_repository}docker:latest
+  stage: create_repo
+  tags:
+    - ca
+    - docker
+  script:
+     - echo $(ls /etc/yum.repos.d)
+     - createrepo output
+     - printf "[local]\nname=local rpm from output build directory\nbaseurl=file://$(pwd)/output\enabled=1\ngpgcheck=0\n" >> /etc/yum.repos.d/local.repo
+
 .base_package: &base_package
   image: ${docker_registry}${docker_rpm_repository}docker:latest
   stage: base_build
@@ -38,6 +50,7 @@ before_script:
      #- datetime=$(git show -s --format=%ci ${CI_COMMIT_SHA})
      #- sed -i -e "s/__REVISION__/${CI_COMMIT_SHA}/" ${namespace}$asset_name.spec
      #- sed -i -e "s/__DATETIME__/${datetime}/" ${namespace}$asset_name.spec
+     - echo $(ls /etc/yum.repos.d)
      - echo $(find . -name '*rpm')
      - cd $(find -maxdepth 3 -name ${asset_name})
      - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
@@ -57,14 +70,14 @@ before_script:
                           --build-arg "arch=$arch"
                           --build-arg "other_repos=$redhawk_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
-     - docker container cp $id:/root/rpmbuild/RPMS/ output/
+     - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output/
      - docker container rm -f $id || true
      - docker image rm -f $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} || true
      - cd ../../..
      - echo $(find . -name '*rpm')
   artifacts:
     paths:
-      - $(find -maxdepth 3 -name ${asset_name})/output/*/*.rpm
+      - output/*/*.rpm
     expire_in: 2 days
   except:
     - master
@@ -83,6 +96,7 @@ before_script:
      #- datetime=$(git show -s --format=%ci ${CI_COMMIT_SHA})
      #- sed -i -e "s/__REVISION__/${CI_COMMIT_SHA}/" ${namespace}$asset_name.spec
      #- sed -i -e "s/__DATETIME__/${datetime}/" ${namespace}$asset_name.spec
+     - echo $(ls /etc/yum.repos.d)
      - echo $(find . -name '*rpm')
      - cd $(find -maxdepth 3 -name ${asset_name})
      - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
@@ -102,7 +116,7 @@ before_script:
                           --build-arg "arch=$arch"
                           --build-arg "other_repos=$redhawk_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
-     - docker container cp $id:/root/rpmbuild/RPMS/ output/
+     - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output/
      - echo $(find . -name '*rpm')
      - echo $(ls)
      - echo $(pwd)
@@ -115,7 +129,7 @@ before_script:
      - echo $(ls)
   artifacts:
     paths:
-      - $(find -maxdepth 3 -name ${asset_name})/output/*/*.rpm
+      - output/*/*.rpm
     expire_in: 2 days
   except:
     - master
@@ -191,6 +205,9 @@ deploy:
       done
     - repomanage --keep=2 --old $arch| xargs rm -f; createrepo --update $arch
     - /usr/bin/s3cmd sync -F -v --delete-removed $arch s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/rh${short_version}/$dist/  && s3cmd setacl -v s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/rh${short_version}/$dist --acl-public --recursive || true
+
+create:local:repos:
+ <<: *create_local_repo
 
 package:el6:rh2.0:RedhawkDevUtils:
   variables:
