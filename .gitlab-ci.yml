@@ -34,9 +34,10 @@ before_script:
     - ca
     - docker
   script:
+     - yum install -y createrepo
      - echo $(ls /etc/yum.repos.d)
      - createrepo output
-     - printf "[local]\nname=local rpm from output build directory\nbaseurl=file://$(pwd)/output\enabled=1\ngpgcheck=0\n" >> /etc/yum.repos.d/local.repo
+     - printf "[local]\nname=local rpm from output build directory\nbaseurl=file://$(pwd)/output\nenabled=1\ngpgcheck=0\n" > /etc/yum.repos.d/local.repo
 
 .base_package: &base_package
   image: ${docker_registry}${docker_rpm_repository}docker:latest
