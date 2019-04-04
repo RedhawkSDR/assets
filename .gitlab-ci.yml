@@ -74,7 +74,7 @@ before_script:
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output/
      - docker container rm -f $id || true
      - cd ../../..
-     - docker container run createrepo output
+     - docker container exec $id createrepo output
      - echo $(find . -name '*rpm')
      - docker image rm -f $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} || true
   artifacts:
