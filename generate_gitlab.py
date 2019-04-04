@@ -82,8 +82,13 @@ def replace_test_template(os_version, rh_version, comp_name, branches=False):
     retval += '\n'
     return retval
 
-def replace_deploy_template(os_version, rh_version, comp_name):
-    return deploy_template.replace('__DIST__', platforms[os_version]['dist']).replace('__ARCH__', platforms[os_version]['arch']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
+def replace_deploy_template(os_version, rh_version, comp_name, base_library=False):
+    retval = deploy_template.replace('__DIST__', platforms[os_version]['dist']).replace('__ARCH__', platforms[os_version]['arch']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
+
+    if base_library:
+        retval = retval.replace('package', 'base_package')
+
+    return retval
 
 for comp in components:
     base_package = False
@@ -123,19 +128,19 @@ for comp in components:
 
     os_version = 'el6'
     rh_version = '2.0'
-    jobs += replace_deploy_template(os_version, rh_version, comp)
+    jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
     os_version = 'el6_32'
     rh_version = '2.0'
-    jobs += replace_deploy_template(os_version, rh_version, comp)
+    jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
     os_version = 'el7'
     rh_version = '2.0'
-    jobs += replace_deploy_template(os_version, rh_version, comp)
+    jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
     os_version = 'el6'
     rh_version = '2.2'
-    jobs += replace_deploy_template(os_version, rh_version, comp)
+    jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
     os_version = 'el6'
     rh_version = '2.2'
-    jobs += replace_deploy_template(os_version, rh_version, comp)
+    jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
 
 updated_contents = contents.replace('__JOBS__', jobs)
 

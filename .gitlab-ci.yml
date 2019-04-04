@@ -834,7 +834,7 @@ deploy-el6-2.0:dsp:
     asset_name: dsp
     lowercase_asset_name: dsp
   dependencies:
-    - package:el6:rh2.0:dsp
+    - base_package:el6:rh2.0:dsp
   <<: *s3
 
 deploy-el6-2.0:dsp:
@@ -847,7 +847,7 @@ deploy-el6-2.0:dsp:
     asset_name: dsp
     lowercase_asset_name: dsp
   dependencies:
-    - package:el6:rh2.0:dsp
+    - base_package:el6:rh2.0:dsp
   <<: *s3
 
 deploy-el7-2.0:dsp:
@@ -860,7 +860,7 @@ deploy-el7-2.0:dsp:
     asset_name: dsp
     lowercase_asset_name: dsp
   dependencies:
-    - package:el7:rh2.0:dsp
+    - base_package:el7:rh2.0:dsp
   <<: *s3
 
 deploy-el6-2.2:dsp:
@@ -873,7 +873,7 @@ deploy-el6-2.2:dsp:
     asset_name: dsp
     lowercase_asset_name: dsp
   dependencies:
-    - package:el6:rh2.2:dsp
+    - base_package:el6:rh2.2:dsp
   <<: *s3
 
 deploy-el6-2.2:dsp:
@@ -886,7 +886,7 @@ deploy-el6-2.2:dsp:
     asset_name: dsp
     lowercase_asset_name: dsp
   dependencies:
-    - package:el6:rh2.2:dsp
+    - base_package:el6:rh2.2:dsp
   <<: *s3
 
 package:el6:rh2.0:fftlib:
