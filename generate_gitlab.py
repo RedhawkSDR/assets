@@ -88,7 +88,7 @@ def replace_deploy_template(os_version, rh_version, comp_name):
 for comp in components:
     base_package = False
     if comp == 'dsp':
-        base_package = False
+        base_package = True
     os_version = 'el6'
     rh_version = '2.0'
     jobs += replace_package_template(os_version, rh_version, comp, base_package)

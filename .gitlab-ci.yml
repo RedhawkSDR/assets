@@ -112,7 +112,7 @@ before_script:
      - echo $(ls)
   artifacts:
     paths:
-      - output/*/*.rpm
+      - $(find -maxdepth 3 -name ${asset_name})/output/*/*.rpm
     expire_in: 2 days
   except:
     - master
@@ -714,7 +714,7 @@ deploy-el6-2.2:blueFileLib:
     - package:el6:rh2.2:blueFileLib
   <<: *s3
 
-package:el6:rh2.0:dsp:
+base_package:el6:rh2.0:dsp:
   variables:
     dist: el6
     arch: x86_64
@@ -723,9 +723,9 @@ package:el6:rh2.0:dsp:
     short_version: '2.0'
     asset_name: dsp
     lowercase_asset_name: dsp
-  <<: *package
+  <<: *base_package
 
-package:el6:rh2.0:dsp:
+base_package:el6:rh2.0:dsp:
   variables:
     dist: el6
     arch: i686
@@ -734,9 +734,9 @@ package:el6:rh2.0:dsp:
     short_version: '2.0'
     asset_name: dsp
     lowercase_asset_name: dsp
-  <<: *package
+  <<: *base_package
 
-package:el7:rh2.0:dsp:
+base_package:el7:rh2.0:dsp:
   variables:
     dist: el7
     arch: x86_64
@@ -745,9 +745,9 @@ package:el7:rh2.0:dsp:
     short_version: '2.0'
     asset_name: dsp
     lowercase_asset_name: dsp
-  <<: *package
+  <<: *base_package
 
-package:el6:rh2.2:dsp:
+base_package:el6:rh2.2:dsp:
   variables:
     dist: el6
     arch: x86_64
@@ -756,9 +756,9 @@ package:el6:rh2.2:dsp:
     short_version: '2.2'
     asset_name: dsp
     lowercase_asset_name: dsp
-  <<: *package
+  <<: *base_package
 
-package:el6:rh2.2:dsp:
+base_package:el6:rh2.2:dsp:
   variables:
     dist: el6
     arch: x86_64
@@ -767,7 +767,7 @@ package:el6:rh2.2:dsp:
     short_version: '2.2'
     asset_name: dsp
     lowercase_asset_name: dsp
-  <<: *package
+  <<: *base_package
 
 test:el6:rh2.0:dsp:
   variables:

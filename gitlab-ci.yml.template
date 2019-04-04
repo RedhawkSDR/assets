@@ -112,7 +112,7 @@ before_script:
      - echo $(ls)
   artifacts:
     paths:
-      - output/*/*.rpm
+      - $(find -maxdepth 3 -name ${asset_name})/output/*/*.rpm
     expire_in: 2 days
   except:
     - master
