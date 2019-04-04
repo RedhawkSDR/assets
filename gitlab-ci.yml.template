@@ -100,12 +100,15 @@ before_script:
                           --build-arg "other_repos=$redhawk_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ output/
+     - echo $(find . -name '*rpm')
      - echo $(ls)
      - echo $(pwd)
      - docker container rm -f $id || true
+     - echo $(find . -name '*rpm')
      - docker image rm -f $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} || true
      - echo $(ls)
      - cd ../../..
+     - echo $(find . -name '*rpm')
      - echo $(ls)
   artifacts:
     paths:
