@@ -37,7 +37,7 @@ before_script:
      #- datetime=$(git show -s --format=%ci ${CI_COMMIT_SHA})
      #- sed -i -e "s/__REVISION__/${CI_COMMIT_SHA}/" ${namespace}$asset_name.spec
      #- sed -i -e "s/__DATETIME__/${datetime}/" ${namespace}$asset_name.spec
-     - cd $(find -name ${asset_name})
+     - cd $(find -maxdepth 3 -name ${asset_name})
      - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
      - echo $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
@@ -54,10 +54,10 @@ before_script:
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
                           --build-arg "other_repos=$redhawk_repo" .
-     - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-$asset_name-$safe_ref-$dist-$arch-rh${safe_version})
+     - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ output/
      - docker container rm -f $id || true
-     - docker image rm -f $CI_PROJECT_PATH_SLUG-components-$asset_name-$safe_ref-$dist-$arch-rh${safe_version} || true
+     - docker image rm -f $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} || true
      - cd ../../..
   artifacts:
     paths:
