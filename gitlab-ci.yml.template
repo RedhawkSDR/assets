@@ -28,19 +28,19 @@ before_script:
     - asset_repo=$s3_repo_url/redhawk/assets/yum/$redhawk_version/rh${safe_version}/$dist/$arch
 
 .create_local_repo: &create_local_repo
-  image: ${docker_registry}${docker_rpm_repository}docker:latest
+  image: ${docker_registry}redhawk/buildenv:${short_version}-$dist-$arch
   stage: create_repo
   tags:
     - ca
     - docker
   script:
-     - id=$(docker container create ${docker_registry}${docker_rpm_repository}docker:latest)
-     - docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} mkdir repo
-     - docker container cp output $id:/usr/src/app/repo
-     - docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} createrepo repo
-     - docker container cp $id:/usr/src/app/repo output
-     - docker container rm -f $id || true
-     - docker image rm -f $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} || true
+     - echo $(ls)
+     - echo $(ls output)
+     - createrepo output
+  artifacts:
+    paths:
+      - output/*
+    expire_in: 2 days
 
 .base_package: &base_package
   image: ${docker_registry}${docker_rpm_repository}docker:latest
@@ -54,9 +54,6 @@ before_script:
      #- datetime=$(git show -s --format=%ci ${CI_COMMIT_SHA})
      #- sed -i -e "s/__REVISION__/${CI_COMMIT_SHA}/" ${namespace}$asset_name.spec
      #- sed -i -e "s/__DATETIME__/${datetime}/" ${namespace}$asset_name.spec
-     - new_id=$(docker container create ${docker_registry}${docker_rpm_repository}docker:latest)
-     - docker container exec $new_id ls
-     - docker container rm -f $new_id || true
      - echo $(ls /etc/yum.repos.d)
      - echo $(find . -name '*rpm')
      - cd $(find -maxdepth 3 -name ${asset_name})
@@ -89,8 +86,8 @@ before_script:
      #- docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} createrepo output
      #- docker container exec $id createrepo output
      #- docker container stop $id
-     - echo $(find . -name '*rpm')
-     - echo $(ls output)
+     #- echo $(find . -name '*rpm')
+     #- echo $(ls output)
      - docker container rm -f $id || true
      - docker image rm -f $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} || true
   artifacts:
