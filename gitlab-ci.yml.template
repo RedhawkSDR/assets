@@ -34,10 +34,13 @@ before_script:
     - ca
     - docker
   script:
-     - yum install -y createrepo
-     - echo $(ls /etc/yum.repos.d)
-     - createrepo output
-     - printf "[local]\nname=local rpm from output build directory\nbaseurl=file://$(pwd)/output\nenabled=1\ngpgcheck=0\n" > /etc/yum.repos.d/local.repo
+     - id=$(docker container create ${docker_registry}${docker_rpm_repository}docker:latest)
+     - docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} mkdir repo
+     - docker container cp output $id:/usr/src/app/repo
+     - docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} createrepo repo
+     - docker container cp $id:/usr/src/app/repo output
+     - docker container rm -f $id || true
+     - docker image rm -f $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} || true
 
 .base_package: &base_package
   image: ${docker_registry}${docker_rpm_repository}docker:latest
@@ -51,6 +54,9 @@ before_script:
      #- datetime=$(git show -s --format=%ci ${CI_COMMIT_SHA})
      #- sed -i -e "s/__REVISION__/${CI_COMMIT_SHA}/" ${namespace}$asset_name.spec
      #- sed -i -e "s/__DATETIME__/${datetime}/" ${namespace}$asset_name.spec
+     - new_id=$(docker container create ${docker_registry}${docker_rpm_repository}docker:latest)
+     - docker container exec $new_id ls
+     - docker container rm -f $new_id || true
      - echo $(ls /etc/yum.repos.d)
      - echo $(find . -name '*rpm')
      - cd $(find -maxdepth 3 -name ${asset_name})
@@ -73,14 +79,14 @@ before_script:
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output/
      - cd ../../..
-     - docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} pwd
-     - docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} ls
-     - docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} mkdir abc
-     - docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} ls
-     - docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} ls /root/rpmbuild/RPMS
-     - docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} ls ../..
-     - docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} ls ../../..
-     - docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} createrepo output
+     #- docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} pwd
+     #- docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} ls
+     #- docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} mkdir abc
+     #- docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} ls
+     #- docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} ls /root/rpmbuild/RPMS
+     #- docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} ls ../..
+     #- docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} ls ../../..
+     #- docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} createrepo output
      #- docker container exec $id createrepo output
      #- docker container stop $id
      - echo $(find . -name '*rpm')
