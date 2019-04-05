@@ -28,7 +28,7 @@ before_script:
     - asset_repo=$s3_repo_url/redhawk/assets/yum/$redhawk_version/rh${safe_version}/$dist/$arch
 
 .create_local_repo: &create_local_repo
-  image: ${docker_registry}redhawk/buildenv:${short_version}-$dist-$arch
+  image: ${docker_registry}redhawk/buildenv:2.2-el7-x86_64
   stage: create_repo
   tags:
     - ca
