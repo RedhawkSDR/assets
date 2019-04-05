@@ -73,6 +73,8 @@ before_script:
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output/
      - cd ../../..
+     - docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} pwd
+     - docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} ls
      - docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} createrepo output
      #- docker container exec $id createrepo output
      #- docker container stop $id
