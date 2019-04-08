@@ -117,8 +117,8 @@ before_script:
      - cd $(find -maxdepth 3 -name ${asset_name})
      #- echo $(ls ../../../output)
      - cp -R ../../../output local_yumrepo
-     #- printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild_localrepo:$dist-$arch-onbuild" > Dockerfile
-     - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild_localrepo:$dist-$arch-onbuild" > Dockerfile
+     #- printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
+     - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
      #- echo $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
      #- echo build-arg "project=${asset_name}"
