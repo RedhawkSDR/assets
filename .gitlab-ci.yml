@@ -116,8 +116,8 @@ before_script:
      - tar -cf output.tar output
      - cd $(find -maxdepth 3 -name ${asset_name})
      - echo $(ls ../../../output)
-     #- printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild\nRUN mkdir -p /localyum\nCOPY ../../../output.tar /localyum\nWORKDIR /localyum\nRUN tar -xf output.tar" > Dockerfile
-     - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch\nRUN mkdir -p /localyum\nCOPY ../../../output.tar /localyum\nWORKDIR /localyum\nRUN tar -xf output.tar\nARG centos_base_url=http://10.10.193.21/yum/CentOS/\\$releasever\nARG epel_url=http://10.10.193.21/yum/epel/\\$releasever/\\$basearch\nRUN rm -f /etc/yum.repos.d/*.repo && printf "[centos]\nname=centos6\nbaseurl=\$centos_base_url/os/\\$basearch/\ngpgcheck=0\n" > /etc/yum.repos.d/centos.repo && printf "[centos-updates]\nname=centos6-updates\nbaseurl=\$centos_base_url/updates/\\$basearch/\ngpgcheck=0\n" >> /etc/yum.repos.d/centos.repo && printf "[epel]\nname=epel\nbaseurl=\$epel_url\ngpgcheck=0\n" >> /etc/yum.repos.d/centos.repo && cat /etc/yum.repos.d/centos.repo\nONBUILD ARG project=""\nONBUILD ARG spec_file=\$project.spec\nONBUILD ARG version=""\nONBUILD ARG arch=$arch\nONBUILD ARG target=\$arch-redhat-linux-gnu\nONBUILD ARG rpm_release=""\nONBUILD ARG local_repo=""\nONBUILD ARG other_repos=""\nONBUILD ARG nproc="3"\nONBUILD RUN set -x && sed -i "s|%smp_mflags  -j3|%_smp_mflags  -j\$nproc|g" /root/.rpmmacros && cat /root/.rpmmacros\nONBUILD COPY \$project /usr/src/app/\nONBUILD COPY \$local_repo /usr/src/yum/\nONBUILD RUN set -x && touch /etc/yum.repos.d/dependencies.repo && bash -c 'if [ -n "\$local_repo" ]; then printf "[local]\nname=local\nbaseurl=file:///usr/src/yum/\ngpgcheck=0\nenabled=0\n" >> /etc/yum.repos.d/dependencies.repo; fi' && bash -c 'i=0; for repo in \$other_repos; do printf "[repo\$i]\nname=repo\$i\nbaseurl=\$repo\ngpgcheck=0\n" >> /etc/yum.repos.d/dependencies.repo; let i=i+1; done' && cat /etc/yum.repos.d/dependencies.repo\nONBUILD WORKDIR /usr/src/app/\nONBUILD RUN set -x && printf "project=\$project\nspecfile=\$spec_file\nversion=\$version\nrpm_release=\$rpm_release\nother_repos=\$other_repos\n" && bash -c  'if [ -n "\$rpm_release" ]; then sed -i "s|Release:.*|Release: \$rpm_release%{?dist}|g" \$spec_file; fi' && tar --transform "s,^,\$project-\$version/,S" -czf /root/rpmbuild/SOURCES/\$project-\$version.tar.gz * && bash -c 'if [ -n "\$local_repo" ]; then yum-builddep -y --enablerepo local \$spec_file; else yum-builddep -y \$spec_file; fi' && bash -lc 'rpmbuild --target=\$target -bb \$spec_file'" > Dockerfile
+     #- printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild_localrepo:$dist-$arch-onbuild\nRUN mkdir -p /localyum\nCOPY ../../../output.tar /localyum\nWORKDIR /localyum\nRUN tar -xf output.tar" > Dockerfile
+     - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild_localrepo:$dist-$arch" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
      - echo $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
      - echo build-arg "project=${asset_name}"
@@ -128,6 +128,7 @@ before_script:
      - echo build-arg "other_repos=$redhawk_repo" .
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
+                          --build-arg "localfile=../../../output"
                           --build-arg "project=${asset_name}"
                           --build-arg "rpm_release=$rpm_release"
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
