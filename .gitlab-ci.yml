@@ -111,43 +111,42 @@ before_script:
      #- datetime=$(git show -s --format=%ci ${CI_COMMIT_SHA})
      #- sed -i -e "s/__REVISION__/${CI_COMMIT_SHA}/" ${namespace}$asset_name.spec
      #- sed -i -e "s/__DATETIME__/${datetime}/" ${namespace}$asset_name.spec
-     - echo $(ls /etc/yum.repos.d)
-     - echo $(find . -name '*rpm')
-     - tar -cf output.tar output
+     #- echo $(ls /etc/yum.repos.d)
+     #- echo $(find . -name '*rpm')
+     #- tar -cf output.tar output
      - cd $(find -maxdepth 3 -name ${asset_name})
-     - echo $(ls ../../../output)
-     - cp -R ../../../output foobar
-     #- printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild_localrepo:$dist-$arch-onbuild\nRUN mkdir -p /localyum\nCOPY ../../../output.tar /localyum\nWORKDIR /localyum\nRUN tar -xf output.tar" > Dockerfile
-     - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild_localrepo:$dist-$arch" > Dockerfile
+     #- echo $(ls ../../../output)
+     - cp -R ../../../output local_yumrepo
+     #- printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild_localrepo:$dist-$arch-onbuild" > Dockerfile
+     - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild_localrepo:$dist-$arch-onbuild" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
-     - echo $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
-     - echo build-arg "project=${asset_name}"
-     - echo build-arg "rpm_release=$rpm_release"
-     - echo build-arg "spec_file=${namespace}${asset_name}.spec"
-     - echo build-arg "arch=$arch"
+     #- echo $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
+     #- echo build-arg "project=${asset_name}"
+     #- echo build-arg "rpm_release=$rpm_release"
+     #- echo build-arg "spec_file=${namespace}${asset_name}.spec"
+     #- echo build-arg "arch=$arch"
      #- echo build-arg "other_repos=$redhawk_repo $asset_repo" .
-     - echo build-arg "other_repos=$redhawk_repo" .
+     #- echo build-arg "other_repos=$redhawk_repo" .
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
-                          --build-arg "localfile=../../../output"
                           --build-arg "project=${asset_name}"
                           --build-arg "rpm_release=$rpm_release"
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
-                          --build-arg "local_repo=foobar"
+                          --build-arg "local_repo=local_yumrepo"
                           --build-arg "other_repos=$redhawk_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output/
-     - echo $(find . -name '*rpm')
-     - echo $(ls)
-     - echo $(pwd)
+     #- echo $(find . -name '*rpm')
+     #- echo $(ls)
+     #- echo $(pwd)
      - docker container rm -f $id || true
-     - echo $(find . -name '*rpm')
+     #- echo $(find . -name '*rpm')
      - docker image rm -f $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} || true
-     - echo $(ls)
+     #- echo $(ls)
      - cd ../../..
-     - echo $(find . -name '*rpm')
-     - echo $(ls)
+     #- echo $(find . -name '*rpm')
+     #- echo $(ls)
   artifacts:
     paths:
       - output/*/*.rpm
