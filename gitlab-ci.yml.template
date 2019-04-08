@@ -116,6 +116,7 @@ before_script:
      - tar -cf output.tar output
      - cd $(find -maxdepth 3 -name ${asset_name})
      - echo $(ls ../../../output)
+     - cp -R ../../../output foobar
      #- printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild_localrepo:$dist-$arch-onbuild\nRUN mkdir -p /localyum\nCOPY ../../../output.tar /localyum\nWORKDIR /localyum\nRUN tar -xf output.tar" > Dockerfile
      - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild_localrepo:$dist-$arch" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
@@ -133,7 +134,7 @@ before_script:
                           --build-arg "rpm_release=$rpm_release"
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
-                          --build-arg "local_repo=output"
+                          --build-arg "local_repo=foobar"
                           --build-arg "other_repos=$redhawk_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output/
