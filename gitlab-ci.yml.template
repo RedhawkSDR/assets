@@ -114,7 +114,7 @@ before_script:
      - echo $(ls /etc/yum.repos.d)
      - echo $(find . -name '*rpm')
      - cd $(find -maxdepth 3 -name ${asset_name})
-     - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
+     - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild\nCOPY output /usr/src/app/local_yum" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
      - echo $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
      - echo build-arg "project=${asset_name}"
@@ -129,7 +129,7 @@ before_script:
                           --build-arg "rpm_release=$rpm_release"
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
-                          --build-arg "local_repo=output"
+                          --build-arg "local_repo=/usr/src/app/local_yum"
                           --build-arg "other_repos=$redhawk_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output/
