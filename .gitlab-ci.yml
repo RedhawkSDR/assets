@@ -133,7 +133,7 @@ before_script:
                           --build-arg "rpm_release=$rpm_release"
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
-                          --build-arg "local_repo=../../../output"
+                          --build-arg "local_repo=output"
                           --build-arg "other_repos=$redhawk_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output/
