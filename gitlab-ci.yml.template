@@ -113,9 +113,10 @@ before_script:
      #- sed -i -e "s/__DATETIME__/${datetime}/" ${namespace}$asset_name.spec
      - echo $(ls /etc/yum.repos.d)
      - echo $(find . -name '*rpm')
+     - tar -cf output.tar output
      - cd $(find -maxdepth 3 -name ${asset_name})
      - echo $(ls ../../../output)
-     - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild\nRUN mkdir -p /localyum\nRUN mkdir -p /localyum/output\nCOPY ../../../output/* /localyum\n" > Dockerfile
+     - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild\nRUN mkdir -p /localyum\nCOPY ../../../output.tar /localyum\nWORKDIR /localyum\nRUN tar -xf output.tar" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
      - echo $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
      - echo build-arg "project=${asset_name}"
