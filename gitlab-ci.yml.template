@@ -28,7 +28,7 @@ before_script:
     - asset_repo=$s3_repo_url/redhawk/assets/yum/$redhawk_version/rh${safe_version}/$dist/$arch
 
 .create_local_repo: &create_local_repo
-  image: ${docker_registry}redhawk/buildenv:2.2-el7-x86_64
+  image: ${docker_registry}${docker_rpm_repository}docker:latest
   stage: create_repo
   tags:
     - ca
@@ -39,7 +39,7 @@ before_script:
      - createrepo output
   artifacts:
     paths:
-      - output/*
+      - output/${dist}*
     expire_in: 2 days
 
 .base_package: &base_package
@@ -74,7 +74,7 @@ before_script:
                           --build-arg "arch=$arch"
                           --build-arg "other_repos=$redhawk_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
-     - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output/
+     - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output/${dist}
      - cd ../../..
      #- docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} pwd
      #- docker container run $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} ls
@@ -116,11 +116,8 @@ before_script:
      #- tar -cf output.tar output
      - cd $(find -maxdepth 3 -name ${asset_name})
      #- echo $(ls ../../../output)
-     - cp -R ../../../output local_yumrepo
+     - cp -R ../../../output/${dist} local_yumrepo
      - cd local_yumrepo
-     - echo $(find . -name '*rpm')
-     - echo $(find . -type f | grep rpm | grep -v "\.${dist}\.")
-     - rm $(find . -type f | grep rpm | grep -v "\.${dist}\.")
      - echo $(find . -name '*rpm')
      - cd ..
      #- printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
@@ -232,7 +229,14 @@ deploy:
     - repomanage --keep=2 --old $arch| xargs rm -f; createrepo --update $arch
     - /usr/bin/s3cmd sync -F -v --delete-removed $arch s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/rh${short_version}/$dist/  && s3cmd setacl -v s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/rh${short_version}/$dist --acl-public --recursive || true
 
-create:local:repos:
+create:local_el6:repos:
+  variables:
+    dist: el6
+ <<: *create_local_repo
+
+create:local_el7:repos:
+  variables:
+    dist: el7
  <<: *create_local_repo
 
 __JOBS__
