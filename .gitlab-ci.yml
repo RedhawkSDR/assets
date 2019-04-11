@@ -150,8 +150,6 @@ before_script:
      - cd ../../..
      #- echo $(find . -name '*rpm')
      #- echo $(ls)
-  dependencies:
-    - ${job_dep}
   artifacts:
     paths:
       - output/*/*.rpm
