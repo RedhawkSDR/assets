@@ -39,7 +39,7 @@ before_script:
      - createrepo output
   artifacts:
     paths:
-      - output/${dist}*
+      - output/${dist}/*
     expire_in: 2 days
 
 .base_package: &base_package
