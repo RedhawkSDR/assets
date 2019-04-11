@@ -229,18 +229,15 @@ deploy:
     - repomanage --keep=2 --old $arch| xargs rm -f; createrepo --update $arch
     - /usr/bin/s3cmd sync -F -v --delete-removed $arch s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/rh${short_version}/$dist/  && s3cmd setacl -v s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/rh${short_version}/$dist --acl-public --recursive || true
 
-#create:local:repos:el6:
-#  variables:
-#    dist: el6
-# <<: *create_local_repo
-#
-#create:local:repos:el7:
-#  variables:
-#    dist: el7
-# <<: *create_local_repo
+create-el6:local:repos:
+  variables:
+    dist: el6
+  <<: *create_local_repo
 
-create:local:repos:
- <<: *create_local_repo
+create-el7:local:repos:
+  variables:
+    dist: el7
+  <<: *create_local_repo
 
 package:el6:rh2.2:RedhawkDevUtils:
   variables:
