@@ -32,6 +32,7 @@ package_template = """package:__DIST__:rh__SHORT_V__:__ASSET_NAME__:
     short_version: '__SHORT_V__'
     asset_name: __ASSET_NAME__
     lowercase_asset_name: __ASSET_LC_NAME__
+__DEP__
   <<: *package
 
 """
@@ -72,6 +73,11 @@ def replace_package_template(os_version, rh_version, comp_name, base_library=Fal
 
     if base_library:
         retval = retval.replace('package', 'base_package')
+
+    if base_library:
+        retval = retval.replace("__DEP__\n", "")
+    else:
+        retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+":local:repos\n")
 
     return retval
 

@@ -39,7 +39,7 @@ before_script:
      - createrepo output
   artifacts:
     paths:
-      - output/${dist}/*
+      - output/*
     expire_in: 2 days
 
 .base_package: &base_package
@@ -116,7 +116,7 @@ before_script:
      #- tar -cf output.tar output
      - cd $(find -maxdepth 3 -name ${asset_name})
      #- echo $(ls ../../../output)
-     - cp -R ../../../output/${dist} local_yumrepo
+     - cp -R ../../../output local_yumrepo
      - cd local_yumrepo
      - echo $(find . -name '*rpm')
      - cd ..
@@ -150,6 +150,8 @@ before_script:
      - cd ../../..
      #- echo $(find . -name '*rpm')
      #- echo $(ls)
+  dependencies:
+    - ${job_dep}
   artifacts:
     paths:
       - output/*/*.rpm

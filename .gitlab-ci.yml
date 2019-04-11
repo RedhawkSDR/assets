@@ -39,7 +39,7 @@ before_script:
      - createrepo output
   artifacts:
     paths:
-      - output/${dist}/*
+      - output/*
     expire_in: 2 days
 
 .base_package: &base_package
@@ -116,7 +116,7 @@ before_script:
      #- tar -cf output.tar output
      - cd $(find -maxdepth 3 -name ${asset_name})
      #- echo $(ls ../../../output)
-     - cp -R ../../../output/${dist} local_yumrepo
+     - cp -R ../../../output local_yumrepo
      - cd local_yumrepo
      - echo $(find . -name '*rpm')
      - cd ..
@@ -150,6 +150,8 @@ before_script:
      - cd ../../..
      #- echo $(find . -name '*rpm')
      #- echo $(ls)
+  dependencies:
+    - ${job_dep}
   artifacts:
     paths:
       - output/*/*.rpm
@@ -248,6 +250,8 @@ package:el6:rh2.2:RedhawkDevUtils:
     short_version: '2.2'
     asset_name: RedhawkDevUtils
     lowercase_asset_name: redhawkdevutils
+  dependencies:
+    - create-el6:local:repos
   <<: *package
 
 package:el7:rh2.2:RedhawkDevUtils:
@@ -259,6 +263,8 @@ package:el7:rh2.2:RedhawkDevUtils:
     short_version: '2.2'
     asset_name: RedhawkDevUtils
     lowercase_asset_name: redhawkdevutils
+  dependencies:
+    - create-el7:local:repos
   <<: *package
 
 test:el6:rh2.2:RedhawkDevUtils:
@@ -318,6 +324,8 @@ package:el6:rh2.2:VITA49:
     short_version: '2.2'
     asset_name: VITA49
     lowercase_asset_name: vita49
+  dependencies:
+    - create-el6:local:repos
   <<: *package
 
 package:el7:rh2.2:VITA49:
@@ -329,6 +337,8 @@ package:el7:rh2.2:VITA49:
     short_version: '2.2'
     asset_name: VITA49
     lowercase_asset_name: vita49
+  dependencies:
+    - create-el7:local:repos
   <<: *package
 
 test:el6:rh2.2:VITA49:
@@ -388,6 +398,8 @@ package:el6:rh2.2:blueFileLib:
     short_version: '2.2'
     asset_name: blueFileLib
     lowercase_asset_name: bluefilelib
+  dependencies:
+    - create-el6:local:repos
   <<: *package
 
 package:el7:rh2.2:blueFileLib:
@@ -399,6 +411,8 @@ package:el7:rh2.2:blueFileLib:
     short_version: '2.2'
     asset_name: blueFileLib
     lowercase_asset_name: bluefilelib
+  dependencies:
+    - create-el7:local:repos
   <<: *package
 
 test:el6:rh2.2:blueFileLib:
@@ -528,6 +542,8 @@ package:el6:rh2.2:fftlib:
     short_version: '2.2'
     asset_name: fftlib
     lowercase_asset_name: fftlib
+  dependencies:
+    - create-el6:local:repos
   <<: *package
 
 package:el7:rh2.2:fftlib:
@@ -539,6 +555,8 @@ package:el7:rh2.2:fftlib:
     short_version: '2.2'
     asset_name: fftlib
     lowercase_asset_name: fftlib
+  dependencies:
+    - create-el7:local:repos
   <<: *package
 
 test:el6:rh2.2:fftlib:
