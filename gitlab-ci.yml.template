@@ -104,6 +104,7 @@ before_script:
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output
      - cd ../../..
+     - echo $(find . -name '*rpm')
      - docker container rm -f $id || true
      - docker image rm -f $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} || true
   artifacts:
