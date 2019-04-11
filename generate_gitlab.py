@@ -37,6 +37,15 @@ __DEP__
 
 """
 
+create_template = """create-__DIST__:local:repos:
+  variables:
+    dist: __DIST__
+  dependencies:
+__DEPS__
+  <<: *create_local_repo
+
+"""
+
 test_template = """test:__DIST__:rh__SHORT_V__:__ASSET_NAME__:
   variables:
     dist: __DIST__
@@ -95,6 +104,18 @@ def replace_deploy_template(os_version, rh_version, comp_name, base_library=Fals
         retval = retval.replace('package', 'base_package')
 
     return retval
+
+def replace_create_template(os_version, rh_version, components):
+    comp_dep_list = ''
+    for comp in components:
+        if comp == 'dsp':
+            comp_dep_list += '    - base_package:'+platforms[os_version]['dist']+':rh'+rh_version+':'+comp+'\n'
+
+    retval = create_template.replace('__DEPS__', comp_dep_list).replace('__DIST__', os_version)
+    return retval
+
+jobs += replace_create_template('el6', '2.2', components)
+jobs += replace_create_template('el7', '2.2', components)
 
 for comp in components:
     base_package = False
