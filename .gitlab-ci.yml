@@ -91,9 +91,6 @@ before_script:
      - cd $(find -maxdepth 3 -name ${asset_name})
      - cp -R ../../../output local_yumrepo
      - rm -rf ../../../output/*
-     - cd local_yumrepo
-     - echo $(find . -name '*rpm')
-     - cd ..
      - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
      - docker image build --pull
@@ -105,10 +102,10 @@ before_script:
                           --build-arg "local_repo=local_yumrepo"
                           --build-arg "other_repos=$redhawk_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
-     - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output/
+     - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output
+     - cd ../../..
      - docker container rm -f $id || true
      - docker image rm -f $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} || true
-     - cd ../../..
   artifacts:
     paths:
       - output/*/*.rpm
