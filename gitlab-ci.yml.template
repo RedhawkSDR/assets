@@ -118,7 +118,10 @@ before_script:
      #- echo $(ls ../../../output)
      - cp -R ../../../output local_yumrepo
      - cd local_yumrepo
-     - rm $(find . -type f | grep rpm | grep -v "\.$dist\.")
+     - echo $(find . -name '*rpm')
+     - echo $(find . -type f | grep rpm | grep -v "\.${dist}\.")
+     - rm $(find . -type f | grep rpm | grep -v "\.${dist}\.")
+     - echo $(find . -name '*rpm')
      - cd ..
      #- printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
      - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
