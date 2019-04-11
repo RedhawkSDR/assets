@@ -40,6 +40,8 @@ __DEP__
 create_template = """create-__DIST__:local:repos:
   variables:
     dist: __DIST__
+    short_version: '__SHORT_V__'
+    arch: __ARCH__
   dependencies:
 __DEPS__
   <<: *create_local_repo
@@ -111,7 +113,7 @@ def replace_create_template(os_version, rh_version, components):
         if comp == 'dsp':
             comp_dep_list += '    - base_package:'+platforms[os_version]['dist']+':rh'+rh_version+':'+comp+'\n'
 
-    retval = create_template.replace('__DEPS__', comp_dep_list).replace('__DIST__', os_version)
+    retval = create_template.replace('__DEPS__', comp_dep_list).replace('__DIST__', os_version).replace('__SHORT_V__', rh_version).replace('__ARCH__', platforms[os_version]['arch'])
     return retval
 
 jobs += replace_create_template('el6', '2.2', components)
