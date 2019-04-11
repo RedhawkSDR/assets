@@ -229,39 +229,6 @@ deploy:
 create:local:repos:
  <<: *create_local_repo
 
-package:el6:rh2.0:RedhawkDevUtils:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: RedhawkDevUtils
-    lowercase_asset_name: redhawkdevutils
-  <<: *package
-
-package:el6:rh2.0:RedhawkDevUtils:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: RedhawkDevUtils
-    lowercase_asset_name: redhawkdevutils
-  <<: *package
-
-package:el7:rh2.0:RedhawkDevUtils:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: RedhawkDevUtils
-    lowercase_asset_name: redhawkdevutils
-  <<: *package
-
 package:el6:rh2.2:RedhawkDevUtils:
   variables:
     dist: el6
@@ -273,9 +240,9 @@ package:el6:rh2.2:RedhawkDevUtils:
     lowercase_asset_name: redhawkdevutils
   <<: *package
 
-package:el6:rh2.2:RedhawkDevUtils:
+package:el7:rh2.2:RedhawkDevUtils:
   variables:
-    dist: el6
+    dist: el7
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -283,39 +250,6 @@ package:el6:rh2.2:RedhawkDevUtils:
     asset_name: RedhawkDevUtils
     lowercase_asset_name: redhawkdevutils
   <<: *package
-
-test:el6:rh2.0:RedhawkDevUtils:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: RedhawkDevUtils
-    lowercase_asset_name: redhawkdevutils
-  <<: *test
-
-test:el6:rh2.0:RedhawkDevUtils:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: RedhawkDevUtils
-    lowercase_asset_name: redhawkdevutils
-  <<: *test
-
-test:el7:rh2.0:RedhawkDevUtils:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: RedhawkDevUtils
-    lowercase_asset_name: redhawkdevutils
-  <<: *test
 
 test:el6:rh2.2:RedhawkDevUtils:
   variables:
@@ -328,9 +262,9 @@ test:el6:rh2.2:RedhawkDevUtils:
     lowercase_asset_name: redhawkdevutils
   <<: *test
 
-test:el6:rh2.2:RedhawkDevUtils:
+test:el7:rh2.2:RedhawkDevUtils:
   variables:
-    dist: el6
+    dist: el7
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -338,45 +272,6 @@ test:el6:rh2.2:RedhawkDevUtils:
     asset_name: RedhawkDevUtils
     lowercase_asset_name: redhawkdevutils
   <<: *test
-
-deploy-el6-2.0:RedhawkDevUtils:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: RedhawkDevUtils
-    lowercase_asset_name: redhawkdevutils
-  dependencies:
-    - package:el6:rh2.0:RedhawkDevUtils
-  <<: *s3
-
-deploy-el6-2.0:RedhawkDevUtils:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: RedhawkDevUtils
-    lowercase_asset_name: redhawkdevutils
-  dependencies:
-    - package:el6:rh2.0:RedhawkDevUtils
-  <<: *s3
-
-deploy-el7-2.0:RedhawkDevUtils:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: RedhawkDevUtils
-    lowercase_asset_name: redhawkdevutils
-  dependencies:
-    - package:el7:rh2.0:RedhawkDevUtils
-  <<: *s3
 
 deploy-el6-2.2:RedhawkDevUtils:
   variables:
@@ -391,9 +286,9 @@ deploy-el6-2.2:RedhawkDevUtils:
     - package:el6:rh2.2:RedhawkDevUtils
   <<: *s3
 
-deploy-el6-2.2:RedhawkDevUtils:
+deploy-el7-2.2:RedhawkDevUtils:
   variables:
-    dist: el6
+    dist: el7
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -401,41 +296,8 @@ deploy-el6-2.2:RedhawkDevUtils:
     asset_name: RedhawkDevUtils
     lowercase_asset_name: redhawkdevutils
   dependencies:
-    - package:el6:rh2.2:RedhawkDevUtils
+    - package:el7:rh2.2:RedhawkDevUtils
   <<: *s3
-
-package:el6:rh2.0:VITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: VITA49
-    lowercase_asset_name: vita49
-  <<: *package
-
-package:el6:rh2.0:VITA49:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: VITA49
-    lowercase_asset_name: vita49
-  <<: *package
-
-package:el7:rh2.0:VITA49:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: VITA49
-    lowercase_asset_name: vita49
-  <<: *package
 
 package:el6:rh2.2:VITA49:
   variables:
@@ -448,9 +310,9 @@ package:el6:rh2.2:VITA49:
     lowercase_asset_name: vita49
   <<: *package
 
-package:el6:rh2.2:VITA49:
+package:el7:rh2.2:VITA49:
   variables:
-    dist: el6
+    dist: el7
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -459,39 +321,6 @@ package:el6:rh2.2:VITA49:
     lowercase_asset_name: vita49
   <<: *package
 
-test:el6:rh2.0:VITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: VITA49
-    lowercase_asset_name: vita49
-  <<: *test
-
-test:el6:rh2.0:VITA49:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: VITA49
-    lowercase_asset_name: vita49
-  <<: *test
-
-test:el7:rh2.0:VITA49:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: VITA49
-    lowercase_asset_name: vita49
-  <<: *test
-
 test:el6:rh2.2:VITA49:
   variables:
     dist: el6
@@ -503,9 +332,9 @@ test:el6:rh2.2:VITA49:
     lowercase_asset_name: vita49
   <<: *test
 
-test:el6:rh2.2:VITA49:
+test:el7:rh2.2:VITA49:
   variables:
-    dist: el6
+    dist: el7
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -513,45 +342,6 @@ test:el6:rh2.2:VITA49:
     asset_name: VITA49
     lowercase_asset_name: vita49
   <<: *test
-
-deploy-el6-2.0:VITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: VITA49
-    lowercase_asset_name: vita49
-  dependencies:
-    - package:el6:rh2.0:VITA49
-  <<: *s3
-
-deploy-el6-2.0:VITA49:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: VITA49
-    lowercase_asset_name: vita49
-  dependencies:
-    - package:el6:rh2.0:VITA49
-  <<: *s3
-
-deploy-el7-2.0:VITA49:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: VITA49
-    lowercase_asset_name: vita49
-  dependencies:
-    - package:el7:rh2.0:VITA49
-  <<: *s3
 
 deploy-el6-2.2:VITA49:
   variables:
@@ -566,9 +356,9 @@ deploy-el6-2.2:VITA49:
     - package:el6:rh2.2:VITA49
   <<: *s3
 
-deploy-el6-2.2:VITA49:
+deploy-el7-2.2:VITA49:
   variables:
-    dist: el6
+    dist: el7
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -576,41 +366,8 @@ deploy-el6-2.2:VITA49:
     asset_name: VITA49
     lowercase_asset_name: vita49
   dependencies:
-    - package:el6:rh2.2:VITA49
+    - package:el7:rh2.2:VITA49
   <<: *s3
-
-package:el6:rh2.0:blueFileLib:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: blueFileLib
-    lowercase_asset_name: bluefilelib
-  <<: *package
-
-package:el6:rh2.0:blueFileLib:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: blueFileLib
-    lowercase_asset_name: bluefilelib
-  <<: *package
-
-package:el7:rh2.0:blueFileLib:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: blueFileLib
-    lowercase_asset_name: bluefilelib
-  <<: *package
 
 package:el6:rh2.2:blueFileLib:
   variables:
@@ -623,9 +380,9 @@ package:el6:rh2.2:blueFileLib:
     lowercase_asset_name: bluefilelib
   <<: *package
 
-package:el6:rh2.2:blueFileLib:
+package:el7:rh2.2:blueFileLib:
   variables:
-    dist: el6
+    dist: el7
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -634,39 +391,6 @@ package:el6:rh2.2:blueFileLib:
     lowercase_asset_name: bluefilelib
   <<: *package
 
-test:el6:rh2.0:blueFileLib:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: blueFileLib
-    lowercase_asset_name: bluefilelib
-  <<: *test
-
-test:el6:rh2.0:blueFileLib:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: blueFileLib
-    lowercase_asset_name: bluefilelib
-  <<: *test
-
-test:el7:rh2.0:blueFileLib:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: blueFileLib
-    lowercase_asset_name: bluefilelib
-  <<: *test
-
 test:el6:rh2.2:blueFileLib:
   variables:
     dist: el6
@@ -678,9 +402,9 @@ test:el6:rh2.2:blueFileLib:
     lowercase_asset_name: bluefilelib
   <<: *test
 
-test:el6:rh2.2:blueFileLib:
+test:el7:rh2.2:blueFileLib:
   variables:
-    dist: el6
+    dist: el7
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -688,45 +412,6 @@ test:el6:rh2.2:blueFileLib:
     asset_name: blueFileLib
     lowercase_asset_name: bluefilelib
   <<: *test
-
-deploy-el6-2.0:blueFileLib:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: blueFileLib
-    lowercase_asset_name: bluefilelib
-  dependencies:
-    - package:el6:rh2.0:blueFileLib
-  <<: *s3
-
-deploy-el6-2.0:blueFileLib:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: blueFileLib
-    lowercase_asset_name: bluefilelib
-  dependencies:
-    - package:el6:rh2.0:blueFileLib
-  <<: *s3
-
-deploy-el7-2.0:blueFileLib:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: blueFileLib
-    lowercase_asset_name: bluefilelib
-  dependencies:
-    - package:el7:rh2.0:blueFileLib
-  <<: *s3
 
 deploy-el6-2.2:blueFileLib:
   variables:
@@ -741,9 +426,9 @@ deploy-el6-2.2:blueFileLib:
     - package:el6:rh2.2:blueFileLib
   <<: *s3
 
-deploy-el6-2.2:blueFileLib:
+deploy-el7-2.2:blueFileLib:
   variables:
-    dist: el6
+    dist: el7
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -751,41 +436,8 @@ deploy-el6-2.2:blueFileLib:
     asset_name: blueFileLib
     lowercase_asset_name: bluefilelib
   dependencies:
-    - package:el6:rh2.2:blueFileLib
+    - package:el7:rh2.2:blueFileLib
   <<: *s3
-
-base_package:el6:rh2.0:dsp:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: dsp
-    lowercase_asset_name: dsp
-  <<: *base_package
-
-base_package:el6:rh2.0:dsp:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: dsp
-    lowercase_asset_name: dsp
-  <<: *base_package
-
-base_package:el7:rh2.0:dsp:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: dsp
-    lowercase_asset_name: dsp
-  <<: *base_package
 
 base_package:el6:rh2.2:dsp:
   variables:
@@ -798,9 +450,9 @@ base_package:el6:rh2.2:dsp:
     lowercase_asset_name: dsp
   <<: *base_package
 
-base_package:el6:rh2.2:dsp:
+base_package:el7:rh2.2:dsp:
   variables:
-    dist: el6
+    dist: el7
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -809,39 +461,6 @@ base_package:el6:rh2.2:dsp:
     lowercase_asset_name: dsp
   <<: *base_package
 
-test:el6:rh2.0:dsp:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: dsp
-    lowercase_asset_name: dsp
-  <<: *test
-
-test:el6:rh2.0:dsp:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: dsp
-    lowercase_asset_name: dsp
-  <<: *test
-
-test:el7:rh2.0:dsp:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: dsp
-    lowercase_asset_name: dsp
-  <<: *test
-
 test:el6:rh2.2:dsp:
   variables:
     dist: el6
@@ -853,9 +472,9 @@ test:el6:rh2.2:dsp:
     lowercase_asset_name: dsp
   <<: *test
 
-test:el6:rh2.2:dsp:
+test:el7:rh2.2:dsp:
   variables:
-    dist: el6
+    dist: el7
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -863,45 +482,6 @@ test:el6:rh2.2:dsp:
     asset_name: dsp
     lowercase_asset_name: dsp
   <<: *test
-
-deploy-el6-2.0:dsp:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: dsp
-    lowercase_asset_name: dsp
-  dependencies:
-    - base_package:el6:rh2.0:dsp
-  <<: *s3
-
-deploy-el6-2.0:dsp:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: dsp
-    lowercase_asset_name: dsp
-  dependencies:
-    - base_package:el6:rh2.0:dsp
-  <<: *s3
-
-deploy-el7-2.0:dsp:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: dsp
-    lowercase_asset_name: dsp
-  dependencies:
-    - base_package:el7:rh2.0:dsp
-  <<: *s3
 
 deploy-el6-2.2:dsp:
   variables:
@@ -916,9 +496,9 @@ deploy-el6-2.2:dsp:
     - base_package:el6:rh2.2:dsp
   <<: *s3
 
-deploy-el6-2.2:dsp:
+deploy-el7-2.2:dsp:
   variables:
-    dist: el6
+    dist: el7
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -926,41 +506,8 @@ deploy-el6-2.2:dsp:
     asset_name: dsp
     lowercase_asset_name: dsp
   dependencies:
-    - base_package:el6:rh2.2:dsp
+    - base_package:el7:rh2.2:dsp
   <<: *s3
-
-package:el6:rh2.0:fftlib:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fftlib
-    lowercase_asset_name: fftlib
-  <<: *package
-
-package:el6:rh2.0:fftlib:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fftlib
-    lowercase_asset_name: fftlib
-  <<: *package
-
-package:el7:rh2.0:fftlib:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fftlib
-    lowercase_asset_name: fftlib
-  <<: *package
 
 package:el6:rh2.2:fftlib:
   variables:
@@ -973,9 +520,9 @@ package:el6:rh2.2:fftlib:
     lowercase_asset_name: fftlib
   <<: *package
 
-package:el6:rh2.2:fftlib:
+package:el7:rh2.2:fftlib:
   variables:
-    dist: el6
+    dist: el7
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -984,39 +531,6 @@ package:el6:rh2.2:fftlib:
     lowercase_asset_name: fftlib
   <<: *package
 
-test:el6:rh2.0:fftlib:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fftlib
-    lowercase_asset_name: fftlib
-  <<: *test
-
-test:el6:rh2.0:fftlib:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fftlib
-    lowercase_asset_name: fftlib
-  <<: *test
-
-test:el7:rh2.0:fftlib:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fftlib
-    lowercase_asset_name: fftlib
-  <<: *test
-
 test:el6:rh2.2:fftlib:
   variables:
     dist: el6
@@ -1028,9 +542,9 @@ test:el6:rh2.2:fftlib:
     lowercase_asset_name: fftlib
   <<: *test
 
-test:el6:rh2.2:fftlib:
+test:el7:rh2.2:fftlib:
   variables:
-    dist: el6
+    dist: el7
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -1038,45 +552,6 @@ test:el6:rh2.2:fftlib:
     asset_name: fftlib
     lowercase_asset_name: fftlib
   <<: *test
-
-deploy-el6-2.0:fftlib:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fftlib
-    lowercase_asset_name: fftlib
-  dependencies:
-    - package:el6:rh2.0:fftlib
-  <<: *s3
-
-deploy-el6-2.0:fftlib:
-  variables:
-    dist: el6
-    arch: i686
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fftlib
-    lowercase_asset_name: fftlib
-  dependencies:
-    - package:el6:rh2.0:fftlib
-  <<: *s3
-
-deploy-el7-2.0:fftlib:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    asset_name: fftlib
-    lowercase_asset_name: fftlib
-  dependencies:
-    - package:el7:rh2.0:fftlib
-  <<: *s3
 
 deploy-el6-2.2:fftlib:
   variables:
@@ -1091,9 +566,9 @@ deploy-el6-2.2:fftlib:
     - package:el6:rh2.2:fftlib
   <<: *s3
 
-deploy-el6-2.2:fftlib:
+deploy-el7-2.2:fftlib:
   variables:
-    dist: el6
+    dist: el7
     arch: x86_64
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -1101,7 +576,7 @@ deploy-el6-2.2:fftlib:
     asset_name: fftlib
     lowercase_asset_name: fftlib
   dependencies:
-    - package:el6:rh2.2:fftlib
+    - package:el7:rh2.2:fftlib
   <<: *s3
 
 

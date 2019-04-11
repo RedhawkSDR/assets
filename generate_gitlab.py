@@ -11,7 +11,7 @@ versions = {}
 platforms['el6']={'dist':'el6', 'arch':'x86_64'}
 platforms['el6_32']={'dist':'el6', 'arch':'i686'}
 platforms['el7']={'dist':'el7', 'arch':'x86_64'}
-versions['2.0']={'latest_version':'develop-2-0', 'release_version':'$rh_20_release', 'short_version':'2.0'}
+#versions['2.0']={'latest_version':'develop-2-0', 'release_version':'$rh_20_release', 'short_version':'2.0'}
 versions['2.2']={'latest_version':'develop-2-2', 'release_version':'$rh_22_release', 'short_version':'2.2'}
 
 base_component_dir = 'sdr/libraries'
@@ -94,53 +94,59 @@ for comp in components:
     base_package = False
     if comp == 'dsp':
         base_package = True
-    os_version = 'el6'
-    rh_version = '2.0'
-    jobs += replace_package_template(os_version, rh_version, comp, base_package)
-    os_version = 'el6_32'
-    rh_version = '2.0'
-    jobs += replace_package_template(os_version, rh_version, comp, base_package)
-    os_version = 'el7'
-    rh_version = '2.0'
-    jobs += replace_package_template(os_version, rh_version, comp, base_package)
-    os_version = 'el6'
-    rh_version = '2.2'
-    jobs += replace_package_template(os_version, rh_version, comp, base_package)
-    os_version = 'el6'
-    rh_version = '2.2'
-    jobs += replace_package_template(os_version, rh_version, comp, base_package)
+    if versions.has_key('2.0'):
+        os_version = 'el6'
+        rh_version = '2.0'
+        jobs += replace_package_template(os_version, rh_version, comp, base_package)
+        os_version = 'el6_32'
+        rh_version = '2.0'
+        jobs += replace_package_template(os_version, rh_version, comp, base_package)
+        os_version = 'el7'
+        rh_version = '2.0'
+        jobs += replace_package_template(os_version, rh_version, comp, base_package)
+    if versions.has_key('2.2'):
+        os_version = 'el6'
+        rh_version = '2.2'
+        jobs += replace_package_template(os_version, rh_version, comp, base_package)
+        os_version = 'el7'
+        rh_version = '2.2'
+        jobs += replace_package_template(os_version, rh_version, comp, base_package)
 
-    os_version = 'el6'
-    rh_version = '2.0'
-    jobs += replace_test_template(os_version, rh_version, comp)
-    os_version = 'el6_32'
-    rh_version = '2.0'
-    jobs += replace_test_template(os_version, rh_version, comp)
-    os_version = 'el7'
-    rh_version = '2.0'
-    jobs += replace_test_template(os_version, rh_version, comp)
-    os_version = 'el6'
-    rh_version = '2.2'
-    jobs += replace_test_template(os_version, rh_version, comp)
-    os_version = 'el6'
-    rh_version = '2.2'
-    jobs += replace_test_template(os_version, rh_version, comp)
+    if versions.has_key('2.0'):
+        os_version = 'el6'
+        rh_version = '2.0'
+        jobs += replace_test_template(os_version, rh_version, comp)
+        os_version = 'el6_32'
+        rh_version = '2.0'
+        jobs += replace_test_template(os_version, rh_version, comp)
+        os_version = 'el7'
+        rh_version = '2.0'
+        jobs += replace_test_template(os_version, rh_version, comp)
+    if versions.has_key('2.2'):
+        os_version = 'el6'
+        rh_version = '2.2'
+        jobs += replace_test_template(os_version, rh_version, comp)
+        os_version = 'el7'
+        rh_version = '2.2'
+        jobs += replace_test_template(os_version, rh_version, comp)
 
-    os_version = 'el6'
-    rh_version = '2.0'
-    jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
-    os_version = 'el6_32'
-    rh_version = '2.0'
-    jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
-    os_version = 'el7'
-    rh_version = '2.0'
-    jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
-    os_version = 'el6'
-    rh_version = '2.2'
-    jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
-    os_version = 'el6'
-    rh_version = '2.2'
-    jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+    if versions.has_key('2.0'):
+        os_version = 'el6'
+        rh_version = '2.0'
+        jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+        os_version = 'el6_32'
+        rh_version = '2.0'
+        jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+        os_version = 'el7'
+        rh_version = '2.0'
+        jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+    if versions.has_key('2.2'):
+        os_version = 'el6'
+        rh_version = '2.2'
+        jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+        os_version = 'el7'
+        rh_version = '2.2'
+        jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
 
 updated_contents = contents.replace('__JOBS__', jobs)
 
