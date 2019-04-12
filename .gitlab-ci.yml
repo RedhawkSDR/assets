@@ -547,7 +547,7 @@ test:el6:rh2.2:AmFmPmBasebandDemod:
     asset_name: AmFmPmBasebandDemod
     lowercase_asset_name: amfmpmbasebanddemod
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:AmFmPmBasebandDemod:
@@ -560,7 +560,7 @@ test:el7:rh2.2:AmFmPmBasebandDemod:
     asset_name: AmFmPmBasebandDemod
     lowercase_asset_name: amfmpmbasebanddemod
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:AmFmPmBasebandDemod:
@@ -627,7 +627,7 @@ test:el6:rh2.2:ArbitraryRateResampler:
     asset_name: ArbitraryRateResampler
     lowercase_asset_name: arbitraryrateresampler
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:ArbitraryRateResampler:
@@ -640,7 +640,7 @@ test:el7:rh2.2:ArbitraryRateResampler:
     asset_name: ArbitraryRateResampler
     lowercase_asset_name: arbitraryrateresampler
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:ArbitraryRateResampler:
@@ -707,7 +707,7 @@ test:el6:rh2.2:FileReader:
     asset_name: FileReader
     lowercase_asset_name: filereader
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:FileReader:
@@ -720,7 +720,7 @@ test:el7:rh2.2:FileReader:
     asset_name: FileReader
     lowercase_asset_name: filereader
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:FileReader:
@@ -787,7 +787,7 @@ test:el6:rh2.2:FileWriter:
     asset_name: FileWriter
     lowercase_asset_name: filewriter
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:FileWriter:
@@ -800,7 +800,7 @@ test:el7:rh2.2:FileWriter:
     asset_name: FileWriter
     lowercase_asset_name: filewriter
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:FileWriter:
@@ -867,7 +867,7 @@ test:el6:rh2.2:HardLimit:
     asset_name: HardLimit
     lowercase_asset_name: hardlimit
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:HardLimit:
@@ -880,7 +880,7 @@ test:el7:rh2.2:HardLimit:
     asset_name: HardLimit
     lowercase_asset_name: hardlimit
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:HardLimit:
@@ -947,7 +947,7 @@ test:el6:rh2.2:RBDSDecoder:
     asset_name: RBDSDecoder
     lowercase_asset_name: rbdsdecoder
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:RBDSDecoder:
@@ -960,7 +960,7 @@ test:el7:rh2.2:RBDSDecoder:
     asset_name: RBDSDecoder
     lowercase_asset_name: rbdsdecoder
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:RBDSDecoder:
@@ -1027,7 +1027,7 @@ test:el6:rh2.2:SigGen:
     asset_name: SigGen
     lowercase_asset_name: siggen
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:SigGen:
@@ -1040,7 +1040,7 @@ test:el7:rh2.2:SigGen:
     asset_name: SigGen
     lowercase_asset_name: siggen
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:SigGen:
@@ -1107,7 +1107,7 @@ test:el6:rh2.2:SinkSDDS:
     asset_name: SinkSDDS
     lowercase_asset_name: sinksdds
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:SinkSDDS:
@@ -1120,7 +1120,7 @@ test:el7:rh2.2:SinkSDDS:
     asset_name: SinkSDDS
     lowercase_asset_name: sinksdds
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:SinkSDDS:
@@ -1187,7 +1187,7 @@ test:el6:rh2.2:SinkVITA49:
     asset_name: SinkVITA49
     lowercase_asset_name: sinkvita49
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:SinkVITA49:
@@ -1200,7 +1200,7 @@ test:el7:rh2.2:SinkVITA49:
     asset_name: SinkVITA49
     lowercase_asset_name: sinkvita49
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:SinkVITA49:
@@ -1267,7 +1267,7 @@ test:el6:rh2.2:SourceSDDS:
     asset_name: SourceSDDS
     lowercase_asset_name: sourcesdds
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:SourceSDDS:
@@ -1280,7 +1280,7 @@ test:el7:rh2.2:SourceSDDS:
     asset_name: SourceSDDS
     lowercase_asset_name: sourcesdds
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:SourceSDDS:
@@ -1347,7 +1347,7 @@ test:el6:rh2.2:SourceVITA49:
     asset_name: SourceVITA49
     lowercase_asset_name: sourcevita49
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:SourceVITA49:
@@ -1360,7 +1360,7 @@ test:el7:rh2.2:SourceVITA49:
     asset_name: SourceVITA49
     lowercase_asset_name: sourcevita49
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:SourceVITA49:
@@ -1427,7 +1427,7 @@ test:el6:rh2.2:TuneFilterDecimate:
     asset_name: TuneFilterDecimate
     lowercase_asset_name: tunefilterdecimate
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:TuneFilterDecimate:
@@ -1440,7 +1440,7 @@ test:el7:rh2.2:TuneFilterDecimate:
     asset_name: TuneFilterDecimate
     lowercase_asset_name: tunefilterdecimate
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:TuneFilterDecimate:
@@ -1507,7 +1507,7 @@ test:el6:rh2.2:agc:
     asset_name: agc
     lowercase_asset_name: agc
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:agc:
@@ -1520,7 +1520,7 @@ test:el7:rh2.2:agc:
     asset_name: agc
     lowercase_asset_name: agc
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:agc:
@@ -1587,7 +1587,7 @@ test:el6:rh2.2:autocorrelate:
     asset_name: autocorrelate
     lowercase_asset_name: autocorrelate
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:autocorrelate:
@@ -1600,7 +1600,7 @@ test:el7:rh2.2:autocorrelate:
     asset_name: autocorrelate
     lowercase_asset_name: autocorrelate
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:autocorrelate:
@@ -1667,7 +1667,7 @@ test:el6:rh2.2:fastfilter:
     asset_name: fastfilter
     lowercase_asset_name: fastfilter
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:fastfilter:
@@ -1680,7 +1680,7 @@ test:el7:rh2.2:fastfilter:
     asset_name: fastfilter
     lowercase_asset_name: fastfilter
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:fastfilter:
@@ -1747,7 +1747,7 @@ test:el6:rh2.2:fcalc:
     asset_name: fcalc
     lowercase_asset_name: fcalc
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:fcalc:
@@ -1760,7 +1760,7 @@ test:el7:rh2.2:fcalc:
     asset_name: fcalc
     lowercase_asset_name: fcalc
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:fcalc:
@@ -1827,7 +1827,7 @@ test:el6:rh2.2:psd:
     asset_name: psd
     lowercase_asset_name: psd
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:psd:
@@ -1840,7 +1840,7 @@ test:el7:rh2.2:psd:
     asset_name: psd
     lowercase_asset_name: psd
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:psd:
@@ -1907,7 +1907,7 @@ test:el6:rh2.2:psk_soft:
     asset_name: psk_soft
     lowercase_asset_name: psk_soft
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:psk_soft:
@@ -1920,7 +1920,7 @@ test:el7:rh2.2:psk_soft:
     asset_name: psk_soft
     lowercase_asset_name: psk_soft
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:psk_soft:
@@ -1987,7 +1987,7 @@ test:el6:rh2.2:sinksocket:
     asset_name: sinksocket
     lowercase_asset_name: sinksocket
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:sinksocket:
@@ -2000,7 +2000,7 @@ test:el7:rh2.2:sinksocket:
     asset_name: sinksocket
     lowercase_asset_name: sinksocket
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:sinksocket:
@@ -2067,7 +2067,7 @@ test:el6:rh2.2:sourcesocket:
     asset_name: sourcesocket
     lowercase_asset_name: sourcesocket
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:sourcesocket:
@@ -2080,7 +2080,7 @@ test:el7:rh2.2:sourcesocket:
     asset_name: sourcesocket
     lowercase_asset_name: sourcesocket
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:sourcesocket:
@@ -2147,7 +2147,7 @@ test:el6:rh2.2:DataConverter:
     asset_name: DataConverter
     lowercase_asset_name: dataconverter
   dependencies:
-    - create-el6:local:repos
+    - create-el6:local:libraries:repos
   <<: *test
 
 test:el7:rh2.2:DataConverter:
@@ -2160,7 +2160,7 @@ test:el7:rh2.2:DataConverter:
     asset_name: DataConverter
     lowercase_asset_name: dataconverter
   dependencies:
-    - create-el7:local:repos
+    - create-el7:local:libraries:repos
   <<: *test
 
 deploy-el6-2.2:DataConverter:

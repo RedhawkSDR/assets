@@ -129,7 +129,7 @@ def replace_test_template(os_version, rh_version, comp_name, branches=False, bas
     if base_library:
         retval = retval.replace("__DEP__\n", "")
     else:
-        retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+":local:repos\n")
+        retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+":local:libraries:repos\n")
     return retval
 
 def replace_deploy_template(os_version, rh_version, comp_name, base_library=False):
