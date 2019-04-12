@@ -100,7 +100,7 @@ before_script:
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output
      - cd ../../..
      - cd output
-     - mv output/RPMS .
+     - mv RPMS/* .
      - rmdir RPMS
      - echo $(find . -name '*rpm')
      - docker container rm -f $id || true
