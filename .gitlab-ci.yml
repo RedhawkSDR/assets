@@ -123,8 +123,10 @@ before_script:
   script:
     - . /usr/local/redhawk/python-virtualenv/bin/activate
     - yum-config-manager --add-repo $redhawk_repo
-    - cp -R output file://local_yumrepo || true
-    - yum-config-manager --add-repo local_yumrepo
+    - cp -R output local_yumrepo || true
+    - echo $(ls)
+    - echo $(pwd)
+    - yum-config-manager --add-repo file://local_yumrepo
     #- yum-config-manager --add-repo asset_repo
     - touch /var/lib/rpm/* && yum-builddep --nogpgcheck -y ${namespace}$asset_name.spec
     - source /etc/profile.d/redhawk.sh
