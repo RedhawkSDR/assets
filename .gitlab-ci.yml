@@ -126,7 +126,7 @@ before_script:
     - cp -R output local_yumrepo || true
     - echo $(ls)
     - echo $(pwd)
-    - yum-config-manager --add-repo file://local_yumrepo
+    - yum-config-manager --add-repo file://$(pwd)/local_yumrepo
     #- yum-config-manager --add-repo asset_repo
     - touch /var/lib/rpm/* && yum-builddep --nogpgcheck -y ${namespace}$asset_name.spec
     - source /etc/profile.d/redhawk.sh
