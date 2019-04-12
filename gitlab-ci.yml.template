@@ -8,8 +8,10 @@ variables:
 
 stages:
   - base_build
+  - create_library_repo
+  - build_libraries
   - create_repo
-  - build
+  - build_components
   - test
   - deploy
 
@@ -29,7 +31,7 @@ before_script:
 
 .create_local_repo: &create_local_repo
   image: ${docker_registry}redhawk/buildenv:${short_version}-$dist-$arch
-  stage: create_repo
+  #stage: create_repo
   tags:
     - ca
     - docker
@@ -78,7 +80,7 @@ before_script:
 
 .package: &package
   image: ${docker_registry}${docker_rpm_repository}docker:latest
-  stage: build
+  #stage: build
   tags:
     - ca
     - docker
