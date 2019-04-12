@@ -57,6 +57,7 @@ test_template = """test:__DIST__:rh__SHORT_V__:__ASSET_NAME__:
     short_version: '__SHORT_V__'
     asset_name: __ASSET_NAME__
     lowercase_asset_name: __ASSET_LC_NAME__
+__DEP__
   <<: *test
 """
 
@@ -92,11 +93,15 @@ def replace_package_template(os_version, rh_version, comp_name, base_library=Fal
 
     return retval
 
-def replace_test_template(os_version, rh_version, comp_name, branches=False):
+def replace_test_template(os_version, rh_version, comp_name, branches=False, base_library=False):
     retval = test_template.replace('__DIST__', platforms[os_version]['dist']).replace('__ARCH__', platforms[os_version]['arch']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
     if branches:
         retval += test_template_add
     retval += '\n'
+    if base_library:
+        retval = retval.replace("__DEP__\n", "")
+    else:
+        retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+":local:repos\n")
     return retval
 
 def replace_deploy_template(os_version, rh_version, comp_name, base_library=False):
@@ -144,20 +149,20 @@ for comp in components:
     if versions.has_key('2.0'):
         os_version = 'el6'
         rh_version = '2.0'
-        jobs += replace_test_template(os_version, rh_version, comp)
+        jobs += replace_test_template(os_version, rh_version, comp, False, base_package)
         os_version = 'el6_32'
         rh_version = '2.0'
-        jobs += replace_test_template(os_version, rh_version, comp)
+        jobs += replace_test_template(os_version, rh_version, comp, False, base_package)
         os_version = 'el7'
         rh_version = '2.0'
-        jobs += replace_test_template(os_version, rh_version, comp)
+        jobs += replace_test_template(os_version, rh_version, comp, False, base_package)
     if versions.has_key('2.2'):
         os_version = 'el6'
         rh_version = '2.2'
-        jobs += replace_test_template(os_version, rh_version, comp)
+        jobs += replace_test_template(os_version, rh_version, comp, False, base_package)
         os_version = 'el7'
         rh_version = '2.2'
-        jobs += replace_test_template(os_version, rh_version, comp)
+        jobs += replace_test_template(os_version, rh_version, comp, False, base_package)
 
     if versions.has_key('2.0'):
         os_version = 'el6'
