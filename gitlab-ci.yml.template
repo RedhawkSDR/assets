@@ -138,7 +138,7 @@ before_script:
         export CXXFLAGS='-g -Og -fprofile-arcs -ftest-coverage' V=1;
       fi
     - ./build.sh
-    - cd sdr/components/$asset_name/tests
+    - cd tests
     - env | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
     - pip list | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
     - python $test_suite 2>&1 | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
