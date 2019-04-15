@@ -99,6 +99,7 @@ test_template = """test:__DIST__:rh__SHORT_V__:__ASSET_NAME__:
   variables:
     dist: __DIST__
     arch: __ARCH__
+    uhd_repo: __UHDREPO__
     latest_version: __LATEST_V__
     release_version: __RELEASE_V__
     short_version: '__SHORT_V__'
@@ -162,6 +163,10 @@ def replace_package_template(os_version, rh_version, comp_name, base_library=Fal
 
 def replace_test_template(os_version, rh_version, comp_name, branches=False, base_library=False):
     retval = test_template.replace('__DIST__', platforms[os_version]['dist']).replace('__ARCH__', platforms[os_version]['arch']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
+    if "el6" in os_version:
+        retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch')
+    elif "el7" in os_version:
+        retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch')
     if branches:
         retval += test_template_add
     retval += '\n'

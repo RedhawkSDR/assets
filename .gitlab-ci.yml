@@ -561,6 +561,7 @@ test:el6:rh2.2:AmFmPmBasebandDemod:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -574,6 +575,7 @@ test:el7:rh2.2:AmFmPmBasebandDemod:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -643,6 +645,7 @@ test:el6:rh2.2:ArbitraryRateResampler:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -656,6 +659,7 @@ test:el7:rh2.2:ArbitraryRateResampler:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -725,6 +729,7 @@ test:el6:rh2.2:FileReader:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -738,6 +743,7 @@ test:el7:rh2.2:FileReader:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -807,6 +813,7 @@ test:el6:rh2.2:FileWriter:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -820,6 +827,7 @@ test:el7:rh2.2:FileWriter:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -889,6 +897,7 @@ test:el6:rh2.2:HardLimit:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -902,6 +911,7 @@ test:el7:rh2.2:HardLimit:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -971,6 +981,7 @@ test:el6:rh2.2:RBDSDecoder:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -984,6 +995,7 @@ test:el7:rh2.2:RBDSDecoder:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1053,6 +1065,7 @@ test:el6:rh2.2:SigGen:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1066,6 +1079,7 @@ test:el7:rh2.2:SigGen:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1135,6 +1149,7 @@ test:el6:rh2.2:SinkSDDS:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1148,6 +1163,7 @@ test:el7:rh2.2:SinkSDDS:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1217,6 +1233,7 @@ test:el6:rh2.2:SinkVITA49:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1230,6 +1247,7 @@ test:el7:rh2.2:SinkVITA49:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1299,6 +1317,7 @@ test:el6:rh2.2:SourceSDDS:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1312,6 +1331,7 @@ test:el7:rh2.2:SourceSDDS:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1381,6 +1401,7 @@ test:el6:rh2.2:SourceVITA49:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1394,6 +1415,7 @@ test:el7:rh2.2:SourceVITA49:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1463,6 +1485,7 @@ test:el6:rh2.2:TuneFilterDecimate:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1476,6 +1499,7 @@ test:el7:rh2.2:TuneFilterDecimate:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1545,6 +1569,7 @@ test:el6:rh2.2:agc:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1558,6 +1583,7 @@ test:el7:rh2.2:agc:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1627,6 +1653,7 @@ test:el6:rh2.2:autocorrelate:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1640,6 +1667,7 @@ test:el7:rh2.2:autocorrelate:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1709,6 +1737,7 @@ test:el6:rh2.2:fastfilter:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1722,6 +1751,7 @@ test:el7:rh2.2:fastfilter:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1791,6 +1821,7 @@ test:el6:rh2.2:fcalc:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1804,6 +1835,7 @@ test:el7:rh2.2:fcalc:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1873,6 +1905,7 @@ test:el6:rh2.2:psd:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1886,6 +1919,7 @@ test:el7:rh2.2:psd:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1955,6 +1989,7 @@ test:el6:rh2.2:psk_soft:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1968,6 +2003,7 @@ test:el7:rh2.2:psk_soft:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2037,6 +2073,7 @@ test:el6:rh2.2:sinksocket:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2050,6 +2087,7 @@ test:el7:rh2.2:sinksocket:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2119,6 +2157,7 @@ test:el6:rh2.2:sourcesocket:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2132,6 +2171,7 @@ test:el7:rh2.2:sourcesocket:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2201,6 +2241,7 @@ test:el6:rh2.2:DataConverter:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2214,6 +2255,7 @@ test:el7:rh2.2:DataConverter:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2283,6 +2325,7 @@ test:el6:rh2.2:FmRdsSimulator:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2296,6 +2339,7 @@ test:el7:rh2.2:FmRdsSimulator:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2365,6 +2409,7 @@ test:el6:rh2.2:USRP_UHD:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2378,6 +2423,7 @@ test:el7:rh2.2:USRP_UHD:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2447,6 +2493,7 @@ test:el6:rh2.2:RTL2832U:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2460,6 +2507,7 @@ test:el7:rh2.2:RTL2832U:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2531,6 +2579,7 @@ test:el6:rh2.2:RX_Digitizer_Sim:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2544,6 +2593,7 @@ test:el7:rh2.2:RX_Digitizer_Sim:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2613,6 +2663,7 @@ test:el6:rh2.2:MSDD:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2626,6 +2677,7 @@ test:el7:rh2.2:MSDD:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
