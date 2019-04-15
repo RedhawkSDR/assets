@@ -13,6 +13,7 @@ stages:
   - create_repo
   - build_components
   - create_comps_devs_repo
+  - build_waveforms
   - test
   - deploy
 

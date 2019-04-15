@@ -13,6 +13,7 @@ stages:
   - create_repo
   - build_components
   - create_comps_devs_repo
+  - build_waveforms
   - test
   - deploy
 
@@ -2262,7 +2263,7 @@ create-el7:local:comps:devs:repos:
   <<: *create_local_repo
 
 package:el6:rh2.2:FM_RBDS_demo:
-  stage: build_libraries
+  stage: build_waveforms
   variables:
     dist: el6
     arch: x86_64
@@ -2276,7 +2277,7 @@ package:el6:rh2.2:FM_RBDS_demo:
   <<: *package
 
 package:el7:rh2.2:FM_RBDS_demo:
-  stage: build_libraries
+  stage: build_waveforms
   variables:
     dist: el7
     arch: x86_64
@@ -2342,7 +2343,7 @@ deploy-el7-2.2:FM_RBDS_demo:
   <<: *s3
 
 package:el6:rh2.2:FM_mono_demo:
-  stage: build_libraries
+  stage: build_waveforms
   variables:
     dist: el6
     arch: x86_64
@@ -2356,7 +2357,7 @@ package:el6:rh2.2:FM_mono_demo:
   <<: *package
 
 package:el7:rh2.2:FM_mono_demo:
-  stage: build_libraries
+  stage: build_waveforms
   variables:
     dist: el7
     arch: x86_64
@@ -2422,7 +2423,7 @@ deploy-el7-2.2:FM_mono_demo:
   <<: *s3
 
 package:el6:rh2.2:basic_components_demo:
-  stage: build_libraries
+  stage: build_waveforms
   variables:
     dist: el6
     arch: x86_64
@@ -2436,7 +2437,7 @@ package:el6:rh2.2:basic_components_demo:
   <<: *package
 
 package:el7:rh2.2:basic_components_demo:
-  stage: build_libraries
+  stage: build_waveforms
   variables:
     dist: el7
     arch: x86_64
@@ -2502,7 +2503,7 @@ deploy-el7-2.2:basic_components_demo:
   <<: *s3
 
 package:el6:rh2.2:short_file_to_float_file:
-  stage: build_libraries
+  stage: build_waveforms
   variables:
     dist: el6
     arch: x86_64
@@ -2516,7 +2517,7 @@ package:el6:rh2.2:short_file_to_float_file:
   <<: *package
 
 package:el7:rh2.2:short_file_to_float_file:
-  stage: build_libraries
+  stage: build_waveforms
   variables:
     dist: el7
     arch: x86_64
@@ -2582,7 +2583,7 @@ deploy-el7-2.2:short_file_to_float_file:
   <<: *s3
 
 package:el6:rh2.2:socket_loopback_demo:
-  stage: build_libraries
+  stage: build_waveforms
   variables:
     dist: el6
     arch: x86_64
@@ -2596,7 +2597,7 @@ package:el6:rh2.2:socket_loopback_demo:
   <<: *package
 
 package:el7:rh2.2:socket_loopback_demo:
-  stage: build_libraries
+  stage: build_waveforms
   variables:
     dist: el7
     arch: x86_64
@@ -2662,7 +2663,7 @@ deploy-el7-2.2:socket_loopback_demo:
   <<: *s3
 
 package:el6:rh2.2:vita49_loopback_demo:
-  stage: build_libraries
+  stage: build_waveforms
   variables:
     dist: el6
     arch: x86_64
@@ -2676,7 +2677,7 @@ package:el6:rh2.2:vita49_loopback_demo:
   <<: *package
 
 package:el7:rh2.2:vita49_loopback_demo:
-  stage: build_libraries
+  stage: build_waveforms
   variables:
     dist: el7
     arch: x86_64

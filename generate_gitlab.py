@@ -137,6 +137,8 @@ def replace_package_template(os_version, rh_version, comp_name, base_library=Fal
             retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+":local:repos\n")
     if isComponent:
         retval = retval.replace("__BUILD__", "build_components")
+    elif isWaveform:
+        retval = retval.replace("__BUILD__", "build_waveforms")
     else:
         retval = retval.replace("__BUILD__", "build_libraries")
 
