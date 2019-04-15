@@ -29,7 +29,9 @@ before_script:
         rpm_release="`rpm --query --queryformat "%{release}\n" --specfile ${namespace}$CI_PROJECT_NAME.spec | head -n 1 | awk -F"." "{print $1}"`.rh${safe_version}";
       fi
     - redhawk_repo=$s3_repo_url/redhawk/cf-and-deps/yum/$redhawk_version/$dist/$arch
-    - deps_repo=$s3_repo_url/redhawk-dependencies/librtlsdr/yum/0.5.2/$dist/$arch
+    - rtl_repo=$s3_repo_url/redhawk-dependencies/librtlsdr/yum/0.5.2/$dist/$arch
+    #- uhd_repo=$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch # el6
+    #- uhd_repo=$s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch # el7
     - asset_repo=$s3_repo_url/redhawk/assets/yum/$redhawk_version/rh${safe_version}/$dist/$arch
 
 .create_local_repo: &create_local_repo
@@ -65,7 +67,7 @@ before_script:
                           --build-arg "rpm_release=$rpm_release"
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
-                          --build-arg "other_repos=$redhawk_repo $deps_repo" .
+                          --build-arg "other_repos=$redhawk_repo $deps_repo $uhd_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output
      - cd ../../..
@@ -100,7 +102,7 @@ before_script:
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
                           --build-arg "local_repo=local_yumrepo"
-                          --build-arg "other_repos=$redhawk_repo $deps_repo" .
+                          --build-arg "other_repos=$redhawk_repo $deps_repo $uhd_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output
      - cd ../../..

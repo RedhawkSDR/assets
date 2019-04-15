@@ -29,7 +29,9 @@ before_script:
         rpm_release="`rpm --query --queryformat "%{release}\n" --specfile ${namespace}$CI_PROJECT_NAME.spec | head -n 1 | awk -F"." "{print $1}"`.rh${safe_version}";
       fi
     - redhawk_repo=$s3_repo_url/redhawk/cf-and-deps/yum/$redhawk_version/$dist/$arch
-    - deps_repo=$s3_repo_url/redhawk-dependencies/librtlsdr/yum/0.5.2/$dist/$arch
+    - rtl_repo=$s3_repo_url/redhawk-dependencies/librtlsdr/yum/0.5.2/$dist/$arch
+    #- uhd_repo=$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch # el6
+    #- uhd_repo=$s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch # el7
     - asset_repo=$s3_repo_url/redhawk/assets/yum/$redhawk_version/rh${safe_version}/$dist/$arch
 
 .create_local_repo: &create_local_repo
@@ -65,7 +67,7 @@ before_script:
                           --build-arg "rpm_release=$rpm_release"
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
-                          --build-arg "other_repos=$redhawk_repo $deps_repo" .
+                          --build-arg "other_repos=$redhawk_repo $deps_repo $uhd_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output
      - cd ../../..
@@ -100,7 +102,7 @@ before_script:
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
                           --build-arg "local_repo=local_yumrepo"
-                          --build-arg "other_repos=$redhawk_repo $deps_repo" .
+                          --build-arg "other_repos=$redhawk_repo $deps_repo $uhd_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output
      - cd ../../..
@@ -221,6 +223,7 @@ package:el6:rh2.2:RedhawkDevUtils:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -236,6 +239,7 @@ package:el7:rh2.2:RedhawkDevUtils:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -277,6 +281,7 @@ package:el6:rh2.2:VITA49:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -292,6 +297,7 @@ package:el7:rh2.2:VITA49:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -333,6 +339,7 @@ package:el6:rh2.2:blueFileLib:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -348,6 +355,7 @@ package:el7:rh2.2:blueFileLib:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -389,6 +397,7 @@ base_package:el6:rh2.2:dsp:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -402,6 +411,7 @@ base_package:el7:rh2.2:dsp:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -441,6 +451,7 @@ package:el6:rh2.2:fftlib:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -456,6 +467,7 @@ package:el7:rh2.2:fftlib:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -527,6 +539,7 @@ package:el6:rh2.2:AmFmPmBasebandDemod:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -542,6 +555,7 @@ package:el7:rh2.2:AmFmPmBasebandDemod:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -609,6 +623,7 @@ package:el6:rh2.2:ArbitraryRateResampler:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -624,6 +639,7 @@ package:el7:rh2.2:ArbitraryRateResampler:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -691,6 +707,7 @@ package:el6:rh2.2:FileReader:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -706,6 +723,7 @@ package:el7:rh2.2:FileReader:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -773,6 +791,7 @@ package:el6:rh2.2:FileWriter:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -788,6 +807,7 @@ package:el7:rh2.2:FileWriter:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -855,6 +875,7 @@ package:el6:rh2.2:HardLimit:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -870,6 +891,7 @@ package:el7:rh2.2:HardLimit:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -937,6 +959,7 @@ package:el6:rh2.2:RBDSDecoder:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -952,6 +975,7 @@ package:el7:rh2.2:RBDSDecoder:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1019,6 +1043,7 @@ package:el6:rh2.2:SigGen:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1034,6 +1059,7 @@ package:el7:rh2.2:SigGen:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1101,6 +1127,7 @@ package:el6:rh2.2:SinkSDDS:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1116,6 +1143,7 @@ package:el7:rh2.2:SinkSDDS:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1183,6 +1211,7 @@ package:el6:rh2.2:SinkVITA49:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1198,6 +1227,7 @@ package:el7:rh2.2:SinkVITA49:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1265,6 +1295,7 @@ package:el6:rh2.2:SourceSDDS:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1280,6 +1311,7 @@ package:el7:rh2.2:SourceSDDS:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1347,6 +1379,7 @@ package:el6:rh2.2:SourceVITA49:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1362,6 +1395,7 @@ package:el7:rh2.2:SourceVITA49:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1429,6 +1463,7 @@ package:el6:rh2.2:TuneFilterDecimate:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1444,6 +1479,7 @@ package:el7:rh2.2:TuneFilterDecimate:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1511,6 +1547,7 @@ package:el6:rh2.2:agc:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1526,6 +1563,7 @@ package:el7:rh2.2:agc:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1593,6 +1631,7 @@ package:el6:rh2.2:autocorrelate:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1608,6 +1647,7 @@ package:el7:rh2.2:autocorrelate:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1675,6 +1715,7 @@ package:el6:rh2.2:fastfilter:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1690,6 +1731,7 @@ package:el7:rh2.2:fastfilter:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1757,6 +1799,7 @@ package:el6:rh2.2:fcalc:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1772,6 +1815,7 @@ package:el7:rh2.2:fcalc:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1839,6 +1883,7 @@ package:el6:rh2.2:psd:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1854,6 +1899,7 @@ package:el7:rh2.2:psd:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1921,6 +1967,7 @@ package:el6:rh2.2:psk_soft:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -1936,6 +1983,7 @@ package:el7:rh2.2:psk_soft:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2003,6 +2051,7 @@ package:el6:rh2.2:sinksocket:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2018,6 +2067,7 @@ package:el7:rh2.2:sinksocket:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2085,6 +2135,7 @@ package:el6:rh2.2:sourcesocket:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2100,6 +2151,7 @@ package:el7:rh2.2:sourcesocket:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2167,6 +2219,7 @@ package:el6:rh2.2:DataConverter:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2182,6 +2235,7 @@ package:el7:rh2.2:DataConverter:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2249,6 +2303,7 @@ package:el6:rh2.2:FmRdsSimulator:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2264,6 +2319,7 @@ package:el7:rh2.2:FmRdsSimulator:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2331,6 +2387,7 @@ package:el6:rh2.2:USRP_UHD:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2346,6 +2403,7 @@ package:el7:rh2.2:USRP_UHD:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2413,6 +2471,7 @@ package:el6:rh2.2:RTL2832U:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2428,6 +2487,7 @@ package:el7:rh2.2:RTL2832U:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2494,6 +2554,7 @@ package:el6:rh2.2:RX_Digitizer_Sim:
   variables:
     dist: el6
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2508,6 +2569,7 @@ package:el7:rh2.2:RX_Digitizer_Sim:
   variables:
     dist: el7
     arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2575,6 +2637,7 @@ package:el6:rh2.2:MSDD:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2590,6 +2653,7 @@ package:el7:rh2.2:MSDD:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2739,6 +2803,7 @@ package:el6:rh2.2:FM_RBDS_demo:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2754,6 +2819,7 @@ package:el7:rh2.2:FM_RBDS_demo:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2795,6 +2861,7 @@ package:el6:rh2.2:FM_mono_demo:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2810,6 +2877,7 @@ package:el7:rh2.2:FM_mono_demo:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2851,6 +2919,7 @@ package:el6:rh2.2:basic_components_demo:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2866,6 +2935,7 @@ package:el7:rh2.2:basic_components_demo:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2907,6 +2977,7 @@ package:el6:rh2.2:short_file_to_float_file:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2922,6 +2993,7 @@ package:el7:rh2.2:short_file_to_float_file:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2963,6 +3035,7 @@ package:el6:rh2.2:socket_loopback_demo:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -2978,6 +3051,7 @@ package:el7:rh2.2:socket_loopback_demo:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -3019,6 +3093,7 @@ package:el6:rh2.2:vita49_loopback_demo:
     dist: el6
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
@@ -3034,6 +3109,7 @@ package:el7:rh2.2:vita49_loopback_demo:
     dist: el7
     arch: x86_64
     namespace: rh.
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
