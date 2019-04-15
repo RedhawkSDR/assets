@@ -2190,6 +2190,406 @@ deploy-el7-2.2:DataConverter:
     - package:el7:rh2.2:DataConverter
   <<: *s3
 
+package:el6:rh2.2:FmRdsSimulator:
+  stage: build_components
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FmRdsSimulator
+    lowercase_asset_name: fmrdssimulator
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *package
+
+package:el7:rh2.2:FmRdsSimulator:
+  stage: build_components
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FmRdsSimulator
+    lowercase_asset_name: fmrdssimulator
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el6:rh2.2:FmRdsSimulator:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FmRdsSimulator
+    lowercase_asset_name: fmrdssimulator
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *test
+
+test:el7:rh2.2:FmRdsSimulator:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FmRdsSimulator
+    lowercase_asset_name: fmrdssimulator
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el6-2.2:FmRdsSimulator:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FmRdsSimulator
+    lowercase_asset_name: fmrdssimulator
+  dependencies:
+    - package:el6:rh2.2:FmRdsSimulator
+  <<: *s3
+
+deploy-el7-2.2:FmRdsSimulator:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FmRdsSimulator
+    lowercase_asset_name: fmrdssimulator
+  dependencies:
+    - package:el7:rh2.2:FmRdsSimulator
+  <<: *s3
+
+package:el6:rh2.2:USRP_UHD:
+  stage: build_components
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: USRP_UHD
+    lowercase_asset_name: usrp_uhd
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *package
+
+package:el7:rh2.2:USRP_UHD:
+  stage: build_components
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: USRP_UHD
+    lowercase_asset_name: usrp_uhd
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el6:rh2.2:USRP_UHD:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: USRP_UHD
+    lowercase_asset_name: usrp_uhd
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *test
+
+test:el7:rh2.2:USRP_UHD:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: USRP_UHD
+    lowercase_asset_name: usrp_uhd
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el6-2.2:USRP_UHD:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: USRP_UHD
+    lowercase_asset_name: usrp_uhd
+  dependencies:
+    - package:el6:rh2.2:USRP_UHD
+  <<: *s3
+
+deploy-el7-2.2:USRP_UHD:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: USRP_UHD
+    lowercase_asset_name: usrp_uhd
+  dependencies:
+    - package:el7:rh2.2:USRP_UHD
+  <<: *s3
+
+package:el6:rh2.2:RTL2832U:
+  stage: build_components
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RTL2832U
+    lowercase_asset_name: rtl2832u
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *package
+
+package:el7:rh2.2:RTL2832U:
+  stage: build_components
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RTL2832U
+    lowercase_asset_name: rtl2832u
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el6:rh2.2:RTL2832U:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RTL2832U
+    lowercase_asset_name: rtl2832u
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *test
+
+test:el7:rh2.2:RTL2832U:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RTL2832U
+    lowercase_asset_name: rtl2832u
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el6-2.2:RTL2832U:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RTL2832U
+    lowercase_asset_name: rtl2832u
+  dependencies:
+    - package:el6:rh2.2:RTL2832U
+  <<: *s3
+
+deploy-el7-2.2:RTL2832U:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RTL2832U
+    lowercase_asset_name: rtl2832u
+  dependencies:
+    - package:el7:rh2.2:RTL2832U
+  <<: *s3
+
+package:el6:rh2.2:RX_Digitizer_Sim:
+  stage: build_components
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RX_Digitizer_Sim
+    lowercase_asset_name: rx_digitizer_sim
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *package
+
+package:el7:rh2.2:RX_Digitizer_Sim:
+  stage: build_components
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RX_Digitizer_Sim
+    lowercase_asset_name: rx_digitizer_sim
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el6:rh2.2:RX_Digitizer_Sim:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RX_Digitizer_Sim
+    lowercase_asset_name: rx_digitizer_sim
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *test
+
+test:el7:rh2.2:RX_Digitizer_Sim:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RX_Digitizer_Sim
+    lowercase_asset_name: rx_digitizer_sim
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el6-2.2:RX_Digitizer_Sim:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RX_Digitizer_Sim
+    lowercase_asset_name: rx_digitizer_sim
+  dependencies:
+    - package:el6:rh2.2:RX_Digitizer_Sim
+  <<: *s3
+
+deploy-el7-2.2:RX_Digitizer_Sim:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: RX_Digitizer_Sim
+    lowercase_asset_name: rx_digitizer_sim
+  dependencies:
+    - package:el7:rh2.2:RX_Digitizer_Sim
+  <<: *s3
+
+package:el6:rh2.2:MSDD:
+  stage: build_components
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: MSDD
+    lowercase_asset_name: msdd
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *package
+
+package:el7:rh2.2:MSDD:
+  stage: build_components
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: MSDD
+    lowercase_asset_name: msdd
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el6:rh2.2:MSDD:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: MSDD
+    lowercase_asset_name: msdd
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *test
+
+test:el7:rh2.2:MSDD:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: MSDD
+    lowercase_asset_name: msdd
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el6-2.2:MSDD:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: MSDD
+    lowercase_asset_name: msdd
+  dependencies:
+    - package:el6:rh2.2:MSDD
+  <<: *s3
+
+deploy-el7-2.2:MSDD:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: MSDD
+    lowercase_asset_name: msdd
+  dependencies:
+    - package:el7:rh2.2:MSDD
+  <<: *s3
+
 create-el6:local:comps:devs:repos:
   stage: create_comps_devs_repo
   variables:
@@ -2223,6 +2623,11 @@ create-el6:local:comps:devs:repos:
     - package:el6:rh2.2:sinksocket
     - package:el6:rh2.2:sourcesocket
     - package:el6:rh2.2:DataConverter
+    - package:el6:rh2.2:FmRdsSimulator
+    - package:el6:rh2.2:USRP_UHD
+    - package:el6:rh2.2:RTL2832U
+    - package:el6:rh2.2:RX_Digitizer_Sim
+    - package:el6:rh2.2:MSDD
 
   <<: *create_local_repo
 
@@ -2259,6 +2664,11 @@ create-el7:local:comps:devs:repos:
     - package:el7:rh2.2:sinksocket
     - package:el7:rh2.2:sourcesocket
     - package:el7:rh2.2:DataConverter
+    - package:el7:rh2.2:FmRdsSimulator
+    - package:el7:rh2.2:USRP_UHD
+    - package:el7:rh2.2:RTL2832U
+    - package:el7:rh2.2:RX_Digitizer_Sim
+    - package:el7:rh2.2:MSDD
 
   <<: *create_local_repo
 
@@ -2289,32 +2699,6 @@ package:el7:rh2.2:FM_RBDS_demo:
   dependencies:
     - create-el7:local:comps:devs:repos
   <<: *package
-
-test:el6:rh2.2:FM_RBDS_demo:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: FM_RBDS_demo
-    lowercase_asset_name: fm_rbds_demo
-  dependencies:
-    - create-el6:local:libraries:repos
-  <<: *test
-
-test:el7:rh2.2:FM_RBDS_demo:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: FM_RBDS_demo
-    lowercase_asset_name: fm_rbds_demo
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *test
 
 deploy-el6-2.2:FM_RBDS_demo:
   variables:
@@ -2370,32 +2754,6 @@ package:el7:rh2.2:FM_mono_demo:
     - create-el7:local:comps:devs:repos
   <<: *package
 
-test:el6:rh2.2:FM_mono_demo:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: FM_mono_demo
-    lowercase_asset_name: fm_mono_demo
-  dependencies:
-    - create-el6:local:libraries:repos
-  <<: *test
-
-test:el7:rh2.2:FM_mono_demo:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: FM_mono_demo
-    lowercase_asset_name: fm_mono_demo
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *test
-
 deploy-el6-2.2:FM_mono_demo:
   variables:
     dist: el6
@@ -2449,32 +2807,6 @@ package:el7:rh2.2:basic_components_demo:
   dependencies:
     - create-el7:local:comps:devs:repos
   <<: *package
-
-test:el6:rh2.2:basic_components_demo:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: basic_components_demo
-    lowercase_asset_name: basic_components_demo
-  dependencies:
-    - create-el6:local:libraries:repos
-  <<: *test
-
-test:el7:rh2.2:basic_components_demo:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: basic_components_demo
-    lowercase_asset_name: basic_components_demo
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *test
 
 deploy-el6-2.2:basic_components_demo:
   variables:
@@ -2530,32 +2862,6 @@ package:el7:rh2.2:short_file_to_float_file:
     - create-el7:local:comps:devs:repos
   <<: *package
 
-test:el6:rh2.2:short_file_to_float_file:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: short_file_to_float_file
-    lowercase_asset_name: short_file_to_float_file
-  dependencies:
-    - create-el6:local:libraries:repos
-  <<: *test
-
-test:el7:rh2.2:short_file_to_float_file:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: short_file_to_float_file
-    lowercase_asset_name: short_file_to_float_file
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *test
-
 deploy-el6-2.2:short_file_to_float_file:
   variables:
     dist: el6
@@ -2610,32 +2916,6 @@ package:el7:rh2.2:socket_loopback_demo:
     - create-el7:local:comps:devs:repos
   <<: *package
 
-test:el6:rh2.2:socket_loopback_demo:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: socket_loopback_demo
-    lowercase_asset_name: socket_loopback_demo
-  dependencies:
-    - create-el6:local:libraries:repos
-  <<: *test
-
-test:el7:rh2.2:socket_loopback_demo:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: socket_loopback_demo
-    lowercase_asset_name: socket_loopback_demo
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *test
-
 deploy-el6-2.2:socket_loopback_demo:
   variables:
     dist: el6
@@ -2689,32 +2969,6 @@ package:el7:rh2.2:vita49_loopback_demo:
   dependencies:
     - create-el7:local:comps:devs:repos
   <<: *package
-
-test:el6:rh2.2:vita49_loopback_demo:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: vita49_loopback_demo
-    lowercase_asset_name: vita49_loopback_demo
-  dependencies:
-    - create-el6:local:libraries:repos
-  <<: *test
-
-test:el7:rh2.2:vita49_loopback_demo:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: vita49_loopback_demo
-    lowercase_asset_name: vita49_loopback_demo
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *test
 
 deploy-el6-2.2:vita49_loopback_demo:
   variables:
