@@ -29,7 +29,7 @@ before_script:
         rpm_release="`rpm --query --queryformat "%{release}\n" --specfile ${namespace}$CI_PROJECT_NAME.spec | head -n 1 | awk -F"." "{print $1}"`.rh${safe_version}";
       fi
     - redhawk_repo=$s3_repo_url/redhawk/cf-and-deps/yum/$redhawk_version/$dist/$arch
-    - deps_repo=$s3_repo_url/redhawk-dependencies/librtlsdr/yum/0.5.2/$redhawk_version/$dist/$arch
+    - deps_repo=$s3_repo_url/redhawk-dependencies/librtlsdr/yum/0.5.2/$dist/$arch
     - asset_repo=$s3_repo_url/redhawk/assets/yum/$redhawk_version/rh${safe_version}/$dist/$arch
 
 .create_local_repo: &create_local_repo
