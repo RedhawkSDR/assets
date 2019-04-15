@@ -131,6 +131,9 @@ before_script:
   script:
     - . /usr/local/redhawk/python-virtualenv/bin/activate
     - yum-config-manager --add-repo $redhawk_repo
+    - yum-config-manager --add-repo $rtl_repo
+    - yum-config-manager --add-repo $uhd_repo
+    - yum-config-manager --add-repo $librf_repo
     - cp -R output local_yumrepo || true
     - echo $(ls)
     - echo $(pwd)
