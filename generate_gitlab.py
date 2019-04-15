@@ -135,9 +135,10 @@ def replace_package_template(os_version, rh_version, comp_name, base_library=Fal
     elif "el7" in os_version:
         retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch')
     if comp_name == "RX_Digitizer_Sim":
-        retval = retval.replace('__NAMESPACE__\n', '')
+        retval = retval.replace('__NAMESPACE__\n', '    namespace: ""\n')
     else:
-        retval = retval.replace('__NAMESPACE__\n', '    namespace: rh.\n')
+        retval = retval.replace('__NAMESPACE__\n', '')
+        #retval = retval.replace('__NAMESPACE__\n', '    namespace: rh.\n')
     if base_library:
         retval = retval.replace('package', 'base_package')
 
