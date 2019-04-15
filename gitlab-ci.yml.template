@@ -12,6 +12,7 @@ stages:
   - build_libraries
   - create_repo
   - build_components
+  - create_comps_devs_repo
   - test
   - deploy
 
@@ -129,7 +130,6 @@ before_script:
     - echo $(ls)
     - echo $(pwd)
     - yum-config-manager --add-repo file://$(pwd)/local_yumrepo
-    #- yum-config-manager --add-repo asset_repo
     - cd $(find -maxdepth 3 -name ${asset_name})
     - touch /var/lib/rpm/* && yum-builddep --nogpgcheck -y ${namespace}$asset_name.spec
     - source /etc/profile.d/redhawk.sh

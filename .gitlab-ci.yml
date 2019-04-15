@@ -12,6 +12,7 @@ stages:
   - build_libraries
   - create_repo
   - build_components
+  - create_comps_devs_repo
   - test
   - deploy
 
@@ -129,7 +130,6 @@ before_script:
     - echo $(ls)
     - echo $(pwd)
     - yum-config-manager --add-repo file://$(pwd)/local_yumrepo
-    #- yum-config-manager --add-repo asset_repo
     - cd $(find -maxdepth 3 -name ${asset_name})
     - touch /var/lib/rpm/* && yum-builddep --nogpgcheck -y ${namespace}$asset_name.spec
     - source /etc/profile.d/redhawk.sh
@@ -2187,6 +2187,558 @@ deploy-el7-2.2:DataConverter:
     lowercase_asset_name: dataconverter
   dependencies:
     - package:el7:rh2.2:DataConverter
+  <<: *s3
+
+create-el6:local:comps:devs:repos:
+  stage: create_comps_devs_repo
+  variables:
+    dist: el6
+    short_version: '2.2'
+    arch: x86_64
+  dependencies:
+    - package:el6:rh2.2:RedhawkDevUtils
+    - package:el6:rh2.2:VITA49
+    - package:el6:rh2.2:blueFileLib
+    - base_package:el6:rh2.2:dsp
+    - package:el6:rh2.2:fftlib
+    - package:el6:rh2.2:AmFmPmBasebandDemod
+    - package:el6:rh2.2:ArbitraryRateResampler
+    - package:el6:rh2.2:FileReader
+    - package:el6:rh2.2:FileWriter
+    - package:el6:rh2.2:HardLimit
+    - package:el6:rh2.2:RBDSDecoder
+    - package:el6:rh2.2:SigGen
+    - package:el6:rh2.2:SinkSDDS
+    - package:el6:rh2.2:SinkVITA49
+    - package:el6:rh2.2:SourceSDDS
+    - package:el6:rh2.2:SourceVITA49
+    - package:el6:rh2.2:TuneFilterDecimate
+    - package:el6:rh2.2:agc
+    - package:el6:rh2.2:autocorrelate
+    - package:el6:rh2.2:fastfilter
+    - package:el6:rh2.2:fcalc
+    - package:el6:rh2.2:psd
+    - package:el6:rh2.2:psk_soft
+    - package:el6:rh2.2:sinksocket
+    - package:el6:rh2.2:sourcesocket
+    - package:el6:rh2.2:DataConverter
+
+  <<: *create_local_repo
+
+create-el7:local:comps:devs:repos:
+  stage: create_comps_devs_repo
+  variables:
+    dist: el7
+    short_version: '2.2'
+    arch: x86_64
+  dependencies:
+    - package:el7:rh2.2:RedhawkDevUtils
+    - package:el7:rh2.2:VITA49
+    - package:el7:rh2.2:blueFileLib
+    - base_package:el7:rh2.2:dsp
+    - package:el7:rh2.2:fftlib
+    - package:el7:rh2.2:AmFmPmBasebandDemod
+    - package:el7:rh2.2:ArbitraryRateResampler
+    - package:el7:rh2.2:FileReader
+    - package:el7:rh2.2:FileWriter
+    - package:el7:rh2.2:HardLimit
+    - package:el7:rh2.2:RBDSDecoder
+    - package:el7:rh2.2:SigGen
+    - package:el7:rh2.2:SinkSDDS
+    - package:el7:rh2.2:SinkVITA49
+    - package:el7:rh2.2:SourceSDDS
+    - package:el7:rh2.2:SourceVITA49
+    - package:el7:rh2.2:TuneFilterDecimate
+    - package:el7:rh2.2:agc
+    - package:el7:rh2.2:autocorrelate
+    - package:el7:rh2.2:fastfilter
+    - package:el7:rh2.2:fcalc
+    - package:el7:rh2.2:psd
+    - package:el7:rh2.2:psk_soft
+    - package:el7:rh2.2:sinksocket
+    - package:el7:rh2.2:sourcesocket
+    - package:el7:rh2.2:DataConverter
+
+  <<: *create_local_repo
+
+package:el6:rh2.2:FM_RBDS_demo:
+  stage: build_libraries
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FM_RBDS_demo
+    lowercase_asset_name: fm_rbds_demo
+  dependencies:
+    - create-el6:local:comps:devs:repos
+  <<: *package
+
+package:el7:rh2.2:FM_RBDS_demo:
+  stage: build_libraries
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FM_RBDS_demo
+    lowercase_asset_name: fm_rbds_demo
+  dependencies:
+    - create-el7:local:comps:devs:repos
+  <<: *package
+
+test:el6:rh2.2:FM_RBDS_demo:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FM_RBDS_demo
+    lowercase_asset_name: fm_rbds_demo
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *test
+
+test:el7:rh2.2:FM_RBDS_demo:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FM_RBDS_demo
+    lowercase_asset_name: fm_rbds_demo
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el6-2.2:FM_RBDS_demo:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FM_RBDS_demo
+    lowercase_asset_name: fm_rbds_demo
+  dependencies:
+    - package:el6:rh2.2:FM_RBDS_demo
+  <<: *s3
+
+deploy-el7-2.2:FM_RBDS_demo:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FM_RBDS_demo
+    lowercase_asset_name: fm_rbds_demo
+  dependencies:
+    - package:el7:rh2.2:FM_RBDS_demo
+  <<: *s3
+
+package:el6:rh2.2:FM_mono_demo:
+  stage: build_libraries
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FM_mono_demo
+    lowercase_asset_name: fm_mono_demo
+  dependencies:
+    - create-el6:local:comps:devs:repos
+  <<: *package
+
+package:el7:rh2.2:FM_mono_demo:
+  stage: build_libraries
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FM_mono_demo
+    lowercase_asset_name: fm_mono_demo
+  dependencies:
+    - create-el7:local:comps:devs:repos
+  <<: *package
+
+test:el6:rh2.2:FM_mono_demo:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FM_mono_demo
+    lowercase_asset_name: fm_mono_demo
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *test
+
+test:el7:rh2.2:FM_mono_demo:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FM_mono_demo
+    lowercase_asset_name: fm_mono_demo
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el6-2.2:FM_mono_demo:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FM_mono_demo
+    lowercase_asset_name: fm_mono_demo
+  dependencies:
+    - package:el6:rh2.2:FM_mono_demo
+  <<: *s3
+
+deploy-el7-2.2:FM_mono_demo:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: FM_mono_demo
+    lowercase_asset_name: fm_mono_demo
+  dependencies:
+    - package:el7:rh2.2:FM_mono_demo
+  <<: *s3
+
+package:el6:rh2.2:basic_components_demo:
+  stage: build_libraries
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: basic_components_demo
+    lowercase_asset_name: basic_components_demo
+  dependencies:
+    - create-el6:local:comps:devs:repos
+  <<: *package
+
+package:el7:rh2.2:basic_components_demo:
+  stage: build_libraries
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: basic_components_demo
+    lowercase_asset_name: basic_components_demo
+  dependencies:
+    - create-el7:local:comps:devs:repos
+  <<: *package
+
+test:el6:rh2.2:basic_components_demo:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: basic_components_demo
+    lowercase_asset_name: basic_components_demo
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *test
+
+test:el7:rh2.2:basic_components_demo:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: basic_components_demo
+    lowercase_asset_name: basic_components_demo
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el6-2.2:basic_components_demo:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: basic_components_demo
+    lowercase_asset_name: basic_components_demo
+  dependencies:
+    - package:el6:rh2.2:basic_components_demo
+  <<: *s3
+
+deploy-el7-2.2:basic_components_demo:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: basic_components_demo
+    lowercase_asset_name: basic_components_demo
+  dependencies:
+    - package:el7:rh2.2:basic_components_demo
+  <<: *s3
+
+package:el6:rh2.2:short_file_to_float_file:
+  stage: build_libraries
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: short_file_to_float_file
+    lowercase_asset_name: short_file_to_float_file
+  dependencies:
+    - create-el6:local:comps:devs:repos
+  <<: *package
+
+package:el7:rh2.2:short_file_to_float_file:
+  stage: build_libraries
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: short_file_to_float_file
+    lowercase_asset_name: short_file_to_float_file
+  dependencies:
+    - create-el7:local:comps:devs:repos
+  <<: *package
+
+test:el6:rh2.2:short_file_to_float_file:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: short_file_to_float_file
+    lowercase_asset_name: short_file_to_float_file
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *test
+
+test:el7:rh2.2:short_file_to_float_file:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: short_file_to_float_file
+    lowercase_asset_name: short_file_to_float_file
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el6-2.2:short_file_to_float_file:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: short_file_to_float_file
+    lowercase_asset_name: short_file_to_float_file
+  dependencies:
+    - package:el6:rh2.2:short_file_to_float_file
+  <<: *s3
+
+deploy-el7-2.2:short_file_to_float_file:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: short_file_to_float_file
+    lowercase_asset_name: short_file_to_float_file
+  dependencies:
+    - package:el7:rh2.2:short_file_to_float_file
+  <<: *s3
+
+package:el6:rh2.2:socket_loopback_demo:
+  stage: build_libraries
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: socket_loopback_demo
+    lowercase_asset_name: socket_loopback_demo
+  dependencies:
+    - create-el6:local:comps:devs:repos
+  <<: *package
+
+package:el7:rh2.2:socket_loopback_demo:
+  stage: build_libraries
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: socket_loopback_demo
+    lowercase_asset_name: socket_loopback_demo
+  dependencies:
+    - create-el7:local:comps:devs:repos
+  <<: *package
+
+test:el6:rh2.2:socket_loopback_demo:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: socket_loopback_demo
+    lowercase_asset_name: socket_loopback_demo
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *test
+
+test:el7:rh2.2:socket_loopback_demo:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: socket_loopback_demo
+    lowercase_asset_name: socket_loopback_demo
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el6-2.2:socket_loopback_demo:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: socket_loopback_demo
+    lowercase_asset_name: socket_loopback_demo
+  dependencies:
+    - package:el6:rh2.2:socket_loopback_demo
+  <<: *s3
+
+deploy-el7-2.2:socket_loopback_demo:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: socket_loopback_demo
+    lowercase_asset_name: socket_loopback_demo
+  dependencies:
+    - package:el7:rh2.2:socket_loopback_demo
+  <<: *s3
+
+package:el6:rh2.2:vita49_loopback_demo:
+  stage: build_libraries
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: vita49_loopback_demo
+    lowercase_asset_name: vita49_loopback_demo
+  dependencies:
+    - create-el6:local:comps:devs:repos
+  <<: *package
+
+package:el7:rh2.2:vita49_loopback_demo:
+  stage: build_libraries
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: vita49_loopback_demo
+    lowercase_asset_name: vita49_loopback_demo
+  dependencies:
+    - create-el7:local:comps:devs:repos
+  <<: *package
+
+test:el6:rh2.2:vita49_loopback_demo:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: vita49_loopback_demo
+    lowercase_asset_name: vita49_loopback_demo
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *test
+
+test:el7:rh2.2:vita49_loopback_demo:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: vita49_loopback_demo
+    lowercase_asset_name: vita49_loopback_demo
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el6-2.2:vita49_loopback_demo:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: vita49_loopback_demo
+    lowercase_asset_name: vita49_loopback_demo
+  dependencies:
+    - package:el6:rh2.2:vita49_loopback_demo
+  <<: *s3
+
+deploy-el7-2.2:vita49_loopback_demo:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop-2-2
+    release_version: $rh_22_release
+    short_version: '2.2'
+    asset_name: vita49_loopback_demo
+    lowercase_asset_name: vita49_loopback_demo
+  dependencies:
+    - package:el7:rh2.2:vita49_loopback_demo
   <<: *s3
 
 
