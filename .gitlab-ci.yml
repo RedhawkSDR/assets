@@ -4,7 +4,6 @@ variables:
   namespace: rh.
   asset_name: none
   lowercase_asset_name: None
-  #test_suite: test_$CI_PROJECT_NAME.py
 
 stages:
   - base_build
@@ -42,8 +41,6 @@ before_script:
     - ca
     - docker
   script:
-     - echo $(ls)
-     - echo $(ls output)
      - createrepo output
   artifacts:
     paths:
@@ -57,8 +54,6 @@ before_script:
     - ca
     - docker
   script:
-     - echo $(ls /etc/yum.repos.d)
-     - echo $(find . -name '*rpm')
      - cd $(find -maxdepth 3 -name ${asset_name})
      - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
@@ -72,7 +67,6 @@ before_script:
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output
      - cd ../../..
-     - echo $(find . -name '*rpm')
      - docker container rm -f $id || true
      - docker image rm -f $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} || true
   artifacts:
@@ -110,7 +104,6 @@ before_script:
      - cd output
      - mv RPMS/* .
      - rmdir RPMS
-     - echo $(find . -name '*rpm')
      - docker container rm -f $id || true
      - docker image rm -f $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} || true
   artifacts:
@@ -125,7 +118,6 @@ before_script:
 .test: &test
   image: ${docker_registry}redhawk/buildenv:${short_version}-$dist-$arch
   stage: test
-  #dependencies: []
   tags:
     - ca
   script:
@@ -135,8 +127,6 @@ before_script:
     - yum-config-manager --add-repo $uhd_repo
     - yum-config-manager --add-repo $librf_repo
     - cp -R output local_yumrepo || true
-    - echo $(ls)
-    - echo $(pwd)
     - yum-config-manager --add-repo file://$(pwd)/local_yumrepo
     - cd $(find -maxdepth 3 -name ${asset_name})
     - touch /var/lib/rpm/* && yum-builddep --nogpgcheck -y ${namespace}$asset_name.spec
@@ -154,7 +144,7 @@ before_script:
     - cd tests
     - env | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
     - pip list | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
-    - python $test_suite 2>&1 | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
+    - python test_$asset_name.py 2>&1 | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
     - cd ../../../..
     - if [ -d cpp ]; then
         gcovr -r . --xml --exclude-directories=tests > gcovr.xml;
@@ -223,6 +213,17 @@ create-el7:local:repos:
     arch: x86_64
   dependencies:
     - base_package:el7:rh2.2:dsp
+
+  <<: *create_local_repo
+
+create-el6:32:local:repos:
+  stage: create_library_repo
+  variables:
+    dist: el6
+    short_version: '2.2'
+    arch: i686
+  dependencies:
+    - base_package:el6:32:rh2.2:dsp
 
   <<: *create_local_repo
 
@@ -529,6 +530,21 @@ create-el7:local:libraries:repos:
     - package:el7:rh2.2:blueFileLib
     - base_package:el7:rh2.2:dsp
     - package:el7:rh2.2:fftlib
+
+  <<: *create_local_repo
+
+create-el6:32:local:libraries:repos:
+  stage: create_repo
+  variables:
+    dist: el6
+    short_version: '2.2'
+    arch: i686
+  dependencies:
+    - package:el6:32:rh2.2:RedhawkDevUtils
+    - package:el6:32:rh2.2:VITA49
+    - package:el6:32:rh2.2:blueFileLib
+    - base_package:el6:32:rh2.2:dsp
+    - package:el6:32:rh2.2:fftlib
 
   <<: *create_local_repo
 
@@ -2851,6 +2867,47 @@ create-el7:local:comps:devs:repos:
     - package:el7:rh2.2:RTL2832U
     - package:el7:rh2.2:RX_Digitizer_Sim
     - package:el7:rh2.2:MSDD
+
+  <<: *create_local_repo
+
+create-el6:32:local:comps:devs:repos:
+  stage: create_comps_devs_repo
+  variables:
+    dist: el6
+    short_version: '2.2'
+    arch: i686
+  dependencies:
+    - package:el6:32:rh2.2:RedhawkDevUtils
+    - package:el6:32:rh2.2:VITA49
+    - package:el6:32:rh2.2:blueFileLib
+    - base_package:el6:32:rh2.2:dsp
+    - package:el6:32:rh2.2:fftlib
+    - package:el6:32:rh2.2:AmFmPmBasebandDemod
+    - package:el6:32:rh2.2:ArbitraryRateResampler
+    - package:el6:32:rh2.2:FileReader
+    - package:el6:32:rh2.2:FileWriter
+    - package:el6:32:rh2.2:HardLimit
+    - package:el6:32:rh2.2:RBDSDecoder
+    - package:el6:32:rh2.2:SigGen
+    - package:el6:32:rh2.2:SinkSDDS
+    - package:el6:32:rh2.2:SinkVITA49
+    - package:el6:32:rh2.2:SourceSDDS
+    - package:el6:32:rh2.2:SourceVITA49
+    - package:el6:32:rh2.2:TuneFilterDecimate
+    - package:el6:32:rh2.2:agc
+    - package:el6:32:rh2.2:autocorrelate
+    - package:el6:32:rh2.2:fastfilter
+    - package:el6:32:rh2.2:fcalc
+    - package:el6:32:rh2.2:psd
+    - package:el6:32:rh2.2:psk_soft
+    - package:el6:32:rh2.2:sinksocket
+    - package:el6:32:rh2.2:sourcesocket
+    - package:el6:32:rh2.2:DataConverter
+    - package:el6:32:rh2.2:FmRdsSimulator
+    - package:el6:32:rh2.2:USRP_UHD
+    - package:el6:32:rh2.2:RTL2832U
+    - package:el6:32:rh2.2:RX_Digitizer_Sim
+    - package:el6:32:rh2.2:MSDD
 
   <<: *create_local_repo
 
