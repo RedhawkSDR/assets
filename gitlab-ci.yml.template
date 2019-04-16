@@ -42,8 +42,6 @@ before_script:
     - ca
     - docker
   script:
-     - echo $(ls)
-     - echo $(ls output)
      - createrepo output
   artifacts:
     paths:
@@ -57,8 +55,6 @@ before_script:
     - ca
     - docker
   script:
-     - echo $(ls /etc/yum.repos.d)
-     - echo $(find . -name '*rpm')
      - cd $(find -maxdepth 3 -name ${asset_name})
      - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
@@ -72,7 +68,6 @@ before_script:
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output
      - cd ../../..
-     - echo $(find . -name '*rpm')
      - docker container rm -f $id || true
      - docker image rm -f $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} || true
   artifacts:
@@ -110,7 +105,6 @@ before_script:
      - cd output
      - mv RPMS/* .
      - rmdir RPMS
-     - echo $(find . -name '*rpm')
      - docker container rm -f $id || true
      - docker image rm -f $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version} || true
   artifacts:
@@ -135,8 +129,6 @@ before_script:
     - yum-config-manager --add-repo $uhd_repo
     - yum-config-manager --add-repo $librf_repo
     - cp -R output local_yumrepo || true
-    - echo $(ls)
-    - echo $(pwd)
     - yum-config-manager --add-repo file://$(pwd)/local_yumrepo
     - cd $(find -maxdepth 3 -name ${asset_name})
     - touch /var/lib/rpm/* && yum-builddep --nogpgcheck -y ${namespace}$asset_name.spec
