@@ -9,10 +9,10 @@ platforms = {}
 versions = {}
 
 platforms['el6']={'dist':'el6', 'arch':'x86_64'}
-platforms['el6_32']={'dist':'el6', 'arch':'i686'}
+platforms['el6:32']={'dist':'el6', 'arch':'i686'}
 platforms['el7']={'dist':'el7', 'arch':'x86_64'}
-versions['2.0']={'latest_version':'develop-2-0', 'release_version':'$rh_20_release', 'short_version':'2.0'}
-#versions['2.2']={'latest_version':'develop-2-2', 'release_version':'$rh_22_release', 'short_version':'2.2'}
+versions['2.0']={'latest_version':'develop-2-0', 'release_version':'$rh_20_release', 'short_version':'2.0', 'platform_keys':['el6', 'el6:32', 'el7']}
+#versions['2.2']={'latest_version':'develop-2-2', 'release_version':'$rh_22_release', 'short_version':'2.2', 'platform_keys':['el6', 'el7']}
 
 base_component_dir = 'sdr/libraries'
 candidate_components = os.listdir(base_component_dir)
@@ -44,7 +44,7 @@ for comp in candidate_components:
 
 jobs = ''
 
-package_template = """package:__DIST__:rh__SHORT_V__:__ASSET_NAME__:
+package_template = """package:__DIST____V__:rh__SHORT_V__:__ASSET_NAME__:
   stage: __BUILD__
   variables:
     dist: __DIST__
@@ -61,7 +61,7 @@ __DEP__
 
 """
 
-create_template = """create-__DIST__:local:repos:
+create_template = """create-__DIST____V__:local:repos:
   stage: create_library_repo
   variables:
     dist: __DIST__
@@ -73,7 +73,7 @@ __DEPS__
 
 """
 
-create_libraries_template = """create-__DIST__:local:libraries:repos:
+create_libraries_template = """create-__DIST____V__:local:libraries:repos:
   stage: create_repo
   variables:
     dist: __DIST__
@@ -85,7 +85,7 @@ __DEPS__
 
 """
 
-create_comps_devs_template = """create-__DIST__:local:comps:devs:repos:
+create_comps_devs_template = """create-__DIST____V__:local:comps:devs:repos:
   stage: create_comps_devs_repo
   variables:
     dist: __DIST__
@@ -97,7 +97,7 @@ __DEPS__
 
 """
 
-test_template = """test:__DIST__:rh__SHORT_V__:__ASSET_NAME__:
+test_template = """test:__DIST____V__:rh__SHORT_V__:__ASSET_NAME__:
   variables:
     dist: __DIST__
     arch: __ARCH__
@@ -117,7 +117,7 @@ test_template_add = """  only:
     - branches
 """
 
-deploy_template = """deploy-__DIST__-__SHORT_V__:__ASSET_NAME__:
+deploy_template = """deploy-__DIST____V__-__SHORT_V__:__ASSET_NAME__:
   variables:
     dist: __DIST__
     arch: __ARCH__
@@ -127,7 +127,7 @@ deploy_template = """deploy-__DIST__-__SHORT_V__:__ASSET_NAME__:
     asset_name: __ASSET_NAME__
     lowercase_asset_name: __ASSET_LC_NAME__
   dependencies:
-    - package:__DIST__:rh__SHORT_V__:__ASSET_NAME__
+    - package:__DIST____V__:rh__SHORT_V__:__ASSET_NAME__
   <<: *s3
 
 """
@@ -150,11 +150,11 @@ def replace_package_template(os_version, rh_version, comp_name, base_library=Fal
         retval = retval.replace("__DEP__\n", "")
     else:
         if isComponentOrDevice:
-            retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+":local:libraries:repos\n")
+            retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+"__V__:local:libraries:repos\n")
         elif isWaveform:
-            retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+":local:comps:devs:repos\n")
+            retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+"__V__:local:comps:devs:repos\n")
         else:
-            retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+":local:repos\n")
+            retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+"__V__:local:repos\n")
     if isComponentOrDevice:
         retval = retval.replace("__BUILD__", "build_components")
     elif isWaveform:
@@ -162,10 +162,15 @@ def replace_package_template(os_version, rh_version, comp_name, base_library=Fal
     else:
         retval = retval.replace("__BUILD__", "build_libraries")
 
+    if '32' in os_version:
+        retval = retval.replace('__V__', ':32')
+    else:
+        retval = retval.replace('__V__', '')
     return retval
 
 def replace_test_template(os_version, rh_version, comp_name, branches=False, base_library=False, isComponent=True):
     retval = test_template.replace('__DIST__', platforms[os_version]['dist']).replace('__ARCH__', platforms[os_version]['arch']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
+
     if "el6" in os_version:
         retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch')
     elif "el7" in os_version:
@@ -184,7 +189,11 @@ def replace_test_template(os_version, rh_version, comp_name, branches=False, bas
     if base_library:
         retval = retval.replace("__DEP__\n", "")
     else:
-        retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+":local:libraries:repos\n")
+        retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+"__V__:local:libraries:repos\n")
+    if '32' in os_version:
+        retval = retval.replace('__V__', ':32')
+    else:
+        retval = retval.replace('__V__', '')
     return retval
 
 def replace_deploy_template(os_version, rh_version, comp_name, base_library=False):
@@ -193,37 +202,53 @@ def replace_deploy_template(os_version, rh_version, comp_name, base_library=Fals
     if base_library:
         retval = retval.replace('package', 'base_package')
 
+    if '32' in os_version:
+        retval = retval.replace('__V__', ':32')
+    else:
+        retval = retval.replace('__V__', '')
     return retval
 
 def replace_create_template(os_version, rh_version, objects):
     comp_dep_list = ''
     for comp in objects:
         if comp == 'dsp':
-            comp_dep_list += '    - base_package:'+platforms[os_version]['dist']+':rh'+rh_version+':'+comp+'\n'
+            comp_dep_list += '    - base_package:'+platforms[os_version]['dist']+'__V__:rh'+rh_version+':'+comp+'\n'
 
     retval = create_template.replace('__DEPS__', comp_dep_list).replace('__DIST__', platforms[os_version]['dist']).replace('__SHORT_V__', rh_version).replace('__ARCH__', platforms[os_version]['arch'])
+    if '32' in os_version:
+        retval = retval.replace('__V__', ':32')
+    else:
+        retval = retval.replace('__V__', '')
     return retval
 
 def replace_create_libraries_template(os_version, rh_version, objects):
     comp_dep_list = ''
     for comp in objects:
         if comp == 'dsp':
-            comp_dep_list += '    - base_package:'+platforms[os_version]['dist']+':rh'+rh_version+':'+comp+'\n'
+            comp_dep_list += '    - base_package:'+platforms[os_version]['dist']+'__V__:rh'+rh_version+':'+comp+'\n'
         else:
-            comp_dep_list += '    - package:'+platforms[os_version]['dist']+':rh'+rh_version+':'+comp+'\n'
+            comp_dep_list += '    - package:'+platforms[os_version]['dist']+'__V__:rh'+rh_version+':'+comp+'\n'
 
     retval = create_libraries_template.replace('__DEPS__', comp_dep_list).replace('__DIST__', platforms[os_version]['dist']).replace('__SHORT_V__', rh_version).replace('__ARCH__', platforms[os_version]['arch'])
+    if '32' in os_version:
+        retval = retval.replace('__V__', ':32')
+    else:
+        retval = retval.replace('__V__', '')
     return retval
 
 def replace_create_comps_devs_template(os_version, rh_version, objects):
     comp_dep_list = ''
     for comp in objects:
         if comp == 'dsp':
-            comp_dep_list += '    - base_package:'+platforms[os_version]['dist']+':rh'+rh_version+':'+comp+'\n'
+            comp_dep_list += '    - base_package:'+platforms[os_version]['dist']+'__V__:rh'+rh_version+':'+comp+'\n'
         else:
-            comp_dep_list += '    - package:'+platforms[os_version]['dist']+':rh'+rh_version+':'+comp+'\n'
+            comp_dep_list += '    - package:'+platforms[os_version]['dist']+'__V__:rh'+rh_version+':'+comp+'\n'
 
     retval = create_comps_devs_template.replace('__DEPS__', comp_dep_list).replace('__DIST__', platforms[os_version]['dist']).replace('__SHORT_V__', rh_version).replace('__ARCH__', platforms[os_version]['arch'])
+    if '32' in os_version:
+        retval = retval.replace('__V__', ':32')
+    else:
+        retval = retval.replace('__V__', '')
     return retval
 
 for _key in platforms:
@@ -233,25 +258,11 @@ for comp in libraries:
     base_package = False
     if comp == 'dsp':
         base_package = True
-    if versions.has_key('2.0'):
-        rh_version = '2.0'
-        for os_version in ['el6', 'el6_32', 'el7']:
-            jobs += replace_package_template(os_version, rh_version, comp, base_package)
-    if versions.has_key('2.2'):
-        os_version = 'el6'
-        rh_version = '2.2'
-        for os_version in ['el6', 'el7']:
-            jobs += replace_package_template(os_version, rh_version, comp, base_package)
-
-    if versions.has_key('2.0'):
-        rh_version = '2.0'
-        for os_version in ['el6', 'el6_32', 'el7']:
-            jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
-    if versions.has_key('2.2'):
-        os_version = 'el6'
-        rh_version = '2.2'
-        for os_version in ['el6', 'el7']:
-            jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+    rh_version = next(iter(versions))
+    for os_version in versions[next(iter(versions))]['platform_keys']:
+        jobs += replace_package_template(os_version, rh_version, comp, base_package)
+    for os_version in versions[next(iter(versions))]['platform_keys']:
+        jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
 
 for _key in platforms:
     jobs += replace_create_libraries_template(_key, versions[next(iter(versions))]['short_version'], libraries)
@@ -262,35 +273,43 @@ for comp in components:
     isComponent = True
     if comp in devices:
         isComponent = False
-    if versions.has_key('2.0'):
-        rh_version = '2.0'
-        for os_version in ['el6', 'el6_32', 'el7']:
-            jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
-    if versions.has_key('2.2'):
-        os_version = 'el6'
-        rh_version = '2.2'
-        for os_version in ['el6', 'el7']:
-            jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
 
-    if versions.has_key('2.0'):
-        rh_version = '2.0'
-        for os_version in ['el6', 'el6_32', 'el7']:
-            jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
-    if versions.has_key('2.2'):
-        os_version = 'el6'
-        rh_version = '2.2'
-        for os_version in ['el6', 'el7']:
-            jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
+    rh_version = next(iter(versions))
+    for os_version in versions[next(iter(versions))]['platform_keys']:
+        jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
+    #if versions.has_key('2.0'):
+        #rh_version = '2.0'
+        #for os_version in ['el6', 'el6_32', 'el7']:
+            #jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
+    #if versions.has_key('2.2'):
+        #os_version = 'el6'
+        #rh_version = '2.2'
+        #for os_version in ['el6', 'el7']:
+            #jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
 
-    if versions.has_key('2.0'):
-        rh_version = '2.0'
-        for os_version in ['el6', 'el6_32', 'el7']:
-            jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
-    if versions.has_key('2.2'):
-        os_version = 'el6'
-        rh_version = '2.2'
-        for os_version in ['el6', 'el7']:
-            jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+    for os_version in versions[next(iter(versions))]['platform_keys']:
+        jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
+    #if versions.has_key('2.0'):
+        #rh_version = '2.0'
+        #for os_version in ['el6', 'el6_32', 'el7']:
+            #jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
+    #if versions.has_key('2.2'):
+        #os_version = 'el6'
+        #rh_version = '2.2'
+        #for os_version in ['el6', 'el7']:
+            #jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
+
+    for os_version in versions[next(iter(versions))]['platform_keys']:
+        jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+    #if versions.has_key('2.0'):
+        #rh_version = '2.0'
+        #for os_version in ['el6', 'el6_32', 'el7']:
+            #jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+    #if versions.has_key('2.2'):
+        #os_version = 'el6'
+        #rh_version = '2.2'
+        #for os_version in ['el6', 'el7']:
+            #jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
 
 comps_devs = libraries + components
 
@@ -301,25 +320,31 @@ for comp in waveforms:
     base_package = False
     isComponent = False
     isWaveform = True
-    if versions.has_key('2.0'):
-        rh_version = '2.0'
-        for os_version in ['el6', 'el6_32', 'el7']:
-            jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponent, isWaveform)
-    if versions.has_key('2.2'):
-        os_version = 'el6'
-        rh_version = '2.2'
-        for os_version in ['el6', 'el7']:
-            jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponent, isWaveform)
 
-    if versions.has_key('2.0'):
-        rh_version = '2.0'
-        for os_version in ['el6', 'el6_32', 'el7']:
-            jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
-    if versions.has_key('2.2'):
-        os_version = 'el6'
-        rh_version = '2.2'
-        for os_version in ['el6', 'el7']:
-            jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+    rh_version = next(iter(versions))
+    for os_version in versions[next(iter(versions))]['platform_keys']:
+        jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponent, isWaveform)
+    #if versions.has_key('2.0'):
+        #rh_version = '2.0'
+        #for os_version in ['el6', 'el6_32', 'el7']:
+            #jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponent, isWaveform)
+    #if versions.has_key('2.2'):
+        #os_version = 'el6'
+        #rh_version = '2.2'
+        #for os_version in ['el6', 'el7']:
+            #jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponent, isWaveform)
+
+    for os_version in versions[next(iter(versions))]['platform_keys']:
+        jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+    #if versions.has_key('2.0'):
+        #rh_version = '2.0'
+        #for os_version in ['el6', 'el6_32', 'el7']:
+            #jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+    #if versions.has_key('2.2'):
+        #os_version = 'el6'
+        #rh_version = '2.2'
+        #for os_version in ['el6', 'el7']:
+            #jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
 
 updated_contents = contents.replace('__JOBS__', jobs)
 
