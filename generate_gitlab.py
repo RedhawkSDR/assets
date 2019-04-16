@@ -29,9 +29,11 @@ for comp in candidate_components:
         components.append(comp)
 base_component_dir = 'sdr/devices'
 candidate_components = os.listdir(base_component_dir)
+devices = []
 for comp in candidate_components:
     if os.path.isfile(base_component_dir+'/'+comp+'/'+comp+'.spd.xml'):
         components.append(comp)
+        devices.append(comp)
 
 base_component_dir = 'sdr/waveforms'
 candidate_components = os.listdir(base_component_dir)
@@ -104,6 +106,7 @@ __NAMESPACE__
     latest_version: __LATEST_V__
     release_version: __RELEASE_V__
     short_version: '__SHORT_V__'
+    comp_type: __COMP_TYPE__
     asset_name: __ASSET_NAME__
     lowercase_asset_name: __ASSET_LC_NAME__
 __DEP__
@@ -129,7 +132,7 @@ deploy_template = """deploy-__DIST__-__SHORT_V__:__ASSET_NAME__:
 
 """
 
-def replace_package_template(os_version, rh_version, comp_name, base_library=False, isComponent=False, isWaveform=False):
+def replace_package_template(os_version, rh_version, comp_name, base_library=False, isComponentOrDevice=False, isWaveform=False):
     retval = package_template.replace('__DIST__', platforms[os_version]['dist']).replace('__ARCH__', platforms[os_version]['arch']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
 
     if "el6" in os_version:
@@ -146,13 +149,13 @@ def replace_package_template(os_version, rh_version, comp_name, base_library=Fal
     if base_library:
         retval = retval.replace("__DEP__\n", "")
     else:
-        if isComponent:
+        if isComponentOrDevice:
             retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+":local:libraries:repos\n")
         elif isWaveform:
             retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+":local:comps:devs:repos\n")
         else:
             retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+":local:repos\n")
-    if isComponent:
+    if isComponentOrDevice:
         retval = retval.replace("__BUILD__", "build_components")
     elif isWaveform:
         retval = retval.replace("__BUILD__", "build_waveforms")
@@ -161,7 +164,7 @@ def replace_package_template(os_version, rh_version, comp_name, base_library=Fal
 
     return retval
 
-def replace_test_template(os_version, rh_version, comp_name, branches=False, base_library=False):
+def replace_test_template(os_version, rh_version, comp_name, branches=False, base_library=False, isComponent=True):
     retval = test_template.replace('__DIST__', platforms[os_version]['dist']).replace('__ARCH__', platforms[os_version]['arch']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
     if "el6" in os_version:
         retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch')
@@ -171,6 +174,10 @@ def replace_test_template(os_version, rh_version, comp_name, branches=False, bas
         retval = retval.replace('__NAMESPACE__\n', '    namespace: ""\n')
     else:
         retval = retval.replace('__NAMESPACE__\n', '')
+    if isComponent:
+        retval = retval.replace('__COMP_TYPE__', 'components')
+    else:
+        retval = retval.replace('__COMP_TYPE__', 'devices')
     if branches:
         retval += test_template_add
     retval += '\n'
@@ -251,26 +258,29 @@ jobs += replace_create_libraries_template('el7', '2.2', libraries)
 
 for comp in components:
     base_package = False
+    isComponentOrDevice = True
     isComponent = True
+    if comp in devices:
+        isComponent = False
     if versions.has_key('2.0'):
         rh_version = '2.0'
         for os_version in ['el6', 'el6_32', 'el7']:
-            jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponent)
+            jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
     if versions.has_key('2.2'):
         os_version = 'el6'
         rh_version = '2.2'
         for os_version in ['el6', 'el7']:
-            jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponent)
+            jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
 
     if versions.has_key('2.0'):
         rh_version = '2.0'
         for os_version in ['el6', 'el6_32', 'el7']:
-            jobs += replace_test_template(os_version, rh_version, comp, False, base_package)
+            jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
     if versions.has_key('2.2'):
         os_version = 'el6'
         rh_version = '2.2'
         for os_version in ['el6', 'el7']:
-            jobs += replace_test_template(os_version, rh_version, comp, False, base_package)
+            jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
 
     if versions.has_key('2.0'):
         rh_version = '2.0'

@@ -570,6 +570,7 @@ test:el6:rh2.2:AmFmPmBasebandDemod:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: AmFmPmBasebandDemod
     lowercase_asset_name: amfmpmbasebanddemod
   dependencies:
@@ -584,6 +585,7 @@ test:el7:rh2.2:AmFmPmBasebandDemod:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: AmFmPmBasebandDemod
     lowercase_asset_name: amfmpmbasebanddemod
   dependencies:
@@ -654,6 +656,7 @@ test:el6:rh2.2:ArbitraryRateResampler:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: ArbitraryRateResampler
     lowercase_asset_name: arbitraryrateresampler
   dependencies:
@@ -668,6 +671,7 @@ test:el7:rh2.2:ArbitraryRateResampler:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: ArbitraryRateResampler
     lowercase_asset_name: arbitraryrateresampler
   dependencies:
@@ -738,6 +742,7 @@ test:el6:rh2.2:FileReader:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: FileReader
     lowercase_asset_name: filereader
   dependencies:
@@ -752,6 +757,7 @@ test:el7:rh2.2:FileReader:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: FileReader
     lowercase_asset_name: filereader
   dependencies:
@@ -822,6 +828,7 @@ test:el6:rh2.2:FileWriter:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: FileWriter
     lowercase_asset_name: filewriter
   dependencies:
@@ -836,6 +843,7 @@ test:el7:rh2.2:FileWriter:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: FileWriter
     lowercase_asset_name: filewriter
   dependencies:
@@ -906,6 +914,7 @@ test:el6:rh2.2:HardLimit:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: HardLimit
     lowercase_asset_name: hardlimit
   dependencies:
@@ -920,6 +929,7 @@ test:el7:rh2.2:HardLimit:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: HardLimit
     lowercase_asset_name: hardlimit
   dependencies:
@@ -990,6 +1000,7 @@ test:el6:rh2.2:RBDSDecoder:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: RBDSDecoder
     lowercase_asset_name: rbdsdecoder
   dependencies:
@@ -1004,6 +1015,7 @@ test:el7:rh2.2:RBDSDecoder:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: RBDSDecoder
     lowercase_asset_name: rbdsdecoder
   dependencies:
@@ -1074,6 +1086,7 @@ test:el6:rh2.2:SigGen:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: SigGen
     lowercase_asset_name: siggen
   dependencies:
@@ -1088,6 +1101,7 @@ test:el7:rh2.2:SigGen:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: SigGen
     lowercase_asset_name: siggen
   dependencies:
@@ -1158,6 +1172,7 @@ test:el6:rh2.2:SinkSDDS:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: SinkSDDS
     lowercase_asset_name: sinksdds
   dependencies:
@@ -1172,6 +1187,7 @@ test:el7:rh2.2:SinkSDDS:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: SinkSDDS
     lowercase_asset_name: sinksdds
   dependencies:
@@ -1242,6 +1258,7 @@ test:el6:rh2.2:SinkVITA49:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: SinkVITA49
     lowercase_asset_name: sinkvita49
   dependencies:
@@ -1256,6 +1273,7 @@ test:el7:rh2.2:SinkVITA49:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: SinkVITA49
     lowercase_asset_name: sinkvita49
   dependencies:
@@ -1326,6 +1344,7 @@ test:el6:rh2.2:SourceSDDS:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: SourceSDDS
     lowercase_asset_name: sourcesdds
   dependencies:
@@ -1340,6 +1359,7 @@ test:el7:rh2.2:SourceSDDS:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: SourceSDDS
     lowercase_asset_name: sourcesdds
   dependencies:
@@ -1410,6 +1430,7 @@ test:el6:rh2.2:SourceVITA49:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: SourceVITA49
     lowercase_asset_name: sourcevita49
   dependencies:
@@ -1424,6 +1445,7 @@ test:el7:rh2.2:SourceVITA49:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: SourceVITA49
     lowercase_asset_name: sourcevita49
   dependencies:
@@ -1494,6 +1516,7 @@ test:el6:rh2.2:TuneFilterDecimate:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: TuneFilterDecimate
     lowercase_asset_name: tunefilterdecimate
   dependencies:
@@ -1508,6 +1531,7 @@ test:el7:rh2.2:TuneFilterDecimate:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: TuneFilterDecimate
     lowercase_asset_name: tunefilterdecimate
   dependencies:
@@ -1578,6 +1602,7 @@ test:el6:rh2.2:agc:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: agc
     lowercase_asset_name: agc
   dependencies:
@@ -1592,6 +1617,7 @@ test:el7:rh2.2:agc:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: agc
     lowercase_asset_name: agc
   dependencies:
@@ -1662,6 +1688,7 @@ test:el6:rh2.2:autocorrelate:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: autocorrelate
     lowercase_asset_name: autocorrelate
   dependencies:
@@ -1676,6 +1703,7 @@ test:el7:rh2.2:autocorrelate:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: autocorrelate
     lowercase_asset_name: autocorrelate
   dependencies:
@@ -1746,6 +1774,7 @@ test:el6:rh2.2:fastfilter:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: fastfilter
     lowercase_asset_name: fastfilter
   dependencies:
@@ -1760,6 +1789,7 @@ test:el7:rh2.2:fastfilter:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: fastfilter
     lowercase_asset_name: fastfilter
   dependencies:
@@ -1830,6 +1860,7 @@ test:el6:rh2.2:fcalc:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: fcalc
     lowercase_asset_name: fcalc
   dependencies:
@@ -1844,6 +1875,7 @@ test:el7:rh2.2:fcalc:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: fcalc
     lowercase_asset_name: fcalc
   dependencies:
@@ -1914,6 +1946,7 @@ test:el6:rh2.2:psd:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: psd
     lowercase_asset_name: psd
   dependencies:
@@ -1928,6 +1961,7 @@ test:el7:rh2.2:psd:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: psd
     lowercase_asset_name: psd
   dependencies:
@@ -1998,6 +2032,7 @@ test:el6:rh2.2:psk_soft:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: psk_soft
     lowercase_asset_name: psk_soft
   dependencies:
@@ -2012,6 +2047,7 @@ test:el7:rh2.2:psk_soft:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: psk_soft
     lowercase_asset_name: psk_soft
   dependencies:
@@ -2082,6 +2118,7 @@ test:el6:rh2.2:sinksocket:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: sinksocket
     lowercase_asset_name: sinksocket
   dependencies:
@@ -2096,6 +2133,7 @@ test:el7:rh2.2:sinksocket:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: sinksocket
     lowercase_asset_name: sinksocket
   dependencies:
@@ -2166,6 +2204,7 @@ test:el6:rh2.2:sourcesocket:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: sourcesocket
     lowercase_asset_name: sourcesocket
   dependencies:
@@ -2180,6 +2219,7 @@ test:el7:rh2.2:sourcesocket:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: sourcesocket
     lowercase_asset_name: sourcesocket
   dependencies:
@@ -2250,6 +2290,7 @@ test:el6:rh2.2:DataConverter:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: DataConverter
     lowercase_asset_name: dataconverter
   dependencies:
@@ -2264,6 +2305,7 @@ test:el7:rh2.2:DataConverter:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: components
     asset_name: DataConverter
     lowercase_asset_name: dataconverter
   dependencies:
@@ -2334,6 +2376,7 @@ test:el6:rh2.2:FmRdsSimulator:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: devices
     asset_name: FmRdsSimulator
     lowercase_asset_name: fmrdssimulator
   dependencies:
@@ -2348,6 +2391,7 @@ test:el7:rh2.2:FmRdsSimulator:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: devices
     asset_name: FmRdsSimulator
     lowercase_asset_name: fmrdssimulator
   dependencies:
@@ -2418,6 +2462,7 @@ test:el6:rh2.2:USRP_UHD:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: devices
     asset_name: USRP_UHD
     lowercase_asset_name: usrp_uhd
   dependencies:
@@ -2432,6 +2477,7 @@ test:el7:rh2.2:USRP_UHD:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: devices
     asset_name: USRP_UHD
     lowercase_asset_name: usrp_uhd
   dependencies:
@@ -2502,6 +2548,7 @@ test:el6:rh2.2:RTL2832U:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: devices
     asset_name: RTL2832U
     lowercase_asset_name: rtl2832u
   dependencies:
@@ -2516,6 +2563,7 @@ test:el7:rh2.2:RTL2832U:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: devices
     asset_name: RTL2832U
     lowercase_asset_name: rtl2832u
   dependencies:
@@ -2589,6 +2637,7 @@ test:el6:rh2.2:RX_Digitizer_Sim:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: devices
     asset_name: RX_Digitizer_Sim
     lowercase_asset_name: rx_digitizer_sim
   dependencies:
@@ -2604,6 +2653,7 @@ test:el7:rh2.2:RX_Digitizer_Sim:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: devices
     asset_name: RX_Digitizer_Sim
     lowercase_asset_name: rx_digitizer_sim
   dependencies:
@@ -2674,6 +2724,7 @@ test:el6:rh2.2:MSDD:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: devices
     asset_name: MSDD
     lowercase_asset_name: msdd
   dependencies:
@@ -2688,6 +2739,7 @@ test:el7:rh2.2:MSDD:
     latest_version: develop-2-2
     release_version: $rh_22_release
     short_version: '2.2'
+    comp_type: devices
     asset_name: MSDD
     lowercase_asset_name: msdd
   dependencies:
