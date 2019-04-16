@@ -226,8 +226,10 @@ def replace_create_comps_devs_template(os_version, rh_version, objects):
     retval = create_comps_devs_template.replace('__DEPS__', comp_dep_list).replace('__DIST__', platforms[os_version]['dist']).replace('__SHORT_V__', rh_version).replace('__ARCH__', platforms[os_version]['arch'])
     return retval
 
-jobs += replace_create_template('el6', '2.2', libraries)
-jobs += replace_create_template('el7', '2.2', libraries)
+for _key in platforms:
+    jobs += replace_create_template(_key, versions[next(iter(versions))]['short_version'], libraries)
+#jobs += replace_create_template('el6', versions[next(iter(versions))]['short_version'], libraries)
+#jobs += replace_create_template('el7', versions[next(iter(versions))]['short_version'], libraries)
 
 for comp in libraries:
     base_package = False
@@ -253,8 +255,10 @@ for comp in libraries:
         for os_version in ['el6', 'el7']:
             jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
 
-jobs += replace_create_libraries_template('el6', '2.2', libraries)
-jobs += replace_create_libraries_template('el7', '2.2', libraries)
+for _key in platforms:
+    jobs += replace_create_libraries_template(_key, versions[next(iter(versions))]['short_version'], libraries)
+#jobs += replace_create_libraries_template('el6', versions[next(iter(versions))]['short_version'], libraries)
+#jobs += replace_create_libraries_template('el7', versions[next(iter(versions))]['short_version'], libraries)
 
 for comp in components:
     base_package = False
@@ -294,8 +298,10 @@ for comp in components:
 
 comps_devs = libraries + components
 
-jobs += replace_create_comps_devs_template('el6', '2.2', comps_devs)
-jobs += replace_create_comps_devs_template('el7', '2.2', comps_devs)
+for _key in platforms:
+    jobs += replace_create_comps_devs_template(_key, versions[next(iter(versions))]['short_version'], comps_devs)
+#jobs += replace_create_comps_devs_template('el6', versions[next(iter(versions))]['short_version'], comps_devs)
+#jobs += replace_create_comps_devs_template('el7', versions[next(iter(versions))]['short_version'], comps_devs)
 
 for comp in waveforms:
     base_package = False

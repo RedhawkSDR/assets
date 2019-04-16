@@ -208,10 +208,21 @@ create-el6:local:repos:
   stage: create_library_repo
   variables:
     dist: el6
-    short_version: '2.2'
+    short_version: '2.0'
+    arch: i686
+  dependencies:
+    - base_package:el6:rh2.0:dsp
+
+  <<: *create_local_repo
+
+create-el6:local:repos:
+  stage: create_library_repo
+  variables:
+    dist: el6
+    short_version: '2.0'
     arch: x86_64
   dependencies:
-    - base_package:el6:rh2.2:dsp
+    - base_package:el6:rh2.0:dsp
 
   <<: *create_local_repo
 
@@ -219,10 +230,10 @@ create-el7:local:repos:
   stage: create_library_repo
   variables:
     dist: el7
-    short_version: '2.2'
+    short_version: '2.0'
     arch: x86_64
   dependencies:
-    - base_package:el7:rh2.2:dsp
+    - base_package:el7:rh2.0:dsp
 
   <<: *create_local_repo
 
@@ -644,14 +655,29 @@ create-el6:local:libraries:repos:
   stage: create_repo
   variables:
     dist: el6
-    short_version: '2.2'
+    short_version: '2.0'
+    arch: i686
+  dependencies:
+    - package:el6:rh2.0:RedhawkDevUtils
+    - package:el6:rh2.0:VITA49
+    - package:el6:rh2.0:blueFileLib
+    - base_package:el6:rh2.0:dsp
+    - package:el6:rh2.0:fftlib
+
+  <<: *create_local_repo
+
+create-el6:local:libraries:repos:
+  stage: create_repo
+  variables:
+    dist: el6
+    short_version: '2.0'
     arch: x86_64
   dependencies:
-    - package:el6:rh2.2:RedhawkDevUtils
-    - package:el6:rh2.2:VITA49
-    - package:el6:rh2.2:blueFileLib
-    - base_package:el6:rh2.2:dsp
-    - package:el6:rh2.2:fftlib
+    - package:el6:rh2.0:RedhawkDevUtils
+    - package:el6:rh2.0:VITA49
+    - package:el6:rh2.0:blueFileLib
+    - base_package:el6:rh2.0:dsp
+    - package:el6:rh2.0:fftlib
 
   <<: *create_local_repo
 
@@ -659,14 +685,14 @@ create-el7:local:libraries:repos:
   stage: create_repo
   variables:
     dist: el7
-    short_version: '2.2'
+    short_version: '2.0'
     arch: x86_64
   dependencies:
-    - package:el7:rh2.2:RedhawkDevUtils
-    - package:el7:rh2.2:VITA49
-    - package:el7:rh2.2:blueFileLib
-    - base_package:el7:rh2.2:dsp
-    - package:el7:rh2.2:fftlib
+    - package:el7:rh2.0:RedhawkDevUtils
+    - package:el7:rh2.0:VITA49
+    - package:el7:rh2.0:blueFileLib
+    - base_package:el7:rh2.0:dsp
+    - package:el7:rh2.0:fftlib
 
   <<: *create_local_repo
 
@@ -3905,39 +3931,79 @@ create-el6:local:comps:devs:repos:
   stage: create_comps_devs_repo
   variables:
     dist: el6
-    short_version: '2.2'
+    short_version: '2.0'
+    arch: i686
+  dependencies:
+    - package:el6:rh2.0:RedhawkDevUtils
+    - package:el6:rh2.0:VITA49
+    - package:el6:rh2.0:blueFileLib
+    - base_package:el6:rh2.0:dsp
+    - package:el6:rh2.0:fftlib
+    - package:el6:rh2.0:AmFmPmBasebandDemod
+    - package:el6:rh2.0:ArbitraryRateResampler
+    - package:el6:rh2.0:DataConverter
+    - package:el6:rh2.0:FileReader
+    - package:el6:rh2.0:FileWriter
+    - package:el6:rh2.0:HardLimit
+    - package:el6:rh2.0:RBDSDecoder
+    - package:el6:rh2.0:SigGen
+    - package:el6:rh2.0:SinkSDDS
+    - package:el6:rh2.0:SinkVITA49
+    - package:el6:rh2.0:SourceSDDS
+    - package:el6:rh2.0:SourceVITA49
+    - package:el6:rh2.0:TuneFilterDecimate
+    - package:el6:rh2.0:agc
+    - package:el6:rh2.0:autocorrelate
+    - package:el6:rh2.0:fastfilter
+    - package:el6:rh2.0:fcalc
+    - package:el6:rh2.0:psd
+    - package:el6:rh2.0:psk_soft
+    - package:el6:rh2.0:sinksocket
+    - package:el6:rh2.0:sourcesocket
+    - package:el6:rh2.0:FmRdsSimulator
+    - package:el6:rh2.0:RTL2832U
+    - package:el6:rh2.0:USRP_UHD
+    - package:el6:rh2.0:RX_Digitizer_Sim
+
+  <<: *create_local_repo
+
+create-el6:local:comps:devs:repos:
+  stage: create_comps_devs_repo
+  variables:
+    dist: el6
+    short_version: '2.0'
     arch: x86_64
   dependencies:
-    - package:el6:rh2.2:RedhawkDevUtils
-    - package:el6:rh2.2:VITA49
-    - package:el6:rh2.2:blueFileLib
-    - base_package:el6:rh2.2:dsp
-    - package:el6:rh2.2:fftlib
-    - package:el6:rh2.2:AmFmPmBasebandDemod
-    - package:el6:rh2.2:ArbitraryRateResampler
-    - package:el6:rh2.2:DataConverter
-    - package:el6:rh2.2:FileReader
-    - package:el6:rh2.2:FileWriter
-    - package:el6:rh2.2:HardLimit
-    - package:el6:rh2.2:RBDSDecoder
-    - package:el6:rh2.2:SigGen
-    - package:el6:rh2.2:SinkSDDS
-    - package:el6:rh2.2:SinkVITA49
-    - package:el6:rh2.2:SourceSDDS
-    - package:el6:rh2.2:SourceVITA49
-    - package:el6:rh2.2:TuneFilterDecimate
-    - package:el6:rh2.2:agc
-    - package:el6:rh2.2:autocorrelate
-    - package:el6:rh2.2:fastfilter
-    - package:el6:rh2.2:fcalc
-    - package:el6:rh2.2:psd
-    - package:el6:rh2.2:psk_soft
-    - package:el6:rh2.2:sinksocket
-    - package:el6:rh2.2:sourcesocket
-    - package:el6:rh2.2:FmRdsSimulator
-    - package:el6:rh2.2:RTL2832U
-    - package:el6:rh2.2:USRP_UHD
-    - package:el6:rh2.2:RX_Digitizer_Sim
+    - package:el6:rh2.0:RedhawkDevUtils
+    - package:el6:rh2.0:VITA49
+    - package:el6:rh2.0:blueFileLib
+    - base_package:el6:rh2.0:dsp
+    - package:el6:rh2.0:fftlib
+    - package:el6:rh2.0:AmFmPmBasebandDemod
+    - package:el6:rh2.0:ArbitraryRateResampler
+    - package:el6:rh2.0:DataConverter
+    - package:el6:rh2.0:FileReader
+    - package:el6:rh2.0:FileWriter
+    - package:el6:rh2.0:HardLimit
+    - package:el6:rh2.0:RBDSDecoder
+    - package:el6:rh2.0:SigGen
+    - package:el6:rh2.0:SinkSDDS
+    - package:el6:rh2.0:SinkVITA49
+    - package:el6:rh2.0:SourceSDDS
+    - package:el6:rh2.0:SourceVITA49
+    - package:el6:rh2.0:TuneFilterDecimate
+    - package:el6:rh2.0:agc
+    - package:el6:rh2.0:autocorrelate
+    - package:el6:rh2.0:fastfilter
+    - package:el6:rh2.0:fcalc
+    - package:el6:rh2.0:psd
+    - package:el6:rh2.0:psk_soft
+    - package:el6:rh2.0:sinksocket
+    - package:el6:rh2.0:sourcesocket
+    - package:el6:rh2.0:FmRdsSimulator
+    - package:el6:rh2.0:RTL2832U
+    - package:el6:rh2.0:USRP_UHD
+    - package:el6:rh2.0:RX_Digitizer_Sim
 
   <<: *create_local_repo
 
@@ -3945,39 +4011,39 @@ create-el7:local:comps:devs:repos:
   stage: create_comps_devs_repo
   variables:
     dist: el7
-    short_version: '2.2'
+    short_version: '2.0'
     arch: x86_64
   dependencies:
-    - package:el7:rh2.2:RedhawkDevUtils
-    - package:el7:rh2.2:VITA49
-    - package:el7:rh2.2:blueFileLib
-    - base_package:el7:rh2.2:dsp
-    - package:el7:rh2.2:fftlib
-    - package:el7:rh2.2:AmFmPmBasebandDemod
-    - package:el7:rh2.2:ArbitraryRateResampler
-    - package:el7:rh2.2:DataConverter
-    - package:el7:rh2.2:FileReader
-    - package:el7:rh2.2:FileWriter
-    - package:el7:rh2.2:HardLimit
-    - package:el7:rh2.2:RBDSDecoder
-    - package:el7:rh2.2:SigGen
-    - package:el7:rh2.2:SinkSDDS
-    - package:el7:rh2.2:SinkVITA49
-    - package:el7:rh2.2:SourceSDDS
-    - package:el7:rh2.2:SourceVITA49
-    - package:el7:rh2.2:TuneFilterDecimate
-    - package:el7:rh2.2:agc
-    - package:el7:rh2.2:autocorrelate
-    - package:el7:rh2.2:fastfilter
-    - package:el7:rh2.2:fcalc
-    - package:el7:rh2.2:psd
-    - package:el7:rh2.2:psk_soft
-    - package:el7:rh2.2:sinksocket
-    - package:el7:rh2.2:sourcesocket
-    - package:el7:rh2.2:FmRdsSimulator
-    - package:el7:rh2.2:RTL2832U
-    - package:el7:rh2.2:USRP_UHD
-    - package:el7:rh2.2:RX_Digitizer_Sim
+    - package:el7:rh2.0:RedhawkDevUtils
+    - package:el7:rh2.0:VITA49
+    - package:el7:rh2.0:blueFileLib
+    - base_package:el7:rh2.0:dsp
+    - package:el7:rh2.0:fftlib
+    - package:el7:rh2.0:AmFmPmBasebandDemod
+    - package:el7:rh2.0:ArbitraryRateResampler
+    - package:el7:rh2.0:DataConverter
+    - package:el7:rh2.0:FileReader
+    - package:el7:rh2.0:FileWriter
+    - package:el7:rh2.0:HardLimit
+    - package:el7:rh2.0:RBDSDecoder
+    - package:el7:rh2.0:SigGen
+    - package:el7:rh2.0:SinkSDDS
+    - package:el7:rh2.0:SinkVITA49
+    - package:el7:rh2.0:SourceSDDS
+    - package:el7:rh2.0:SourceVITA49
+    - package:el7:rh2.0:TuneFilterDecimate
+    - package:el7:rh2.0:agc
+    - package:el7:rh2.0:autocorrelate
+    - package:el7:rh2.0:fastfilter
+    - package:el7:rh2.0:fcalc
+    - package:el7:rh2.0:psd
+    - package:el7:rh2.0:psk_soft
+    - package:el7:rh2.0:sinksocket
+    - package:el7:rh2.0:sourcesocket
+    - package:el7:rh2.0:FmRdsSimulator
+    - package:el7:rh2.0:RTL2832U
+    - package:el7:rh2.0:USRP_UHD
+    - package:el7:rh2.0:RX_Digitizer_Sim
 
   <<: *create_local_repo
 
