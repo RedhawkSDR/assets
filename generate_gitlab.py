@@ -99,6 +99,7 @@ test_template = """test:__DIST__:rh__SHORT_V__:__ASSET_NAME__:
   variables:
     dist: __DIST__
     arch: __ARCH__
+__NAMESPACE__
     uhd_repo: __UHDREPO__
     latest_version: __LATEST_V__
     release_version: __RELEASE_V__
@@ -139,7 +140,6 @@ def replace_package_template(os_version, rh_version, comp_name, base_library=Fal
         retval = retval.replace('__NAMESPACE__\n', '    namespace: ""\n')
     else:
         retval = retval.replace('__NAMESPACE__\n', '')
-        #retval = retval.replace('__NAMESPACE__\n', '    namespace: rh.\n')
     if base_library:
         retval = retval.replace('package', 'base_package')
 
@@ -167,6 +167,10 @@ def replace_test_template(os_version, rh_version, comp_name, branches=False, bas
         retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch')
     elif "el7" in os_version:
         retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch')
+    if comp_name == "RX_Digitizer_Sim":
+        retval = retval.replace('__NAMESPACE__\n', '    namespace: ""\n')
+    else:
+        retval = retval.replace('__NAMESPACE__\n', '')
     if branches:
         retval += test_template_add
     retval += '\n'

@@ -2584,6 +2584,7 @@ test:el6:rh2.2:RX_Digitizer_Sim:
   variables:
     dist: el6
     arch: x86_64
+    namespace: ""
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
@@ -2598,6 +2599,7 @@ test:el7:rh2.2:RX_Digitizer_Sim:
   variables:
     dist: el7
     arch: x86_64
+    namespace: ""
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     latest_version: develop-2-2
     release_version: $rh_22_release
