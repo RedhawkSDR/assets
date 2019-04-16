@@ -146,6 +146,11 @@ before_script:
         export CXXFLAGS='-g -Og -fprofile-arcs -ftest-coverage' V=1;
       fi
     - ./build.sh
+    - IFS='/'; currdir=("$(pwd)")
+    - arr=($currdir)
+    - arr_length=${#arr[@]}
+    - count=`expr $arr_length - 2`
+    - comp_type=${arr[$count]}
     - cd tests
     - env | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
     - pip list | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
@@ -155,10 +160,10 @@ before_script:
         gcovr -r . --xml --exclude-directories=tests > gcovr.xml;
         cppcheck --enable=all --xml-version=2 -i tests . 2> cppcheck-results.xml;
       fi
-    - find * -name '*.cpp' -o -name '*.h' -o -name '*.xml' -o -name '*.py' -o -name '*.java' -o -name '*.log' | tar czvf sdr/components/$asset_name/output.tar.gz --files-from -
+    - find * -name '*.cpp' -o -name '*.h' -o -name '*.xml' -o -name '*.py' -o -name '*.java' -o -name '*.log' | tar czvf sdr/$comp_type/$asset_name/output.tar.gz --files-from -
   artifacts:
     paths:
-      - sdr/components/$asset_name/output.tar.gz
+      - sdr/$comp_type/$asset_name/output.tar.gz
     expire_in: 2 days
   except:
     - master
