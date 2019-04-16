@@ -251,7 +251,7 @@ def replace_create_comps_devs_template(os_version, rh_version, objects):
         retval = retval.replace('__V__', '')
     return retval
 
-for _key in platforms:
+for _key in versions[next(iter(versions))]['platform_keys']:
     jobs += replace_create_template(_key, versions[next(iter(versions))]['short_version'], libraries)
 
 for comp in libraries:
@@ -264,7 +264,7 @@ for comp in libraries:
     for os_version in versions[next(iter(versions))]['platform_keys']:
         jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
 
-for _key in platforms:
+for _key in versions[next(iter(versions))]['platform_keys']:
     jobs += replace_create_libraries_template(_key, versions[next(iter(versions))]['short_version'], libraries)
 
 for comp in components:
@@ -286,7 +286,7 @@ for comp in components:
 
 comps_devs = libraries + components
 
-for _key in platforms:
+for _key in versions[next(iter(versions))]['platform_keys']:
     jobs += replace_create_comps_devs_template(_key, versions[next(iter(versions))]['short_version'], comps_devs)
 
 for comp in waveforms:
