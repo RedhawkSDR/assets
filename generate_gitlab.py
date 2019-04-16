@@ -277,39 +277,12 @@ for comp in components:
     rh_version = next(iter(versions))
     for os_version in versions[next(iter(versions))]['platform_keys']:
         jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
-    #if versions.has_key('2.0'):
-        #rh_version = '2.0'
-        #for os_version in ['el6', 'el6_32', 'el7']:
-            #jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
-    #if versions.has_key('2.2'):
-        #os_version = 'el6'
-        #rh_version = '2.2'
-        #for os_version in ['el6', 'el7']:
-            #jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
 
     for os_version in versions[next(iter(versions))]['platform_keys']:
         jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
-    #if versions.has_key('2.0'):
-        #rh_version = '2.0'
-        #for os_version in ['el6', 'el6_32', 'el7']:
-            #jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
-    #if versions.has_key('2.2'):
-        #os_version = 'el6'
-        #rh_version = '2.2'
-        #for os_version in ['el6', 'el7']:
-            #jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
 
     for os_version in versions[next(iter(versions))]['platform_keys']:
         jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
-    #if versions.has_key('2.0'):
-        #rh_version = '2.0'
-        #for os_version in ['el6', 'el6_32', 'el7']:
-            #jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
-    #if versions.has_key('2.2'):
-        #os_version = 'el6'
-        #rh_version = '2.2'
-        #for os_version in ['el6', 'el7']:
-            #jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
 
 comps_devs = libraries + components
 
@@ -324,27 +297,9 @@ for comp in waveforms:
     rh_version = next(iter(versions))
     for os_version in versions[next(iter(versions))]['platform_keys']:
         jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponent, isWaveform)
-    #if versions.has_key('2.0'):
-        #rh_version = '2.0'
-        #for os_version in ['el6', 'el6_32', 'el7']:
-            #jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponent, isWaveform)
-    #if versions.has_key('2.2'):
-        #os_version = 'el6'
-        #rh_version = '2.2'
-        #for os_version in ['el6', 'el7']:
-            #jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponent, isWaveform)
 
     for os_version in versions[next(iter(versions))]['platform_keys']:
         jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
-    #if versions.has_key('2.0'):
-        #rh_version = '2.0'
-        #for os_version in ['el6', 'el6_32', 'el7']:
-            #jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
-    #if versions.has_key('2.2'):
-        #os_version = 'el6'
-        #rh_version = '2.2'
-        #for os_version in ['el6', 'el7']:
-            #jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
 
 updated_contents = contents.replace('__JOBS__', jobs)
 
