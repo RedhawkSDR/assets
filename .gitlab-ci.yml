@@ -2706,36 +2706,6 @@ package:el7:rh2.2:MSDD:
     - create-el7:local:libraries:repos
   <<: *package
 
-test:el6:rh2.2:MSDD:
-  variables:
-    dist: el6
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    comp_type: devices
-    asset_name: MSDD
-    lowercase_asset_name: msdd
-  dependencies:
-    - create-el6:local:libraries:repos
-  <<: *test
-
-test:el7:rh2.2:MSDD:
-  variables:
-    dist: el7
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    comp_type: devices
-    asset_name: MSDD
-    lowercase_asset_name: msdd
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *test
-
 deploy-el6-2.2:MSDD:
   variables:
     dist: el6
