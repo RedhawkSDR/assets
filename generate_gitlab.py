@@ -278,8 +278,9 @@ for comp in components:
     for os_version in versions[next(iter(versions))]['platform_keys']:
         jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
 
-    for os_version in versions[next(iter(versions))]['platform_keys']:
-        jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
+    if comp != 'MSDD':
+        for os_version in versions[next(iter(versions))]['platform_keys']:
+            jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
 
     for os_version in versions[next(iter(versions))]['platform_keys']:
         jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
