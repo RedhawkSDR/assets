@@ -3830,54 +3830,6 @@ package:el7:rh2.0:RX_Digitizer_Sim:
     - create-el7:local:libraries:repos
   <<: *package
 
-test:el6:rh2.0:RX_Digitizer_Sim:
-  variables:
-    dist: el6
-    arch: x86_64
-    namespace: ""
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    comp_type: devices
-    asset_name: RX_Digitizer_Sim
-    lowercase_asset_name: rx_digitizer_sim
-  dependencies:
-    - create-el6:local:libraries:repos
-  <<: *test
-
-test:el6:32:rh2.0:RX_Digitizer_Sim:
-  variables:
-    dist: el6
-    arch: i686
-    namespace: ""
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    comp_type: devices
-    asset_name: RX_Digitizer_Sim
-    lowercase_asset_name: rx_digitizer_sim
-  dependencies:
-    - create-el6:32:local:libraries:repos
-  <<: *test
-
-test:el7:rh2.0:RX_Digitizer_Sim:
-  variables:
-    dist: el7
-    arch: x86_64
-    namespace: ""
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop-2-0
-    release_version: $rh_20_release
-    short_version: '2.0'
-    comp_type: devices
-    asset_name: RX_Digitizer_Sim
-    lowercase_asset_name: rx_digitizer_sim
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *test
-
 deploy-el6-2.0:RX_Digitizer_Sim:
   variables:
     dist: el6
