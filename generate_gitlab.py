@@ -13,7 +13,7 @@ platforms['el6:32']={'dist':'el6', 'arch':'i686'}
 platforms['el7']={'dist':'el7', 'arch':'x86_64'}
 #versions['2.0']={'latest_version':'develop-2-0', 'release_version':'$rh_20_release', 'short_version':'2.0', 'platform_keys':['el6', 'el6:32', 'el7']}
 #versions['2.2']={'latest_version':'develop-2-2', 'release_version':'$rh_22_release', 'short_version':'2.2', 'platform_keys':['el6', 'el7']}
-versions['develop']={'latest_version':'develop', 'release_version':'$rh_develop_release', 'short_version':'develop', 'platform_keys':['el6', 'el7']}
+versions['develop']={'latest_version':'develop', 'release_version':'$rh_develop_release', 'short_version':'2.3', 'platform_keys':['el6', 'el7']}
 
 base_component_dir = 'sdr/libraries'
 candidate_components = os.listdir(base_component_dir)
