@@ -145,12 +145,14 @@ before_script:
     - env | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
     - pip list | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
     - python test_$asset_name.py 2>&1 | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
-    - cd ../../../..
+    - cd ..
     - if [ -d cpp ]; then
         gcovr -r . --xml --exclude-directories=tests > gcovr.xml;
         cppcheck --enable=all --xml-version=2 -i tests . 2> cppcheck-results.xml;
       fi
-    - find * -name '*.cpp' -o -name '*.h' -o -name '*.xml' -o -name '*.py' -o -name '*.java' -o -name '*.log' | tar czvf sdr/$comp_type/$asset_name/output.tar.gz --files-from -
+    #- find * -name '*.cpp' -o -name '*.h' -o -name '*.xml' -o -name '*.py' -o -name '*.java' -o -name '*.log' | tar czvf sdr/$comp_type/$asset_name/output.tar.gz --files-from -
+    - find * -name '*.cpp' -o -name '*.h' -o -name '*.xml' -o -name '*.py' -o -name '*.java' -o -name '*.log' | tar czvf output.tar.gz --files-from -
+    - cd ../../..
   artifacts:
     paths:
       - sdr/$comp_type/$asset_name/output.tar.gz
@@ -167,11 +169,6 @@ deploy:
   before_script:
     - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
   script:
-
-    - for name in redhawk redhawk-no-log4cxx redhawk-no-java redhawk-no-sqlite bulkio burstio codegen gpp; do
-         curl -k -X POST $jenkins_url/job/redhawk/job/$name-tests-$triggering_ref_name/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
-      done
-
     - if [ -n "$jenkins_url" ]; then
         curl --insecure -X POST $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
       fi
@@ -179,6 +176,26 @@ deploy:
     - master
     - /^.*-external$/
     - /^(\d+\.)?(\d+)?(\.\d+)$/
+
+# deploy:
+#   image: ${docker_registry}centos:7
+#   stage: deploy
+#   dependencies: []
+#   before_script:
+#     - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
+#   script:
+# 
+#     - for name in redhawk redhawk-no-log4cxx redhawk-no-java redhawk-no-sqlite bulkio burstio codegen gpp; do
+#          curl -k -X POST $jenkins_url/job/redhawk/job/$name-tests-$triggering_ref_name/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
+#       done
+# 
+#     - if [ -n "$jenkins_url" ]; then
+#         curl --insecure -X POST $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
+#       fi
+#   except:
+#     - master
+#     - /^.*-external$/
+#     - /^(\d+\.)?(\d+)?(\.\d+)$/
 
 .s3: &s3
   image: ${docker_registry}utils/s3cmd:el6-createrepo

@@ -160,18 +160,13 @@ before_script:
     - /^.*-external$/
     - /^(\d+\.)?(\d+)?(\.\d+)$/
 
-deploy:
+.singledeploy:
   image: ${docker_registry}centos:7
   stage: deploy
   dependencies: []
   before_script:
     - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
   script:
-
-    - for name in redhawk redhawk-no-log4cxx redhawk-no-java redhawk-no-sqlite bulkio burstio codegen gpp; do
-         curl -k -X POST $jenkins_url/job/redhawk/job/$name-tests-$triggering_ref_name/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
-      done
-
     - if [ -n "$jenkins_url" ]; then
         curl --insecure -X POST $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
       fi
