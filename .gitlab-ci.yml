@@ -161,6 +161,7 @@ before_script:
     - echo $(ls ..)
     - echo $(ls ../..)
     - echo $(ls ../../..)
+    - echo $(ls ../../../results)
     - cp tests/TEST*.xml ../../../$results_dir
   artifacts:
     paths:
