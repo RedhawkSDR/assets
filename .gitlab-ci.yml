@@ -239,173 +239,173 @@ create-el7:local:repos:
 
   <<: *create_local_repo
 
-package:el6:rh2.2:RedhawkDevUtils:
-  stage: build_libraries
-  variables:
-    dist: el6
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: RedhawkDevUtils
-    lowercase_asset_name: redhawkdevutils
-  dependencies:
-    - create-el6:local:repos
-  <<: *package
-
-package:el7:rh2.2:RedhawkDevUtils:
-  stage: build_libraries
-  variables:
-    dist: el7
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: RedhawkDevUtils
-    lowercase_asset_name: redhawkdevutils
-  dependencies:
-    - create-el7:local:repos
-  <<: *package
-
-deploy-el6-2.2:RedhawkDevUtils:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: RedhawkDevUtils
-    lowercase_asset_name: redhawkdevutils
-  dependencies:
-    - package:el6:rh2.2:RedhawkDevUtils
-  <<: *s3
-
-deploy-el7-2.2:RedhawkDevUtils:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: RedhawkDevUtils
-    lowercase_asset_name: redhawkdevutils
-  dependencies:
-    - package:el7:rh2.2:RedhawkDevUtils
-  <<: *s3
-
-package:el6:rh2.2:VITA49:
-  stage: build_libraries
-  variables:
-    dist: el6
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: VITA49
-    lowercase_asset_name: vita49
-  dependencies:
-    - create-el6:local:repos
-  <<: *package
-
-package:el7:rh2.2:VITA49:
-  stage: build_libraries
-  variables:
-    dist: el7
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: VITA49
-    lowercase_asset_name: vita49
-  dependencies:
-    - create-el7:local:repos
-  <<: *package
-
-deploy-el6-2.2:VITA49:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: VITA49
-    lowercase_asset_name: vita49
-  dependencies:
-    - package:el6:rh2.2:VITA49
-  <<: *s3
-
-deploy-el7-2.2:VITA49:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: VITA49
-    lowercase_asset_name: vita49
-  dependencies:
-    - package:el7:rh2.2:VITA49
-  <<: *s3
-
-package:el6:rh2.2:blueFileLib:
-  stage: build_libraries
-  variables:
-    dist: el6
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: blueFileLib
-    lowercase_asset_name: bluefilelib
-  dependencies:
-    - create-el6:local:repos
-  <<: *package
-
-package:el7:rh2.2:blueFileLib:
-  stage: build_libraries
-  variables:
-    dist: el7
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: blueFileLib
-    lowercase_asset_name: bluefilelib
-  dependencies:
-    - create-el7:local:repos
-  <<: *package
-
-deploy-el6-2.2:blueFileLib:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: blueFileLib
-    lowercase_asset_name: bluefilelib
-  dependencies:
-    - package:el6:rh2.2:blueFileLib
-  <<: *s3
-
-deploy-el7-2.2:blueFileLib:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: blueFileLib
-    lowercase_asset_name: bluefilelib
-  dependencies:
-    - package:el7:rh2.2:blueFileLib
-  <<: *s3
+# package:el6:rh2.2:RedhawkDevUtils:
+#   stage: build_libraries
+#   variables:
+#     dist: el6
+#     arch: x86_64
+#     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: RedhawkDevUtils
+#     lowercase_asset_name: redhawkdevutils
+#   dependencies:
+#     - create-el6:local:repos
+#   <<: *package
+# 
+# package:el7:rh2.2:RedhawkDevUtils:
+#   stage: build_libraries
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: RedhawkDevUtils
+#     lowercase_asset_name: redhawkdevutils
+#   dependencies:
+#     - create-el7:local:repos
+#   <<: *package
+# 
+# deploy-el6-2.2:RedhawkDevUtils:
+#   variables:
+#     dist: el6
+#     arch: x86_64
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: RedhawkDevUtils
+#     lowercase_asset_name: redhawkdevutils
+#   dependencies:
+#     - package:el6:rh2.2:RedhawkDevUtils
+#   <<: *s3
+# 
+# deploy-el7-2.2:RedhawkDevUtils:
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: RedhawkDevUtils
+#     lowercase_asset_name: redhawkdevutils
+#   dependencies:
+#     - package:el7:rh2.2:RedhawkDevUtils
+#   <<: *s3
+# 
+# package:el6:rh2.2:VITA49:
+#   stage: build_libraries
+#   variables:
+#     dist: el6
+#     arch: x86_64
+#     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: VITA49
+#     lowercase_asset_name: vita49
+#   dependencies:
+#     - create-el6:local:repos
+#   <<: *package
+# 
+# package:el7:rh2.2:VITA49:
+#   stage: build_libraries
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: VITA49
+#     lowercase_asset_name: vita49
+#   dependencies:
+#     - create-el7:local:repos
+#   <<: *package
+# 
+# deploy-el6-2.2:VITA49:
+#   variables:
+#     dist: el6
+#     arch: x86_64
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: VITA49
+#     lowercase_asset_name: vita49
+#   dependencies:
+#     - package:el6:rh2.2:VITA49
+#   <<: *s3
+# 
+# deploy-el7-2.2:VITA49:
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: VITA49
+#     lowercase_asset_name: vita49
+#   dependencies:
+#     - package:el7:rh2.2:VITA49
+#   <<: *s3
+# 
+# package:el6:rh2.2:blueFileLib:
+#   stage: build_libraries
+#   variables:
+#     dist: el6
+#     arch: x86_64
+#     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: blueFileLib
+#     lowercase_asset_name: bluefilelib
+#   dependencies:
+#     - create-el6:local:repos
+#   <<: *package
+# 
+# package:el7:rh2.2:blueFileLib:
+#   stage: build_libraries
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: blueFileLib
+#     lowercase_asset_name: bluefilelib
+#   dependencies:
+#     - create-el7:local:repos
+#   <<: *package
+# 
+# deploy-el6-2.2:blueFileLib:
+#   variables:
+#     dist: el6
+#     arch: x86_64
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: blueFileLib
+#     lowercase_asset_name: bluefilelib
+#   dependencies:
+#     - package:el6:rh2.2:blueFileLib
+#   <<: *s3
+# 
+# deploy-el7-2.2:blueFileLib:
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: blueFileLib
+#     lowercase_asset_name: bluefilelib
+#   dependencies:
+#     - package:el7:rh2.2:blueFileLib
+#   <<: *s3
 
 base_package:el6:rh2.2:dsp:
   stage: build_libraries
@@ -459,61 +459,61 @@ deploy-el7-2.2:dsp:
     - base_package:el7:rh2.2:dsp
   <<: *s3
 
-package:el6:rh2.2:fftlib:
-  stage: build_libraries
-  variables:
-    dist: el6
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fftlib
-    lowercase_asset_name: fftlib
-  dependencies:
-    - create-el6:local:repos
-  <<: *package
-
-package:el7:rh2.2:fftlib:
-  stage: build_libraries
-  variables:
-    dist: el7
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fftlib
-    lowercase_asset_name: fftlib
-  dependencies:
-    - create-el7:local:repos
-  <<: *package
-
-deploy-el6-2.2:fftlib:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fftlib
-    lowercase_asset_name: fftlib
-  dependencies:
-    - package:el6:rh2.2:fftlib
-  <<: *s3
-
-deploy-el7-2.2:fftlib:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: fftlib
-    lowercase_asset_name: fftlib
-  dependencies:
-    - package:el7:rh2.2:fftlib
-  <<: *s3
+# package:el6:rh2.2:fftlib:
+#   stage: build_libraries
+#   variables:
+#     dist: el6
+#     arch: x86_64
+#     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: fftlib
+#     lowercase_asset_name: fftlib
+#   dependencies:
+#     - create-el6:local:repos
+#   <<: *package
+# 
+# package:el7:rh2.2:fftlib:
+#   stage: build_libraries
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: fftlib
+#     lowercase_asset_name: fftlib
+#   dependencies:
+#     - create-el7:local:repos
+#   <<: *package
+# 
+# deploy-el6-2.2:fftlib:
+#   variables:
+#     dist: el6
+#     arch: x86_64
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: fftlib
+#     lowercase_asset_name: fftlib
+#   dependencies:
+#     - package:el6:rh2.2:fftlib
+#   <<: *s3
+# 
+# deploy-el7-2.2:fftlib:
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: fftlib
+#     lowercase_asset_name: fftlib
+#   dependencies:
+#     - package:el7:rh2.2:fftlib
+#   <<: *s3
 
 create-el6:local:libraries:repos:
   stage: create_repo
@@ -522,11 +522,11 @@ create-el6:local:libraries:repos:
     short_version: '2.2'
     arch: x86_64
   dependencies:
-    - package:el6:rh2.2:RedhawkDevUtils
-    - package:el6:rh2.2:VITA49
-    - package:el6:rh2.2:blueFileLib
+#     - package:el6:rh2.2:RedhawkDevUtils
+#     - package:el6:rh2.2:VITA49
+#     - package:el6:rh2.2:blueFileLib
     - base_package:el6:rh2.2:dsp
-    - package:el6:rh2.2:fftlib
+#     - package:el6:rh2.2:fftlib
 
   <<: *create_local_repo
 
@@ -537,11 +537,11 @@ create-el7:local:libraries:repos:
     short_version: '2.2'
     arch: x86_64
   dependencies:
-    - package:el7:rh2.2:RedhawkDevUtils
-    - package:el7:rh2.2:VITA49
-    - package:el7:rh2.2:blueFileLib
+#     - package:el7:rh2.2:RedhawkDevUtils
+#     - package:el7:rh2.2:VITA49
+#     - package:el7:rh2.2:blueFileLib
     - base_package:el7:rh2.2:dsp
-    - package:el7:rh2.2:fftlib
+#     - package:el7:rh2.2:fftlib
 
   <<: *create_local_repo
 
