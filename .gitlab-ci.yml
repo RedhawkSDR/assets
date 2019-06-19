@@ -129,6 +129,9 @@ before_script:
     - yum-config-manager --add-repo $librf_repo
     - cp -R output local_yumrepo || true
     - yum-config-manager --add-repo file://$(pwd)/local_yumrepo
+    - echo $results_dir
+    - pwd
+    - echo $(pwd)
     - mkdir -p $results_dir
     - cd $(find -maxdepth 3 -name ${asset_name})
     - touch /var/lib/rpm/* && yum-builddep --nogpgcheck -y ${namespace}$asset_name.spec
