@@ -4,7 +4,7 @@ variables:
   namespace: rh.
   asset_name: none
   lowercase_asset_name: None
-  results_dir: results/${asset_name}-${os}-${arch}
+  results_dir: results/${asset_name}-${dist}-${arch}
 
 stages:
   - base_build
@@ -160,7 +160,8 @@ before_script:
     - echo $(pwd)
     - echo $(ls ..)
     - echo $(ls ../..)
-    - cp tests/TEST*.xml ../../$results_dir
+    - echo $(ls ../../..)
+    - cp tests/TEST*.xml ../../../$results_dir
   artifacts:
     paths:
       - sdr/$comp_type/$asset_name/output.tar.gz
