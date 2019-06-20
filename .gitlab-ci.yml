@@ -160,20 +160,18 @@ before_script:
       fi
     #- find * -name '*.cpp' -o -name '*.h' -o -name '*.xml' -o -name '*.py' -o -name '*.java' -o -name '*.log' | tar czvf sdr/$comp_type/$asset_name/output.tar.gz --files-from -
     - find * -name '*.cpp' -o -name '*.h' -o -name '*.xml' -o -name '*.py' -o -name '*.java' -o -name '*.log' | tar czvf output.tar.gz --files-from -
-    - results_dir=results/${asset_name}-${dist}-${arch}
     - echo $(pwd)
     - echo $(ls ..)
     - echo $(ls ../..)
     - echo $(ls ../../..)
     - echo $(ls ../../../results)
-    - echo $(ls ../../../$results_dir)
-    - echo $(ls -l ../../../$results_dir)
-    - echo $results_dir
-    - cp tests/TEST*.xml ../../../$results_dir
+    - echo $(ls ../../../results/${asset_name}-${dist}-${arch})
+    - echo $(ls -l ../../../results/${asset_name}-${dist}-${arch})
+    - cp tests/TEST*.xml ../../../results/${asset_name}-${dist}-${arch}
   artifacts:
     paths:
       - sdr/$comp_type/$asset_name/output.tar.gz
-      - $results_dir/*.xml
+      - results/${asset_name}-${dist}-${arch}/*.xml
     expire_in: 2 days
   except:
     - master
