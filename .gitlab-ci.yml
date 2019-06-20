@@ -262,16 +262,16 @@ create-el6:local:repos:
 
   <<: *create_local_repo
 
-# create-el7:local:repos:
-#   stage: create_library_repo
-#   variables:
-#     dist: el7
-#     short_version: '2.2'
-#     arch: x86_64
-#   dependencies:
-#     - base_package:el7:rh2.2:dsp
-# 
-#   <<: *create_local_repo
+create-el7:local:repos:
+  stage: create_library_repo
+  variables:
+    dist: el7
+    short_version: '2.2'
+    arch: x86_64
+  dependencies:
+    - base_package:el7:rh2.2:dsp
+
+  <<: *create_local_repo
 
 # package:el6:rh2.2:RedhawkDevUtils:
 #   stage: build_libraries
