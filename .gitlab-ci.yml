@@ -160,13 +160,6 @@ before_script:
       fi
     #- find * -name '*.cpp' -o -name '*.h' -o -name '*.xml' -o -name '*.py' -o -name '*.java' -o -name '*.log' | tar czvf sdr/$comp_type/$asset_name/output.tar.gz --files-from -
     - find * -name '*.cpp' -o -name '*.h' -o -name '*.xml' -o -name '*.py' -o -name '*.java' -o -name '*.log' | tar czvf output.tar.gz --files-from -
-    - echo $(pwd)
-    - echo $(ls ..)
-    - echo $(ls ../..)
-    - echo $(ls ../../..)
-    - echo $(ls ../../../results)
-    - echo $(ls ../../../results/${asset_name}-${dist}-${arch})
-    - echo $(ls -l ../../../results/${asset_name}-${dist}-${arch})
     - cp tests/TEST*.xml ../../../results/${asset_name}-${dist}-${arch}
   artifacts:
     paths:
@@ -185,6 +178,8 @@ deploy:
   before_script:
     - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
   script:
+    - echo $(ls)
+    - echo $(ls output)
     - if [ -n "$jenkins_url" ]; then
         curl --insecure -X POST $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
       fi
