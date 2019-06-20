@@ -235,16 +235,16 @@ create-el6:local:repos:
 
   <<: *create_local_repo
 
-create-el7:local:repos:
-  stage: create_library_repo
-  variables:
-    dist: el7
-    short_version: '2.2'
-    arch: x86_64
-  dependencies:
-    - base_package:el7:rh2.2:dsp
-
-  <<: *create_local_repo
+# create-el7:local:repos:
+#   stage: create_library_repo
+#   variables:
+#     dist: el7
+#     short_version: '2.2'
+#     arch: x86_64
+#   dependencies:
+#     - base_package:el7:rh2.2:dsp
+# 
+#   <<: *create_local_repo
 
 # package:el6:rh2.2:RedhawkDevUtils:
 #   stage: build_libraries
@@ -427,18 +427,18 @@ base_package:el6:rh2.2:dsp:
     lowercase_asset_name: dsp
   <<: *base_package
 
-base_package:el7:rh2.2:dsp:
-  stage: build_libraries
-  variables:
-    dist: el7
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: dsp
-    lowercase_asset_name: dsp
-  <<: *base_package
+# base_package:el7:rh2.2:dsp:
+#   stage: build_libraries
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: dsp
+#     lowercase_asset_name: dsp
+#   <<: *base_package
 
 deploy-el6-2.2:dsp:
   variables:
@@ -453,18 +453,18 @@ deploy-el6-2.2:dsp:
     - base_package:el6:rh2.2:dsp
   <<: *s3
 
-deploy-el7-2.2:dsp:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: dsp
-    lowercase_asset_name: dsp
-  dependencies:
-    - base_package:el7:rh2.2:dsp
-  <<: *s3
+# deploy-el7-2.2:dsp:
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: dsp
+#     lowercase_asset_name: dsp
+#   dependencies:
+#     - base_package:el7:rh2.2:dsp
+#   <<: *s3
 
 # package:el6:rh2.2:fftlib:
 #   stage: build_libraries
@@ -537,20 +537,20 @@ create-el6:local:libraries:repos:
 
   <<: *create_local_repo
 
-create-el7:local:libraries:repos:
-  stage: create_repo
-  variables:
-    dist: el7
-    short_version: '2.2'
-    arch: x86_64
-  dependencies:
-#     - package:el7:rh2.2:RedhawkDevUtils
-#     - package:el7:rh2.2:VITA49
-#     - package:el7:rh2.2:blueFileLib
-    - base_package:el7:rh2.2:dsp
-#     - package:el7:rh2.2:fftlib
-
-  <<: *create_local_repo
+# create-el7:local:libraries:repos:
+#   stage: create_repo
+#   variables:
+#     dist: el7
+#     short_version: '2.2'
+#     arch: x86_64
+#   dependencies:
+# #     - package:el7:rh2.2:RedhawkDevUtils
+# #     - package:el7:rh2.2:VITA49
+# #     - package:el7:rh2.2:blueFileLib
+#     - base_package:el7:rh2.2:dsp
+# #     - package:el7:rh2.2:fftlib
+# 
+#   <<: *create_local_repo
 
 package:el6:rh2.2:AmFmPmBasebandDemod:
   stage: build_components
@@ -567,20 +567,20 @@ package:el6:rh2.2:AmFmPmBasebandDemod:
     - create-el6:local:libraries:repos
   <<: *package
 
-package:el7:rh2.2:AmFmPmBasebandDemod:
-  stage: build_components
-  variables:
-    dist: el7
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *package
+# package:el7:rh2.2:AmFmPmBasebandDemod:
+#   stage: build_components
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: AmFmPmBasebandDemod
+#     lowercase_asset_name: amfmpmbasebanddemod
+#   dependencies:
+#     - create-el7:local:libraries:repos
+#   <<: *package
 
 test:el6:rh2.2:AmFmPmBasebandDemod:
   variables:
@@ -597,20 +597,20 @@ test:el6:rh2.2:AmFmPmBasebandDemod:
     - create-el6:local:libraries:repos
   <<: *test
 
-test:el7:rh2.2:AmFmPmBasebandDemod:
-  variables:
-    dist: el7
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    comp_type: components
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *test
+# test:el7:rh2.2:AmFmPmBasebandDemod:
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     comp_type: components
+#     asset_name: AmFmPmBasebandDemod
+#     lowercase_asset_name: amfmpmbasebanddemod
+#   dependencies:
+#     - create-el7:local:libraries:repos
+#   <<: *test
 
 deploy-el6-2.2:AmFmPmBasebandDemod:
   variables:
@@ -625,18 +625,18 @@ deploy-el6-2.2:AmFmPmBasebandDemod:
     - package:el6:rh2.2:AmFmPmBasebandDemod
   <<: *s3
 
-deploy-el7-2.2:AmFmPmBasebandDemod:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: AmFmPmBasebandDemod
-    lowercase_asset_name: amfmpmbasebanddemod
-  dependencies:
-    - package:el7:rh2.2:AmFmPmBasebandDemod
-  <<: *s3
+# deploy-el7-2.2:AmFmPmBasebandDemod:
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: AmFmPmBasebandDemod
+#     lowercase_asset_name: amfmpmbasebanddemod
+#   dependencies:
+#     - package:el7:rh2.2:AmFmPmBasebandDemod
+#   <<: *s3
 
 package:el6:rh2.2:ArbitraryRateResampler:
   stage: build_components
@@ -653,20 +653,20 @@ package:el6:rh2.2:ArbitraryRateResampler:
     - create-el6:local:libraries:repos
   <<: *package
 
-package:el7:rh2.2:ArbitraryRateResampler:
-  stage: build_components
-  variables:
-    dist: el7
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *package
+# package:el7:rh2.2:ArbitraryRateResampler:
+#   stage: build_components
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: ArbitraryRateResampler
+#     lowercase_asset_name: arbitraryrateresampler
+#   dependencies:
+#     - create-el7:local:libraries:repos
+#   <<: *package
 
 test:el6:rh2.2:ArbitraryRateResampler:
   variables:
@@ -683,20 +683,20 @@ test:el6:rh2.2:ArbitraryRateResampler:
     - create-el6:local:libraries:repos
   <<: *test
 
-test:el7:rh2.2:ArbitraryRateResampler:
-  variables:
-    dist: el7
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    comp_type: components
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *test
+# test:el7:rh2.2:ArbitraryRateResampler:
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     comp_type: components
+#     asset_name: ArbitraryRateResampler
+#     lowercase_asset_name: arbitraryrateresampler
+#   dependencies:
+#     - create-el7:local:libraries:repos
+#   <<: *test
 
 deploy-el6-2.2:ArbitraryRateResampler:
   variables:
@@ -711,18 +711,18 @@ deploy-el6-2.2:ArbitraryRateResampler:
     - package:el6:rh2.2:ArbitraryRateResampler
   <<: *s3
 
-deploy-el7-2.2:ArbitraryRateResampler:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop-2-2
-    release_version: $rh_22_release
-    short_version: '2.2'
-    asset_name: ArbitraryRateResampler
-    lowercase_asset_name: arbitraryrateresampler
-  dependencies:
-    - package:el7:rh2.2:ArbitraryRateResampler
-  <<: *s3
+# deploy-el7-2.2:ArbitraryRateResampler:
+#   variables:
+#     dist: el7
+#     arch: x86_64
+#     latest_version: develop-2-2
+#     release_version: $rh_22_release
+#     short_version: '2.2'
+#     asset_name: ArbitraryRateResampler
+#     lowercase_asset_name: arbitraryrateresampler
+#   dependencies:
+#     - package:el7:rh2.2:ArbitraryRateResampler
+#   <<: *s3
 
 # package:el6:rh2.2:FileReader:
 #   stage: build_components
