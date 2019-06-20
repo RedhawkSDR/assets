@@ -133,7 +133,10 @@ before_script:
     - pwd
     - echo $(pwd)
     - mkdir -p $results_dir
-    - cd $(find -maxdepth 3 -name ${asset_name})
+    - asset_location=$(find -maxdepth 3 -name ${asset_name})
+    - echo $asset_location
+    - cd $asset_location
+    #- cd $(find -maxdepth 3 -name ${asset_name})
     - touch /var/lib/rpm/* && yum-builddep --nogpgcheck -y ${namespace}$asset_name.spec
     - source /etc/profile.d/redhawk.sh
     - export SDRROOT=/var/redhawk/sdr
@@ -164,6 +167,7 @@ before_script:
     - echo $(ls ../../../results)
     - echo $(ls ../../../$results_dir)
     - echo $(ls -l ../../../$results_dir)
+    - echo $results_dir
     - cp tests/TEST*.xml ../../../$results_dir
   artifacts:
     paths:
