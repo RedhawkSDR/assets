@@ -204,6 +204,9 @@ deploytests:
   dependencies:
     - test:el6:rh2.2:AmFmPmBasebandDemod
     - test:el6:rh2.2:ArbitraryRateResampler
+  artifacts:
+    paths:
+      - results
 #   except:
 #     - master
 #     - /^.*-external$/
