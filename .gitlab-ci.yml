@@ -160,6 +160,7 @@ before_script:
       fi
     #- find * -name '*.cpp' -o -name '*.h' -o -name '*.xml' -o -name '*.py' -o -name '*.java' -o -name '*.log' | tar czvf sdr/$comp_type/$asset_name/output.tar.gz --files-from -
     - find * -name '*.cpp' -o -name '*.h' -o -name '*.xml' -o -name '*.py' -o -name '*.java' -o -name '*.log' | tar czvf output.tar.gz --files-from -
+    - results_dir=results/${asset_name}-${dist}-${arch}
     - echo $(pwd)
     - echo $(ls ..)
     - echo $(ls ../..)
