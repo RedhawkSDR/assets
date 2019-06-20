@@ -166,10 +166,10 @@ before_script:
       - sdr/$comp_type/$asset_name/output.tar.gz
       - results/${asset_name}-${dist}-${arch}/*.xml
     expire_in: 2 days
-  except:
-    - master
-    - /^.*-external$/
-    - /^(\d+\.)?(\d+)?(\.\d+)$/
+#   except:
+#     - master
+#     - /^.*-external$/
+#     - /^(\d+\.)?(\d+)?(\.\d+)$/
 
 deploy:
   image: ${docker_registry}centos:7
@@ -188,12 +188,9 @@ deploy:
     - /^.*-external$/
     - /^(\d+\.)?(\d+)?(\.\d+)$/
 
-deploy_tests:
+deploytests:
   image: ${docker_registry}centos:7
   stage: deploy
-  dependencies:
-    - test:el6:rh2.2:AmFmPmBasebandDemod
-    - test:el6:rh2.2:ArbitraryRateResampler
   before_script:
     - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
   script:
@@ -202,10 +199,13 @@ deploy_tests:
     - if [ -n "$jenkins_url" ]; then
         curl --insecure -X POST $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
       fi
-  except:
-    - master
-    - /^.*-external$/
-    - /^(\d+\.)?(\d+)?(\.\d+)$/
+  dependencies:
+    - test:el6:rh2.2:AmFmPmBasebandDemod
+    - test:el6:rh2.2:ArbitraryRateResampler
+#   except:
+#     - master
+#     - /^.*-external$/
+#     - /^(\d+\.)?(\d+)?(\.\d+)$/
 
 # deploy:
 #   image: ${docker_registry}centos:7
@@ -729,7 +729,7 @@ deploy-el6-2.2:ArbitraryRateResampler:
     lowercase_asset_name: arbitraryrateresampler
   dependencies:
     - package:el6:rh2.2:ArbitraryRateResampler
-    - test:el6:rh2.2:ArbitraryRateResampler
+    #- test:el6:rh2.2:ArbitraryRateResampler
   <<: *s3
 
 # deploy-el7-2.2:ArbitraryRateResampler:
