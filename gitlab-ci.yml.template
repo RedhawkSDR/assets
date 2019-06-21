@@ -4,6 +4,7 @@ variables:
   namespace: rh.
   asset_name: none
   lowercase_asset_name: None
+  results_dir: results/${asset_name}-${dist}-${arch}
 
 stages:
   - base_build
