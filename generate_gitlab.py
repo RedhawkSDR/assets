@@ -43,6 +43,7 @@ for comp in candidate_components:
         waveforms.append(comp)
 
 jobs = ''
+test_jobs = ''
 
 package_template = """package:__DIST____V__:rh__SHORT_V__:__ASSET_NAME__:
   stage: __BUILD__
@@ -113,6 +114,9 @@ __DEP__
   <<: *test
 """
 
+test_template_endpoint = """
+    - test:__DIST__:rh__SHORT_V__:__ASSET_NAME__"""
+
 test_template_add = """  only:
     - branches
 """
@@ -166,6 +170,10 @@ def replace_package_template(os_version, rh_version, comp_name, base_library=Fal
         retval = retval.replace('__V__', ':32')
     else:
         retval = retval.replace('__V__', '')
+    return retval
+
+def replace_test_job_name_template(os_version, rh_version, comp_name, branches=False, base_library=False, isComponent=True):
+    retval = test_template_endpoint.replace('__DIST__', platforms[os_version]['dist']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name)
     return retval
 
 def replace_test_template(os_version, rh_version, comp_name, branches=False, base_library=False, isComponent=True):
@@ -280,6 +288,7 @@ for comp in components:
 
     if (comp != 'MSDD') and (not(comp == 'RX_Digitizer_Sim' and rh_version == '2.0')):
         for os_version in versions[next(iter(versions))]['platform_keys']:
+            test_jobs += replace_test_job_name_template(os_version, rh_version, comp, False, base_package, isComponent)
             jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
 
     for os_version in versions[next(iter(versions))]['platform_keys']:
@@ -303,6 +312,7 @@ for comp in waveforms:
         jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
 
 updated_contents = contents.replace('__JOBS__', jobs)
+updated_contents = contents.replace('__TESTJOBS__', test_jobs)
 
 fp=open('.gitlab-ci.yml','w')
 fp.write(updated_contents)
