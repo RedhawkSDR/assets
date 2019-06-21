@@ -312,7 +312,7 @@ for comp in waveforms:
         jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
 
 updated_contents = contents.replace('__JOBS__', jobs)
-updated_contents = contents.replace('__TESTJOBS__', test_jobs)
+updated_contents = updated_contents.replace('__TESTJOBS__', test_jobs)
 
 fp=open('.gitlab-ci.yml','w')
 fp.write(updated_contents)
