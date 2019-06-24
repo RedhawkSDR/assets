@@ -164,7 +164,7 @@ assembletests:
   image: ${docker_registry}centos:7
   stage: test_assembly
   before_script:
-    - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
+    - echo "Assembling the test results from the different component tests"
   script:
     - echo $(ls)
     - cd results
