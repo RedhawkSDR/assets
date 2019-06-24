@@ -5,6 +5,7 @@ variables:
   namespace: rh.
   asset_name: none
   lowercase_asset_name: None
+  results_dir: results/${asset_name}-${dist}-${arch}
 
 stages:
   - base_build
@@ -129,7 +130,9 @@ before_script:
     - yum-config-manager --add-repo $librf_repo
     - cp -R output local_yumrepo || true
     - yum-config-manager --add-repo file://$(pwd)/local_yumrepo
-    - cd $(find -maxdepth 3 -name ${asset_name})
+    - mkdir -p $results_dir
+    - asset_location=$(find -maxdepth 3 -name ${asset_name})
+    - cd $asset_location
     - touch /var/lib/rpm/* && yum-builddep --nogpgcheck -y ${namespace}$asset_name.spec
     - source /etc/profile.d/redhawk.sh
     - export SDRROOT=/var/redhawk/sdr
@@ -146,20 +149,16 @@ before_script:
     - env | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
     - pip list | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
     - python test_$asset_name.py 2>&1 | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
-    - cd ../../../..
+    - cd ..
     - if [ -d cpp ]; then
         gcovr -r . --xml --exclude-directories=tests > gcovr.xml;
         cppcheck --enable=all --xml-version=2 -i tests . 2> cppcheck-results.xml;
       fi
-    - find * -name '*.cpp' -o -name '*.h' -o -name '*.xml' -o -name '*.py' -o -name '*.java' -o -name '*.log' | tar czvf sdr/$comp_type/$asset_name/output.tar.gz --files-from -
+    - cp tests/TEST*.xml ../../../results/${asset_name}-${dist}-${arch}
   artifacts:
     paths:
-      - sdr/$comp_type/$asset_name/output.tar.gz
+      - results/${asset_name}-${dist}-${arch}/*.xml
     expire_in: 2 days
-  except:
-    - master
-    - /^.*-external$/
-    - /^(\d+\.)?(\d+)?(\.\d+)$/
 
 deploy:
   image: ${docker_registry}centos:7
@@ -168,11 +167,8 @@ deploy:
   before_script:
     - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
   script:
-
-    - for name in redhawk redhawk-no-log4cxx redhawk-no-java redhawk-no-sqlite bulkio burstio codegen gpp; do
-         curl -k -X POST $jenkins_url/job/redhawk/job/$name-tests-$triggering_ref_name/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
-      done
-
+    - echo $(ls)
+    - echo $(ls output)
     - if [ -n "$jenkins_url" ]; then
         curl --insecure -X POST $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
       fi
@@ -180,6 +176,74 @@ deploy:
     - master
     - /^.*-external$/
     - /^(\d+\.)?(\d+)?(\.\d+)$/
+
+deploytests:
+  image: ${docker_registry}centos:7
+  stage: deploy
+  before_script:
+    - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
+  script:
+    - echo $(ls)
+    - cd results
+    - echo $(find .)
+    - cd ..
+    - if [ -n "$jenkins_url" ]; then
+        curl --insecure -X POST $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
+      fi
+  dependencies:
+    - test:el6:rh2.3:AmFmPmBasebandDemod
+    - test:el7:rh2.3:AmFmPmBasebandDemod
+    - test:el6:rh2.3:ArbitraryRateResampler
+    - test:el7:rh2.3:ArbitraryRateResampler
+    - test:el6:rh2.3:DataConverter
+    - test:el7:rh2.3:DataConverter
+    - test:el6:rh2.3:FileReader
+    - test:el7:rh2.3:FileReader
+    - test:el6:rh2.3:FileWriter
+    - test:el7:rh2.3:FileWriter
+    - test:el6:rh2.3:HardLimit
+    - test:el7:rh2.3:HardLimit
+    - test:el6:rh2.3:RBDSDecoder
+    - test:el7:rh2.3:RBDSDecoder
+    - test:el6:rh2.3:SigGen
+    - test:el7:rh2.3:SigGen
+    - test:el6:rh2.3:SinkSDDS
+    - test:el7:rh2.3:SinkSDDS
+    - test:el6:rh2.3:SinkVITA49
+    - test:el7:rh2.3:SinkVITA49
+    - test:el6:rh2.3:SourceSDDS
+    - test:el7:rh2.3:SourceSDDS
+    - test:el6:rh2.3:SourceVITA49
+    - test:el7:rh2.3:SourceVITA49
+    - test:el6:rh2.3:TuneFilterDecimate
+    - test:el7:rh2.3:TuneFilterDecimate
+    - test:el6:rh2.3:agc
+    - test:el7:rh2.3:agc
+    - test:el6:rh2.3:autocorrelate
+    - test:el7:rh2.3:autocorrelate
+    - test:el6:rh2.3:fastfilter
+    - test:el7:rh2.3:fastfilter
+    - test:el6:rh2.3:fcalc
+    - test:el7:rh2.3:fcalc
+    - test:el6:rh2.3:psd
+    - test:el7:rh2.3:psd
+    - test:el6:rh2.3:psk_soft
+    - test:el7:rh2.3:psk_soft
+    - test:el6:rh2.3:sinksocket
+    - test:el7:rh2.3:sinksocket
+    - test:el6:rh2.3:sourcesocket
+    - test:el7:rh2.3:sourcesocket
+    - test:el6:rh2.3:FmRdsSimulator
+    - test:el7:rh2.3:FmRdsSimulator
+    - test:el6:rh2.3:RTL2832U
+    - test:el7:rh2.3:RTL2832U
+    - test:el6:rh2.3:RX_Digitizer_Sim
+    - test:el7:rh2.3:RX_Digitizer_Sim
+    - test:el6:rh2.3:USRP_UHD
+    - test:el7:rh2.3:USRP_UHD
+  artifacts:
+    paths:
+      - results
 
 .s3: &s3
   image: ${docker_registry}utils/s3cmd:el6-createrepo
@@ -2557,92 +2621,6 @@ deploy-el7-2.3:RTL2832U:
     - package:el7:rh2.3:RTL2832U
   <<: *s3
 
-package:el6:rh2.3:USRP_UHD:
-  stage: build_components
-  variables:
-    dist: el6
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
-    asset_name: USRP_UHD
-    lowercase_asset_name: usrp_uhd
-  dependencies:
-    - create-el6:local:libraries:repos
-  <<: *package
-
-package:el7:rh2.3:USRP_UHD:
-  stage: build_components
-  variables:
-    dist: el7
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
-    asset_name: USRP_UHD
-    lowercase_asset_name: usrp_uhd
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *package
-
-test:el6:rh2.3:USRP_UHD:
-  variables:
-    dist: el6
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
-    comp_type: devices
-    asset_name: USRP_UHD
-    lowercase_asset_name: usrp_uhd
-  dependencies:
-    - create-el6:local:libraries:repos
-  <<: *test
-
-test:el7:rh2.3:USRP_UHD:
-  variables:
-    dist: el7
-    arch: x86_64
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
-    comp_type: devices
-    asset_name: USRP_UHD
-    lowercase_asset_name: usrp_uhd
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *test
-
-deploy-el6-2.3:USRP_UHD:
-  variables:
-    dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
-    asset_name: USRP_UHD
-    lowercase_asset_name: usrp_uhd
-  dependencies:
-    - package:el6:rh2.3:USRP_UHD
-  <<: *s3
-
-deploy-el7-2.3:USRP_UHD:
-  variables:
-    dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
-    asset_name: USRP_UHD
-    lowercase_asset_name: usrp_uhd
-  dependencies:
-    - package:el7:rh2.3:USRP_UHD
-  <<: *s3
-
 package:el6:rh2.3:RX_Digitizer_Sim:
   stage: build_components
   variables:
@@ -2733,6 +2711,92 @@ deploy-el7-2.3:RX_Digitizer_Sim:
     - package:el7:rh2.3:RX_Digitizer_Sim
   <<: *s3
 
+package:el6:rh2.3:USRP_UHD:
+  stage: build_components
+  variables:
+    dist: el6
+    arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
+    latest_version: develop
+    release_version: $rh_develop_release
+    short_version: '2.3'
+    asset_name: USRP_UHD
+    lowercase_asset_name: usrp_uhd
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *package
+
+package:el7:rh2.3:USRP_UHD:
+  stage: build_components
+  variables:
+    dist: el7
+    arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    latest_version: develop
+    release_version: $rh_develop_release
+    short_version: '2.3'
+    asset_name: USRP_UHD
+    lowercase_asset_name: usrp_uhd
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el6:rh2.3:USRP_UHD:
+  variables:
+    dist: el6
+    arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
+    latest_version: develop
+    release_version: $rh_develop_release
+    short_version: '2.3'
+    comp_type: devices
+    asset_name: USRP_UHD
+    lowercase_asset_name: usrp_uhd
+  dependencies:
+    - create-el6:local:libraries:repos
+  <<: *test
+
+test:el7:rh2.3:USRP_UHD:
+  variables:
+    dist: el7
+    arch: x86_64
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    latest_version: develop
+    release_version: $rh_develop_release
+    short_version: '2.3'
+    comp_type: devices
+    asset_name: USRP_UHD
+    lowercase_asset_name: usrp_uhd
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el6-2.3:USRP_UHD:
+  variables:
+    dist: el6
+    arch: x86_64
+    latest_version: develop
+    release_version: $rh_develop_release
+    short_version: '2.3'
+    asset_name: USRP_UHD
+    lowercase_asset_name: usrp_uhd
+  dependencies:
+    - package:el6:rh2.3:USRP_UHD
+  <<: *s3
+
+deploy-el7-2.3:USRP_UHD:
+  variables:
+    dist: el7
+    arch: x86_64
+    latest_version: develop
+    release_version: $rh_develop_release
+    short_version: '2.3'
+    asset_name: USRP_UHD
+    lowercase_asset_name: usrp_uhd
+  dependencies:
+    - package:el7:rh2.3:USRP_UHD
+  <<: *s3
+
 create-el6:local:comps:devs:repos:
   stage: create_comps_devs_repo
   variables:
@@ -2769,8 +2833,8 @@ create-el6:local:comps:devs:repos:
     - package:el6:rh2.3:FmRdsSimulator
     - package:el6:rh2.3:MSDD
     - package:el6:rh2.3:RTL2832U
-    - package:el6:rh2.3:USRP_UHD
     - package:el6:rh2.3:RX_Digitizer_Sim
+    - package:el6:rh2.3:USRP_UHD
 
   <<: *create_local_repo
 
@@ -2810,8 +2874,8 @@ create-el7:local:comps:devs:repos:
     - package:el7:rh2.3:FmRdsSimulator
     - package:el7:rh2.3:MSDD
     - package:el7:rh2.3:RTL2832U
-    - package:el7:rh2.3:USRP_UHD
     - package:el7:rh2.3:RX_Digitizer_Sim
+    - package:el7:rh2.3:USRP_UHD
 
   <<: *create_local_repo
 
