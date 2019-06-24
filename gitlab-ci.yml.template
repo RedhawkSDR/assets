@@ -16,6 +16,7 @@ stages:
   - create_comps_devs_repo
   - build_waveforms
   - test
+  - test_assembly
   - deploy
 
 #Global before script, determine if this is a tag and handle rpm release field accordingly
@@ -160,6 +161,21 @@ before_script:
       - results/${asset_name}-${dist}-${arch}/*.xml
     expire_in: 2 days
 
+assembletests:
+  image: ${docker_registry}centos:7
+  stage: test_assembly
+  before_script:
+    - echo "Assembling the test results from the different component tests"
+  script:
+    - echo $(ls)
+    - cd results
+    - echo $(find .)
+    - cd ..
+  dependencies:__TESTJOBS__
+  artifacts:
+    paths:
+      - results
+
 deploytests:
   image: ${docker_registry}centos:7
   stage: deploy
@@ -173,7 +189,8 @@ deploytests:
     - if [ -n "$jenkins_url" ]; then
         curl --insecure -X POST $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
       fi
-  dependencies:__TESTJOBS__
+  dependencies:
+    - assembletests
   artifacts:
     paths:
       - results

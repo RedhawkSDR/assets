@@ -16,6 +16,7 @@ stages:
   - create_comps_devs_repo
   - build_waveforms
   - test
+  - test_assembly
   - deploy
 
 #Global before script, determine if this is a tag and handle rpm release field accordingly
@@ -160,19 +161,16 @@ before_script:
       - results/${asset_name}-${dist}-${arch}/*.xml
     expire_in: 2 days
 
-deploytests:
+assembletests:
   image: ${docker_registry}centos:7
-  stage: deploy
+  stage: test_assembly
   before_script:
-    - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
+    - echo "Assembling the test results from the different component tests"
   script:
     - echo $(ls)
     - cd results
     - echo $(find .)
     - cd ..
-    - if [ -n "$jenkins_url" ]; then
-        curl --insecure -X POST $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
-      fi
   dependencies:
     - test:el6:rh2.3:AmFmPmBasebandDemod
     - test:el7:rh2.3:AmFmPmBasebandDemod
@@ -224,6 +222,25 @@ deploytests:
     - test:el7:rh2.3:RX_Digitizer_Sim
     - test:el6:rh2.3:USRP_UHD
     - test:el7:rh2.3:USRP_UHD
+  artifacts:
+    paths:
+      - results
+
+deploytests:
+  image: ${docker_registry}centos:7
+  stage: deploy
+  before_script:
+    - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
+  script:
+    - echo $(ls)
+    - cd results
+    - echo $(find .)
+    - cd ..
+    - if [ -n "$jenkins_url" ]; then
+        curl --insecure -X POST $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
+      fi
+  dependencies:
+    - assembletests
   artifacts:
     paths:
       - results
