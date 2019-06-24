@@ -172,6 +172,21 @@ deploytests:
     - if [ -n "$jenkins_url" ]; then
         curl --insecure -X POST $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
       fi
+  dependencies: assembletests
+  artifacts:
+    paths:
+      - results
+
+assembletests:
+  image: ${docker_registry}centos:7
+  stage: deploy
+  before_script:
+    - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
+  script:
+    - echo $(ls)
+    - cd results
+    - echo $(find .)
+    - cd ..
   dependencies:__TESTJOBS__
   artifacts:
     paths:
