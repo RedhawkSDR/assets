@@ -15,6 +15,7 @@ stages:
   - create_comps_devs_repo
   - build_waveforms
   - test
+  - test_assembly
   - deploy
 
 #Global before script, determine if this is a tag and handle rpm release field accordingly
@@ -161,7 +162,7 @@ before_script:
 
 assembletests:
   image: ${docker_registry}centos:7
-  stage: deploy
+  stage: test_assembly
   before_script:
     - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
   script:
