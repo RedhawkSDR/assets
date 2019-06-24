@@ -172,7 +172,8 @@ deploytests:
     - if [ -n "$jenkins_url" ]; then
         curl --insecure -X POST $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
       fi
-  dependencies: assembletests
+  dependencies:
+    - assembletests
   artifacts:
     paths:
       - results
