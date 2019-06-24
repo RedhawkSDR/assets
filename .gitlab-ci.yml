@@ -159,25 +159,6 @@ before_script:
       - results/${asset_name}-${dist}-${arch}/*.xml
     expire_in: 2 days
 
-deploytests:
-  image: ${docker_registry}centos:7
-  stage: deploy
-  before_script:
-    - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
-  script:
-    - echo $(ls)
-    - cd results
-    - echo $(find .)
-    - cd ..
-    - if [ -n "$jenkins_url" ]; then
-        curl --insecure -X POST $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
-      fi
-  dependencies:
-    - assembletests
-  artifacts:
-    paths:
-      - results
-
 assembletests:
   image: ${docker_registry}centos:7
   stage: deploy
@@ -239,6 +220,25 @@ assembletests:
     - test:el7:rh2.2:RX_Digitizer_Sim
     - test:el6:rh2.2:USRP_UHD
     - test:el7:rh2.2:USRP_UHD
+  artifacts:
+    paths:
+      - results
+
+deploytests:
+  image: ${docker_registry}centos:7
+  stage: deploy
+  before_script:
+    - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
+  script:
+    - echo $(ls)
+    - cd results
+    - echo $(find .)
+    - cd ..
+    - if [ -n "$jenkins_url" ]; then
+        curl --insecure -X POST $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
+      fi
+  dependencies:
+    - assembletests
   artifacts:
     paths:
       - results

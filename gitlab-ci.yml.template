@@ -159,6 +159,21 @@ before_script:
       - results/${asset_name}-${dist}-${arch}/*.xml
     expire_in: 2 days
 
+assembletests:
+  image: ${docker_registry}centos:7
+  stage: deploy
+  before_script:
+    - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
+  script:
+    - echo $(ls)
+    - cd results
+    - echo $(find .)
+    - cd ..
+  dependencies:__TESTJOBS__
+  artifacts:
+    paths:
+      - results
+
 deploytests:
   image: ${docker_registry}centos:7
   stage: deploy
@@ -174,21 +189,6 @@ deploytests:
       fi
   dependencies:
     - assembletests
-  artifacts:
-    paths:
-      - results
-
-assembletests:
-  image: ${docker_registry}centos:7
-  stage: deploy
-  before_script:
-    - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
-  script:
-    - echo $(ls)
-    - cd results
-    - echo $(find .)
-    - cd ..
-  dependencies:__TESTJOBS__
   artifacts:
     paths:
       - results
