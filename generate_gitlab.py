@@ -1,50 +1,6 @@
 #!/usr/bin/python
-import os
-
-fp=open('gitlab-ci.yml.template','r')
-contents=fp.read()
-fp.close()
-
-platforms = {}
-versions = {}
-
-platforms['el6']={'dist':'el6', 'arch':'x86_64'}
-platforms['el6:32']={'dist':'el6', 'arch':'i686'}
-platforms['el7']={'dist':'el7', 'arch':'x86_64'}
-#versions['2.0']={'latest_version':'develop-2-0', 'release_version':'$rh_20_release', 'short_version':'2.0', 'platform_keys':['el6', 'el6:32', 'el7']}
-#versions['2.2']={'latest_version':'develop-2-2', 'release_version':'$rh_22_release', 'short_version':'2.2', 'platform_keys':['el6', 'el7']}
-versions['develop']={'latest_version':'develop', 'release_version':'$rh_develop_release', 'short_version':'2.3', 'platform_keys':['el6', 'el7']}
-
-base_component_dir = 'sdr/libraries'
-candidate_components = os.listdir(base_component_dir)
-libraries = []
-for comp in candidate_components:
-    if os.path.isfile(base_component_dir+'/'+comp+'/'+comp+'.spd.xml'):
-        libraries.append(comp)
-
-base_component_dir = 'sdr/components'
-candidate_components = os.listdir(base_component_dir)
-components = []
-for comp in candidate_components:
-    if os.path.isfile(base_component_dir+'/'+comp+'/'+comp+'.spd.xml'):
-        components.append(comp)
-base_component_dir = 'sdr/devices'
-candidate_components = os.listdir(base_component_dir)
-devices = []
-for comp in candidate_components:
-    if os.path.isfile(base_component_dir+'/'+comp+'/'+comp+'.spd.xml'):
-        components.append(comp)
-        devices.append(comp)
-
-base_component_dir = 'sdr/waveforms'
-candidate_components = os.listdir(base_component_dir)
-waveforms = []
-for comp in candidate_components:
-    if os.path.isfile(base_component_dir+'/'+comp+'/'+comp+'.sad.xml'):
-        waveforms.append(comp)
-
-jobs = ''
-test_jobs = ''
+import os, sys
+from getopt import getopt
 
 package_template = """package:__DIST____V__:rh__SHORT_V__:__ASSET_NAME__:
   stage: __BUILD__
@@ -260,61 +216,141 @@ def replace_create_comps_devs_template(os_version, rh_version, objects):
         retval = retval.replace('__V__', '')
     return retval
 
-for _key in versions[next(iter(versions))]['platform_keys']:
-    jobs += replace_create_template(_key, versions[next(iter(versions))]['short_version'], libraries)
+usage = """%s [options]
 
-for comp in libraries:
-    base_package = False
-    if comp == 'dsp':
-        base_package = True
-    rh_version = next(iter(versions))
-    for os_version in versions[next(iter(versions))]['platform_keys']:
-        jobs += replace_package_template(os_version, rh_version, comp, base_package)
-    for os_version in versions[next(iter(versions))]['platform_keys']:
-        jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+Options:
+    --coreversion <name>         Name for RH core framework branch to build assets against [default: None, same as the asset version]
+    --testonly                   Generate a gitlab pipeline for test only [default: False]
+    --help                       Print this message
+""" % (os.path.basename(sys.argv[0]))
 
-for _key in versions[next(iter(versions))]['platform_keys']:
-    jobs += replace_create_libraries_template(_key, versions[next(iter(versions))]['short_version'], libraries)
+if __name__ == '__main__':
 
-for comp in components:
-    base_package = False
-    isComponentOrDevice = True
-    isComponent = True
-    if comp in devices:
-        isComponent = False
+    longopts = ['help', 'coreversion=', 'testonly']
 
-    rh_version = next(iter(versions))
-    for os_version in versions[next(iter(versions))]['platform_keys']:
-        jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
+    coreversion = ''
+    testonly = False
+    opts, args = getopt(sys.argv[1:], 'h', longopts)
+    for key, value in opts:
+        if key == '--help':
+            raise SystemExit(usage)
+        elif key == '--coreversion':
+            coreversion = value
+        elif key == '--testonly':
+            testonly = True
 
-    if (comp != 'MSDD') and (not(comp == 'RX_Digitizer_Sim' and rh_version == '2.0')):
+    fp=open('gitlab-ci.yml.template','r')
+    contents=fp.read()
+    fp.close()
+
+    platforms = {}
+    versions = {}
+
+    platforms['el6']={'dist':'el6', 'arch':'x86_64'}
+    platforms['el6:32']={'dist':'el6', 'arch':'i686'}
+    platforms['el7']={'dist':'el7', 'arch':'x86_64'}
+    #versions['2.0']={'latest_version':'develop-2-0', 'release_version':'$rh_20_release', 'short_version':'2.0', 'platform_keys':['el6', 'el6:32', 'el7']}
+    #versions['2.2']={'latest_version':'develop-2-2', 'release_version':'$rh_22_release', 'short_version':'2.2', 'platform_keys':['el6', 'el7']}
+    versions['develop']={'latest_version':'develop', 'release_version':'$rh_develop_release', 'short_version':'2.3', 'platform_keys':['el6', 'el7']}
+
+    base_component_dir = 'sdr/libraries'
+    candidate_components = os.listdir(base_component_dir)
+    libraries = []
+    for comp in candidate_components:
+        if os.path.isfile(base_component_dir+'/'+comp+'/'+comp+'.spd.xml'):
+            libraries.append(comp)
+
+    base_component_dir = 'sdr/components'
+    candidate_components = os.listdir(base_component_dir)
+    components = []
+    for comp in candidate_components:
+        if os.path.isfile(base_component_dir+'/'+comp+'/'+comp+'.spd.xml'):
+            components.append(comp)
+    base_component_dir = 'sdr/devices'
+    candidate_components = os.listdir(base_component_dir)
+    devices = []
+    for comp in candidate_components:
+        if os.path.isfile(base_component_dir+'/'+comp+'/'+comp+'.spd.xml'):
+            components.append(comp)
+            devices.append(comp)
+
+    base_component_dir = 'sdr/waveforms'
+    candidate_components = os.listdir(base_component_dir)
+    waveforms = []
+    for comp in candidate_components:
+        if os.path.isfile(base_component_dir+'/'+comp+'/'+comp+'.sad.xml'):
+            waveforms.append(comp)
+
+    jobs = ''
+    test_jobs = ''
+
+    for _key in versions[next(iter(versions))]['platform_keys']:
+        jobs += replace_create_template(_key, versions[next(iter(versions))]['short_version'], libraries)
+
+    for comp in libraries:
+        base_package = False
+        if comp == 'dsp':
+            base_package = True
+        rh_version = next(iter(versions))
         for os_version in versions[next(iter(versions))]['platform_keys']:
-            test_jobs += replace_test_job_name_template(os_version, rh_version, comp, False, base_package, isComponent)
-            jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
+            jobs += replace_package_template(os_version, rh_version, comp, base_package)
+        if not testonly:
+            for os_version in versions[next(iter(versions))]['platform_keys']:
+                jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
 
-    for os_version in versions[next(iter(versions))]['platform_keys']:
-        jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+    for _key in versions[next(iter(versions))]['platform_keys']:
+        jobs += replace_create_libraries_template(_key, versions[next(iter(versions))]['short_version'], libraries)
 
-comps_devs = libraries + components
+    for comp in components:
+        base_package = False
+        isComponentOrDevice = True
+        isComponent = True
+        if comp in devices:
+            isComponent = False
 
-for _key in versions[next(iter(versions))]['platform_keys']:
-    jobs += replace_create_comps_devs_template(_key, versions[next(iter(versions))]['short_version'], comps_devs)
+        rh_version = next(iter(versions))
+        if not testonly:
+            for os_version in versions[next(iter(versions))]['platform_keys']:
+                jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
 
-for comp in waveforms:
-    base_package = False
-    isComponent = False
-    isWaveform = True
+        if (comp != 'MSDD') and (not(comp == 'RX_Digitizer_Sim' and rh_version == '2.0')):
+            for os_version in versions[next(iter(versions))]['platform_keys']:
+                test_jobs += replace_test_job_name_template(os_version, rh_version, comp, False, base_package, isComponent)
+                jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
 
-    rh_version = next(iter(versions))
-    for os_version in versions[next(iter(versions))]['platform_keys']:
-        jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponent, isWaveform)
+        if not testonly:
+            for os_version in versions[next(iter(versions))]['platform_keys']:
+                jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
 
-    for os_version in versions[next(iter(versions))]['platform_keys']:
-        jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+    if not testonly:
+        comps_devs = libraries + components
 
-updated_contents = contents.replace('__JOBS__', jobs)
-updated_contents = updated_contents.replace('__TESTJOBS__', test_jobs)
+        for _key in versions[next(iter(versions))]['platform_keys']:
+            jobs += replace_create_comps_devs_template(_key, versions[next(iter(versions))]['short_version'], comps_devs)
 
-fp=open('.gitlab-ci.yml','w')
-fp.write(updated_contents)
-fp.close()
+        for comp in waveforms:
+            base_package = False
+            isComponent = False
+            isWaveform = True
+
+            rh_version = next(iter(versions))
+            for os_version in versions[next(iter(versions))]['platform_keys']:
+                jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponent, isWaveform)
+
+            for os_version in versions[next(iter(versions))]['platform_keys']:
+                jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+
+    updated_contents = contents.replace('__JOBS__', jobs)
+    updated_contents = updated_contents.replace('__TESTJOBS__', test_jobs)
+    if coreversion:
+        updated_contents = updated_contents.replace('__REDHAWK_VERSION__', coreversion)
+    else:
+        updated_contents = updated_contents.replace('__REDHAWK_VERSION__', '$redhawk_version')
+    if testonly:
+        updated_contents = updated_contents.replace('__BUILDCOMPONENTS__', '')
+    else:
+        updated_contents = updated_contents.replace('__BUILDCOMPONENTS__', '\n  - build_components\n  - create_comps_devs_repo\n  - build_waveforms')
+
+    fp=open('.gitlab-ci.yml','w')
+    fp.write(updated_contents)
+    fp.close()

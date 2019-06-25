@@ -11,10 +11,7 @@ stages:
   - base_build
   - create_library_repo
   - build_libraries
-  - create_repo
-  - build_components
-  - create_comps_devs_repo
-  - build_waveforms
+  - create_repo__BUILDCOMPONENTS__
   - test
   - test_assembly
   - deploy
@@ -30,7 +27,7 @@ before_script:
         redhawk_version=${release_version}
         rpm_release="`rpm --query --queryformat "%{release}\n" --specfile ${namespace}$CI_PROJECT_NAME.spec | head -n 1 | awk -F"." "{print $1}"`.rh${safe_version}";
       fi
-    - redhawk_repo=$s3_repo_url/redhawk/cf-and-deps/yum/$redhawk_version/$dist/$arch
+    - redhawk_repo=$s3_repo_url/redhawk/cf-and-deps/yum/__REDHAWK_VERSION__/$dist/$arch
     - rtl_repo=$s3_repo_url/redhawk-dependencies/librtlsdr/yum/0.5.2/$dist/$arch
     - librf_repo=$s3_repo_url/redhawk-dependencies/libRfSimulators/yum/develop/$dist/$arch
     #- uhd_repo=$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch # el6
