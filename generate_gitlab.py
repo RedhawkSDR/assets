@@ -293,8 +293,9 @@ if __name__ == '__main__':
         rh_version = next(iter(versions))
         for os_version in versions[next(iter(versions))]['platform_keys']:
             jobs += replace_package_template(os_version, rh_version, comp, base_package)
-        for os_version in versions[next(iter(versions))]['platform_keys']:
-            jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+        if not testonly:
+            for os_version in versions[next(iter(versions))]['platform_keys']:
+                jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
 
     for _key in versions[next(iter(versions))]['platform_keys']:
         jobs += replace_create_libraries_template(_key, versions[next(iter(versions))]['short_version'], libraries)
