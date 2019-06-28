@@ -172,6 +172,28 @@ assembletests:
     paths:
       - results
 
+deploy:html:
+  image: ${docker_registry}utils/xunit-viewer:latest
+  stage: deploy
+  script:
+    # Display a summary of test results in the job log
+    - |
+      echo "******************************************************************************"
+      find results -name '*.xml' | xargs xunit-summarize
+      echo "******************************************************************************"
+    # Process CppUnit results into JUnit format through an XSLT stylesheet so
+    # that xunit-viewer can handle them
+    - find results -name '*cppunit*.xml' -exec xsltproc -o \{\} /usr/local/share/xslt/cpp2junit.xslt \{\} \;
+    - xunit-viewer --results=./results --output=xunit-results.html --title="REDHAWK Core Framework $triggering_ref_name"
+  dependencies:
+    - assembletests
+  artifacts:
+    paths:
+      - xunit-results.html
+  #except:
+  #  variables:
+  #    - $triggering_ref_name =~ /^develop.*$/
+
 deploytests:
   image: ${docker_registry}centos:7
   stage: deploy
