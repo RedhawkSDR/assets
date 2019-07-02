@@ -164,7 +164,7 @@ assembletests:
   image: ${docker_registry}centos:7
   stage: test_assembly
   before_script:
-    - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
+    - echo "Assembling the test results from the different component tests"
   script:
     - echo $(ls)
     - cd results
@@ -224,6 +224,28 @@ assembletests:
   artifacts:
     paths:
       - results
+
+deploy:html:
+  image: ${docker_registry}utils/xunit-viewer:latest
+  stage: deploy
+  script:
+    # Display a summary of test results in the job log
+    - |
+      echo "******************************************************************************"
+      find results -name '*.xml' | xargs xunit-summarize
+      echo "******************************************************************************"
+    # Process CppUnit results into JUnit format through an XSLT stylesheet so
+    # that xunit-viewer can handle them
+    - find results -name '*cppunit*.xml' -exec xsltproc -o \{\} /usr/local/share/xslt/cpp2junit.xslt \{\} \;
+    - xunit-viewer --results=./results --output=xunit-results.html --title="REDHAWK Core Framework $triggering_ref_name"
+  dependencies:
+    - assembletests
+  artifacts:
+    paths:
+      - xunit-results.html
+  #except:
+  #  variables:
+  #    - $triggering_ref_name =~ /^develop.*$/
 
 deploytests:
   image: ${docker_registry}centos:7
