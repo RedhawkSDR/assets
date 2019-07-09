@@ -6,12 +6,8 @@ package_template = """package:__DIST____V__:rh__SHORT_V__:__ASSET_NAME__:
   stage: __BUILD__
   variables:
     dist: __DIST__
-    arch: __ARCH__
 __NAMESPACE__
     uhd_repo: __UHDREPO__
-    latest_version: __LATEST_V__
-    release_version: __RELEASE_V__
-    short_version: '__SHORT_V__'
     asset_name: __ASSET_NAME__
     lowercase_asset_name: __ASSET_LC_NAME__
 __DEP__
@@ -23,8 +19,6 @@ create_template = """create-__DIST____V__:local:repos:
   stage: create_library_repo
   variables:
     dist: __DIST__
-    short_version: '__SHORT_V__'
-    arch: __ARCH__
   dependencies:
 __DEPS__
   <<: *create_local_repo
@@ -35,8 +29,6 @@ create_libraries_template = """create-__DIST____V__:local:libraries:repos:
   stage: create_repo
   variables:
     dist: __DIST__
-    short_version: '__SHORT_V__'
-    arch: __ARCH__
   dependencies:
 __DEPS__
   <<: *create_local_repo
@@ -47,8 +39,6 @@ create_comps_devs_template = """create-__DIST____V__:local:comps:devs:repos:
   stage: create_comps_devs_repo
   variables:
     dist: __DIST__
-    short_version: '__SHORT_V__'
-    arch: __ARCH__
   dependencies:
 __DEPS__
   <<: *create_local_repo
@@ -58,12 +48,8 @@ __DEPS__
 test_template = """test:__DIST____V__:rh__SHORT_V__:__ASSET_NAME__:
   variables:
     dist: __DIST__
-    arch: __ARCH__
 __NAMESPACE__
     uhd_repo: __UHDREPO__
-    latest_version: __LATEST_V__
-    release_version: __RELEASE_V__
-    short_version: '__SHORT_V__'
     comp_type: __COMP_TYPE__
     asset_name: __ASSET_NAME__
     lowercase_asset_name: __ASSET_LC_NAME__
@@ -81,10 +67,6 @@ test_template_add = """  only:
 deploy_template = """deploy-__DIST____V__-__SHORT_V__:__ASSET_NAME__:
   variables:
     dist: __DIST__
-    arch: __ARCH__
-    latest_version: __LATEST_V__
-    release_version: __RELEASE_V__
-    short_version: '__SHORT_V__'
     asset_name: __ASSET_NAME__
     lowercase_asset_name: __ASSET_LC_NAME__
   dependencies:
@@ -94,7 +76,7 @@ deploy_template = """deploy-__DIST____V__-__SHORT_V__:__ASSET_NAME__:
 """
 
 def replace_package_template(os_version, rh_version, comp_name, base_library=False, isComponentOrDevice=False, isWaveform=False):
-    retval = package_template.replace('__DIST__', platforms[os_version]['dist']).replace('__ARCH__', platforms[os_version]['arch']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
+    retval = package_template.replace('__DIST__', platforms[os_version]['dist']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
 
     if "el6" in os_version:
         retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch')
@@ -162,7 +144,7 @@ def replace_test_template(os_version, rh_version, comp_name, branches=False, bas
     return retval
 
 def replace_deploy_template(os_version, rh_version, comp_name, base_library=False):
-    retval = deploy_template.replace('__DIST__', platforms[os_version]['dist']).replace('__ARCH__', platforms[os_version]['arch']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
+    retval = deploy_template.replace('__DIST__', platforms[os_version]['dist']).replace('__ARCH__', platforms[os_version]['arch']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
 
     if base_library:
         retval = retval.replace('package', 'base_package')
@@ -349,6 +331,8 @@ if __name__ == '__main__':
         updated_contents = updated_contents.replace('__BUILDCOMPONENTS__', '')
     else:
         updated_contents = updated_contents.replace('__BUILDCOMPONENTS__', '\n  - build_components\n  - create_comps_devs_repo\n  - build_waveforms')
+
+    updated_contents = updated_contents.replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ARCH__', platforms[os_version]['arch'])
 
     fp=open('.gitlab-ci.yml','w')
     fp.write(updated_contents)
