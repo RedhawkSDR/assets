@@ -5,6 +5,10 @@ variables:
   namespace: rh.
   asset_name: none
   lowercase_asset_name: None
+  latest_version: __LATEST_V__
+  release_version: __RELEASE_V__
+  short_version: '__SHORT_V__'
+  arch: __ARCH__
   results_dir: results/${asset_name}-${dist}-${arch}
 
 stages:

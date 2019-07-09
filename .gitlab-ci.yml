@@ -5,6 +5,10 @@ variables:
   namespace: rh.
   asset_name: none
   lowercase_asset_name: None
+  latest_version: develop
+  release_version: $rh_develop_release
+  short_version: '2.3'
+  arch: x86_64
   results_dir: results/${asset_name}-${dist}-${arch}
 
 stages:
@@ -285,8 +289,6 @@ create-el6:local:repos:
   stage: create_library_repo
   variables:
     dist: el6
-    short_version: '2.3'
-    arch: x86_64
   dependencies:
     - base_package:el6:rh2.3:dsp
 
@@ -296,8 +298,6 @@ create-el7:local:repos:
   stage: create_library_repo
   variables:
     dist: el7
-    short_version: '2.3'
-    arch: x86_64
   dependencies:
     - base_package:el7:rh2.3:dsp
 
@@ -307,11 +307,7 @@ package:el6:rh2.3:RedhawkDevUtils:
   stage: build_libraries
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RedhawkDevUtils
     lowercase_asset_name: redhawkdevutils
   dependencies:
@@ -322,11 +318,7 @@ package:el7:rh2.3:RedhawkDevUtils:
   stage: build_libraries
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RedhawkDevUtils
     lowercase_asset_name: redhawkdevutils
   dependencies:
@@ -336,10 +328,6 @@ package:el7:rh2.3:RedhawkDevUtils:
 deploy-el6-2.3:RedhawkDevUtils:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RedhawkDevUtils
     lowercase_asset_name: redhawkdevutils
   dependencies:
@@ -349,10 +337,6 @@ deploy-el6-2.3:RedhawkDevUtils:
 deploy-el7-2.3:RedhawkDevUtils:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RedhawkDevUtils
     lowercase_asset_name: redhawkdevutils
   dependencies:
@@ -363,11 +347,7 @@ package:el6:rh2.3:VITA49:
   stage: build_libraries
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: VITA49
     lowercase_asset_name: vita49
   dependencies:
@@ -378,11 +358,7 @@ package:el7:rh2.3:VITA49:
   stage: build_libraries
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: VITA49
     lowercase_asset_name: vita49
   dependencies:
@@ -392,10 +368,6 @@ package:el7:rh2.3:VITA49:
 deploy-el6-2.3:VITA49:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: VITA49
     lowercase_asset_name: vita49
   dependencies:
@@ -405,10 +377,6 @@ deploy-el6-2.3:VITA49:
 deploy-el7-2.3:VITA49:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: VITA49
     lowercase_asset_name: vita49
   dependencies:
@@ -419,11 +387,7 @@ package:el6:rh2.3:blueFileLib:
   stage: build_libraries
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: blueFileLib
     lowercase_asset_name: bluefilelib
   dependencies:
@@ -434,11 +398,7 @@ package:el7:rh2.3:blueFileLib:
   stage: build_libraries
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: blueFileLib
     lowercase_asset_name: bluefilelib
   dependencies:
@@ -448,10 +408,6 @@ package:el7:rh2.3:blueFileLib:
 deploy-el6-2.3:blueFileLib:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: blueFileLib
     lowercase_asset_name: bluefilelib
   dependencies:
@@ -461,10 +417,6 @@ deploy-el6-2.3:blueFileLib:
 deploy-el7-2.3:blueFileLib:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: blueFileLib
     lowercase_asset_name: bluefilelib
   dependencies:
@@ -475,11 +427,7 @@ base_package:el6:rh2.3:dsp:
   stage: build_libraries
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: dsp
     lowercase_asset_name: dsp
   <<: *base_package
@@ -488,11 +436,7 @@ base_package:el7:rh2.3:dsp:
   stage: build_libraries
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: dsp
     lowercase_asset_name: dsp
   <<: *base_package
@@ -500,10 +444,6 @@ base_package:el7:rh2.3:dsp:
 deploy-el6-2.3:dsp:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: dsp
     lowercase_asset_name: dsp
   dependencies:
@@ -513,10 +453,6 @@ deploy-el6-2.3:dsp:
 deploy-el7-2.3:dsp:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: dsp
     lowercase_asset_name: dsp
   dependencies:
@@ -527,11 +463,7 @@ package:el6:rh2.3:fftlib:
   stage: build_libraries
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: fftlib
     lowercase_asset_name: fftlib
   dependencies:
@@ -542,11 +474,7 @@ package:el7:rh2.3:fftlib:
   stage: build_libraries
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: fftlib
     lowercase_asset_name: fftlib
   dependencies:
@@ -556,10 +484,6 @@ package:el7:rh2.3:fftlib:
 deploy-el6-2.3:fftlib:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: fftlib
     lowercase_asset_name: fftlib
   dependencies:
@@ -569,10 +493,6 @@ deploy-el6-2.3:fftlib:
 deploy-el7-2.3:fftlib:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: fftlib
     lowercase_asset_name: fftlib
   dependencies:
@@ -583,8 +503,6 @@ create-el6:local:libraries:repos:
   stage: create_repo
   variables:
     dist: el6
-    short_version: '2.3'
-    arch: x86_64
   dependencies:
     - package:el6:rh2.3:RedhawkDevUtils
     - package:el6:rh2.3:VITA49
@@ -598,8 +516,6 @@ create-el7:local:libraries:repos:
   stage: create_repo
   variables:
     dist: el7
-    short_version: '2.3'
-    arch: x86_64
   dependencies:
     - package:el7:rh2.3:RedhawkDevUtils
     - package:el7:rh2.3:VITA49
@@ -613,11 +529,7 @@ package:el6:rh2.3:AmFmPmBasebandDemod:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: AmFmPmBasebandDemod
     lowercase_asset_name: amfmpmbasebanddemod
   dependencies:
@@ -628,11 +540,7 @@ package:el7:rh2.3:AmFmPmBasebandDemod:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: AmFmPmBasebandDemod
     lowercase_asset_name: amfmpmbasebanddemod
   dependencies:
@@ -642,11 +550,7 @@ package:el7:rh2.3:AmFmPmBasebandDemod:
 test:el6:rh2.3:AmFmPmBasebandDemod:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: AmFmPmBasebandDemod
     lowercase_asset_name: amfmpmbasebanddemod
@@ -657,11 +561,7 @@ test:el6:rh2.3:AmFmPmBasebandDemod:
 test:el7:rh2.3:AmFmPmBasebandDemod:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: AmFmPmBasebandDemod
     lowercase_asset_name: amfmpmbasebanddemod
@@ -672,10 +572,6 @@ test:el7:rh2.3:AmFmPmBasebandDemod:
 deploy-el6-2.3:AmFmPmBasebandDemod:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: AmFmPmBasebandDemod
     lowercase_asset_name: amfmpmbasebanddemod
   dependencies:
@@ -685,10 +581,6 @@ deploy-el6-2.3:AmFmPmBasebandDemod:
 deploy-el7-2.3:AmFmPmBasebandDemod:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: AmFmPmBasebandDemod
     lowercase_asset_name: amfmpmbasebanddemod
   dependencies:
@@ -699,11 +591,7 @@ package:el6:rh2.3:ArbitraryRateResampler:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: ArbitraryRateResampler
     lowercase_asset_name: arbitraryrateresampler
   dependencies:
@@ -714,11 +602,7 @@ package:el7:rh2.3:ArbitraryRateResampler:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: ArbitraryRateResampler
     lowercase_asset_name: arbitraryrateresampler
   dependencies:
@@ -728,11 +612,7 @@ package:el7:rh2.3:ArbitraryRateResampler:
 test:el6:rh2.3:ArbitraryRateResampler:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: ArbitraryRateResampler
     lowercase_asset_name: arbitraryrateresampler
@@ -743,11 +623,7 @@ test:el6:rh2.3:ArbitraryRateResampler:
 test:el7:rh2.3:ArbitraryRateResampler:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: ArbitraryRateResampler
     lowercase_asset_name: arbitraryrateresampler
@@ -758,10 +634,6 @@ test:el7:rh2.3:ArbitraryRateResampler:
 deploy-el6-2.3:ArbitraryRateResampler:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: ArbitraryRateResampler
     lowercase_asset_name: arbitraryrateresampler
   dependencies:
@@ -771,10 +643,6 @@ deploy-el6-2.3:ArbitraryRateResampler:
 deploy-el7-2.3:ArbitraryRateResampler:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: ArbitraryRateResampler
     lowercase_asset_name: arbitraryrateresampler
   dependencies:
@@ -785,11 +653,7 @@ package:el6:rh2.3:DataConverter:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: DataConverter
     lowercase_asset_name: dataconverter
   dependencies:
@@ -800,11 +664,7 @@ package:el7:rh2.3:DataConverter:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: DataConverter
     lowercase_asset_name: dataconverter
   dependencies:
@@ -814,11 +674,7 @@ package:el7:rh2.3:DataConverter:
 test:el6:rh2.3:DataConverter:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: DataConverter
     lowercase_asset_name: dataconverter
@@ -829,11 +685,7 @@ test:el6:rh2.3:DataConverter:
 test:el7:rh2.3:DataConverter:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: DataConverter
     lowercase_asset_name: dataconverter
@@ -844,10 +696,6 @@ test:el7:rh2.3:DataConverter:
 deploy-el6-2.3:DataConverter:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: DataConverter
     lowercase_asset_name: dataconverter
   dependencies:
@@ -857,10 +705,6 @@ deploy-el6-2.3:DataConverter:
 deploy-el7-2.3:DataConverter:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: DataConverter
     lowercase_asset_name: dataconverter
   dependencies:
@@ -871,11 +715,7 @@ package:el6:rh2.3:FileReader:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FileReader
     lowercase_asset_name: filereader
   dependencies:
@@ -886,11 +726,7 @@ package:el7:rh2.3:FileReader:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FileReader
     lowercase_asset_name: filereader
   dependencies:
@@ -900,11 +736,7 @@ package:el7:rh2.3:FileReader:
 test:el6:rh2.3:FileReader:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: FileReader
     lowercase_asset_name: filereader
@@ -915,11 +747,7 @@ test:el6:rh2.3:FileReader:
 test:el7:rh2.3:FileReader:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: FileReader
     lowercase_asset_name: filereader
@@ -930,10 +758,6 @@ test:el7:rh2.3:FileReader:
 deploy-el6-2.3:FileReader:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FileReader
     lowercase_asset_name: filereader
   dependencies:
@@ -943,10 +767,6 @@ deploy-el6-2.3:FileReader:
 deploy-el7-2.3:FileReader:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FileReader
     lowercase_asset_name: filereader
   dependencies:
@@ -957,11 +777,7 @@ package:el6:rh2.3:FileWriter:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FileWriter
     lowercase_asset_name: filewriter
   dependencies:
@@ -972,11 +788,7 @@ package:el7:rh2.3:FileWriter:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FileWriter
     lowercase_asset_name: filewriter
   dependencies:
@@ -986,11 +798,7 @@ package:el7:rh2.3:FileWriter:
 test:el6:rh2.3:FileWriter:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: FileWriter
     lowercase_asset_name: filewriter
@@ -1001,11 +809,7 @@ test:el6:rh2.3:FileWriter:
 test:el7:rh2.3:FileWriter:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: FileWriter
     lowercase_asset_name: filewriter
@@ -1016,10 +820,6 @@ test:el7:rh2.3:FileWriter:
 deploy-el6-2.3:FileWriter:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FileWriter
     lowercase_asset_name: filewriter
   dependencies:
@@ -1029,10 +829,6 @@ deploy-el6-2.3:FileWriter:
 deploy-el7-2.3:FileWriter:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FileWriter
     lowercase_asset_name: filewriter
   dependencies:
@@ -1043,11 +839,7 @@ package:el6:rh2.3:HardLimit:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: HardLimit
     lowercase_asset_name: hardlimit
   dependencies:
@@ -1058,11 +850,7 @@ package:el7:rh2.3:HardLimit:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: HardLimit
     lowercase_asset_name: hardlimit
   dependencies:
@@ -1072,11 +860,7 @@ package:el7:rh2.3:HardLimit:
 test:el6:rh2.3:HardLimit:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: HardLimit
     lowercase_asset_name: hardlimit
@@ -1087,11 +871,7 @@ test:el6:rh2.3:HardLimit:
 test:el7:rh2.3:HardLimit:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: HardLimit
     lowercase_asset_name: hardlimit
@@ -1102,10 +882,6 @@ test:el7:rh2.3:HardLimit:
 deploy-el6-2.3:HardLimit:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: HardLimit
     lowercase_asset_name: hardlimit
   dependencies:
@@ -1115,10 +891,6 @@ deploy-el6-2.3:HardLimit:
 deploy-el7-2.3:HardLimit:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: HardLimit
     lowercase_asset_name: hardlimit
   dependencies:
@@ -1129,11 +901,7 @@ package:el6:rh2.3:RBDSDecoder:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RBDSDecoder
     lowercase_asset_name: rbdsdecoder
   dependencies:
@@ -1144,11 +912,7 @@ package:el7:rh2.3:RBDSDecoder:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RBDSDecoder
     lowercase_asset_name: rbdsdecoder
   dependencies:
@@ -1158,11 +922,7 @@ package:el7:rh2.3:RBDSDecoder:
 test:el6:rh2.3:RBDSDecoder:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: RBDSDecoder
     lowercase_asset_name: rbdsdecoder
@@ -1173,11 +933,7 @@ test:el6:rh2.3:RBDSDecoder:
 test:el7:rh2.3:RBDSDecoder:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: RBDSDecoder
     lowercase_asset_name: rbdsdecoder
@@ -1188,10 +944,6 @@ test:el7:rh2.3:RBDSDecoder:
 deploy-el6-2.3:RBDSDecoder:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RBDSDecoder
     lowercase_asset_name: rbdsdecoder
   dependencies:
@@ -1201,10 +953,6 @@ deploy-el6-2.3:RBDSDecoder:
 deploy-el7-2.3:RBDSDecoder:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RBDSDecoder
     lowercase_asset_name: rbdsdecoder
   dependencies:
@@ -1215,11 +963,7 @@ package:el6:rh2.3:SigGen:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SigGen
     lowercase_asset_name: siggen
   dependencies:
@@ -1230,11 +974,7 @@ package:el7:rh2.3:SigGen:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SigGen
     lowercase_asset_name: siggen
   dependencies:
@@ -1244,11 +984,7 @@ package:el7:rh2.3:SigGen:
 test:el6:rh2.3:SigGen:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: SigGen
     lowercase_asset_name: siggen
@@ -1259,11 +995,7 @@ test:el6:rh2.3:SigGen:
 test:el7:rh2.3:SigGen:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: SigGen
     lowercase_asset_name: siggen
@@ -1274,10 +1006,6 @@ test:el7:rh2.3:SigGen:
 deploy-el6-2.3:SigGen:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SigGen
     lowercase_asset_name: siggen
   dependencies:
@@ -1287,10 +1015,6 @@ deploy-el6-2.3:SigGen:
 deploy-el7-2.3:SigGen:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SigGen
     lowercase_asset_name: siggen
   dependencies:
@@ -1301,11 +1025,7 @@ package:el6:rh2.3:SinkSDDS:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SinkSDDS
     lowercase_asset_name: sinksdds
   dependencies:
@@ -1316,11 +1036,7 @@ package:el7:rh2.3:SinkSDDS:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SinkSDDS
     lowercase_asset_name: sinksdds
   dependencies:
@@ -1330,11 +1046,7 @@ package:el7:rh2.3:SinkSDDS:
 test:el6:rh2.3:SinkSDDS:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: SinkSDDS
     lowercase_asset_name: sinksdds
@@ -1345,11 +1057,7 @@ test:el6:rh2.3:SinkSDDS:
 test:el7:rh2.3:SinkSDDS:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: SinkSDDS
     lowercase_asset_name: sinksdds
@@ -1360,10 +1068,6 @@ test:el7:rh2.3:SinkSDDS:
 deploy-el6-2.3:SinkSDDS:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SinkSDDS
     lowercase_asset_name: sinksdds
   dependencies:
@@ -1373,10 +1077,6 @@ deploy-el6-2.3:SinkSDDS:
 deploy-el7-2.3:SinkSDDS:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SinkSDDS
     lowercase_asset_name: sinksdds
   dependencies:
@@ -1387,11 +1087,7 @@ package:el6:rh2.3:SinkVITA49:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SinkVITA49
     lowercase_asset_name: sinkvita49
   dependencies:
@@ -1402,11 +1098,7 @@ package:el7:rh2.3:SinkVITA49:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SinkVITA49
     lowercase_asset_name: sinkvita49
   dependencies:
@@ -1416,11 +1108,7 @@ package:el7:rh2.3:SinkVITA49:
 test:el6:rh2.3:SinkVITA49:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: SinkVITA49
     lowercase_asset_name: sinkvita49
@@ -1431,11 +1119,7 @@ test:el6:rh2.3:SinkVITA49:
 test:el7:rh2.3:SinkVITA49:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: SinkVITA49
     lowercase_asset_name: sinkvita49
@@ -1446,10 +1130,6 @@ test:el7:rh2.3:SinkVITA49:
 deploy-el6-2.3:SinkVITA49:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SinkVITA49
     lowercase_asset_name: sinkvita49
   dependencies:
@@ -1459,10 +1139,6 @@ deploy-el6-2.3:SinkVITA49:
 deploy-el7-2.3:SinkVITA49:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SinkVITA49
     lowercase_asset_name: sinkvita49
   dependencies:
@@ -1473,11 +1149,7 @@ package:el6:rh2.3:SourceSDDS:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SourceSDDS
     lowercase_asset_name: sourcesdds
   dependencies:
@@ -1488,11 +1160,7 @@ package:el7:rh2.3:SourceSDDS:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SourceSDDS
     lowercase_asset_name: sourcesdds
   dependencies:
@@ -1502,11 +1170,7 @@ package:el7:rh2.3:SourceSDDS:
 test:el6:rh2.3:SourceSDDS:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: SourceSDDS
     lowercase_asset_name: sourcesdds
@@ -1517,11 +1181,7 @@ test:el6:rh2.3:SourceSDDS:
 test:el7:rh2.3:SourceSDDS:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: SourceSDDS
     lowercase_asset_name: sourcesdds
@@ -1532,10 +1192,6 @@ test:el7:rh2.3:SourceSDDS:
 deploy-el6-2.3:SourceSDDS:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SourceSDDS
     lowercase_asset_name: sourcesdds
   dependencies:
@@ -1545,10 +1201,6 @@ deploy-el6-2.3:SourceSDDS:
 deploy-el7-2.3:SourceSDDS:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SourceSDDS
     lowercase_asset_name: sourcesdds
   dependencies:
@@ -1559,11 +1211,7 @@ package:el6:rh2.3:SourceVITA49:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SourceVITA49
     lowercase_asset_name: sourcevita49
   dependencies:
@@ -1574,11 +1222,7 @@ package:el7:rh2.3:SourceVITA49:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SourceVITA49
     lowercase_asset_name: sourcevita49
   dependencies:
@@ -1588,11 +1232,7 @@ package:el7:rh2.3:SourceVITA49:
 test:el6:rh2.3:SourceVITA49:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: SourceVITA49
     lowercase_asset_name: sourcevita49
@@ -1603,11 +1243,7 @@ test:el6:rh2.3:SourceVITA49:
 test:el7:rh2.3:SourceVITA49:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: SourceVITA49
     lowercase_asset_name: sourcevita49
@@ -1618,10 +1254,6 @@ test:el7:rh2.3:SourceVITA49:
 deploy-el6-2.3:SourceVITA49:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SourceVITA49
     lowercase_asset_name: sourcevita49
   dependencies:
@@ -1631,10 +1263,6 @@ deploy-el6-2.3:SourceVITA49:
 deploy-el7-2.3:SourceVITA49:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: SourceVITA49
     lowercase_asset_name: sourcevita49
   dependencies:
@@ -1645,11 +1273,7 @@ package:el6:rh2.3:TuneFilterDecimate:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: TuneFilterDecimate
     lowercase_asset_name: tunefilterdecimate
   dependencies:
@@ -1660,11 +1284,7 @@ package:el7:rh2.3:TuneFilterDecimate:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: TuneFilterDecimate
     lowercase_asset_name: tunefilterdecimate
   dependencies:
@@ -1674,11 +1294,7 @@ package:el7:rh2.3:TuneFilterDecimate:
 test:el6:rh2.3:TuneFilterDecimate:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: TuneFilterDecimate
     lowercase_asset_name: tunefilterdecimate
@@ -1689,11 +1305,7 @@ test:el6:rh2.3:TuneFilterDecimate:
 test:el7:rh2.3:TuneFilterDecimate:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: TuneFilterDecimate
     lowercase_asset_name: tunefilterdecimate
@@ -1704,10 +1316,6 @@ test:el7:rh2.3:TuneFilterDecimate:
 deploy-el6-2.3:TuneFilterDecimate:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: TuneFilterDecimate
     lowercase_asset_name: tunefilterdecimate
   dependencies:
@@ -1717,10 +1325,6 @@ deploy-el6-2.3:TuneFilterDecimate:
 deploy-el7-2.3:TuneFilterDecimate:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: TuneFilterDecimate
     lowercase_asset_name: tunefilterdecimate
   dependencies:
@@ -1731,11 +1335,7 @@ package:el6:rh2.3:agc:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: agc
     lowercase_asset_name: agc
   dependencies:
@@ -1746,11 +1346,7 @@ package:el7:rh2.3:agc:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: agc
     lowercase_asset_name: agc
   dependencies:
@@ -1760,11 +1356,7 @@ package:el7:rh2.3:agc:
 test:el6:rh2.3:agc:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: agc
     lowercase_asset_name: agc
@@ -1775,11 +1367,7 @@ test:el6:rh2.3:agc:
 test:el7:rh2.3:agc:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: agc
     lowercase_asset_name: agc
@@ -1790,10 +1378,6 @@ test:el7:rh2.3:agc:
 deploy-el6-2.3:agc:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: agc
     lowercase_asset_name: agc
   dependencies:
@@ -1803,10 +1387,6 @@ deploy-el6-2.3:agc:
 deploy-el7-2.3:agc:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: agc
     lowercase_asset_name: agc
   dependencies:
@@ -1817,11 +1397,7 @@ package:el6:rh2.3:autocorrelate:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: autocorrelate
     lowercase_asset_name: autocorrelate
   dependencies:
@@ -1832,11 +1408,7 @@ package:el7:rh2.3:autocorrelate:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: autocorrelate
     lowercase_asset_name: autocorrelate
   dependencies:
@@ -1846,11 +1418,7 @@ package:el7:rh2.3:autocorrelate:
 test:el6:rh2.3:autocorrelate:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: autocorrelate
     lowercase_asset_name: autocorrelate
@@ -1861,11 +1429,7 @@ test:el6:rh2.3:autocorrelate:
 test:el7:rh2.3:autocorrelate:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: autocorrelate
     lowercase_asset_name: autocorrelate
@@ -1876,10 +1440,6 @@ test:el7:rh2.3:autocorrelate:
 deploy-el6-2.3:autocorrelate:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: autocorrelate
     lowercase_asset_name: autocorrelate
   dependencies:
@@ -1889,10 +1449,6 @@ deploy-el6-2.3:autocorrelate:
 deploy-el7-2.3:autocorrelate:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: autocorrelate
     lowercase_asset_name: autocorrelate
   dependencies:
@@ -1903,11 +1459,7 @@ package:el6:rh2.3:fastfilter:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: fastfilter
     lowercase_asset_name: fastfilter
   dependencies:
@@ -1918,11 +1470,7 @@ package:el7:rh2.3:fastfilter:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: fastfilter
     lowercase_asset_name: fastfilter
   dependencies:
@@ -1932,11 +1480,7 @@ package:el7:rh2.3:fastfilter:
 test:el6:rh2.3:fastfilter:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: fastfilter
     lowercase_asset_name: fastfilter
@@ -1947,11 +1491,7 @@ test:el6:rh2.3:fastfilter:
 test:el7:rh2.3:fastfilter:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: fastfilter
     lowercase_asset_name: fastfilter
@@ -1962,10 +1502,6 @@ test:el7:rh2.3:fastfilter:
 deploy-el6-2.3:fastfilter:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: fastfilter
     lowercase_asset_name: fastfilter
   dependencies:
@@ -1975,10 +1511,6 @@ deploy-el6-2.3:fastfilter:
 deploy-el7-2.3:fastfilter:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: fastfilter
     lowercase_asset_name: fastfilter
   dependencies:
@@ -1989,11 +1521,7 @@ package:el6:rh2.3:fcalc:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: fcalc
     lowercase_asset_name: fcalc
   dependencies:
@@ -2004,11 +1532,7 @@ package:el7:rh2.3:fcalc:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: fcalc
     lowercase_asset_name: fcalc
   dependencies:
@@ -2018,11 +1542,7 @@ package:el7:rh2.3:fcalc:
 test:el6:rh2.3:fcalc:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: fcalc
     lowercase_asset_name: fcalc
@@ -2033,11 +1553,7 @@ test:el6:rh2.3:fcalc:
 test:el7:rh2.3:fcalc:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: fcalc
     lowercase_asset_name: fcalc
@@ -2048,10 +1564,6 @@ test:el7:rh2.3:fcalc:
 deploy-el6-2.3:fcalc:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: fcalc
     lowercase_asset_name: fcalc
   dependencies:
@@ -2061,10 +1573,6 @@ deploy-el6-2.3:fcalc:
 deploy-el7-2.3:fcalc:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: fcalc
     lowercase_asset_name: fcalc
   dependencies:
@@ -2075,11 +1583,7 @@ package:el6:rh2.3:psd:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: psd
     lowercase_asset_name: psd
   dependencies:
@@ -2090,11 +1594,7 @@ package:el7:rh2.3:psd:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: psd
     lowercase_asset_name: psd
   dependencies:
@@ -2104,11 +1604,7 @@ package:el7:rh2.3:psd:
 test:el6:rh2.3:psd:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: psd
     lowercase_asset_name: psd
@@ -2119,11 +1615,7 @@ test:el6:rh2.3:psd:
 test:el7:rh2.3:psd:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: psd
     lowercase_asset_name: psd
@@ -2134,10 +1626,6 @@ test:el7:rh2.3:psd:
 deploy-el6-2.3:psd:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: psd
     lowercase_asset_name: psd
   dependencies:
@@ -2147,10 +1635,6 @@ deploy-el6-2.3:psd:
 deploy-el7-2.3:psd:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: psd
     lowercase_asset_name: psd
   dependencies:
@@ -2161,11 +1645,7 @@ package:el6:rh2.3:psk_soft:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: psk_soft
     lowercase_asset_name: psk_soft
   dependencies:
@@ -2176,11 +1656,7 @@ package:el7:rh2.3:psk_soft:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: psk_soft
     lowercase_asset_name: psk_soft
   dependencies:
@@ -2190,11 +1666,7 @@ package:el7:rh2.3:psk_soft:
 test:el6:rh2.3:psk_soft:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: psk_soft
     lowercase_asset_name: psk_soft
@@ -2205,11 +1677,7 @@ test:el6:rh2.3:psk_soft:
 test:el7:rh2.3:psk_soft:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: psk_soft
     lowercase_asset_name: psk_soft
@@ -2220,10 +1688,6 @@ test:el7:rh2.3:psk_soft:
 deploy-el6-2.3:psk_soft:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: psk_soft
     lowercase_asset_name: psk_soft
   dependencies:
@@ -2233,10 +1697,6 @@ deploy-el6-2.3:psk_soft:
 deploy-el7-2.3:psk_soft:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: psk_soft
     lowercase_asset_name: psk_soft
   dependencies:
@@ -2247,11 +1707,7 @@ package:el6:rh2.3:sinksocket:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: sinksocket
     lowercase_asset_name: sinksocket
   dependencies:
@@ -2262,11 +1718,7 @@ package:el7:rh2.3:sinksocket:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: sinksocket
     lowercase_asset_name: sinksocket
   dependencies:
@@ -2276,11 +1728,7 @@ package:el7:rh2.3:sinksocket:
 test:el6:rh2.3:sinksocket:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: sinksocket
     lowercase_asset_name: sinksocket
@@ -2291,11 +1739,7 @@ test:el6:rh2.3:sinksocket:
 test:el7:rh2.3:sinksocket:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: sinksocket
     lowercase_asset_name: sinksocket
@@ -2306,10 +1750,6 @@ test:el7:rh2.3:sinksocket:
 deploy-el6-2.3:sinksocket:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: sinksocket
     lowercase_asset_name: sinksocket
   dependencies:
@@ -2319,10 +1759,6 @@ deploy-el6-2.3:sinksocket:
 deploy-el7-2.3:sinksocket:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: sinksocket
     lowercase_asset_name: sinksocket
   dependencies:
@@ -2333,11 +1769,7 @@ package:el6:rh2.3:sourcesocket:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: sourcesocket
     lowercase_asset_name: sourcesocket
   dependencies:
@@ -2348,11 +1780,7 @@ package:el7:rh2.3:sourcesocket:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: sourcesocket
     lowercase_asset_name: sourcesocket
   dependencies:
@@ -2362,11 +1790,7 @@ package:el7:rh2.3:sourcesocket:
 test:el6:rh2.3:sourcesocket:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: sourcesocket
     lowercase_asset_name: sourcesocket
@@ -2377,11 +1801,7 @@ test:el6:rh2.3:sourcesocket:
 test:el7:rh2.3:sourcesocket:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: components
     asset_name: sourcesocket
     lowercase_asset_name: sourcesocket
@@ -2392,10 +1812,6 @@ test:el7:rh2.3:sourcesocket:
 deploy-el6-2.3:sourcesocket:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: sourcesocket
     lowercase_asset_name: sourcesocket
   dependencies:
@@ -2405,10 +1821,6 @@ deploy-el6-2.3:sourcesocket:
 deploy-el7-2.3:sourcesocket:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: sourcesocket
     lowercase_asset_name: sourcesocket
   dependencies:
@@ -2419,11 +1831,7 @@ package:el6:rh2.3:FmRdsSimulator:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FmRdsSimulator
     lowercase_asset_name: fmrdssimulator
   dependencies:
@@ -2434,11 +1842,7 @@ package:el7:rh2.3:FmRdsSimulator:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FmRdsSimulator
     lowercase_asset_name: fmrdssimulator
   dependencies:
@@ -2448,11 +1852,7 @@ package:el7:rh2.3:FmRdsSimulator:
 test:el6:rh2.3:FmRdsSimulator:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: devices
     asset_name: FmRdsSimulator
     lowercase_asset_name: fmrdssimulator
@@ -2463,11 +1863,7 @@ test:el6:rh2.3:FmRdsSimulator:
 test:el7:rh2.3:FmRdsSimulator:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: devices
     asset_name: FmRdsSimulator
     lowercase_asset_name: fmrdssimulator
@@ -2478,10 +1874,6 @@ test:el7:rh2.3:FmRdsSimulator:
 deploy-el6-2.3:FmRdsSimulator:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FmRdsSimulator
     lowercase_asset_name: fmrdssimulator
   dependencies:
@@ -2491,10 +1883,6 @@ deploy-el6-2.3:FmRdsSimulator:
 deploy-el7-2.3:FmRdsSimulator:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FmRdsSimulator
     lowercase_asset_name: fmrdssimulator
   dependencies:
@@ -2505,11 +1893,7 @@ package:el6:rh2.3:MSDD:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: MSDD
     lowercase_asset_name: msdd
   dependencies:
@@ -2520,11 +1904,7 @@ package:el7:rh2.3:MSDD:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: MSDD
     lowercase_asset_name: msdd
   dependencies:
@@ -2534,10 +1914,6 @@ package:el7:rh2.3:MSDD:
 deploy-el6-2.3:MSDD:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: MSDD
     lowercase_asset_name: msdd
   dependencies:
@@ -2547,10 +1923,6 @@ deploy-el6-2.3:MSDD:
 deploy-el7-2.3:MSDD:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: MSDD
     lowercase_asset_name: msdd
   dependencies:
@@ -2561,11 +1933,7 @@ package:el6:rh2.3:RTL2832U:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RTL2832U
     lowercase_asset_name: rtl2832u
   dependencies:
@@ -2576,11 +1944,7 @@ package:el7:rh2.3:RTL2832U:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RTL2832U
     lowercase_asset_name: rtl2832u
   dependencies:
@@ -2590,11 +1954,7 @@ package:el7:rh2.3:RTL2832U:
 test:el6:rh2.3:RTL2832U:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: devices
     asset_name: RTL2832U
     lowercase_asset_name: rtl2832u
@@ -2605,11 +1965,7 @@ test:el6:rh2.3:RTL2832U:
 test:el7:rh2.3:RTL2832U:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: devices
     asset_name: RTL2832U
     lowercase_asset_name: rtl2832u
@@ -2620,10 +1976,6 @@ test:el7:rh2.3:RTL2832U:
 deploy-el6-2.3:RTL2832U:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RTL2832U
     lowercase_asset_name: rtl2832u
   dependencies:
@@ -2633,10 +1985,6 @@ deploy-el6-2.3:RTL2832U:
 deploy-el7-2.3:RTL2832U:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RTL2832U
     lowercase_asset_name: rtl2832u
   dependencies:
@@ -2647,12 +1995,8 @@ package:el6:rh2.3:RX_Digitizer_Sim:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     namespace: ""
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RX_Digitizer_Sim
     lowercase_asset_name: rx_digitizer_sim
   dependencies:
@@ -2663,12 +2007,8 @@ package:el7:rh2.3:RX_Digitizer_Sim:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     namespace: ""
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RX_Digitizer_Sim
     lowercase_asset_name: rx_digitizer_sim
   dependencies:
@@ -2678,12 +2018,8 @@ package:el7:rh2.3:RX_Digitizer_Sim:
 test:el6:rh2.3:RX_Digitizer_Sim:
   variables:
     dist: el6
-    arch: x86_64
     namespace: ""
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: devices
     asset_name: RX_Digitizer_Sim
     lowercase_asset_name: rx_digitizer_sim
@@ -2694,12 +2030,8 @@ test:el6:rh2.3:RX_Digitizer_Sim:
 test:el7:rh2.3:RX_Digitizer_Sim:
   variables:
     dist: el7
-    arch: x86_64
     namespace: ""
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: devices
     asset_name: RX_Digitizer_Sim
     lowercase_asset_name: rx_digitizer_sim
@@ -2710,10 +2042,6 @@ test:el7:rh2.3:RX_Digitizer_Sim:
 deploy-el6-2.3:RX_Digitizer_Sim:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RX_Digitizer_Sim
     lowercase_asset_name: rx_digitizer_sim
   dependencies:
@@ -2723,10 +2051,6 @@ deploy-el6-2.3:RX_Digitizer_Sim:
 deploy-el7-2.3:RX_Digitizer_Sim:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: RX_Digitizer_Sim
     lowercase_asset_name: rx_digitizer_sim
   dependencies:
@@ -2737,11 +2061,7 @@ package:el6:rh2.3:USRP_UHD:
   stage: build_components
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: USRP_UHD
     lowercase_asset_name: usrp_uhd
   dependencies:
@@ -2752,11 +2072,7 @@ package:el7:rh2.3:USRP_UHD:
   stage: build_components
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: USRP_UHD
     lowercase_asset_name: usrp_uhd
   dependencies:
@@ -2766,11 +2082,7 @@ package:el7:rh2.3:USRP_UHD:
 test:el6:rh2.3:USRP_UHD:
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: devices
     asset_name: USRP_UHD
     lowercase_asset_name: usrp_uhd
@@ -2781,11 +2093,7 @@ test:el6:rh2.3:USRP_UHD:
 test:el7:rh2.3:USRP_UHD:
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     comp_type: devices
     asset_name: USRP_UHD
     lowercase_asset_name: usrp_uhd
@@ -2796,10 +2104,6 @@ test:el7:rh2.3:USRP_UHD:
 deploy-el6-2.3:USRP_UHD:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: USRP_UHD
     lowercase_asset_name: usrp_uhd
   dependencies:
@@ -2809,10 +2113,6 @@ deploy-el6-2.3:USRP_UHD:
 deploy-el7-2.3:USRP_UHD:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: USRP_UHD
     lowercase_asset_name: usrp_uhd
   dependencies:
@@ -2823,8 +2123,6 @@ create-el6:local:comps:devs:repos:
   stage: create_comps_devs_repo
   variables:
     dist: el6
-    short_version: '2.3'
-    arch: x86_64
   dependencies:
     - package:el6:rh2.3:RedhawkDevUtils
     - package:el6:rh2.3:VITA49
@@ -2864,8 +2162,6 @@ create-el7:local:comps:devs:repos:
   stage: create_comps_devs_repo
   variables:
     dist: el7
-    short_version: '2.3'
-    arch: x86_64
   dependencies:
     - package:el7:rh2.3:RedhawkDevUtils
     - package:el7:rh2.3:VITA49
@@ -2905,11 +2201,7 @@ package:el6:rh2.3:FM_RBDS_demo:
   stage: build_waveforms
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FM_RBDS_demo
     lowercase_asset_name: fm_rbds_demo
   dependencies:
@@ -2920,11 +2212,7 @@ package:el7:rh2.3:FM_RBDS_demo:
   stage: build_waveforms
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FM_RBDS_demo
     lowercase_asset_name: fm_rbds_demo
   dependencies:
@@ -2934,10 +2222,6 @@ package:el7:rh2.3:FM_RBDS_demo:
 deploy-el6-2.3:FM_RBDS_demo:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FM_RBDS_demo
     lowercase_asset_name: fm_rbds_demo
   dependencies:
@@ -2947,10 +2231,6 @@ deploy-el6-2.3:FM_RBDS_demo:
 deploy-el7-2.3:FM_RBDS_demo:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FM_RBDS_demo
     lowercase_asset_name: fm_rbds_demo
   dependencies:
@@ -2961,11 +2241,7 @@ package:el6:rh2.3:FM_mono_demo:
   stage: build_waveforms
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FM_mono_demo
     lowercase_asset_name: fm_mono_demo
   dependencies:
@@ -2976,11 +2252,7 @@ package:el7:rh2.3:FM_mono_demo:
   stage: build_waveforms
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FM_mono_demo
     lowercase_asset_name: fm_mono_demo
   dependencies:
@@ -2990,10 +2262,6 @@ package:el7:rh2.3:FM_mono_demo:
 deploy-el6-2.3:FM_mono_demo:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FM_mono_demo
     lowercase_asset_name: fm_mono_demo
   dependencies:
@@ -3003,10 +2271,6 @@ deploy-el6-2.3:FM_mono_demo:
 deploy-el7-2.3:FM_mono_demo:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: FM_mono_demo
     lowercase_asset_name: fm_mono_demo
   dependencies:
@@ -3017,11 +2281,7 @@ package:el6:rh2.3:basic_components_demo:
   stage: build_waveforms
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: basic_components_demo
     lowercase_asset_name: basic_components_demo
   dependencies:
@@ -3032,11 +2292,7 @@ package:el7:rh2.3:basic_components_demo:
   stage: build_waveforms
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: basic_components_demo
     lowercase_asset_name: basic_components_demo
   dependencies:
@@ -3046,10 +2302,6 @@ package:el7:rh2.3:basic_components_demo:
 deploy-el6-2.3:basic_components_demo:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: basic_components_demo
     lowercase_asset_name: basic_components_demo
   dependencies:
@@ -3059,10 +2311,6 @@ deploy-el6-2.3:basic_components_demo:
 deploy-el7-2.3:basic_components_demo:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: basic_components_demo
     lowercase_asset_name: basic_components_demo
   dependencies:
@@ -3073,11 +2321,7 @@ package:el6:rh2.3:short_file_to_float_file:
   stage: build_waveforms
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: short_file_to_float_file
     lowercase_asset_name: short_file_to_float_file
   dependencies:
@@ -3088,11 +2332,7 @@ package:el7:rh2.3:short_file_to_float_file:
   stage: build_waveforms
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: short_file_to_float_file
     lowercase_asset_name: short_file_to_float_file
   dependencies:
@@ -3102,10 +2342,6 @@ package:el7:rh2.3:short_file_to_float_file:
 deploy-el6-2.3:short_file_to_float_file:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: short_file_to_float_file
     lowercase_asset_name: short_file_to_float_file
   dependencies:
@@ -3115,10 +2351,6 @@ deploy-el6-2.3:short_file_to_float_file:
 deploy-el7-2.3:short_file_to_float_file:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: short_file_to_float_file
     lowercase_asset_name: short_file_to_float_file
   dependencies:
@@ -3129,11 +2361,7 @@ package:el6:rh2.3:socket_loopback_demo:
   stage: build_waveforms
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: socket_loopback_demo
     lowercase_asset_name: socket_loopback_demo
   dependencies:
@@ -3144,11 +2372,7 @@ package:el7:rh2.3:socket_loopback_demo:
   stage: build_waveforms
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: socket_loopback_demo
     lowercase_asset_name: socket_loopback_demo
   dependencies:
@@ -3158,10 +2382,6 @@ package:el7:rh2.3:socket_loopback_demo:
 deploy-el6-2.3:socket_loopback_demo:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: socket_loopback_demo
     lowercase_asset_name: socket_loopback_demo
   dependencies:
@@ -3171,10 +2391,6 @@ deploy-el6-2.3:socket_loopback_demo:
 deploy-el7-2.3:socket_loopback_demo:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: socket_loopback_demo
     lowercase_asset_name: socket_loopback_demo
   dependencies:
@@ -3185,11 +2401,7 @@ package:el6:rh2.3:vita49_loopback_demo:
   stage: build_waveforms
   variables:
     dist: el6
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: vita49_loopback_demo
     lowercase_asset_name: vita49_loopback_demo
   dependencies:
@@ -3200,11 +2412,7 @@ package:el7:rh2.3:vita49_loopback_demo:
   stage: build_waveforms
   variables:
     dist: el7
-    arch: x86_64
     uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: vita49_loopback_demo
     lowercase_asset_name: vita49_loopback_demo
   dependencies:
@@ -3214,10 +2422,6 @@ package:el7:rh2.3:vita49_loopback_demo:
 deploy-el6-2.3:vita49_loopback_demo:
   variables:
     dist: el6
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: vita49_loopback_demo
     lowercase_asset_name: vita49_loopback_demo
   dependencies:
@@ -3227,10 +2431,6 @@ deploy-el6-2.3:vita49_loopback_demo:
 deploy-el7-2.3:vita49_loopback_demo:
   variables:
     dist: el7
-    arch: x86_64
-    latest_version: develop
-    release_version: $rh_develop_release
-    short_version: '2.3'
     asset_name: vita49_loopback_demo
     lowercase_asset_name: vita49_loopback_demo
   dependencies:
