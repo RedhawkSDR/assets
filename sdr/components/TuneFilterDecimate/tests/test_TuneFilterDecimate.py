@@ -104,7 +104,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             myProps.append(CF.DataType(id='TuningNorm',value=CORBA.Any(CORBA.TC_double, TuningNorm)))
 
         if myProps:
-            print "configuring with ", myProps
             #configure it
             self.comp.configure(myProps)
             print self.comp.query([])
@@ -145,55 +144,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         ossie.utils.testing.ScaComponentTestCase.tearDown(self)
 
     def setupComponent(self):
-        """Standard start-up for testing the component
-        """
-        #######################################################################
-        # Launch the component with the default execparams
-        execparams = self.getPropertySet(kinds=("execparam",), modes=("readwrite", "writeonly"), includeNil=False)
-        execparams = dict([(x.id, any.from_any(x.value)) for x in execparams])
-        if DEBUG_MODE:
-            execparams["DEBUG_LEVEL"] = 4
-        self.launch(execparams)
         
-        #######################################################################
-        # Verify the basic state of the component
-        self.assertNotEqual(self.comp, None)
-        self.assertEqual(self.comp.ref._non_existent(), False)
-        self.assertEqual(self.comp.ref._is_a("IDL:CF/Resource:1.0"), True)
-        #self.assertEqual(self.spd.get_id(), self.comp.ref._get_identifier())
-        
-        #######################################################################
-        # Simulate regular component startup
-        # Verify that initialize nor configure throw errors
-        #self.comp.initialize()
-        configureProps = self.getPropertySet(kinds=("configure",), modes=("readwrite", "writeonly"), includeNil=False)
-        self.comp.configure(configureProps)
-        
-        #######################################################################
-        # Validate that query returns all expected parameters
-        # Query of '[]' should return the following set of properties
-        expectedProps = []
-        expectedProps.extend(self.getPropertySet(kinds=("configure", "execparam"), modes=("readwrite", "readonly"), includeNil=True))
-        expectedProps.extend(self.getPropertySet(kinds=("allocate",), action="external", includeNil=True))
-        props = self.comp.query([])
-        props = dict((x.id, any.from_any(x.value)) for x in props)
-        # Query may return more than expected, but not less
-        for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
-        
-        #######################################################################
-        # Verify that all expected ports are available
-        for port in self.scd.get_componentfeatures().get_ports().get_uses():
-            port_obj = self.comp.getPort(str(port.get_usesname()))
-            self.assertNotEqual(port_obj, None)
-            self.assertEqual(port_obj._non_existent(), False)
-            self.assertEqual(port_obj._is_a("IDL:CF/Port:1.0"),  True)
-            
-        for port in self.scd.get_componentfeatures().get_ports().get_provides():
-            port_obj = self.comp.getPort(str(port.get_providesname()))
-            self.assertNotEqual(port_obj, None)
-            self.assertEqual(port_obj._non_existent(), False)
-            self.assertEqual(port_obj._is_a(port.get_repid()),  True)
+        self.comp = sb.launch(self.spd_file, impl=self.impl)
 
     def testNanOutput(self):
         """ This was a test case that produced NaN output due to floating round off error in calculating the window function for the filter
@@ -611,6 +563,24 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testIfKwReal(self):
         self.tuneModeKwTest("IF", False)
 
+    def testNormKwCx2(self):
+        self.tuneModeKwTest("NORM", True, colRfType='double', chanRfType='double')
+
+    def testNormKwReal2(self):
+        self.tuneModeKwTest("NORM", False, colRfType='double', chanRfType='double')
+
+    def testRfKwCx2(self):
+        self.tuneModeKwTest("RF", True, colRfType='double', chanRfType='double')
+
+    def testRfKwReal2(self):
+        self.tuneModeKwTest("RF", False, colRfType='double', chanRfType='double')
+
+    def testIfKwCx2(self):
+        self.tuneModeKwTest("IF", True, colRfType='double', chanRfType='double')
+
+    def testIfKwReal2(self):
+        self.tuneModeKwTest("IF", False, colRfType='double', chanRfType='double')
+
     def testRfReal(self):
         self.tuneModeTest("RF", False)
 
@@ -673,9 +643,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.assertEqual(tuneRF, self.comp.TuningRF)
         self.assertEqual(tuneNorm, self.comp.TuningNorm)
 
-    def tuneModeKwTest(self,tuneMode, cmplx=False, colRfType='double'):
+    def tuneModeKwTest(self,tuneMode, cmplx=False, colRfType='double', chanRfType=None):
         inpRate = 1e6
         colRF= 1e9
+        chanRF= colRF if chanRfType == None else colRF+inpRate*0.2
         sig = genSinWave(inpRate, 1000, 1024*1024)
         
         self.setProps(DesiredOutputRate=inpRate)
@@ -686,7 +657,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             cfIF = inpRate / 4.0
 
         tuneIF = inpRate/8.0
-        tuneRF = tuneIF - cfIF + colRF
+        tuneRF = tuneIF - cfIF + chanRF
         tuneNorm = float(tuneIF)/inpRate
         
         self.comp.TuneMode = tuneMode
@@ -704,14 +675,14 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         else:
             raise RuntimeError("invalid tune mode")
         
-        out = self.checkKeywords(sig,inpRate, colRF=colRF, complexData=cmplx, colRfType=colRfType, expectedChanRf=tuneRF)
+        out = self.checkKeywords(sig,inpRate, colRF=colRF, complexData=cmplx, colRfType=colRfType, expectedChanRf=tuneRF, chanRfType=chanRfType, chanRF=chanRF)
 
         if DEBUG_MODE:
             self.comp.api()
 
         self.assertEqual(tuneMode, self.comp.TuneMode)
         self.assertEqual(inpRate, self.comp.InputRate)
-        self.assertEqual(colRF, self.comp.InputRF)
+        self.assertEqual(chanRF, self.comp.InputRF)
 
         self.assertEqual(tuneIF, self.comp.TuningIF)
         self.assertEqual(tuneRF, self.comp.TuningRF)
@@ -739,8 +710,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
                 break
         
         self.assertEqual(self.sink._sink.gotEOS,1)
-
-        print self.comp.api()   
+ 
 
     def testMultiStream(self):
         
@@ -776,16 +746,17 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
                 print abs(a), abs(b)
                 raise
 
-        print self.comp.api()
 
 
-    def checkKeywords(self,inData, sampleRate, colRF=0.0, complexData = True, colRfType='double', pktSize=8192, checkOutputSize=True, streamID="tfd-stream-1", expectedChanRf=0.0):
+    def checkKeywords(self,inData, sampleRate, colRF=0.0, complexData = True, colRfType='double', pktSize=8192, checkOutputSize=True, streamID="tfd-stream-1", expectedChanRf=0.0, chanRfType=None, chanRF=None):
         """ Check Keywords CHAN_RF and COL_RF
            As applicable
         """
         out=[]
         count=0
         keywords = [sb.io_helpers.SRIKeyword('COL_RF',colRF, colRfType)]
+        if chanRfType != None and chanRF != None:
+            keywords.append(sb.io_helpers.SRIKeyword('CHAN_RF',chanRF, chanRfType))
         numPushes = (len(inData)+pktSize-1)/pktSize
         lastPush = numPushes-1
         for i in xrange(numPushes):
