@@ -42,7 +42,7 @@ public:
         service_function = boost::bind(_func, _target);
         _mythread = 0;
         _thread_running = false;
-        _udelay = (__useconds_t)(_delay * 1000000);
+        updateDelay(_delay);
     };
 
     // kick off the thread
@@ -57,8 +57,38 @@ public:
     void run() {
         int state = NORMAL;
         while (_thread_running and (state != FINISH)) {
-            state = service_function();
-            if (state == NOOP) usleep(_udelay);
+
+            try {
+                state = service_function();
+            } catch (const std::exception& exc) {
+                RH_NL_FATAL("MultiProcessThread", "Unhandled exception in service function: " << exc.what());
+                exit(-1);
+            } catch (const CORBA::Exception& exc) {
+                RH_NL_FATAL("MultiProcessThread", "Unhandled CORBA exception in service function ");
+                exit(-1);
+            } catch (boost::thread_interrupted &) {
+                break;
+            } catch (...) {
+                RH_NL_FATAL("MultiProcessThread", "Unhandled exception in service function");
+                exit(-1);
+            }
+
+            if (state == FINISH) {
+                return;
+            } else if (state == NOOP) {
+                try {
+                    boost::posix_time::time_duration boost_delay = boost::posix_time::microseconds(_delay.tv_sec*1e6 +
+                                                                                                   _delay.tv_nsec*1e-3);
+                    boost::this_thread::sleep(boost_delay);
+                } catch (boost::thread_interrupted &) {
+                    break;
+                } catch (...) {
+                    throw;
+                }
+            }
+            else {
+                boost::this_thread::yield();
+            }
         }
     };
 
@@ -88,15 +118,16 @@ public:
         }
     };
 
-    void updateDelay(float _delay) { _udelay = (__useconds_t)(_delay * 1000000); };
+    void updateDelay(float delay) {
+        _delay.tv_sec = (time_t)delay;
+        _delay.tv_nsec = (delay-_delay.tv_sec)*1e9;
+    };
 
 private:
     boost::thread *_mythread;
     bool _thread_running;
     boost::function<int ()> service_function;
-    __useconds_t _udelay;
-    boost::condition_variable _end_of_run;
-    boost::mutex _eor_mutex;
+    struct timespec _delay;
 };
 
 typedef struct ticket_lock {
