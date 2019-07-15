@@ -30,8 +30,8 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.MSDD
-Version:        3.0.1
-Release:        2%{?dist}
+Version:        3.0.2
+Release:        1%{?dist}
 Summary:        Device %{name}
 
 Group:          REDHAWK/Devices

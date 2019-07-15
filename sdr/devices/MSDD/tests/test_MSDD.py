@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-
+import sys
 import ossie.utils.testing
 from ossie.utils import sb
 from ossie.cf import CF
@@ -29,8 +29,10 @@ from redhawk.frontendInterfaces import FRONTEND
 from ossie.utils import uuid
 from ossie import properties
 import time
+import argparse
 
-DEBUG_LEVEL = 4
+DEBUG_LEVEL = 3
+IP_ADDRESS="192.168.103.250"
 
 class DeviceTests(ossie.utils.testing.RHTestCase):
     # Path to the SPD file, relative to this file. This must be set in order to
@@ -64,7 +66,7 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
         # Launch the device, using the selected implementation
         configure = {
                  "msdd_configuration" : {
-                     "msdd_configuration::msdd_ip_address":"192.168.103.250",
+                     "msdd_configuration::msdd_ip_address":IP_ADDRESS,
                      "msdd_configuration::msdd_port":"23"
                       }
                  ,
@@ -131,6 +133,31 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
         
         self.comp.deallocateCapacity(alloc)
         
+    def testReportedBandwidth(self):
+        self.comp.start()
+
+        alloc = self._generateAlloc(cf=110e6,sr=24.576e6,bw=20e6)
+        allocationID = properties.props_to_dict(alloc)['FRONTEND::tuner_allocation']['FRONTEND::tuner_allocation::allocation_id']
+
+        try:
+            retval = self.comp.allocateCapacity(alloc)
+        except Exception, e:
+            print str(e)
+            self.fail("Exception thrown on allocateCapactiy %s" % str(e))
+
+        if not retval:
+            self.fail("Allocation Failed")
+
+        tuner_status = self.comp.frontend_tuner_status[0]
+
+        bw=tuner_status.bandwidth.queryValue()
+        avail_bw=float(tuner_status.available_bandwidth.queryValue())
+        srate=tuner_status.sample_rate.queryValue()
+
+        self.assertAlmostEqual(bw,avail_bw, msg="Checking for correct available bandwidth")
+        self.assertNotAlmostEquals(srate, avail_bw, msg="Checking sample rate not equal to available bandwidth")
+
+        self.comp.deallocateCapacity(alloc)
 
 
     def _generateAlloc(self,tuner_type='RX_DIGITIZER', cf=100e6,sr=25e6,bw=20e6,rf_flow_id=''):
@@ -163,4 +190,16 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
         return properties.props_from_dict(allocationPropDict)
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--ip', default="192.168.103.250")
+    parser.add_argument('--debug', default=3)
+    parser.add_argument('unittest_args', nargs='*')
+
+    try:
+        args = parser.parse_args()
+        IP_ADDRESS=args.ip
+        DEBUG_LEVEL=args.debug
+    except:
+        pass
+    sys.argv[1:] = args.unittest_args
     ossie.utils.testing.main() # By default tests all implementations
