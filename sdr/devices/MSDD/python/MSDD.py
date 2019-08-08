@@ -247,7 +247,12 @@ class MSDD_i(MSDD_base):
                 self.disconnect_from_msdd()
                 return False
             
-        return True
+        return True    
+
+    def update_rf_flow_id(self, rf_flow_id):
+        self.device_rf_flow = rf_flow_id
+        for tuner_num in range(0,len(self.frontend_tuner_status)):
+            self.frontend_tuner_status[tuner_num].rf_flow_id = self.device_rf_flow
 
     def update_msdd_status(self):
         if self.MSDD == None:
@@ -1816,8 +1821,7 @@ class MSDD_i(MSDD_base):
 
     def set_rfinfo_pkt(self,port_name, pkt):
         self.device_rf_info_pkt = pkt
-        self.device_rf_flow = pkt.rf_flow_id
-        #self.update_rf_flow_id(pkt.rf_flow_id)
+        self.update_rf_flow_id(pkt.rf_flow_id)
   
 if __name__ == '__main__':
     logging.getLogger().setLevel(logging.INFO)
