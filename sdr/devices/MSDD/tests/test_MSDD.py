@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-
+import sys
 import ossie.utils.testing
 from ossie.utils import sb
 from ossie.cf import CF
@@ -29,8 +29,10 @@ from redhawk.frontendInterfaces import FRONTEND
 from ossie.utils import uuid
 from ossie import properties
 import time
+import frontend
 
 DEBUG_LEVEL = 4
+IP_ADDRESS="192.168.103.250"
 
 class DeviceTests(ossie.utils.testing.RHTestCase):
     # Path to the SPD file, relative to this file. This must be set in order to
@@ -64,7 +66,7 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
         # Launch the device, using the selected implementation
         configure = {
                  "msdd_configuration" : {
-                     "msdd_configuration::msdd_ip_address":"192.168.103.250",
+                     "msdd_configuration::msdd_ip_address":IP_ADDRESS,
                      "msdd_configuration::msdd_port":"23"
                       }
                  ,
@@ -162,5 +164,166 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
                     }}
         return properties.props_from_dict(allocationPropDict)
 
+class MsddDeviceTests(ossie.utils.testing.RHTestCase):
+    # Path to the SPD file, relative to this file. This must be set in order to
+    # launch the device.
+    SPD_FILE = '../MSDD.spd.xml'
+
+    def setUp(self):
+
+        self.comp=sb.launch('rh.MSDD', 
+                      properties={ 
+                "DEBUG_LEVEL": DEBUG_LEVEL, 
+                "msdd_configuration" : { "msdd_configuration::msdd_ip_address" :  IP_ADDRESS },
+                "advanced":{
+                                  "advanced::allow_internal_allocations" : False 
+                             },
+                "msdd_output_configuration": [{
+                             "msdd_output_configuration::tuner_number":0,
+                             "msdd_output_configuration::protocol":"UDP_SDDS",
+                             "msdd_output_configuration::ip_address":"234.168.103.100",
+                             "msdd_output_configuration::port":0,
+                             "msdd_output_configuration::vlan":0,
+                             "msdd_output_configuration::enabled":True,
+                             "msdd_output_configuration::timestamp_offset":0,
+                             "msdd_output_configuration::endianess":1,
+                             "msdd_output_configuration::mfp_flush":63,
+                             "msdd_output_configuration::vlan_enable": False                        
+                             }]
+                }
+
+                      )
+
+
+        alloc_params = {}
+        if "vr1a" in self.comp.msdd_status.filename_fpga:
+            self.alloc_params = { 'wbddc_bw' : 20e6,
+                             'wbddc_srate' : 25e6,
+                             'nbddc_bw' : 3.125e6,
+                             'nbddc_srate' : 1.526e6,
+            }
+        else:
+            self.alloc_params = { 'wbddc_bw' : 20e6,
+                             'wbddc_srate' : 24.576e6,
+                             'nbddc_bw' : 1.5e6,
+                             'nbddc_srate' : 4.9125e6,
+            }
+    
+    def tearDown(self):
+        # Clean up all sandbox artifacts created during test
+        sb.release()
+
+
+    def testWideBandDDC_SampleRateAllocation(self):
+       alloc=frontend.createTunerAllocation(tuner_type="RX_DIGITIZER_CHANNELIZER", 
+                                            center_frequency=100e6, 
+                                            sample_rate=self.alloc_params['wbddc_srate'],
+                                            sample_rate_tolerance=100.0)
+       ret=self.comp.allocateCapacity( alloc)
+       self.assertTrue(ret)
+       self.comp.deallocateCapacity( alloc)
+
+    def testWideBandDDC_BandwidthAllocation(self):
+       alloc=frontend.createTunerAllocation(tuner_type="RX_DIGITIZER_CHANNELIZER", 
+                                            center_frequency=100e6, 
+                                            bandwidth=self.alloc_params['wbddc_bw'],
+                                            bandwidth_tolerance=100.0)
+       ret=self.comp.allocateCapacity( alloc)
+       self.assertTrue(ret)
+       self.comp.deallocateCapacity( alloc)
+
+    def testNarrowBandDDC_BandwidthAllocation(self):
+       wb_alloc=frontend.createTunerAllocation(tuner_type="RX_DIGITIZER_CHANNELIZER", 
+                                            center_frequency=100e6)
+       ret=self.comp.allocateCapacity( wb_alloc)
+       self.assertTrue(ret)
+
+       alloc=frontend.createTunerAllocation(tuner_type="DDC", 
+                                            center_frequency=100e6,
+                                            bandwidth=self.alloc_params['nbddc_bw'],
+                                            bandwidth_tolerance=100.0)
+       ret=self.comp.allocateCapacity( alloc)
+       self.assertTrue(ret)
+       self.comp.deallocateCapacity( alloc)
+
+       self.comp.deallocateCapacity(wb_alloc)
+
+    def testNarrowBandDDC_SampleRateAllocation(self):
+       wb_alloc=frontend.createTunerAllocation(tuner_type="RX_DIGITIZER_CHANNELIZER", 
+                                            center_frequency=100e6)
+       ret=self.comp.allocateCapacity( wb_alloc)
+       self.assertTrue(ret)
+
+       alloc=frontend.createTunerAllocation(tuner_type="DDC", 
+                                            center_frequency=100e6,
+                                            sample_rate=self.alloc_params['nbddc_srate'],
+                                            sample_rate_tolerance=100.0)
+       ret=self.comp.allocateCapacity( alloc)
+       self.assertTrue(ret)
+       self.comp.deallocateCapacity( alloc)
+
+       self.comp.deallocateCapacity(wb_alloc)
+
+
+    def testNarrowBandDDC_BadAllocation(self):
+       wb_alloc=frontend.createTunerAllocation(tuner_type="RX_DIGITIZER_CHANNELIZER", 
+                                            center_frequency=100e6)
+       ret=self.comp.allocateCapacity( wb_alloc)
+       self.assertTrue(ret)
+
+       alloc=frontend.createTunerAllocation(tuner_type="DDC", 
+                                            center_frequency=100e6,
+                                            sample_rate=20,
+                                            sample_rate_tolerance=100.0)
+       ret=self.comp.allocateCapacity( alloc)
+       self.assertFalse(ret)
+
+       self.comp.deallocateCapacity(wb_alloc)
+
+    def testNarrowBandDDC_BadAllocation2(self):
+       wb_alloc=frontend.createTunerAllocation(tuner_type="RX_DIGITIZER_CHANNELIZER", 
+                                            center_frequency=100e6)
+       ret=self.comp.allocateCapacity( wb_alloc)
+       self.assertTrue(ret)
+
+       alloc=frontend.createTunerAllocation(tuner_type="DDC", 
+                                            center_frequency=100e6,
+                                            bandwidth=20,
+                                            bandwidth_tolerance=100.0)
+       ret=self.comp.allocateCapacity( alloc)
+       self.assertFalse(ret)
+
+       self.comp.deallocateCapacity(wb_alloc)
+
+
+
+    def testNarrowBandDDC_DontCareAllocation(self):
+       wb_alloc=frontend.createTunerAllocation(tuner_type="RX_DIGITIZER_CHANNELIZER", 
+                                            center_frequency=100e6)
+       ret=self.comp.allocateCapacity( wb_alloc)
+       self.assertTrue(ret)
+
+       alloc=frontend.createTunerAllocation(tuner_type="DDC", 
+                                            center_frequency=100e6)
+       ret=self.comp.allocateCapacity( alloc)
+       self.assertTrue(ret)
+       self.comp.deallocateCapacity( alloc)
+
+       self.comp.deallocateCapacity(wb_alloc)
+
+
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--ip', default="192.168.103.250")
+    parser.add_argument('--debug', default=3)
+    parser.add_argument('unittest_args', nargs='*')
+
+    try:
+        args = parser.parse_args()
+        IP_ADDRESS=args.ip
+        DEBUG_LEVEL=args.debug
+    except:
+        pass
+    sys.argv[1:] = args.unittest_args
     ossie.utils.testing.main() # By default tests all implementations

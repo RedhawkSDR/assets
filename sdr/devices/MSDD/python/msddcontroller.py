@@ -229,7 +229,7 @@ class baseModule(object):
                 successful_validation = (value >= ret - tolerance_range and value <= ret + tolerance_range)
             else:
                 successful_validation = (value == ret)
-            
+
             counter += 1
             if successful_validation or counter > 40:
                 return successful_validation
@@ -273,22 +273,25 @@ class baseModule(object):
         if step_val <= 0:
             step_val = 0.25
         valid = False
-        next_highest_valid = max(min_val,min(max_val,math.ceil((value-min_val)/step_val) * step_val+min_val))
-        val = next_highest_valid
-        max_tolerance_val = value + value*(tolerance_per/100.0)
-        max_valid_val = math.ceil((max_tolerance_val-min_val)/step_val) * step_val+min_val
-        iterate = (val <= max_val and max_valid_val >= min_val)
-        while iterate:
-            if val > max_val:
-                break
-            if val > max_valid_val:
-                break
-            if val >= value and val <= max_val and val >= min_val:
-                valid = True
-                break            
-            val += step_val
-        if not valid and closest_ceil:
-            return next_highest_valid
+        try:
+            next_highest_valid = max(min_val,min(max_val,math.ceil((value-min_val)/step_val) * step_val+min_val))
+            val = next_highest_valid
+            max_tolerance_val = value + value*(tolerance_per/100.0)
+            max_valid_val = math.ceil((max_tolerance_val-min_val)/step_val) * step_val+min_val
+            iterate = (val <= max_val and max_valid_val >= min_val)
+            while iterate:
+                if val > max_val:
+                    break
+                if val > max_valid_val:
+                    break
+                if val >= value and val <= max_val and val >= min_val:
+                    valid = True
+                    break            
+                val += step_val
+            if not valid and closest_ceil:
+                return next_highest_valid
+        except TypeError:
+            raise Exception("Missing min/max values, Requested Value was %s" %value)
         if not valid:
             raise Exception("Valid value not found! Requested Value was %s" %value)
         
@@ -1001,6 +1004,11 @@ class DdcBaseModule(baseModule):
     def __init__(self, com, channel_number=0, mapping_version=2):
         baseModule.__init__(self, com, channel_number, mapping_version)
         self.rf_offset_hz = 0
+        self._bw_hz_list=None
+        try:
+            self._bw_hz_list=self._getBandwidthList_Hz()
+        except:
+            pass
     def updateRfFrequencyOffset(self,rf_offset_hz):
         self.rf_offset_hz = float(rf_offset_hz)
     
@@ -1032,15 +1040,59 @@ class DdcBaseModule(baseModule):
         return retVal 
 
     def _setBandwidth_Hz(self, bandwidth_hz):
-        raise NotImplementedError(str(inspect.stack()[0][3]))
+        isr = self.getInputSampleRate()
+        bw = self.get_valid_bandwidth(bandwidth_hz,1)
+        bw_list = self.getBandwidthList_Hz()
+        # find matching decimation for bandwidth setting
+        idx=bw_list.index(bw)
+        self.setDecimation(self.getDecimationList()[idx])
+
+    # seed bandwidth list using decimation values and then getting bandwidth from device
+    def _getBandwidthList_Hz(self):            
+        ret=[]
+        decs=self.getDecimationList()
+        for x in decs:
+            try:
+                self.setDecimation(x)
+                ret.append( self.getBandwidth_Hz() )
+            except:
+                pass
+        return ret
     def getBandwidth_Hz(self):
         return self.getSampleRate()
-    def getBandwidthList(self):
-        return self.getSampleRateList()
+    def getBandwidthList_Hz(self):
+        if not self._bw_hz_list:
+            self._bw_hz_list=self._getBandwidthList_Hz()
+        return self._bw_hz_list
     def getBandwidthListStr(self):
-        return self.getSampleRateListStr()
+        return self.create_csv(self.getBandwidthList_Hz())
     def get_valid_bandwidth(self,bandwidth_hz,bandwidth_tolerance_perc, ibw_override=None):
-        return self.get_valid_sample_rate(bandwidth_hz,bandwidth_tolerance_perc,ibw_override)
+        bw_list=self.getBandwidthList_Hz()
+        return self.get_value_valid_list(bandwidth_hz,bandwidth_tolerance_perc,bw_list)
+
+    def get_sample_rate_for_bandwidth(self,bandwidth):
+        sr_list =self.getSampleRateList()
+        bw_list=self.getBandwidthList_Hz()
+        srate=0.0
+        try:
+           bid=bw_list.index(bandwidth)
+           srate=sr_list[bid]
+           return srate
+        except:
+            return self.get_valid_sample_rate(bandwidth, 1e15, bw_list)
+
+
+    def get_bandwidth_for_sample_rate(self,sample_rate):
+        sr_list =self.getSampleRateList()
+        bw_list=self.getBandwidthList_Hz()
+        bw=0.0
+        try:
+           sid=sr_list.index(sample_rate)
+           bw=bw_list[sid]
+           return bw
+        except:
+            return self.get_valid_bandwidth(1.0, 1e15, bw_list)
+
     def setBandwidth_Hz(self, bandwidth_hz):
         retVal = True
         try:
@@ -1059,6 +1111,7 @@ class DdcBaseModule(baseModule):
             dec = isr/sample_rate
         self.setDecimation(dec)
         return
+
     def getSampleRate(self):
         isr = self.getInputSampleRate()
         dec = self.getDecimation()
@@ -1076,9 +1129,11 @@ class DdcBaseModule(baseModule):
     def getSampleRateListStr(self):
         srl = self.getSampleRateList()
         return self.create_csv(srl)
+
     def get_valid_sample_rate(self,sample_rate,sample_rate_tolerance_perc, isr_override=None):
         sr_list = self.getSampleRateList(isr_override)
         return self.get_value_valid_list(sample_rate,sample_rate_tolerance_perc, sr_list)
+
     def setSampleRate(self, sample_rate):
         return self.setter_with_validation(float(sample_rate), self._setSampleRate, self.getSampleRate,100)    
 
@@ -1259,8 +1314,8 @@ class WBDDCModule(DdcBaseModule):
     MSDD_X000_BANDWIDTH=20000000.0
     MSDD_X000EX_BANDWIDTH=40000000.0
     
-    def setBandwidth_Hz(self, bw):
-        return True
+    def setBandwidth_Hz(self, bandwidth_hz):
+        return self.setter_with_validation(float(bandwidth_hz), self._setBandwidth_Hz, self.getBandwidth_Hz,100)
         #return (bw == self.MSDD_X000_BANDWIDTH)
     def getBandwidth_Hz(self):
         if (self.sample_rate <= 25000000):
@@ -1269,7 +1324,7 @@ class WBDDCModule(DdcBaseModule):
             return self.MSDD_X000EX_BANDWIDTH
     def getBandwidthList_Hz(self):
         rv = []
-        for rate in DdcBaseModule.getSampleRateList(self):
+        for rate in super(WBDDCModule,self).getSampleRateList():
             if rate <= 25000000.0:
                 rv.append(self.MSDD_X000_BANDWIDTH)
             elif rate == 50000000.0:
@@ -1318,15 +1373,13 @@ class NBDDCModule(DdcBaseModule):
         return self.setter_with_validation(float(frequency_hz), self._setFrequency_Hz, self.getFrequency_Hz,1000)
    
    
-    def setBandwidth_Hz(self, bw):
-        return True
+    def setBandwidth_Hz(self, bandwidth_hz):
+        return self.setter_with_validation(float(bandwidth_hz), self._setBandwidth_Hz, self.getBandwidth_Hz,100)
     def getBandwidth_Hz(self):
         resp = self.send_query_command("BWT")
         return float(self.parseResponse(resp, 1)[0])*1e3    
-    def getBandwidthList_Hz(self):
-        return [self.getBandwidth_Hz()]
     def getBandwidthListStr(self):
-        return str(self.getBandwidthList_Hz())
+        return self.create_csv(self.getBandwidthList_Hz())
     def get_valid_bandwidth(self,bandwidth_hz,bandwidth_tolerance_perc, ibw_override=None):
         bw_list = self.getBandwidthList_Hz()
         return self.get_value_valid_list(bandwidth_hz,bandwidth_tolerance_perc, bw_list)
@@ -1371,6 +1424,10 @@ class SoftDdcBaseModule(DdcBaseModule):
         return self.setter_with_validation(float(frequency_hz), self._setFrequency_Hz, self.getFrequency_Hz,1000)
     def _setBandwidth_Hz(self, bandwidth_hz):
         return self.setSampleRate(bandwidth_hz)
+    def getBandwidthList_Hz(self):
+        return self.getSampleRateList()
+    def getBandwidthListStr(self):
+        return self.getSampleRateListStr()
 
     def setAttenuation(self, attn):
         return (int(attn) == 0)
@@ -2673,6 +2730,10 @@ class MSDDRadio:
                 else:
                     self.output_object_container.mark_as_used(output_obj)
                 rx_mod.output_object = self.get_corresponding_output_module_object(mod)
+                # check if module is a destination, if not, then default to first wbddc output
+                src_mods = self.stream_router.getModulesFlowListByDestination(mod.object.full_reg_name)
+                if len(src_mods) == 1:
+                    self.stream_router.linkModules(self.wb_ddc_modules[0].object.full_reg_name,mod.object.full_reg_name)
                 self.update_rx_channel_mapping(rx_mod, len(self.rx_channels))
                 self.rx_channels.append(rx_mod)
                 
