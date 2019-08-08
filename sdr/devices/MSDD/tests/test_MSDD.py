@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-
+import sys
 import ossie.utils.testing
 from ossie.utils import sb
 from ossie.cf import CF
@@ -29,8 +29,23 @@ from redhawk.frontendInterfaces import FRONTEND
 from ossie.utils import uuid
 from ossie import properties
 import time
+import frontend
 
 DEBUG_LEVEL = 4
+IP='192.168.11.97'
+
+def _generateRFInfoPkt(rf_freq=1e9,rf_bw=1e9,if_freq=0,spec_inverted=False,rf_flow_id="testflowID"):
+        antenna_info = frontend.FRONTEND.AntennaInfo("antenna_name","antenna_type","antenna.size","description")
+        freqRange= frontend.FRONTEND.FreqRange(0,1e12,[] )
+        feed_info = frontend.FRONTEND.FeedInfo("feed_name", "polarization",freqRange)
+        sensor_info = frontend.FRONTEND.SensorInfo("msn_name", "collector_name", "receiver_name",antenna_info,feed_info)
+        delays = [];
+        cap = frontend.FRONTEND.RFCapabilities(freqRange,freqRange);
+        add_props = [];
+        rf_info_pkt = frontend.FRONTEND.RFInfoPkt(rf_flow_id,rf_freq, rf_bw, if_freq, spec_inverted, sensor_info, delays, cap, add_props)
+
+        return rf_info_pkt
+
 
 class DeviceTests(ossie.utils.testing.RHTestCase):
     # Path to the SPD file, relative to this file. This must be set in order to
@@ -64,7 +79,7 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
         # Launch the device, using the selected implementation
         configure = {
                  "msdd_configuration" : {
-                     "msdd_configuration::msdd_ip_address":"192.168.103.250",
+                     "msdd_configuration::msdd_ip_address": IP_ADDRESS,
                      "msdd_configuration::msdd_port":"23"
                       }
                  ,
@@ -162,5 +177,169 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
                     }}
         return properties.props_from_dict(allocationPropDict)
 
+
+
+class RFInfoTest(ossie.utils.testing.RHTestCase):
+    # Path to the SPD file, relative to this file. This must be set in order to
+    # launch the device.
+    SPD_FILE = '../MSDD.spd.xml'
+
+    def setUp(self):
+        self.comp=sb.launch('rh.MSDD', 
+                            properties={ 
+                "DEBUG_LEVEL": DEBUG_LEVEL, 
+                "msdd_configuration" : { "msdd_configuration::msdd_ip_address" : IP_ADDRESS },
+                "advanced":{
+                    "advanced::allow_internal_allocations" : False 
+                     },
+                "msdd_output_configuration": [{
+                     "msdd_output_configuration::tuner_number":0,
+                     "msdd_output_configuration::protocol":"UDP_SDDS",
+                     "msdd_output_configuration::ip_address":"239.1.1.1",
+                     "msdd_output_configuration::port":29000,
+                     "msdd_output_configuration::vlan":0,
+                     "msdd_output_configuration::enabled":True,
+                     "msdd_output_configuration::timestamp_offset":0,
+                     "msdd_output_configuration::endianess":1,
+                     "msdd_output_configuration::mfp_flush":63,
+                     "msdd_output_configuration::vlan_enable": False                        
+                     },
+                                      {
+                     "msdd_output_configuration::tuner_number":1,
+                     "msdd_output_configuration::protocol":"UDP_SDDS",
+                     "msdd_output_configuration::ip_address":"239.1.1.2",
+                     "msdd_output_configuration::port":29001,
+                     "msdd_output_configuration::vlan":0,
+                     "msdd_output_configuration::enabled":True,
+                     "msdd_output_configuration::timestamp_offset":0,
+                     "msdd_output_configuration::endianess":1,
+                     "msdd_output_configuration::mfp_flush":63,
+                     "msdd_output_configuration::vlan_enable": False                        
+                     }
+                                              ]
+                }
+              )
+    
+    def tearDown(self):
+        # Clean up all sandbox artifacts created during test
+        sb.release()
+
+    def testRFFlowID(self): 
+        
+        #create rf_info uses port and connect to MSDD
+        out_rf_info_port=frontend.OutRFInfoPort("out_control")
+        in_rf_info_port=self.comp.getPort("RFInfo_in")
+        out_rf_info_port.connectPort(in_rf_info_port,"test_rf_flow")
+
+	# get params for allocations
+	bw=float(self.comp.frontend_tuner_status[0]["FRONTEND::tuner_status::available_bandwidth"])
+	sr=float(self.comp.frontend_tuner_status[0]["FRONTEND::tuner_status::available_sample_rate"])
+
+        # allocation params
+        flow_id = "ca-710-flow"
+        cf=100e6
+
+        # set rf flow id
+        out_rf_info_port._set_rf_flow_id(flow_id)
+
+        # check rf_flow_id was set
+        n=len(self.comp.frontend_tuner_status)
+        expected=[flow_id]*n
+        actual=[ x["FRONTEND::tuner_status::rf_flow_id"] for x in self.comp.frontend_tuner_status ]
+        self.assertEqual(expected,actual, "Mismatch of RF Flow Ids for tuners")
+
+        # allocation for sample rate and rf_flow_id
+        alloc1=frontend.createTunerAllocation(center_frequency=cf, sample_rate=sr, rf_flow_id=flow_id)
+        ret=self.comp.allocateCapacity( alloc1)
+        alloc1_aid =  alloc1["FRONTEND::tuner_allocation"]["FRONTEND::tuner_allocation::allocation_id"]
+        self.assertEqual(True,ret, "Allocation failed using rf_flow_id")
+
+        # allocation for center freq and rf_flow_id
+        alloc2=frontend.createTunerAllocation(center_frequency=cf,  rf_flow_id=flow_id)
+        ret=self.comp.allocateCapacity( alloc2)
+        alloc2_aid =  alloc2["FRONTEND::tuner_allocation"]["FRONTEND::tuner_allocation::allocation_id"]
+        self.assertEqual(True,ret, "Allocation failed using rf_flow_id again ")
+
+        # valid rf_flow_id was probagated downstream
+        sink=sb.StreamSink()
+        sdds_in=sb.launch('rh.SourceSDDS',  properties={'interface':'em3'})
+        sb.start()
+        self.comp.connect(sdds_in, connectionId=alloc2_aid, usesPortName='dataSDDS_out')
+        sdds_in.connect(sink, usesPortName="dataShortOut")
+
+        kws=None
+        try:
+            sink_data=sink.read()
+            kws=properties.props_to_dict(sink_data.sri.keywords)
+        except:
+            pass
+        self.assertEqual( kws["FRONTEND::RF_FLOW_ID"] , flow_id, "Missing RF_FLOW_ID from keyword list")
+
+    def testRFInfoPkt(self):
+
+        #create rf_info uses port and connect to MSDD
+        out_rf_info_port=frontend.OutRFInfoPort("out_control")
+        in_rf_info_port=self.comp.getPort("RFInfo_in")
+        out_rf_info_port.connectPort(in_rf_info_port,"test_rf_flow")
+
+	bw=float(self.comp.frontend_tuner_status[0]["FRONTEND::tuner_status::available_bandwidth"])
+	sr=float(self.comp.frontend_tuner_status[0]["FRONTEND::tuner_status::available_sample_rate"])
+        # allocation params
+        flow_id = "ca-710-flow-2"
+        cf=100e6
+
+        # send info pkto
+        pkt=_generateRFInfoPkt(cf,bw,rf_flow_id=flow_id)
+        out_rf_info_port._set_rfinfo_pkt(pkt)
+
+        # check rf_flow_id was set
+        n=len(self.comp.frontend_tuner_status)
+        expected=[flow_id]*n
+        actual=[ x["FRONTEND::tuner_status::rf_flow_id"] for x in self.comp.frontend_tuner_status ]
+        self.assertEqual(expected,actual, "Mismatch of RF Flow Ids for tuners")
+
+        # allocation for sample rate and rf_flow_id
+        alloc1=frontend.createTunerAllocation(center_frequency=cf, sample_rate=sr, rf_flow_id=flow_id)
+        ret=self.comp.allocateCapacity( alloc1)
+        alloc1_aid =  alloc1["FRONTEND::tuner_allocation"]["FRONTEND::tuner_allocation::allocation_id"]
+        self.assertEqual(True,ret, "Allocation failed using rf_flow_id")
+
+        # allocation for center freq and rf_flow_id
+        alloc2=frontend.createTunerAllocation(center_frequency=cf,  rf_flow_id=flow_id)
+        ret=self.comp.allocateCapacity( alloc2)
+        alloc2_aid =  alloc2["FRONTEND::tuner_allocation"]["FRONTEND::tuner_allocation::allocation_id"]
+        self.assertEqual(True,ret, "Allocation failed using rf_flow_id again ")
+
+        # valid rf_flow_id was probagated downstream
+        sink=sb.StreamSink()
+        sdds_in=sb.launch('rh.SourceSDDS',  properties={'interface':'em3'})
+        sb.start()
+        self.comp.connect(sdds_in, connectionId=alloc2_aid, usesPortName='dataSDDS_out')
+        sdds_in.connect(sink, usesPortName="dataShortOut")
+
+        kws=None
+        try:
+            sink_data=sink.read()
+            kws=properties.props_to_dict(sink_data.sri.keywords)
+        except:
+            pass
+        self.assertEqual( kws["FRONTEND::RF_FLOW_ID"] , flow_id, "Missing RF_FLOW_ID from keyword list")
+
+
+
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--ip', default="192.168.103.250")
+    parser.add_argument('--debug', default=3)
+    parser.add_argument('unittest_args', nargs='*')
+
+    try:
+        args = parser.parse_args()
+        IP_ADDRESS=args.ip
+        DEBUG_LEVEL=args.debug
+    except:
+        pass
+    sys.argv[1:] = args.unittest_args
     ossie.utils.testing.main() # By default tests all implementations
+
