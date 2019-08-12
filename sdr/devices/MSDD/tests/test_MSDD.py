@@ -32,7 +32,7 @@ import time
 import frontend
 
 DEBUG_LEVEL = 4
-IP='192.168.11.97'
+IP_ADDRESS='192.168.11.97'
 
 def _generateRFInfoPkt(rf_freq=1e9,rf_bw=1e9,if_freq=0,spec_inverted=False,rf_flow_id="testflowID"):
         antenna_info = frontend.FRONTEND.AntennaInfo("antenna_name","antenna_type","antenna.size","description")
