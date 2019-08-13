@@ -342,7 +342,7 @@ class MSDD_i(MSDD_base):
                 else:
                     self._log.error("UNKOWN TUNER TYPE REPORTED BY THE MSDD")
                 
-                # skip tuner tuners without tuner types
+                # skip tuners without tuner types
                 if len(tuner_types) == 0: continue
 
                 tuner_type = ""

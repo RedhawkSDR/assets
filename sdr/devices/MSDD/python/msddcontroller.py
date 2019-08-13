@@ -1076,8 +1076,7 @@ class DdcBaseModule(baseModule):
         srate=0.0
         try:
            bid=bw_list.index(bandwidth)
-           srate=sr_list[bid]
-           return srate
+           return sr_list[bid]
         except:
             return self.get_valid_sample_rate(bandwidth, 1e15, bw_list)
 
