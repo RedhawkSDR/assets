@@ -39,9 +39,7 @@ from ossie.utils.sb import io_helpers
 log = _logging.getLogger(__name__)
 
 class NetworkSource(io_helpers._SourceBase):
-    def __init__(self,
-                 bytesPerPush = 512000):
-
+    def __init__(self, bytesPerPush=512000):
         self.threadExited = None
 
         io_helpers._SourceBase.__init__(self,
@@ -95,16 +93,13 @@ class NetworkSource(io_helpers._SourceBase):
     def __del__(self):
         self._closeSockets()
 
-    def _flip(self,
-             dataStr,
-             numBytes):
+    def _flip(self, dataStr, numBytes):
         """
-        Given data packed into a string, reverse bytes 
-        for a given word length and return the 
-        byte-flipped string
+        Given data packed into a string, reverse bytes for a given word
+        length and return the byte-flipped string
         """
         out = ""
-    
+
         for i in xrange(len(dataStr)/numBytes):
             l = list(dataStr[numBytes*i:numBytes*(i+1)])
             l.reverse()
@@ -112,23 +107,17 @@ class NetworkSource(io_helpers._SourceBase):
 
         return out
 
-    def _gcd(self,
-             a,
-             b):
+    def _gcd(self, a, b):
         if (b == 0):
             return a
-
         return self._gcd(b, a % b)
 
-    def _lcm(self,
-             a,
-             b):
+    def _lcm(self, a, b):
         return a * b / (self._gcd(a, b))
 
     def _openSocket(self):
         """
-        Open the data and/or server sockets
-        based on the current properties
+        Open the data and/or server sockets based on the current properties.
         """
         log.info("Connection Type: " + str(self.connection_type))
         log.info("IP Address: " + self.ip_address)
@@ -154,12 +143,7 @@ class NetworkSource(io_helpers._SourceBase):
             self._dataSocket = None
             self._serverSocket = None
 
-    def _pushData(self,
-                  connection,
-                  dataString,
-                  numBytes,
-                  currentSampleTime):
-
+    def _pushData(self, connection, dataString, numBytes, currentSampleTime):
         # Gather information about the connection
         arraySrcInst   = connection['arraySrcInst']
         bytesPerSample = 1
@@ -177,7 +161,7 @@ class NetworkSource(io_helpers._SourceBase):
             byte_swap = bytesPerSample
         else:
             byte_swap = self.byte_swap
-        
+
         # Perform the byte swap
         if byte_swap > 1:
             if byte_swap != bytesPerSample:
@@ -206,21 +190,19 @@ class NetworkSource(io_helpers._SourceBase):
 
         if srcPortType != "_BULKIO__POA.dataXML":
             _bulkio_data_helpers.ArraySource.pushPacket(arraySrcInst,
-                                                        data     = formattedOutput,
-                                                        T        = T,
-                                                        EOS      = EOS,
-                                                        streamID = 'testing')
+                                                        data=formattedOutput,
+                                                        T=T,
+                                                        EOS=EOS,
+                                                        streamID='testing')
         else:
             _bulkio_data_helpers.XmlArraySource.pushPacket(arraySrcInst,
-                                                           data     = formattedOutput,
-                                                           EOS      = EOS,
-                                                           streamID = 'testing')
+                                                           data=formattedOutput,
+                                                           EOS=EOS,
+                                                           streamID='testing')
 
     def _pushThread(self):
         """
-        The thread function for collecting
-        data from the socket and pushing it
-        to the ports
+        The thread function for collecting data from the socket and pushing it to the ports
         """
         self.threadExited = False
 
@@ -232,9 +214,9 @@ class NetworkSource(io_helpers._SourceBase):
                 if self.connection_type == "server":
                     if self._serverSocket == None:
                         self._openSocket()
-                    
+
                     log.debug("Waiting for client connection")
-                    
+
                     ready = select.select([self._serverSocket], [], [], 1.0)
 
                     if not ready[0]:
@@ -264,7 +246,7 @@ class NetworkSource(io_helpers._SourceBase):
 
                 for i in range(0, numLoops):
                     for connection in self._connections.values():
-                        self._pushData(connection, self._buffer[i * self.max_bytes : ], self.max_bytes, currentSampleTime)
+                        self._pushData(connection, self._buffer[i * self.max_bytes:], self.max_bytes, currentSampleTime)
 
                 self._buffer = self._buffer[numLoops * self.max_bytes:]
 
@@ -282,7 +264,7 @@ class NetworkSource(io_helpers._SourceBase):
                 for connection in self._connections.values():
                     self._pushData(connection, self._buffer, pushBytes, currentSampleTime)
 
-                self._buffer = self._buffer[len(self._buffer)-numLeft :]
+                self._buffer = self._buffer[len(self._buffer)-numLeft:]
 
         # Indicate that the thread has finished
         self.threadExited = True
@@ -294,8 +276,7 @@ class NetworkSource(io_helpers._SourceBase):
 
     def _retrieveData(self):
         """
-        Use select to poll for data on the
-        socket
+        Use select to poll for data on the socket
         """
         ready = select.select([self._dataSocket], [], [], 1.0)
 
@@ -305,64 +286,52 @@ class NetworkSource(io_helpers._SourceBase):
 
         self._buffer = self._buffer + self._dataSocket.recv(1024)
 
-    def setByte_swap(self,
-                     byte_swap):
+    def setByte_swap(self, byte_swap):
         """
-        When this property changes, update the
-        transfer length
+        When this property changes, update the transfer length
         """
         if byte_swap != self.byte_swap:
             self.byte_swap = byte_swap
             self._updateTransferLength()
 
-    def setConnection_type(self,
-                           connection_type):
+    def setConnection_type(self, connection_type):
         """
-        When this property changes, close the
-        socket so it can be reopened with the
-        new values
+        When this property changes, close the socket so it can be
+        reopened with the new values
         """
         if connection_type != self.connection_type and (connection_type == "server" or connection_type == "client"):
             self.connection_type = connection_type
             self._closeSockets()
 
-    def setIp_address(self,
-                      ip_address):
+    def setIp_address(self, ip_address):
         """
-        When this property changes, close the
-        socket so it can be reopened with the
-        new values
+        When this property changes, close the socket so it can be
+        reopened with the new values
         """
         if ip_address != self.ip_address:
             self.ip_address = ip_address
             self._closeSockets()
 
-    def setMax_bytes(self,
-                     max_bytes):
+    def setMax_bytes(self, max_bytes):
         """
-        When this property changes, update the
-        transfer length
+        When this property changes, update the transfer length
         """
         if max_bytes != self.max_bytes:
             self.max_bytes = max_bytes
             self._updateTransferLength()
 
-    def setMin_bytes(self,
-                     min_bytes):
+    def setMin_bytes(self, min_bytes):
         """
-        When this property changes, update the
-        transfer length
+        When this property changes, update the transfer length
         """
         if min_bytes != self.min_bytes:
             self.min_bytes = min_bytes
             self._updateTransferLength()
 
-    def setPort(self,
-                port):
+    def setPort(self, port):
         """
-        When this property changes, close the
-        socket so it can be reopened with the
-        new values
+        When this property changes, close the socket so it can be
+        reopened with the new values
         """
         if port != self.port:
             self.port = port
@@ -370,7 +339,7 @@ class NetworkSource(io_helpers._SourceBase):
 
     def start(self):
         self._exitThread = False
-        
+
         if self._runThread == None:
             self._runThread = _threading.Thread(target=self._pushThread)
             self._runThread.setDaemon(True)
@@ -393,10 +362,7 @@ class NetworkSource(io_helpers._SourceBase):
                 if timeout_count < 0:
                     raise AssertionError, self.className + ":stop() failed to exit thread"
 
-    def _stringToList(self,
-                      string,
-                      bytesPerSample,
-                      srcPortType):
+    def _stringToList(self, string, bytesPerSample, srcPortType):
         """
         Given a string, use the output port type to
         create a list representing the data
@@ -424,7 +390,7 @@ class NetworkSource(io_helpers._SourceBase):
             listData = struct.unpack(str(length) + 'Q', string[:remLength])
         elif srcPortType == '_BULKIO__POA.dataDouble':
             listData = struct.unpack(str(length) + 'd', string[:remLength])
-        elif srcPortType == '_BULKIO__POA.dataString':          
+        elif srcPortType == '_BULKIO__POA.dataString':
             pass
         elif srcPortType == '_BULKIO__POA.dataXml':
             pass
@@ -458,4 +424,3 @@ class NetworkSource(io_helpers._SourceBase):
             self.min_bytes = self.max_bytes
         else:
             self.min_bytes = (self.min_bytes + self._multSize - 1) - ((self.min_bytes + self._multSize - 1) % self._multSize)
-

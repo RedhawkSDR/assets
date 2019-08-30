@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License along with this 
  * program.  If not, see http://www.gnu.org/licenses/.
  */
- 
+
 #ifndef SINKSOCKET_IMPL_H
 #define SINKSOCKET_IMPL_H
 
@@ -31,35 +31,35 @@ class sinksocket_i;
 
 class sinksocket_i : public sinksocket_base
 {
-	ENABLE_LOGGING
+    ENABLE_LOGGING
 public:
-	sinksocket_i(const char *uuid, const char *label);
+    sinksocket_i(const char *uuid, const char *label);
     void constructor();
-	~sinksocket_i();
-	int serviceFunction();
-	template<typename T>
-	int serviceFunctionT(T* inputPort);
+    ~sinksocket_i();
+    int serviceFunction();
+    template<typename T>
+    int serviceFunctionT(T* inputPort);
 private:
-	template<typename T, typename U>
-	void createByteSwappedVector(const std::vector<T, U> &original, unsigned short byteSwap);
+    template<typename T, typename U>
+    void createByteSwappedVector(const std::vector<T, U> &original, unsigned short byteSwap);
 
-	template<typename T, typename U>
-	void sendData(std::vector<T, U>& outData);
+    template<typename T, typename U>
+    void sendData(std::vector<T, U>& outData);
 
-	template<typename T, typename U>
-	void newData(std::vector<T, U>& newData);
+    template<typename T, typename U>
+    void newData(std::vector<T, U>& newData);
 
-	float bytesPerSecTemp;
-	std::map<std::string, std::map<unsigned short, std::vector<char> > > byteSwapped;
-	std::vector<InternalConnection *> internalConnections;
-	std::map<std::string, std::map<unsigned short, std::vector<char> > > leftovers;
-	bool onlyByteSwaps;
-	bool performByteSwap;
-	boost::recursive_mutex socketsLock_;
-	double totalBytesTemp;
+    float bytesPerSecTemp;
+    std::map<std::string, std::map<unsigned short, std::vector<char> > > byteSwapped;
+    std::vector<InternalConnection *> internalConnections;
+    std::map<std::string, std::map<unsigned short, std::vector<char> > > leftovers;
+    bool onlyByteSwaps;
+    bool performByteSwap;
+    boost::recursive_mutex socketsLock_;
+    double totalBytesTemp;
 
-	//Property Change Listener
-	void ConnectionsChanged(const std::vector<Connection_struct> *oldValue, const std::vector<Connection_struct> *newValue);
+    // Property Change Listener
+    void ConnectionsChanged(const std::vector<Connection_struct> *oldValue, const std::vector<Connection_struct> *newValue);
 };
 
-#endif
+#endif  // SINKSOCKET_IMPL_H
