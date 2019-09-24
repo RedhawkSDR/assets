@@ -152,20 +152,6 @@ class FrontendTunerTests(unittest.TestCase):
                 'dataChar':'charIn',
                 'dataFile':'fileIn'}
 
-    port_map2 = {'dataShort':'short',
-                'dataFloat':'float',
-                'dataUlong':'uLong',
-                'dataDouble':'double',
-                'dataUshort':'ushort',
-                'dataLong':'long',
-                'dataUlongLong':'ulonglong',
-                'dataLongLong':'longlong',
-                'dataOctet':'octet',
-                'dataXML':'xml',
-                'dataChar':'char',
-                'dataFile':'file'}
-
-
     from ossie.cf import CF
     from omniORB import any
 
@@ -1430,7 +1416,7 @@ class FrontendTunerTests(unittest.TestCase):
             self.check(type(resp), props_type, '%s.getTunerStatus has correct return type'%(port_name))
             self.check(type(resp), props_type, '%s.getTunerStatus return value is within expected results'%(port_name))
             resp = properties.props_to_dict(resp)
-            pp(resp)
+            #pp(resp)
             self.check(controller_id in resp['FRONTEND::tuner_status::allocation_id_csv'].split(','), True, '%s.getTunerStatus return value has correct tuner status for allocation ID requested'%(port_name))
             if status_val!=None:
                 self.check(resp, status_val, '%s.getTunerStatus matches frontend tuner status prop'%(port_name))
@@ -2266,19 +2252,17 @@ class FrontendTunerTests(unittest.TestCase):
         print 'Testing data flow on port:',comp_port_type,comp_port_name
         pp(controller)
         comp_port_obj = self.dut.getPort(str(comp_port_name))
-        fmt=self.port_map2[comp_port_type]
-        pname=fmt+'In'
-        dataSink1 = sb.StreamSink(fmt)
-        dataSink2 = sb.StreamSink(fmt)
-        dataSink3 = sb.StreamSink(fmt)
-        dataSink4 = sb.StreamSink(fmt)
-        dataSink5 = sb.StreamSink(fmt)
-        dataSink1_port_obj = dataSink1.getPort(pname)
-        dataSink2_port_obj = dataSink2.getPort(pname)
-        dataSink3_port_obj = dataSink3.getPort(pname)
-        dataSink4_port_obj = dataSink4.getPort(pname)
-        dataSink5_port_obj = dataSink5.getPort(pname)
-
+        dataSink1 = sb.DataSink()
+        dataSink2 = sb.DataSink()
+        dataSink3 = sb.DataSink()
+        dataSink4 = sb.DataSink()
+        dataSink5 = sb.DataSink()
+        dataSink1_port_obj = dataSink1.getPort(self.port_map[comp_port_type])
+        dataSink2_port_obj = dataSink2.getPort(self.port_map[comp_port_type])
+        dataSink3_port_obj = dataSink3.getPort(self.port_map[comp_port_type])
+        dataSink4_port_obj = dataSink4.getPort(self.port_map[comp_port_type])
+        dataSink5_port_obj = dataSink5.getPort(self.port_map[comp_port_type])
+        
         # alloc a tuner
         controller['ALLOC_ID'] = "control:"+str(uuid.uuid4()) # unique for each loop
         tAlloc = generateTunerAlloc(controller)
@@ -2288,7 +2272,7 @@ class FrontendTunerTests(unittest.TestCase):
         self.dut_ref.allocateCapacity(tAlloc)
         
         # Get a current stream with a five second timeout.
-        stream1 = dataSink1.port.getCurrentStream(5)
+        stream1 = dataSink1.getCurrentStream(5)
         while True:
             dataBlock = None
             if stream1:
@@ -2297,8 +2281,7 @@ class FrontendTunerTests(unittest.TestCase):
                 self.check(False,True,'%s: Did not receive a stream'%(comp_port_name))
                 break
             if dataBlock:    
-                print "DATA BLOCK ", dataBlock, dir(dataBlock)
-                self.check(len(dataBlock.data)>0,True,'%s: Received data from tuner allocation'%(comp_port_name))
+                self.check(len(dataBlock.data())>0,True,'%s: Received data from tuner allocation'%(comp_port_name))
                 break
             elif count==200:
                 self.check(False,True,'%s: Did not receive data from allocation of tuner'%(comp_port_name))
@@ -2315,14 +2298,14 @@ class FrontendTunerTests(unittest.TestCase):
         pp(status)
         
         #verify SRI
-        sri1 = stream1.sri
+        sri1 = stream1.sri()
         self._verifySRI (sri1,status,comp_port_name)  
      
         # verify multi-out port, connection with wrong connection ID does not get a stream
         bad_conn_id = "bad:"+str(uuid.uuid4())
         comp_port_obj.connectPort(dataSink2_port_obj, bad_conn_id)
      
-        stream2 = dataSink2.port.getCurrentStream(5)
+        stream2 = dataSink2.getCurrentStream(5)
         if stream2:
             self.check(False,True,'%s: multi-out test: Received a stream on port with bad connection ID'%(comp_port_name))
         
@@ -2338,7 +2321,7 @@ class FrontendTunerTests(unittest.TestCase):
             self.dut_ref.allocateCapacity(tAlloc2)
 
             # verify basic data flow
-            stream5 = dataSink5.port.getCurrentStream(5)
+            stream5 = dataSink5.getCurrentStream(5)
             while True:
                 dataBlock = None
                 if stream5:
@@ -2347,7 +2330,7 @@ class FrontendTunerTests(unittest.TestCase):
                     self.check(False,True,'%s: multi-out test: Did not receive a stream on second allocation'%(comp_port_name))
                     break
                 if dataBlock:    
-                    self.check(len(dataBlock.data)>0,True,'%s: multi-out test: Received data from tuner allocation on second allocation'%(comp_port_name))
+                    self.check(len(dataBlock.data())>0,True,'%s: multi-out test: Received data from tuner allocation on second allocation'%(comp_port_name))
                     break
                 elif count==200:
                     self.check(False,True,'%s: multi-out test: Timed out trying to get data from tuner on second allocation'%(comp_port_name))
@@ -2357,12 +2340,12 @@ class FrontendTunerTests(unittest.TestCase):
             
             # verify SRI
             status = self._getTunerStatusProp(controller2['ALLOC_ID'])
-            sri5 = stream5.sri
+            sri5 = stream5.sri()
             self._verifySRI (sri5,status,comp_port_name)
     
             # verify connection 1 did not get switched to the second stream
-            stream1 = dataSink1.port.getCurrentStream(5)
-            sri1 = stream1.sri
+            stream1 = dataSink1.getCurrentStream(5)
+            sri1 = stream1.sri()
             self.check(sri1.streamID,controller['ALLOC_ID'],'%s: multi-out test: First Stream still correct after second allocaiton'%(comp_port_name))
             self.dut_ref.deallocateCapacity(tAlloc2)
             
@@ -2374,7 +2357,7 @@ class FrontendTunerTests(unittest.TestCase):
             comp_port_obj.connectPort(dataSink3_port_obj, listener1['LISTENER_ID'])
             self.dut_ref.allocateCapacity(listenerAlloc1)
             
-            stream3 = dataSink3.port.getCurrentStream(5)
+            stream3 = dataSink3.getCurrentStream(5)
             while True:
                 dataBlock = None
                 if stream3:
@@ -2383,7 +2366,7 @@ class FrontendTunerTests(unittest.TestCase):
                     self.check(False,True,'%s: Did not receive a stream'%(comp_port_name))
                     break
                 if dataBlock:    
-                    self.check(len(dataBlock.data)>0,True,'%s: Received data from tuner allocation'%(comp_port_name))
+                    self.check(len(dataBlock.data())>0,True,'%s: Received data from tuner allocation'%(comp_port_name))
                     break
                 elif count==200:
                     self.check(False,True,'%s: Did not receive data from allocation of tuner'%(comp_port_name))
@@ -2392,7 +2375,7 @@ class FrontendTunerTests(unittest.TestCase):
                 count+=1            
 
 
-            sri3 = stream3.sri
+            sri3 = stream3.sri()
             self.check(sri1.streamID==sri3.streamID,True,'%s: Received correct SRI from listener allocation'%(comp_port_name))
             
             # verify EOS
@@ -2403,16 +2386,16 @@ class FrontendTunerTests(unittest.TestCase):
                 comp_port_obj.connectPort(dataSink4_port_obj, listener2['LISTENER_ID'])
                 self.dut_ref.allocateCapacity(listenerAlloc2)               
                 time.sleep(1.0)
-                stream4 = dataSink4.port.getCurrentStream(5)
+                stream4 = dataSink4.getCurrentStream(5)
 
             self.dut_ref.deallocateCapacity(listenerAlloc1)
-            self.check(stream3.eos,True,'%s: Listener received EOS after deallocation of listener'%(comp_port_name))
-            self.check(stream1.eos,False,'%s: Controller did not receive EOS after deallocation of listener'%(comp_port_name))
+            self.check(stream3.eos(),True,'%s: Listener received EOS after deallocation of listener'%(comp_port_name))
+            self.check(stream1.eos(),False,'%s: Controller did not receive EOS after deallocation of listener'%(comp_port_name))
             self.dut_ref.deallocateCapacity(tAlloc)
             time.sleep(1.0)
-            self.check(stream1.eos,True,'%s: Controller did receive EOS after deallocation of tuner'%(comp_port_name))
+            self.check(stream1.eos(),True,'%s: Controller did receive EOS after deallocation of tuner'%(comp_port_name))
             if listener2:
-                self.check(stream4.eos,True,'%s: Listener received EOS after deallocation of tuner'%(comp_port_name))
+                self.check(stream4.eos(),True,'%s: Listener received EOS after deallocation of tuner'%(comp_port_name))
     
     def _testSDDS(self,tuner_control,comp_port_name,comp_port_type,ttype,controller,listener1=None,listener2=None):
         print 'Testing SDDS port Behavior'
@@ -3200,6 +3183,8 @@ class FrontendTunerTests(unittest.TestCase):
         tuner_allocation = CF.DataType(id='FRONTEND::tuner_allocation',value=any.to_any(None))
         listener_allocation = CF.DataType(id='FRONTEND::listener_allocation',value=any.to_any(None))
 
+        result = self.dut_ref.query([tuner_allocation])
+        
         try:
             result = self.dut_ref.query([tuner_allocation])
         except CF.UnknownProperties:
@@ -3636,7 +3621,6 @@ def generateTunerAlloc(value):
                 'FRONTEND::tuner_allocation::group_id': value['GROUP_ID'],
                 'FRONTEND::tuner_allocation::rf_flow_id': value['RF_FLOW_ID'],
                 }}
-    print "ALLOC ", pp(allocationPropDict)
     return properties.props_from_dict(allocationPropDict)
 
 def getValueInRange(values):
