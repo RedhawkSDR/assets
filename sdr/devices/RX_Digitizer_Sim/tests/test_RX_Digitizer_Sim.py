@@ -97,14 +97,12 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
         #self.comp.start()
         
         #Create Allocation and Sink for Tuner 1
-        sink = sb.DataSink()               
+        sink = sb.StreamSink()               
         alloc = self._generateAlloc(cf=110e6,sr=2.5e6,bw=2e6)
         allocationID = properties.props_to_dict(alloc)['FRONTEND::tuner_allocation']['FRONTEND::tuner_allocation::allocation_id']
         self.comp.connect(sink,connectionId=allocationID)
         sink.start()
 
-
-        
         #Allocate a Tuner
         try:
             retval = self.comp.allocateCapacity(alloc)
@@ -116,14 +114,17 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
         #Sleep and let data and SRI flow    
         time.sleep(1)
         
+        sris=sink.activeSRIs()
+        self.assertEqual(len(sris),1, "Missing SRI from first allocation.")
+
         #Check Tuner 1 SRI
-        sri = sink.sri()
+        sri = sris[0]
         print "SRI 1 1st Time" , sri
         self.assertEqual(sri.streamID, allocationID, "SRI 1 Did not Match")
         self.assertAlmostEqual(sri.xdelta, 1.0/2.5e6,5)
 
         #Create Allocation and Sink for Tuner 2
-        sink2 = sb.DataSink()               
+        sink2 = sb.StreamSink()               
         alloc2 = self._generateAlloc(cf=110e6,sr=5e6,bw=4e6)
         allocationID2 = properties.props_to_dict(alloc2)['FRONTEND::tuner_allocation']['FRONTEND::tuner_allocation::allocation_id']
         self.comp.connect(sink2,connectionId=allocationID2)
@@ -141,35 +142,52 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
         #Sleep and let data and SRI flow    
         time.sleep(1)
 
+        sris=sink.activeSRIs()
+        self.assertEqual(len(sris),1, "Missing SRI from first allocation.")
+        
         #Check Tuner 1 SRI Again (should not change)
-        sri = sink.sri()
+        sri = sris[0]
         print "SRI 1 2nd Time" , sri
         self.assertEqual(sri.streamID, allocationID, "SRI 1 Did not Match Second Time")
         self.assertAlmostEqual(sri.xdelta, 1.0/2.5e6,5)
 
+        sris2=sink2.activeSRIs()
+        self.assertEqual(len(sris2),1, "Missing SRI from second allocation.")
+
         #Check Tuner 2 SRI
-        sri2 = sink2.sri()
+        sri2 = sris2[0]
         print "SRI 2 " , sri2
         print "allocationID2",  allocationID2
         self.assertEqual(sri2.streamID, allocationID2,"SRI 2 Did not MAtch")
         self.assertAlmostEqual(sri2.xdelta, 1.0/5.0e6,5)
 
         #Check Tuner 1 Data
-        data= sink.getData() 
-        self.assertTrue(len(data)>0)
+        data= sink.read()
+        self.assertTrue(len(data.data)>0)
         
         #Check Tuner 2 Data
-        data2= sink2.getData() 
-        self.assertTrue(len(data2)>0)
+        data2= sink.read()
+        self.assertTrue(len(data2.data)>0)
         
         #Deallocate Tuners
         self.comp.deallocateCapacity(alloc)
         self.comp.deallocateCapacity(alloc2)
         time.sleep(1)
+
+        # read data until eos reached 
+        cnt=0;
+        while data.eos != True and cnt < 10:
+            data = sink.read()
+            cnt +=1
+
+        cnt=0;
+        while data2.eos != True and cnt < 10:
+            data2 = sink2.read()
+            cnt +=1
         
         #Check that they sent EOS
-        self.assertTrue(sink.eos())
-        self.assertTrue(sink2.eos())
+        self.assertTrue(data.eos)
+        self.assertTrue(data2.eos)
 
     def testValidRFInfoPacket(self):
         
@@ -285,65 +303,7 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
             # Deallocating shouldn't be required if the allocation failed so we would expect this deallocation to be invalid
             pass        
 
-    def testInValidRFInfoBW(self):
-        """ Ask for a Allocation outside the range of the REceiver but should still work because the RFInfo packet tells the receiver a frequency down conversation has already occured"""
-        
-        #Create Allocation and Sink for Tuner 1
-        sink = sb.DataSink()               
-        alloc = self._generateAlloc(cf=9049.1e6,sr=0,bw=2e6,rf_flow_id="testRFInfoPacket_FlowID")
-        allocationID = properties.props_to_dict(alloc)['FRONTEND::tuner_allocation']['FRONTEND::tuner_allocation::allocation_id']
-        self.comp.connect(sink,connectionId=allocationID)
-        sink.start()
 
-        #Send an RF Info Packet
-        rfInfo_port = self.comp.getPort("RFInfo_in")
-        rf_info_pkt = self._generateRFInfoPkt(rf_freq=9000e6,rf_bw=100e6,if_freq=100e6,rf_flow_id="testRFInfoPacket_FlowID")
-        rfInfo_port._set_rfinfo_pkt(rf_info_pkt)
-
-        
-        #Allocate a Tuner
-        try:
-            retval = self.comp.allocateCapacity(alloc)
-        except Exception, e:
-            self.assertFalse("Exception thrown on allocateCapactiy %s" % str(e))
-        if retval:
-            self.assertFalse("Allocation Succeeded but should have failed")
-        
-        try:
-            self.comp.deallocateCapacity(alloc)      
-        except CF.Device.InvalidCapacity, e:
-            # Deallocating shouldn't be required if the allocation failed so we would expect this deallocation to be invalid
-            pass   
-
-    def testInValidRFInfoSR(self):
-        """ Ask for a Allocation outside the range of the REceiver but should still work because the RFInfo packet tells the receiver a frequency down conversation has already occured"""
-        
-        #Create Allocation and Sink for Tuner 1
-        sink = sb.DataSink()               
-        alloc = self._generateAlloc(cf=9049.1e6,sr=2.5e6,bw=0,rf_flow_id="testRFInfoPacket_FlowID")
-        allocationID = properties.props_to_dict(alloc)['FRONTEND::tuner_allocation']['FRONTEND::tuner_allocation::allocation_id']
-        self.comp.connect(sink,connectionId=allocationID)
-        sink.start()
-
-        #Send an RF Info Packet
-        rfInfo_port = self.comp.getPort("RFInfo_in")
-        rf_info_pkt = self._generateRFInfoPkt(rf_freq=9000e6,rf_bw=100e6,if_freq=100e6,rf_flow_id="testRFInfoPacket_FlowID")
-        rfInfo_port._set_rfinfo_pkt(rf_info_pkt)
-
-        
-        #Allocate a Tuner
-        try:
-            retval = self.comp.allocateCapacity(alloc)
-        except Exception, e:
-            self.assertFalse("Exception thrown on allocateCapactiy %s" % str(e))
-        if retval:
-            self.assertFalse("Allocation Succeeded but should have failed")
-        
-        try:
-            self.comp.deallocateCapacity(alloc)      
-        except CF.Device.InvalidCapacity, e:
-            # Deallocating shouldn't be required if the allocation failed so we would expect this deallocation to be invalid
-            pass   
 
     def _generateAlloc(self,cf=100e6,sr=25e6,bw=20e6,rf_flow_id=''):
         
