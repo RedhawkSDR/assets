@@ -1,8 +1,8 @@
-108ad57459d925de6b9d13958d9a564b  main.cpp
-759145b22ec8b1ec08dcfeddca63b985  FileReader_base.cpp
-8bfcd22353c3a57fee561ad86ee2a56b  reconf
-8a696bb8a24e0f6b3407e36032e0fcec  FileReader_base.h
-a47d1987deb0cac3c9b08aa2855d0ea9  configure.ac
-963dd04a22e1df6e548085d6ec851575  Makefile.am
-75b06cc347658989ff7d9b92f3f46558  struct_props.h
-2b2faa5cfc83438427491f4be5d6ee59  build.sh
+b2be41b922a4998a1aa724c23ad169ad  main.cpp
+2d2330b7a64a625dd413c838953d4a47  FileReader_base.cpp
+fd74dd9ddee613591c6d7bd2aa8727df  reconf
+685b2394f100129bf1ef82221bb93ddc  FileReader_base.h
+f13dae479982519d69c7e116a7c4fa49  configure.ac
+65d1b5698e714619b657f6896f4f22fc  Makefile.am
+9b9e3a88585de4394a791634972297c4  struct_props.h
+bfa8e86f222f4b916b25cf770e289240  build.sh
