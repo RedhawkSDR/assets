@@ -4,6 +4,14 @@
 
 The `sinksocket` component reads data from BULKIO ports and writes it to TCP connections.  The data from all ports goes to each of the connections.  Each `sinksocket` component can operate multiple TCP connections; each of which can be either a TCP client or server.
 
+The tables in the Properties section provide some details about how you can configure the component, and about how you can monitor its data thruput.  The component can be configured regarding:
+
+* TCP mode (client or server)
+* IP address (for TCP client mode)
+* ports
+* whether Nagle's algorithm for combining TCP packets is allowed
+* whether and how endian byte reordering is done
+
 
 ### Properties
 
@@ -24,7 +32,7 @@ The following table describes the properties within a single Connection.  If a `
 | `connection_type` | `string` | `server` | Enumerated values:  `client`, `server`.<br/>Set whether `sinksocket` is a TCP client or server. |
 | `ip_address` | `string` | `""` | If this Connection is a TCP client, set the ip address to which it will connect.<br/>If this Connection is a TCP server, this value is ignored. |
 | `ports` | `[ushort]` | `[32191]` | If this Connection is a TCP client, set the list of port numbers to which `sinksocket` will connect.<br/>If this Connection is a TCP server, set the list of port numbers  on which `sinksocket` will listen. |
-| `tcp_nodelays` | `[boolean]` | `[false]` | If this Connection is a TCP client and `tcp_nodelay` is `true`, disable the TCP connection from combining packets with Nagle's algorithm.<br/>If this Connection is a TCP server, this value is ignored. |
+| `tcp_nodelays` | `[boolean]` | `[false]` | If `tcp_nodelay` is `true`, prevent the TCP connection from combining packets with Nagle's algorithm. |
 | `byte_swap` | `[ushort]` | `[0]` | Reorder bytes of integer values between little-endian and big-endian representation.<br/>Values:<br/> - `0`: no byte swapping<br/> - `1`: byte swap according to the data size for each port<br/> - `<num>`: swap bytes as if the data type length was `<num>` |
 
 A `sinksocket` Connection contains a set of TCP connections.  Each TCP connection corresponds to a TCP port number.  These numbers are listed in the `ports` list.  The `byte_swap` and `tcp_nodelays` lists relate to the `ports` list like associative arrays.  That is, the first element of each corresponds to the same TCP connection.  The same is true for the nth element of each list.
@@ -51,38 +59,38 @@ To install from source, rather than from RPMs, continue with the following steps
 
 Ensure these prerequisites are satisfied:
 
-* the `rh.dsp` shared library is installed
 * `OSSIEHOME` is set
 * `SDRROOT` is set
 
+For a standard install, this can be done as follows:
+```sh
+$ cd /etc/profile.d
+$ . redhawk.sh
+$ . redhawk-sdrroot.sh
+```
 
-### Step 2:  Build
+### Step 2:  Build and Install
 
-To create the `sinksocket` executable in the `cpp` subdirectory, but not install it to `SDRROOT`:
+This creates the `sinksocket` executable in the `cpp` subdirectory, then installs the component to `SDRROOT`:
 ```
 $ cd /path/to/redhawk/assets
 $ cd $(find . -name sinksocket)
-$ ./build.sh
+$ ./build.sh install
 ```
-
-### Step 3 (Optional):  Test
-
-With Step 2 complete, you can run the tests:
-```
-$ cd tests
-$ python test_sinksocket.py
-```
-
-### Step 4:  Install
-
-In order to install `sinksocket` to `SDRROOT`, repeat Step 2, but replace `build.sh` with `./build.sh install`.
-
 
 ## Asset Use
 
+This section describes how to use the component.
+
+The first part has an example of using the component in the Python sandbox.  It shows it as a TCP server listening on two ports.  One port does not swap byte endianness, while the other swaps bytes for a data word size of 2.  The first port allows packet combining with Nagle's algorithm, while the second does not.  However, packet combining will not be observable in these examples.  The last parts of the code and the output show how to get information about the connections.
+
+The next part is almost the same; except it configures the component as a TCP client, not server.
+
+The same component configurations can be created in the IDE, or a SAD file, for use in a waveform.  The next parts show xml that does that.
+
 ### Example: `sinksocket` as a TCP Server
 
-For the examples, have a version of `netcat` installed.
+For the sandbox examples, have a version of `netcat` installed.
 
 #### Instructions to Run the Example
 
@@ -104,7 +112,7 @@ props = {
             'connection_type': 'server',
             'ports': [32191, 32192],
             'byte_swap': [0, 2],
-            'tcp_nodelays': [False, False],
+            'tcp_nodelays': [False, True],
         }
     ]
 }
@@ -156,22 +164,85 @@ In terminals 2 and 3, press `ctrl-c` to quit.
 
 Terminal 2 should show `'abcd..'` for as many times as you pressed `ENTER` before `q` in terminal 1.
 
-Terminal 3 should look like terminal 2, but the order of the characters should be `'badc..'`.  The first and second characters are swapped with each other.  So are the third and fourth, etc.  This happened because of the `byte_swap` property setting of `2` when the `sinksocket` was created.
-
-The rest of the output in terminal 1, and the python code, show how to interact with `sinksocket`.
-
+Terminal 3 should look like terminal 2, but the order of the characters should be `'badc..'`.  The first and second characters are swapped with each other.  So are the third and fourth, etc.  This happened because of the `byte_swap` property setting of `2`.
 
 ### Example: `sinksocket` as a TCP Client
 
 This example is similar to the one in which `sinksocket` is a TCP server.  To run the example, make these changes:
 
 * in `demo.py`, replace `'server'` with `'client'`
+* add a line below that with `'ip_address': '127.0.0.1',`
 * in terminals 2 and 3, add the `-l` flag after `nc`
 
 Then, run this example in the same way as the other one.
 
 The order of operations is less important in this case.  If `sinksocket` is configured to expect a TCP server, and that server is unavailable, `sinksocket` skips it.  When the server comes online, `sinksocket` will automatically connect and start/resume sending data to it.
 
+### Waveform XML for TCP Server
+
+The following xml code creates the same component configuration as the sandbox example as a TCP Server.
+
+```xml
+<componentproperties>
+  <structsequenceref refid="Connections">
+    <structvalue>
+      <simpleref refid="Connection::connection_type" value="server"/>
+      <simpleref refid="Connection::ip_address" value=""/>
+      <simplesequenceref refid="Connection::byte_swap">
+        <values>
+          <value>0</value>
+          <value>2</value>
+        </values>
+      </simplesequenceref>
+      <simplesequenceref refid="Connection::ports">
+        <values>
+          <value>32191</value>
+          <value>32192</value>
+        </values>
+      </simplesequenceref>
+      <simplesequenceref refid="Connections::tcp_nodelays">
+        <values>
+          <value>false</value>
+          <value>true</value>
+        </values>
+      </simplesequenceref>
+    </structvalue>
+  </structsequenceref>
+</componentproperties>
+```
+
+### Waveform XML for TCP Client
+
+The following xml code creates the same component configuration as the sandbox example as a TCP client.
+
+```xml
+<componentproperties>
+  <structsequenceref refid="Connections">
+    <structvalue>
+      <simpleref refid="Connection::connection_type" value="client"/>
+      <simpleref refid="Connection::ip_address" value="127.0.0.1"/>
+      <simplesequenceref refid="Connection::byte_swap">
+        <values>
+          <value>0</value>
+          <value>2</value>
+        </values>
+      </simplesequenceref>
+      <simplesequenceref refid="Connection::ports">
+        <values>
+          <value>32191</value>
+          <value>32192</value>
+        </values>
+      </simplesequenceref>
+      <simplesequenceref refid="Connections::tcp_nodelays">
+        <values>
+          <value>false</value>
+          <value>true</value>
+        </values>
+      </simplesequenceref>
+    </structvalue>
+  </structsequenceref>
+</componentproperties>
+```
 
 ## Branches and Tags
 
