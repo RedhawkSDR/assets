@@ -104,7 +104,7 @@ void InternalConnection::cleanUp()
  * for that object, while returning the statistic
  * information
  */
-ConnectionStat_struct InternalConnection::createClientConnection(const unsigned short &port, const std::string &ip)
+ConnectionStat_struct InternalConnection::createClientConnection(const unsigned short &port, const std::string &ip, bool tcp_nodelay)
 {
     LOG_TRACE(InternalConnection, __PRETTY_FUNCTION__);
     LOG_INFO(InternalConnection, "Creating client connection to " << ip << ":" << port);
@@ -122,7 +122,7 @@ ConnectionStat_struct InternalConnection::createClientConnection(const unsigned 
 
     try {
         // Instantiate a client
-        newClient = new client(port, ip);
+        newClient = new client(port, ip, tcp_nodelay);
 
         // Try to connect the client and save the status
         if (newClient->connect()) {
@@ -153,7 +153,7 @@ ConnectionStat_struct InternalConnection::createClientConnection(const unsigned 
  * the relevant information for that object, while
  * returning the statistic information
  */
-ConnectionStat_struct InternalConnection::createServerConnection(const unsigned short &port)
+ConnectionStat_struct InternalConnection::createServerConnection(const unsigned short &port, bool tcp_nodelay)
 {
     LOG_TRACE(InternalConnection, __PRETTY_FUNCTION__);
     LOG_INFO(InternalConnection, "Creating server listening on port " << port);
@@ -171,7 +171,7 @@ ConnectionStat_struct InternalConnection::createServerConnection(const unsigned 
 
     try {
         // Instantiate a server
-        newServer = new server(port);
+        newServer = new server(port, tcp_nodelay);
 
         // Check if the server has a connection and save the status
         if (newServer->is_connected()) {
@@ -185,7 +185,7 @@ ConnectionStat_struct InternalConnection::createServerConnection(const unsigned 
         bytesSent.insert(std::make_pair(port, 0));
         servers->insert(std::make_pair(port, newServer));
     } catch (std::exception &e) {
-        LOG_ERROR(InternalConnection, "Unable to create server listening on port " << port);
+        LOG_ERROR(InternalConnection, "Unable to create server listening on port " << port << ":  " << e.what());
 
         if (newServer) {
             delete newServer;
@@ -226,8 +226,11 @@ std::vector<ConnectionStat_struct> InternalConnection::populateClientMap(const C
 
     std::vector<ConnectionStat_struct> statistics;
 
+    int index = 0;
+    bool tcp_nodelay;
     for (std::vector<unsigned short>::const_iterator i = connection.ports.begin(); i != connection.ports.end(); ++i) {
-        statistics.push_back(createClientConnection(*i, connection.ip_address));
+        tcp_nodelay = connection.tcp_nodelays[index++];
+        statistics.push_back(createClientConnection(*i, connection.ip_address, tcp_nodelay));
     }
 
     return statistics;
@@ -245,8 +248,11 @@ std::vector<ConnectionStat_struct> InternalConnection::populateServerMap(const C
 
     std::vector<ConnectionStat_struct> statistics;
 
+    int index = 0;
+    bool tcp_nodelay;
     for (std::vector<unsigned short>::const_iterator i = connection.ports.begin(); i != connection.ports.end(); ++i) {
-        statistics.push_back(createServerConnection(*i));
+        tcp_nodelay = connection.tcp_nodelays[index++];
+        statistics.push_back(createServerConnection(*i, tcp_nodelay));
     }
 
     return statistics;
@@ -314,9 +320,12 @@ std::vector<ConnectionStat_struct> InternalConnection::setConnection(const Conne
                 int counter = 0;
 
                 // Check for added ports
+                int index = 0;
+                bool tcp_nodelay;
                 for (std::vector<unsigned short>::const_iterator i = connection.ports.begin(); i != connection.ports.end(); ++i, ++counter) {
                     if (find(connectionInfo.ports.begin(), connectionInfo.ports.end(), *i) == connectionInfo.ports.end()) {
-                        statistics.push_back(createClientConnection(*i, connection.ip_address));
+                        tcp_nodelay = connection.tcp_nodelays[index++];
+                        statistics.push_back(createClientConnection(*i, connection.ip_address, tcp_nodelay));
                     }
                 }
 
@@ -343,9 +352,12 @@ std::vector<ConnectionStat_struct> InternalConnection::setConnection(const Conne
                 int counter = 0;
 
                 // Check for added ports
+                int index = 0;
+                bool tcp_nodelay;
                 for (std::vector<unsigned short>::const_iterator i = connection.ports.begin(); i != connection.ports.end(); ++i, ++counter) {
                     if (find(connectionInfo.ports.begin(), connectionInfo.ports.end(), *i) == connectionInfo.ports.end()) {
-                        statistics.push_back(createServerConnection(*i));
+                        tcp_nodelay = connection.tcp_nodelays[index++];
+                        statistics.push_back(createServerConnection(*i, tcp_nodelay));
                     }
                 }
 

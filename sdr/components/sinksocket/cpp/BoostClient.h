@@ -29,10 +29,11 @@ using boost::asio::ip::tcp;
 class client
 {
 public:
-    client(unsigned short port, std::string ip_addr) :
+    client(unsigned short port, std::string ip_addr, bool tcp_nodelay) :
         s_(io_service_),
         port_(port),
-        ip_addr_(ip_addr)
+        ip_addr_(ip_addr),
+        tcp_nodelay_(tcp_nodelay)
     {}
 
     bool connect()
@@ -44,6 +45,10 @@ public:
             tcp::resolver::query query(ip_addr_, ss.str());
             tcp::resolver::iterator iter = resolver.resolve(query);
             s_.connect(*iter);
+
+            tcp::no_delay option(tcp_nodelay_);
+            s_.set_option(option);  // throws if socket is not connected
+
             return is_connected();
         } catch (...) {
             s_.close();
@@ -81,6 +86,7 @@ public:
             }
         }
     }
+
     template<typename T>
     void read(std::vector<char, T> & data, size_t index=0)
     {
@@ -95,6 +101,7 @@ private:
     tcp::socket s_;
     unsigned short port_;
     std::string ip_addr_;
+    bool tcp_nodelay_;
 };
 
 

@@ -65,8 +65,8 @@ public:
 
 private:
     void cleanUp();
-    ConnectionStat_struct createClientConnection(const unsigned short &port, const std::string &ip);
-    ConnectionStat_struct createServerConnection(const unsigned short &port);
+    ConnectionStat_struct createClientConnection(const unsigned short &port, const std::string &ip, bool tcp_nodelay);
+    ConnectionStat_struct createServerConnection(const unsigned short &port, bool tcp_nodelay);
     std::vector<ConnectionStat_struct> populateClientMap(const Connection_struct &connection);
     std::vector<ConnectionStat_struct> populateServerMap(const Connection_struct &connection);
 

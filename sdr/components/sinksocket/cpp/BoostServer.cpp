@@ -145,6 +145,10 @@ void server::handle_accept(session_ptr new_session, const boost::system::error_c
 {
     if (!error) {
         {
+            boost::asio::ip::tcp::socket & socket = new_session->socket();
+            boost::asio::ip::tcp::no_delay option(this->tcp_nodelay_);
+            socket.set_option(option);
+
             boost::mutex::scoped_lock lock(sessionsLock_);
             sessions_.push_back(new_session);
 

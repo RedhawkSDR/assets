@@ -73,9 +73,10 @@ typedef boost::shared_ptr<session> session_ptr;
 class server
 {
 public:
-    server(short port, size_t maxLength=1024) :
+    server(short port, bool tcp_nodelay, size_t maxLength=1024) :
            acceptor_(io_service_, tcp::endpoint(tcp::v4(), port)),
            thread_(NULL),
+           tcp_nodelay_(tcp_nodelay),
            maxLength_(maxLength)
     {
         start_accept();
@@ -123,6 +124,7 @@ private:
     boost::mutex sessionsLock_;
     boost::mutex pendingDataLock_;
     boost::thread* thread_;
+    bool tcp_nodelay_;
     size_t maxLength_;
 };
 
