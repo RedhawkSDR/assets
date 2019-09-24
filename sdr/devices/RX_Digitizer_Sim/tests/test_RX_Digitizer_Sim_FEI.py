@@ -48,7 +48,7 @@ dut_config = {}
 DUT = 'RX_Digitizer_Sim'
 
 # Optional:
-DEBUG_LEVEL = 4    # typical values include 0, 1, 2, 3, 4 and 5
+DEBUG_LEVEL = 2    # typical values include 0, 1, 2, 3, 4 and 5
 DUT_INDEX = None
 DUT_IP_ADDR = None
 DUT_PORT = None
@@ -71,6 +71,16 @@ dut_config['RX_Digitizer_Sim'] = {
     'configure'   : {},         # {'prop_name': value}
     'properties'  : {},         # {'prop_name': value}
     'capabilities': [           # entry for each tuner; single entry if all tuners are the same
+        {                       # include entry for each tuner type (i.e. RX, TX, RX_DIGITIZER, etc.)
+            'RX_DIGITIZER': {   # include ranges for CF, BW, SR, and GAIN
+                'COMPLEX' : True,
+                # To specify a range from 0 to 10 with a gap from 3 to 5: [0, 3, 5, 10]
+                'CF'      : [50e6, 3000e6], # enter center frequency range in Hz
+                'BW'      : [8.0e6, 8.0e6],     # enter bandwidth range in Hz
+                'SR'      : [10e6, 10e6],     # enter sample rate range in Hz or sps
+                'GAIN'    : [0, 10.0]    # enter gain range in dB
+            }
+        },
         {                       # include entry for each tuner type (i.e. RX, TX, RX_DIGITIZER, etc.)
             'RX_DIGITIZER': {   # include ranges for CF, BW, SR, and GAIN
                 'COMPLEX' : True,
