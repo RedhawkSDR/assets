@@ -1,31 +1,32 @@
 #
-# This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
-# source distribution.
-# 
-# This file is part of REDHAWK Basic Components sinksocket.
-# 
-# REDHAWK Basic Components sinksocket is free software: you can redistribute it and/or modify it under the terms of 
-# the GNU Lesser General Public License as published by the Free Software Foundation, either 
-# version 3 of the License, or (at your option) any later version.
-# 
-# REDHAWK Basic Components sinksocket is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-# without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-# PURPOSE.  See the GNU Lesser General Public License for more details.
-# 
-# You should have received a copy of the GNU Lesser General Public License along with this 
-# program.  If not, see http://www.gnu.org/licenses/.
+# This file is protected by Copyright. Please refer to the COPYRIGHT file
+# distributed with this source distribution.
+#
+# This file is part of REDHAWK.
+#
+# REDHAWK is free software: you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published by the
+# Free Software Foundation, either version 3 of the License, or (at your option)
+# any later version.
+#
+# REDHAWK is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
+# for more details.
+#
+# You should have received a copy of the GNU Lesser General Public License
+# along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-ossieName = rh.sinksocket
-bindir = $(prefix)/dom/components/rh/sinksocket/cpp/
-bin_PROGRAMS = sinksocket
-
-xmldir = $(prefix)/dom/components/rh/sinksocket/
-dist_xml_DATA = ../sinksocket.scd.xml ../sinksocket.prf.xml ../sinksocket.spd.xml
 ACLOCAL_AMFLAGS = -I m4 -I${OSSIEHOME}/share/aclocal/ossie
 AUTOMAKE_OPTIONS = subdir-objects
 
+ossieName = rh.sinksocket
+bindir = $(prefix)/dom/components/rh/sinksocket/cpp
+bin_PROGRAMS = sinksocket
 
+xmldir = $(prefix)/dom/components/rh/sinksocket
+dist_xml_DATA = ../sinksocket.scd.xml ../sinksocket.prf.xml ../sinksocket.spd.xml
 
 distclean-local:
 	rm -rf m4

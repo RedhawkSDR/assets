@@ -1,19 +1,21 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
- * source distribution.
- * 
- * This file is part of REDHAWK Basic Components sinksocket.
- * 
- * REDHAWK Basic Components sinksocket is free software: you can redistribute it and/or modify it under the terms of 
- * the GNU Lesser General Public License as published by the Free Software Foundation, either 
- * version 3 of the License, or (at your option) any later version.
- * 
- * REDHAWK Basic Components sinksocket is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
- * PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License along with this 
- * program.  If not, see http://www.gnu.org/licenses/.
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
+ * distributed with this source distribution.
+ *
+ * This file is part of REDHAWK.
+ *
+ * REDHAWK is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * REDHAWK is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
 #ifndef STRUCTPROPS_H
@@ -29,6 +31,17 @@
 #include <CF/cf.h>
 #include <ossie/PropertyMap.h>
 
+namespace enums {
+    // Enumerated values for Connection
+    namespace Connection {
+        // Enumerated values for Connection::connection_type
+        namespace connection_type {
+            static const std::string server = "server";
+            static const std::string client = "client";
+        }
+    }
+}
+
 struct Connection_struct {
     Connection_struct ()
     {
@@ -36,16 +49,22 @@ struct Connection_struct {
         ip_address = "";
         byte_swap.push_back(0);
         ports.push_back(32191);
-    };
+        tcp_nodelays.push_back(false);
+    }
 
     static std::string getId() {
         return std::string("Connection");
-    };
+    }
+
+    static const char* getFormat() {
+        return "ss[H][H][b]";
+    }
 
     std::string connection_type;
     std::string ip_address;
     std::vector<unsigned short> byte_swap;
     std::vector<unsigned short> ports;
+    std::vector<bool> tcp_nodelays;
 };
 
 inline bool operator>>= (const CORBA::Any& a, Connection_struct& s) {
@@ -64,6 +83,9 @@ inline bool operator>>= (const CORBA::Any& a, Connection_struct& s) {
     if (props.contains("Connection::ports")) {
         if (!(props["Connection::ports"] >>= s.ports)) return false;
     }
+    if (props.contains("Connections::tcp_nodelays")) {
+        if (!(props["Connections::tcp_nodelays"] >>= s.tcp_nodelays)) return false;
+    }
     return true;
 }
 
@@ -77,6 +99,8 @@ inline void operator<<= (CORBA::Any& a, const Connection_struct& s) {
     props["Connection::byte_swap"] = s.byte_swap;
  
     props["Connection::ports"] = s.ports;
+ 
+    props["Connections::tcp_nodelays"] = s.tcp_nodelays;
     a <<= props;
 }
 
@@ -89,6 +113,8 @@ inline bool operator== (const Connection_struct& s1, const Connection_struct& s2
         return false;
     if (s1.ports!=s2.ports)
         return false;
+    if (s1.tcp_nodelays!=s2.tcp_nodelays)
+        return false;
     return true;
 }
 
@@ -96,14 +122,31 @@ inline bool operator!= (const Connection_struct& s1, const Connection_struct& s2
     return !(s1==s2);
 }
 
+namespace enums {
+    // Enumerated values for ConnectionStat
+    namespace ConnectionStat {
+        // Enumerated values for ConnectionStat::status
+        namespace status {
+            static const std::string startup = "startup";
+            static const std::string not_connected = "not_connected";
+            static const std::string connected = "connected";
+            static const std::string error = "error";
+        }
+    }
+}
+
 struct ConnectionStat_struct {
     ConnectionStat_struct ()
     {
-    };
+    }
 
     static std::string getId() {
         return std::string("ConnectionStat");
-    };
+    }
+
+    static const char* getFormat() {
+        return "sHsfd";
+    }
 
     std::string ip_address;
     unsigned short port;
