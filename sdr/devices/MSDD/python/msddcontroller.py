@@ -1332,7 +1332,7 @@ class WBDDCModule(DdcBaseModule):
                 print "ERROR: Trying to match BW for unknown rate" , rate
         return rv
     def getBandwidthListStr(self):
-        return self.create_csv(self.getBandwidthList_Hz)
+        return self.create_csv(self.getBandwidthList_Hz())
     def get_valid_bandwidth(self,bandwidth_hz,bandwidth_tolerance_perc, ibw_override=None):
         bw_list = self.getBandwidthList_Hz()
         return self.get_value_valid_list(bandwidth_hz,bandwidth_tolerance_perc, bw_list)
@@ -1340,6 +1340,7 @@ class WBDDCModule(DdcBaseModule):
     
     bandwidth_hz = property(getBandwidth_Hz,setBandwidth_Hz , doc="Bandwidth in Hz")
     valid_bandwidth_list_hz = property(getBandwidthList_Hz)
+    available_bandwidth_hz =  property(getBandwidthListStr, doc="Available Bandwidths")
 
 class NBDDCModule(DdcBaseModule):
     MOD_NAME_MAPPING={1:"DDC",2:"NBDDC"}
