@@ -31,7 +31,7 @@ from ossie import properties
 import time
 import frontend
 
-DEBUG_LEVEL = 4
+DEBUG_LEVEL = 3
 IP_ADDRESS='192.168.11.97'
 INTERFACE='em3'
 
@@ -46,7 +46,6 @@ def _generateRFInfoPkt(rf_freq=1e9,rf_bw=1e9,if_freq=0,spec_inverted=False,rf_fl
         rf_info_pkt = frontend.FRONTEND.RFInfoPkt(rf_flow_id,rf_freq, rf_bw, if_freq, spec_inverted, sensor_info, delays, cap, add_props)
 
         return rf_info_pkt
-
 
 class DeviceTests(ossie.utils.testing.RHTestCase):
     # Path to the SPD file, relative to this file. This must be set in order to
@@ -147,6 +146,31 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
         
         self.comp.deallocateCapacity(alloc)
         
+    def testReportedBandwidth(self):
+        self.comp.start()
+
+        alloc = self._generateAlloc(cf=110e6,sr=24.576e6,bw=20e6)
+        allocationID = properties.props_to_dict(alloc)['FRONTEND::tuner_allocation']['FRONTEND::tuner_allocation::allocation_id']
+
+        try:
+            retval = self.comp.allocateCapacity(alloc)
+        except Exception, e:
+            print str(e)
+            self.fail("Exception thrown on allocateCapactiy %s" % str(e))
+
+        if not retval:
+            self.fail("Allocation Failed")
+
+        tuner_status = self.comp.frontend_tuner_status[0]
+
+        bw=tuner_status.bandwidth.queryValue()
+        avail_bw=float(tuner_status.available_bandwidth.queryValue())
+        srate=tuner_status.sample_rate.queryValue()
+
+        self.assertAlmostEqual(bw,avail_bw, msg="Checking for correct available bandwidth")
+        self.assertNotAlmostEquals(srate, avail_bw, msg="Checking sample rate not equal to available bandwidth")
+
+        self.comp.deallocateCapacity(alloc)
 
 
     def _generateAlloc(self,tuner_type='RX_DIGITIZER', cf=100e6,sr=25e6,bw=20e6,rf_flow_id=''):

@@ -1,0 +1,11 @@
+2a34584302c3c7e1aa596f30a679a0b9  build.sh
+2baebd37a3bd57a32dd01dc704eefbfb  configure.ac
+ad9cc338a439fd967ba517ce65f8f32a  main.cpp
+43c55194915152b8d683b6ce13c5f5c1  Makefile.am
+c7e6cf31eb5d57872889143b1b3102aa  reconf
+e7e3ce71fedc10540f1ab7f585bd8b0a  RTL2832U_base.cpp
+c1f28f483a6d5b286cf3b09ed4fec06b  RTL2832U_base.h
+1de241da644b7489198bf455ece53c36  RTL2832U.cpp
+2e5e248b8982f7b6d374b697a483ecc9  RTL2832U.h
+4d736c0e1141b850b9df94050ce29533  struct_props.h
+3a9f6727c140fabd761598bfd26427c7  template_impl.cpp

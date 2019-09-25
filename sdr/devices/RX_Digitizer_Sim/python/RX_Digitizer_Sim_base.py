@@ -16,7 +16,6 @@ from ossie.properties import simpleseq_property
 from ossie.properties import struct_property
 from ossie.properties import structseq_property
 from ossie.properties import struct_to_props
-from omniORB import any as _any
 
 import Queue, copy, time, threading
 from ossie.resource import usesport, providesport
@@ -192,14 +191,17 @@ class RX_Digitizer_Sim_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_d
         def frontendTunerStatusChanged(self,oldValue, newValue):
             pass
 
-
         def getTunerStatus(self,allocation_id):
             tuner_id = self.getTunerMapping(allocation_id)
             if tuner_id < 0:
                 raise FRONTEND.FrontendException(("ERROR: ID: " + str(allocation_id) + " IS NOT ASSOCIATED WITH ANY TUNER!"))
-            _props = self.query([CF.DataType(id='FRONTEND::tuner_status',value=_any.to_any(None))])
-            return _props[0].value._v[tuner_id]._v
 
+            tuner_status = self.frontend_tuner_status[tuner_id]
+
+            props = struct_to_props(self.frontend_tuner_status[tuner_id])
+
+            return struct_to_props(self.frontend_tuner_status[tuner_id])
+            #return [CF.DataType(id=self.frontend_tuner_status[tuner_id].getId(),value=self.frontend_tuner_status[tuner_id]._toAny())]
 
         def assignListener(self,listen_alloc_id, allocation_id):
             # find control allocation_id
