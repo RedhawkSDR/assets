@@ -1,0 +1,19 @@
+REDHAWK is released under the GNU Lesser General Public License. In addition,
+some REDHAWK assets use 3rd party components with other licenses. Files
+containing these licenses can be found in this directory.
+
+REDHAWK assets under the GNU General Public License (GPL)
+
+    These assets are GPLv3+ because they use the FFTW library, which is GPLv3+:
+        DataConverter
+        FM_RBDS_demo
+        FmRdsSimulator
+        TuneFilterDecimate
+        autocorrelate
+        fastfilter
+        fftlib
+        psd
+
+    Asset RTL2832U is GPLv2+ because it uses librtlsdr which is GPLv2+.
+
+    Asset RBDSDecoder is GPLv3+ because it uses GNU Radio which is GPLv3+.
