@@ -6,15 +6,15 @@
 * [Installation Instructions](#installation-instructions)
 * [Asset Use](#asset-use)
 * [Branches and Tags](#branches-and-tags)
-* [REDHAWK 2.2.x Version Compatibility](#redhawk-version-compatibility)
+* [REDHAWK 2.2.x Version Compatibility](#redhawk-2.2.x-version-compatibility)
 * [Copyright](#copyright)
 * [License](#license)
 
 ## Description
 
-The `rh.sinksocket` component reads data from BulkIO ports and writes it to TCP connections.  The data from all ports goes to each of the connections.  Each `rh.sinksocket` component can operate multiple TCP connections (TCP clients or servers).
+The `rh.sinksocket` component reads data from BulkIO ports and writes the same data to all TCP connections.  Each `rh.sinksocket` component can operate multiple TCP connections (TCP clients or servers).
 
-The [Properties](#properties) section explains how to configure the component and monitor its data thruput.  The component supports the following configurations:
+The [Properties](#properties) section explains how to configure the component and monitor its data throughput.  The component supports the following configurations:
 
 * TCP mode (client or server)
 * IP address (for TCP client mode)
@@ -86,7 +86,7 @@ The following examples explain how to use the `rh.sinksocket` component.
 * [Example 3](#example-3-rhsinksocket-as-a-server-in-a-redhawk-waveform): `rh.sinksocket` as a server in a REDHAWK waveform
 * [Example 4](#example-4-rhsinksocket-as-a-client-in-a-redhawk-waveform): `rh.sinksocket` as a client in a REDHAWK waveform
 
-All of the examples configure the component to use two ports.  One port does not swap byte endianness, while the other swaps bytes for a data word size of 2.  The first port allows packet combining with Nagle's algorithm, while the second does not.  However, packet combining is not be observable in these examples.
+All of the examples configure the component to use two ports.  One port does not swap byte endianness, while the other swaps bytes for a data word size of 2.  The first port allows packet combining with Nagle's algorithm, while the second does not.  However, packet combining is not observable in these examples.
 
 **Note: For the sandbox examples, a version of `netcat` must be installed.**
 
