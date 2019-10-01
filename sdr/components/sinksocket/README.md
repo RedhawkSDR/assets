@@ -45,7 +45,7 @@ The following table describes the properties within a single Connection.  If an 
 
 An `rh.sinksocket` Connection contains a set of TCP connections.  Each TCP connection corresponds to a TCP port number.  These numbers are listed in the `ports` list.  The `byte_swap` and `tcp_nodelays` lists relate to the `ports` list like associative arrays.  That is, the first element of each corresponds to the same TCP connection.  The same is true for the nth element of each list.
 
-The following table describes the properties within a single `ConnectionStat`.  Each `[onnectionStat` contains information about one of the TCP connections within an `rh.sinksocket` Connection.
+The following table describes the properties within a single `ConnectionStat`.  Each `ConnectionStat` contains information about one of the TCP connections within an `rh.sinksocket` Connection.
 
 | **NAME** | **TYPE** | **DESCRIPTION** |
 | :--------| :------- | :---------------|
