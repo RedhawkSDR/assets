@@ -1,16 +1,12 @@
 # REDHAWK Assets
- 
+
 This file contains information that pertains to all REDHAWK assets. For detailed information about an individual asset, see the README file in its sub-directory.
 
 ## Continuous Integration (CI)
 
-This repository contains the REDHAWK assets. The CI build is performed by the `.gitlab-ci.yml` file in the root directory. This file needs to be generated when assets are added to the repository or a new version is created. 
+This repository contains the REDHAWK assets. The CI build is performed by the `.gitlab-ci.yml` file in the root directory. This file needs to be generated when assets are added to the repository or a new version of REDHAWK is created.
 
 To generate a new `.gitlab-ci.yml` file, run `generate_gitlab.py`. This script needs to be updated with release information (supported operating systems and version number). The file `gitlab-ci.yml.template` is used by `generate_gitlab.py` and contains information like the job and anchor descriptions.
-
-## Dependencies
-
-The assets in this repo depend on libraries `libRFSimulators` and `vrt`, which are in the `redhawk-dependencies` repo. The reason for this separation is because those two libraries install to the standard Linux locations rather than to `SDRROOT`.
 
 ## Branches and Tags
 
