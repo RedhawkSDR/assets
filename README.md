@@ -1,18 +1,12 @@
 # REDHAWK Assets
 
-This file contains information that pertains to all REDHAWK assets. For detailed information about an individual asset, see the README file in its sub-directory.
-
-## Continuous Integration (CI)
-
-This repository contains the REDHAWK assets. The CI build is performed by the `.gitlab-ci.yml` file in the root directory. This file needs to be generated when assets are added to the repository or a new version of REDHAWK is created.
-
-To generate a new `.gitlab-ci.yml` file, run `generate_gitlab.py`. This script needs to be updated with release information (supported operating systems and version number). The file `gitlab-ci.yml.template` is used by `generate_gitlab.py` and contains information like the job and anchor descriptions.
+This file contains information that pertains to the assets repository. For detailed information on an individual asset, consult the `README.md` file in its sub-directory.
 
 ## Branches and Tags
 
-All REDHAWK assets use the same branching and tagging policy. Upon release, the `master` branch is rebased with the specific commit released, and that commit is tagged with the asset version number. For example, the commit released as version 1.0.0 is tagged with `1.0.0`.
+The assets repository follows the same branching and tagging policy as REDHAWK core-framework. Upon release, the `master` branch is rebased with the specific commit released, and tagged with the release number. For example, the commit released as version 1.0.0 is tagged with `1.0.0`.
 
-Development branches (i.e. `develop` or `develop-X.X`, where *X.X* is a REDHAWK version number) contain the latest unreleased development code for the specified version. If no version number is specified (i.e. `develop`), the branch contains the latest unreleased development code for the latest released version.
+The development branch for the latest released version is named `develop`.  It contains the latest ureleased development code.  Other development branches are named `develop-X.X`, where `X.X` is a REDHAWK version number. These contain the latest unreleased development code for the specified version.
 
 ## Copyright
 
