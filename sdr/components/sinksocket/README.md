@@ -139,7 +139,8 @@ print
 
 sb.stop()
 ```
-2. Use three terminals to enter the following commands.  **Note: The order of these operations is important.**  
+2. Use three terminals to enter the following commands.  **Note: The order of these operations is important.**
+
 * In terminal 1, enter:
 ```bash
 $ python demo.py
@@ -156,7 +157,7 @@ $ nc 127.0.0.1 32192
 ```
 
 3. In terminal 1, press `Enter` a few times.  
-Each time you press `Enter`, the data `'abcd..'` is sent.  
+Each time you press `Enter`, the data `'abcd..'` is sent.
 
 4. In terminal 1, press `q` and `Enter` to quit.
 5. In terminals 2 and 3, press `Ctrl-c` to quit.
@@ -172,7 +173,7 @@ Terminal 3 displays the information the same number of times as in terminal 2, b
 
 ### Example 2: `rh.sinksocket` as a Client in the REDHAWK Sandbox
 
-This is similar to [Example 1](#example-1-rhsinksocket-as-a-server-in-the-redhawk-sandbox), except that the component is a TCP client.  
+This is similar to [Example 1](#example-1-rhsinksocket-as-a-server-in-the-redhawk-sandbox), except that the component is a TCP client.
 
 1. To run the example, make these changes:
 
@@ -184,70 +185,78 @@ This is similar to [Example 1](#example-1-rhsinksocket-as-a-server-in-the-redhaw
 
 The order of operations is less important in this case.  If `rh.sinksocket` is configured to expect a TCP server, and that server is unavailable, `rh.sinksocket` skips it.  When the server comes online, `rh.sinksocket` automatically connects and starts/resumes sending data to it.
 
-### Example 3: `rhsinksocket` as a Server in a REDHAWK Waveform
+### Example 3: `rh.sinksocket` as a Server in a REDHAWK Waveform
 
-The xml code in a waveform's SAD file configures its components. Replace the automatically generated xml code with the following xml code to create the same component configuration as [Example 1](#example-1-rhsinksocket-as-a-server-in-the-redhawk-sandbox).
+A waveform's SAD file contains configuration information for its components.  For details regarding SAD file structure and contents refer to the REDHAWK documentation.  The following SAD file snippet contains the same configuration as [Example 1](#example-1-rhsinksocket-as-a-server-in-the-redhawk-sandbox).  To use this in a SAD file, replace or insert the `<componentproperties>` section.
 
 ```xml
-<componentproperties>
-  <structsequenceref refid="Connections">
-    <structvalue>
-      <simpleref refid="Connection::connection_type" value="server"/>
-      <simpleref refid="Connection::ip_address" value=""/>
-      <simplesequenceref refid="Connection::byte_swap">
-        <values>
-          <value>0</value>
-          <value>2</value>
-        </values>
-      </simplesequenceref>
-      <simplesequenceref refid="Connection::ports">
-        <values>
-          <value>32191</value>
-          <value>32192</value>
-        </values>
-      </simplesequenceref>
-      <simplesequenceref refid="Connections::tcp_nodelays">
-        <values>
-          <value>false</value>
-          <value>true</value>
-        </values>
-      </simplesequenceref>
-    </structvalue>
-  </structsequenceref>
-</componentproperties>
+<snip>
+    <componentinstantiation id="sinksocket_1">
+      <componentproperties>
+        <structsequenceref refid="Connections">
+          <structvalue>
+            <simpleref refid="Connection::connection_type" value="server"/>
+            <simpleref refid="Connection::ip_address" value=""/>
+            <simplesequenceref refid="Connection::byte_swap">
+              <values>
+                <value>0</value>
+                <value>2</value>
+              </values>
+            </simplesequenceref>
+            <simplesequenceref refid="Connection::ports">
+              <values>
+                <value>32191</value>
+                <value>32192</value>
+              </values>
+            </simplesequenceref>
+            <simplesequenceref refid="Connections::tcp_nodelays">
+              <values>
+                <value>false</value>
+                <value>true</value>
+              </values>
+            </simplesequenceref>
+          </structvalue>
+        </structsequenceref>
+      </componentproperties>
+    </componentinstantiation>
+</snip>
 ```
 
-### Example 4: `rhsinksocket` as a Client in a REDHAWK Waveform
+### Example 4: `rh.sinksocket` as a Client in a REDHAWK Waveform
 
-The xml code in a waveform's SAD file configures its components. Replace the automatically generated xml code with the following xml code to create the same component configuration as [Example 2](#example-2-rhsinksocket-as-a-client-in-the-redhawk-sandbox).
+A waveform's SAD file contains configuration information for its components.  For details regarding SAD file structure and contents refer to the REDHAWK documentation.  The following SAD file snippet contains the same configuration as [Example 2](#example-2-rhsinksocket-as-a-client-in-the-redhawk-sandbox).  To use this in a SAD file, replace or insert the `<componentproperties>` section.
 
 ```xml
-<componentproperties>
-  <structsequenceref refid="Connections">
-    <structvalue>
-      <simpleref refid="Connection::connection_type" value="client"/>
-      <simpleref refid="Connection::ip_address" value="127.0.0.1"/>
-      <simplesequenceref refid="Connection::byte_swap">
-        <values>
-          <value>0</value>
-          <value>2</value>
-        </values>
-      </simplesequenceref>
-      <simplesequenceref refid="Connection::ports">
-        <values>
-          <value>32191</value>
-          <value>32192</value>
-        </values>
-      </simplesequenceref>
-      <simplesequenceref refid="Connections::tcp_nodelays">
-        <values>
-          <value>false</value>
-          <value>true</value>
-        </values>
-      </simplesequenceref>
-    </structvalue>
-  </structsequenceref>
-</componentproperties>
+<snip>
+    <componentinstantiation id="sinksocket_1">
+      <componentproperties>
+        <structsequenceref refid="Connections">
+          <structvalue>
+            <simpleref refid="Connection::connection_type" value="client"/>
+            <simpleref refid="Connection::ip_address" value="127.0.0.1"/>
+            <simplesequenceref refid="Connection::byte_swap">
+              <values>
+                <value>0</value>
+                <value>2</value>
+              </values>
+            </simplesequenceref>
+            <simplesequenceref refid="Connection::ports">
+              <values>
+                <value>32191</value>
+                <value>32192</value>
+              </values>
+            </simplesequenceref>
+            <simplesequenceref refid="Connections::tcp_nodelays">
+              <values>
+                <value>false</value>
+                <value>true</value>
+              </values>
+            </simplesequenceref>
+          </structvalue>
+        </structsequenceref>
+      </componentproperties>
+    </componentinstantiation>
+</snip>
 ```
 
 ## Branches and Tags
