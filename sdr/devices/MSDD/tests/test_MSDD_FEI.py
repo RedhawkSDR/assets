@@ -38,12 +38,12 @@ dut_config = {}
 '''
 
 #******* MODIFY CONFIG BELOW **********#
-DUT = 'MSDD'
+DUT = 'MSDD|3000|s100|vr1a'
 
 # Optional:
 DEBUG_LEVEL = 3    # typical values include 0, 1, 2, 3, 4 and 5
 DUT_INDEX = None
-DUT_IP_ADDR = "192.168.103.250"
+DUT_IP_ADDR = "192.168.11.97"
 DUT_PORT = None
 DUT_IFACE = None
 MCAST_GROUP = "234.168.103.100"
@@ -378,13 +378,55 @@ dut_config['MSDD|3000|s98']['capabilities'] = [
             'DDC': {
                 'COMPLEX' : True,
                 'CF'      : [30e6, 3e9],
-                'BW'      : [80e3, 80e3],
-                'SR'      : [100e3, 100e3],
+                'BW'      : [1.3e6,1.3e6],
+                'SR'      : [4.9152e6, 4.9152e6],
                 'GAIN'    : [-48.0, 12.0],
                 'NUMDDCs' : 16,
             }
         }
     ]
+
+
+# rh.MSDD 3000 s98
+dut_config['MSDD|3000|s100|vr1a'] = copy.deepcopy(dut_config['MSDD|3000'])
+dut_config['MSDD|3000|s100|vr1a']['capabilities'] = [
+        {
+            'RX_DIGITIZER': {
+                'COMPLEX' : True,
+                'CF'      : [30e6, 3e9],
+                'BW'      : [20e6, 20e6],
+                'SR'      : [25e6,25e6],
+                'GAIN'    : [-48.0, 12.0]
+            },
+            'RX_DIGITIZER_CHANNELIZER': {
+                'COMPLEX' : True,
+                'CF'      : [30e6, 3e9],
+                'BW'      : [20e6, 20e6],
+                'SR'      : [25e6,25e6],
+            },
+            'DDC': {
+                'COMPLEX' : True,
+                'CF'      : [30e6, 3e9],
+                'BW'      : [0.320e6, 1.25e6, 2.5e6, 5e6],
+                'SR'      : [0.390625e6, 1.5625e6, 3.125e6, 6.25e6],
+                'GAIN'    : [-48.0, 12.0],
+                'NUMDDCs' : 1,
+                'RESTRICT' : True
+            }
+        },
+        {
+            'DDC': {
+                'COMPLEX' : True,
+                'CF'      : [30e6, 3e9],
+                'BW'      : [781250.0, 1562500.0, 3125000.0, 6250000.0, 12500000.0, 25000000.0 ],
+                'SR'      : [781250.0, 1562500.0, 3125000.0, 6250000.0, 12500000.0, 25000000.0 ],
+                'GAIN'    : [-48.0, 12.0],
+                'NUMDDCs' : 16,
+                'RESTRICT' : True
+            }
+        }
+    ]
+
 
 # rh.MSDD_RX_Device
 dut_config['MSDD|Dreamin'] = {

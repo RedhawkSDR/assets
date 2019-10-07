@@ -40,6 +40,7 @@ from redhawk.frontendInterfaces import FRONTEND, FRONTEND__POA, TunerControl_idl
 from bulkio.bulkioInterfaces import BULKIO, BULKIO__POA
 import bulkio
 from ossie.utils.bulkio import bulkio_data_helpers
+import traceback
 
 DEBUG_LEVEL = 0
 def set_debug_level(lvl=0):
@@ -172,7 +173,19 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
     def keyword_check(self, k):
         self.currentTestName = "test_keyword_check_%s" %(k)
         self.check(True, True, 'Checked keyword %s' %(k),settestname=False)
-    
+
+    def hasChannelizer(self):
+        if  not DEVICE_INFO['capabilities'][0].has_key("CHANNELIZER") and \
+                not DEVICE_INFO['capabilities'][0].has_key("RX_DIGITIZER_CHANNELIZER"):
+            return False
+        if DEVICE_INFO['capabilities'][0].has_key("CHANNELIZER"):
+            self.mychannelizer=DEVICE_INFO['capabilities'][0]['CHANNELIZER']
+            self.mychannelizer_type='CHANNELIZER'
+        if DEVICE_INFO['capabilities'][0].has_key("RX_DIGITIZER_CHANNELIZER"):
+            self.mychannelizer=DEVICE_INFO['capabilities'][0]['RX_DIGITIZER_CHANNELIZER']
+            self.mychannelizer_type='RX_DIGITIZER_CHANNELIZER'
+        return True
+        
     def tuner_status_check(self,prop):
         self.currentTestName ="test_tuner_status_check_%s" % (re.sub('[^a-zA-Z0-9 \n\.]', '_', prop[0].lower()))
         controller = generateTunerRequest()
@@ -3323,41 +3336,54 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
   
     #Channelizer Test
     def testAllDDCsAllocation(self):
-        if "CHANNELIZER" not in DEVICE_INFO['capabilities'][0]:
+        if not self.hasChannelizer():
             return
-        cf = self.mychannelizer['CF']
-          
-        ddcAlloc = []
-        for tuner_num in range(DEVICE_INFO['capabilities'][0]['DDC']['NUMDDCs']):
-            ddc = generateDDCRequest()
-            ddc['CF'] =cf+(100*tuner_num)
-            ddcAlloc.append(generateTunerAlloc(ddc))
-            try:
-                success = self.dut_ref.allocateCapacity(ddcAlloc[tuner_num])
-                #time.sleep(.1)
-                if not success:
-                    self.check(False, True, "Failed to Allocate DDC Num %s:%s" % (tuner_num,str(ddcAlloc[tuner_num])))
-            except:
-                self.check(False, True, "Failed to Allocate DDC Num %s:%s" % (tuner_num,str(ddcAlloc[tuner_num])))
+        # allocate channelizer
+        cvalues, chan_alloc = generateTunerAllocation(self.mychannelizer_type, self.mychannelizer)
+        ret=self.dut_ref.allocateCapacity(chan_alloc)
+        self.check(True, ret, 'Allocate single CHANNELIZER or RX_DIGITIZER_CHANNELIZER')
+        cf = cvalues['CF']
+        ddcAllocs = []
+        for idx in range(len(DEVICE_INFO['capabilities'])):
+            if DEVICE_INFO['capabilities'][idx].has_key('DDC'):
+                for tuner_num in range(DEVICE_INFO['capabilities'][idx]['DDC']['NUMDDCs']):
+                    ddcAlloc = generateDDCRequest(idx)
+                    print " tuner ", tuner_num, " alloc ", ddcAlloc
+                    ddcAlloc['CF'] =cf+(100*tuner_num)
+                    ddcAllocs.append(generateTunerAlloc(ddcAlloc))
+                    try:
+                        success = self.dut_ref.allocateCapacity(ddcAllocs[-1])
+                        self.check(success, True, "Allocate DDC Num %s" % (tuner_num))
+                    except:
+                        self.check(True,False, "Allocate DDC Num %s" % (tuner_num))
           
         tuner_count = 0 
         props = self.dut.query([])
         props = properties.props_to_dict(props)
         for tuner in props['FRONTEND::tuner_status']:
-            if len(tuner['FRONTEND::tuner_status::allocation_id_csv'].split(','))>0:
+            if tuner['FRONTEND::tuner_status::tuner_type'] == 'DDC' and len(tuner['FRONTEND::tuner_status::allocation_id_csv']) > 0:
                 tuner_count+=1
   
-        self.check(DEVICE_INFO['capabilities'][0]['DDC']['NUMDDCs'], tuner_count-1, "Allocate Max DDCs, %s " % (DEVICE_INFO['capabilities'][0]['DDC']['NUMDDCs']))
-        time.sleep(1)
-        tuner_num=0
+        self.check( len(ddcAllocs), tuner_count, "Allocate Max DDCs, %s " % len(ddcAllocs))
+
         #Deallocate All Tuners
-        for tuner in ddcAlloc:
-  
+        tuner_num=0
+        for tuner in ddcAllocs:
+            error=False
             try:
                 self.dut_ref.deallocateCapacity(tuner)
-                tuner_num+=1
             except:
-                self.check(False, True, "Failed to DeAllocate DDC Num %s:%s" % (tuner_num,str(ddcAlloc[tuner_num])))
+                error = True
+            self.check(False, error, "Deallocate DDC Num %s" % (tuner_num))
+            tuner_num+=1
+
+        error=False
+        try:
+            self.dut_ref.deallocateCapacity(chan_alloc)
+        except:
+            traceback.print_exc()
+            error=True
+        self.check(False, error, "Deallocate Channelizer")
           
           
           
@@ -3625,8 +3651,9 @@ def getMaxCenterFreq(idx=None,ttype="RX_DIGITIZER"):
 
     max_cf = 0
     if idx == None:
-        for chan in DEVICE_INFO['capabilities']:
-            max_cf = max(max_cf,chan[ttype]['CF'][-1])
+        for chan in  DEVICE_INFO['capabilities']:
+            if chan.has_key(ttype):
+                max_cf = max(max_cf,chan[ttype]['CF'][-1])
     else:
         try:
             max_cf = DEVICE_INFO['capabilities'][idx][ttype]['CF'][-1]
@@ -3641,8 +3668,9 @@ def getMaxSampleRate(idx=None, cap=True,ttype="RX_DIGITIZER"):
     # If cap == True, cap max SR at sr_limit
     max_sr = 0
     if idx == None:
-        for chan in DEVICE_INFO['capabilities']:
-            max_sr = max(max_sr,chan[ttype]['SR'][-1])
+        for chan in  DEVICE_INFO['capabilities']:
+            if chan.has_key(ttype):
+                max_sr = max(max_sr,chan[ttype]['SR'][-1])
     else:
         try:
             max_sr = DEVICE_INFO['capabilities'][idx][ttype]['SR'][-1]
@@ -3659,8 +3687,9 @@ def getMaxBandwidth(idx=None,ttype="RX_DIGITIZER"):
     # TODO - any need to account for sr_limit here?
     max_bw = 0
     if idx == None:
-        for chan in DEVICE_INFO['capabilities']:
-            max_bw = max(max_bw,chan[ttype]['BW'][-1])
+        for chan in  DEVICE_INFO['capabilities']:
+            if chan.has_key(ttype):
+                max_bw = max(max_bw,chan[ttype]['BW'][-1])
     else:
         try:
             max_bw = DEVICE_INFO['capabilities'][idx][ttype]['BW'][-1]
@@ -3680,8 +3709,9 @@ def getMinCenterFreq(idx=None,ttype="RX_DIGITIZER"):
     # If idx==None, iterate through all and find min
     min_cf = DEVICE_INFO['capabilities'][0][ttype]['CF'][0]
     if idx == None:
-        for chan in DEVICE_INFO['capabilities']:
-            min_cf = min(min_cf,chan[ttype]['CF'][0])
+        for chan in  DEVICE_INFO['capabilities']:
+            if chan.has_key(ttype):
+                min_cf = min(min_cf,chan[ttype]['CF'][0])
     else:
         try:
             min_cf = DEVICE_INFO['capabilities'][idx][ttype]['CF'][0]
@@ -3695,8 +3725,9 @@ def getMinSampleRate(idx=None,ttype="RX_DIGITIZER"):
     # If idx==None, iterate through all and find min
     min_sr = DEVICE_INFO['capabilities'][0][ttype]['SR'][0]
     if idx == None:
-        for chan in DEVICE_INFO['capabilities']:
-            min_sr = min(min_sr,chan[ttype]['SR'][0])
+        for chan in  DEVICE_INFO['capabilities']:
+            if chan.has_key(ttype):
+                min_sr = min(min_sr,chan[ttype]['SR'][0])
     else:
         try:
             min_sr = DEVICE_INFO['capabilities'][idx][ttype]['SR'][0]
@@ -3712,8 +3743,9 @@ def getMinBandwidth(idx=None,ttype="RX_DIGITIZER"):
     # If idx==None, iterate through all and find min
     min_bw = DEVICE_INFO['capabilities'][0][ttype]['BW'][0]
     if idx == None:
-        for chan in DEVICE_INFO['capabilities']:
-            min_bw = min(min_bw,chan[ttype]['BW'][0])
+        for chan in  DEVICE_INFO['capabilities']:
+            if chan.has_key(ttype):
+                min_bw = min(min_bw,chan[ttype]['BW'][0])
     else:
         try:
             min_bw = DEVICE_INFO['capabilities'][idx][ttype]['BW'][0]
@@ -3733,8 +3765,9 @@ def getMaxGain(idx=None,ttype="RX_DIGITIZER"):
     # If idx==None, iterate through all and find min
     max_gain = DEVICE_INFO['capabilities'][0][ttype]['GAIN'][-1]
     if idx == None:
-        for chan in DEVICE_INFO['capabilities']:
-            max_gain = max(max_gain,chan[ttype]['GAIN'][-1])
+        for chan in  DEVICE_INFO['capabilities']:
+            if chan.has_key(ttype):
+                max_gain = max(max_gain,chan[ttype]['GAIN'][-1])
     else:
         try:
             max_gain = DEVICE_INFO['capabilities'][idx][ttype]['GAIN'][-1]
@@ -3748,8 +3781,9 @@ def getMinGain(idx=None,ttype="RX_DIGITIZER"):
     # If idx==None, iterate through all and find min
     min_gain = DEVICE_INFO['capabilities'][0][ttype]['GAIN'][0]
     if idx == None:
-        for chan in DEVICE_INFO['capabilities']:
-            min_gain = min(min_gain,chan[ttype]['GAIN'][0])
+        for chan in  DEVICE_INFO['capabilities']:
+            if chan.has_key(ttype):
+                min_gain = min(min_gain,chan[ttype]['GAIN'][0])
     else:
         try:
             min_gain = DEVICE_INFO['capabilities'][idx][ttype]['GAIN'][0]
@@ -3758,6 +3792,37 @@ def getMinGain(idx=None,ttype="RX_DIGITIZER"):
             min_gain = DEVICE_INFO['capabilities'][0][ttype]['GAIN'][0]
 
     return min_gain
+
+def generateTunerAllocation(ttype, device_cfg,cf=None,sr=None,bw=None):
+    value = {}
+    value['ALLOC_ID'] = str(uuid.uuid4())
+    value['TYPE'] = ttype
+    value['BW_TOLERANCE'] = 100.0
+    value['SR_TOLERANCE'] = 100.0
+    value['RF_FLOW_ID'] = ''
+    value['GROUP_ID'] = ''
+    value['CONTROL'] = True
+    value['SR'] = sr
+    if not sr:
+        value['SR'] = device_cfg['SR'][1] #Allocated at Max SR
+
+    value['BW'] = bw    
+    if not bw:
+        value['BW'] = device_cfg['BW'][1] #Allocated at Max BW
+    
+    value['CF'] = cf
+    if not cf:
+        value['CF'] = getValueInRange(device_cfg['CF'])
+        
+    alloc=generateTunerAlloc(value)
+    return value, alloc
+
+def generateChannelizerAllocation(device_cfg,cf=None,sr=None,bw=None):
+    return generateTunerAllocation('CHANNELIZER', device_cfg, cf, sr, bw )
+
+def generateRxDigitizerChannelizerAllocation(device_cfg,cf=None,sr=None,bw=None):
+    return generateTunerAllocation('RX_DIGITIZER_CHANNELIZER', device_cfg, cf, sr, bw )
+
 
 def generateChannelizerRequest(idx=0,sr=0,bw=0):
 
@@ -3811,29 +3876,41 @@ def generateDDCRequest(idx = 0,cf=0):
 
     value['CF'] = cf
     
-    sr_subrange = DEVICE_INFO['capabilities'][idx]['DDC']['SR']
-    if 'sr_limit' in DEVICE_INFO and DEVICE_INFO['sr_limit'] > 0:
-        sr_subrange = getSubranges([0,DEVICE_INFO['sr_limit']], DEVICE_INFO['capabilities'][idx]['DDC']['SR'])
-    value['SR'] = getValueInRange(sr_subrange)
-    # Usable BW is typically equal to SR if complex samples, otherwise half of SR
-    BW_MULT = 1.0 if DEVICE_INFO['capabilities'][idx]['DDC']['COMPLEX'] else 0.5
-    value['BW'] = 0.8*value['SR']*BW_MULT # Try 80% of SR
-    if isValueInRange(value['BW'], DEVICE_INFO['capabilities'][idx]['DDC']['BW']):
-        # success! all done, return value
-        return value
+    sr=None
+    bw=None
+    if DEVICE_INFO['capabilities'][idx]['DDC'].has_key("RESTRICT"):
+        sr, bw = getRestrictedValues(DEVICE_INFO['capabilities'][idx]['DDC']['SR'],
+                                    DEVICE_INFO['capabilities'][idx]['DDC']['BW'])
+        value['SR']=sr
+        value['BW']=bw     
 
-    # Can't use 80% of SR as BW, try to find a BW value within SR tolerances
-    bw_min = value['SR']*BW_MULT
-    bw_max = value['SR']*(1.0+(value['SR_TOLERANCE']/100.0))*BW_MULT
-    tolerance_range = [bw_min,bw_max]
-    bw_subrange = getSubranges(tolerance_range, DEVICE_INFO['capabilities'][idx]['DDC']['BW'])
-    if len(bw_subrange) > 0:
-        # success! get BW value and return
-        value['BW'] = getValueInRange(bw_subrange)
-        return value
+    if  not sr:
+        sr_subrange = DEVICE_INFO['capabilities'][idx]['DDC']['SR']
+        if 'sr_limit' in DEVICE_INFO and DEVICE_INFO['sr_limit'] > 0:
+            sr_subrange = getSubranges([0,DEVICE_INFO['sr_limit']], DEVICE_INFO['capabilities'][idx]['DDC']['SR'])
+        value['SR'] = getValueInRange(sr_subrange)
 
-    # last resort
-    value['BW'] = getValueInRange(DEVICE_INFO['capabilities'][idx]['DDC']['BW'])
+    if not bw:
+        # Usable BW is typically equal to SR if complex samples, otherwise half of SR
+        BW_MULT = 1.0 if DEVICE_INFO['capabilities'][idx]['DDC']['COMPLEX'] else 0.5
+        value['BW'] = 0.8*value['SR']*BW_MULT # Try 80% of SR
+        if isValueInRange(value['BW'], DEVICE_INFO['capabilities'][idx]['DDC']['BW']):
+            # success! all done, return value
+            return value
+
+        # Can't use 80% of SR as BW, try to find a BW value within SR tolerances
+        bw_min = value['SR']*BW_MULT
+        bw_max = value['SR']*(1.0+(value['SR_TOLERANCE']/100.0))*BW_MULT
+        tolerance_range = [bw_min,bw_max]
+        bw_subrange = getSubranges(tolerance_range, DEVICE_INFO['capabilities'][idx]['DDC']['BW'])
+        if len(bw_subrange) > 0:
+            # success! get BW value and return
+            value['BW'] = getValueInRange(bw_subrange)
+            return value
+
+        # last resort
+        value['BW'] = getValueInRange(DEVICE_INFO['capabilities'][idx]['DDC']['BW'])
+
     return value
     
 
@@ -3926,6 +4003,21 @@ def getValueInRange(values):
         # Not iterable...
         retval = 0
     return retval
+
+
+def getRestrictedValues( plist, slist):
+    pvalue=None
+    svalue=None
+    try:
+        pvalue = random.choice(plist)
+        idx=plist.index(pvalue)
+        svalue = slist[idx] 
+    except:
+        #traceback.print_exc()
+        pass
+
+    return pvalue, svalue
+
 
 def isValueInRange(value, values):
     try:

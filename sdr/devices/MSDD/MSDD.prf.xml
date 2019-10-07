@@ -56,7 +56,7 @@ with this program.  If not, see http://www.gnu.org/licenses/.
     </simple>
     <simple id="advanced::allow_internal_allocations" name="allow_internal_allocations" type="boolean">
       <description>This can automatically allocate sub-tuners for use with other sub-tuners. May be needed to acquire lower sample rates</description>
-      <value>True</value>
+      <value>False</value>
     </simple>
     <simple id="advanced::udp_timeout" name="udp_timeout" type="double">
       <description>Timeout to receive data after a command is sent</description>

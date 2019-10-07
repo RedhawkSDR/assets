@@ -27,6 +27,7 @@
 **************************************************************************/
 
 #include "USRP_UHD.h"
+#include <boost/date_time/posix_time/posix_time.hpp>
 
 PREPARE_LOGGING(USRP_UHD_i)
 
@@ -1745,9 +1746,16 @@ bool USRP_UHD_i::usrpEnable(size_t tuner_id){
 
         // check for lo_lock
         try{
-            for(size_t i=0; i<10 && !usrp_device_ptr->get_rx_sensor("lo_locked",frontend_tuner_status[tuner_id].tuner_number).to_bool(); i++){
-                sleep(0.1);
+            boost::system_time m1 = boost::get_system_time();
+            size_t i;
+            for(i=0; i<10 && !usrp_device_ptr->get_rx_sensor("lo_locked",frontend_tuner_status[tuner_id].tuner_number).to_bool(); i++){
+                boost::this_thread::sleep(boost::posix_time::milliseconds(100));
             }
+            boost::system_time m2 = boost::get_system_time();
+            std::ostringstream os;
+            bool lo_status = usrp_device_ptr->get_rx_sensor("lo_locked",frontend_tuner_status[tuner_id].tuner_number).to_bool();
+            os << "Tuner ID: " << tuner_id  << " lo_locked="<< lo_status << ", lo_locked status resolution took " <<  m2 - m1 << " seconds, number of retries=" << i; 
+            LOG_TRACE(USRP_UHD_i, os.str() );
         } catch(...){
             sleep(1);
         }
