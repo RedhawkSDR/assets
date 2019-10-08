@@ -14,6 +14,6 @@ REDHAWK assets under the GNU General Public License (GPL)
         fftlib
         psd
 
-    Asset RTL2832U is GPLv2+ because it uses librtlsdr which is GPLv2+.
-
     Asset RBDSDecoder is GPLv3+ because it uses GNU Radio which is GPLv3+.
+
+    Asset RTL2832U is GPLv3+ because it uses librtlsdr which is GPLv3+.
