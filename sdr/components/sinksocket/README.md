@@ -5,10 +5,7 @@
 * [Description](#description)
 * [Installation Instructions](#installation-instructions)
 * [Asset Use](#asset-use)
-* [Branches and Tags](#branches-and-tags)
 * [REDHAWK 2.2.x Version Compatibility](#redhawk-22x-version-compatibility)
-* [Copyright](#copyright)
-* [License](#license)
 
 ## Description
 
@@ -187,92 +184,77 @@ The order of operations is less important in this case.  If `rh.sinksocket` is c
 
 ### Example 3: `rh.sinksocket` as a Server in a REDHAWK Waveform
 
-A waveform's SAD file contains configuration information for its components.  For details regarding SAD file structure and contents refer to the REDHAWK documentation.  The following SAD file snippet contains the same configuration as [Example 1](#example-1-rhsinksocket-as-a-server-in-the-redhawk-sandbox).  To use this in a SAD file, replace or insert the `<componentproperties>` section.
+A waveform's SAD file contains configuration information for its components.  The following SAD file snippet contains the same configuration as [Example 1](#example-1-rhsinksocket-as-a-server-in-the-redhawk-sandbox).  To use this in a SAD file, replace or insert the `<componentproperties>` section.
 
 ```xml
-<snip>
-    <componentinstantiation id="sinksocket_1">
-      <componentproperties>
-        <structsequenceref refid="Connections">
-          <structvalue>
-            <simpleref refid="Connection::connection_type" value="server"/>
-            <simpleref refid="Connection::ip_address" value=""/>
-            <simplesequenceref refid="Connection::byte_swap">
-              <values>
-                <value>0</value>
-                <value>2</value>
-              </values>
-            </simplesequenceref>
-            <simplesequenceref refid="Connection::ports">
-              <values>
-                <value>32191</value>
-                <value>32192</value>
-              </values>
-            </simplesequenceref>
-            <simplesequenceref refid="Connections::tcp_nodelays">
-              <values>
-                <value>false</value>
-                <value>true</value>
-              </values>
-            </simplesequenceref>
-          </structvalue>
-        </structsequenceref>
-      </componentproperties>
-    </componentinstantiation>
-</snip>
+<componentinstantiation id="sinksocket_1">
+  <componentproperties>
+    <structsequenceref refid="Connections">
+      <structvalue>
+        <simpleref refid="Connection::connection_type" value="server"/>
+        <simpleref refid="Connection::ip_address" value=""/>
+        <simplesequenceref refid="Connection::byte_swap">
+          <values>
+            <value>0</value>
+            <value>2</value>
+          </values>
+        </simplesequenceref>
+        <simplesequenceref refid="Connection::ports">
+          <values>
+            <value>32191</value>
+            <value>32192</value>
+          </values>
+        </simplesequenceref>
+        <simplesequenceref refid="Connections::tcp_nodelays">
+          <values>
+            <value>false</value>
+            <value>true</value>
+          </values>
+        </simplesequenceref>
+      </structvalue>
+    </structsequenceref>
+  </componentproperties>
+</componentinstantiation>
 ```
 
 ### Example 4: `rh.sinksocket` as a Client in a REDHAWK Waveform
 
-A waveform's SAD file contains configuration information for its components.  For details regarding SAD file structure and contents refer to the REDHAWK documentation.  The following SAD file snippet contains the same configuration as [Example 2](#example-2-rhsinksocket-as-a-client-in-the-redhawk-sandbox).  To use this in a SAD file, replace or insert the `<componentproperties>` section.
+A waveform's SAD file contains configuration information for its components.  The following SAD file snippet contains the same configuration as [Example 2](#example-2-rhsinksocket-as-a-client-in-the-redhawk-sandbox).  To use this in a SAD file, replace or insert the `<componentproperties>` section.
 
 ```xml
-<snip>
-    <componentinstantiation id="sinksocket_1">
-      <componentproperties>
-        <structsequenceref refid="Connections">
-          <structvalue>
-            <simpleref refid="Connection::connection_type" value="client"/>
-            <simpleref refid="Connection::ip_address" value="127.0.0.1"/>
-            <simplesequenceref refid="Connection::byte_swap">
-              <values>
-                <value>0</value>
-                <value>2</value>
-              </values>
-            </simplesequenceref>
-            <simplesequenceref refid="Connection::ports">
-              <values>
-                <value>32191</value>
-                <value>32192</value>
-              </values>
-            </simplesequenceref>
-            <simplesequenceref refid="Connections::tcp_nodelays">
-              <values>
-                <value>false</value>
-                <value>true</value>
-              </values>
-            </simplesequenceref>
-          </structvalue>
-        </structsequenceref>
-      </componentproperties>
-    </componentinstantiation>
-</snip>
+<componentinstantiation id="sinksocket_1">
+  <componentproperties>
+    <structsequenceref refid="Connections">
+      <structvalue>
+        <simpleref refid="Connection::connection_type" value="client"/>
+        <simpleref refid="Connection::ip_address" value="127.0.0.1"/>
+        <simplesequenceref refid="Connection::byte_swap">
+          <values>
+            <value>0</value>
+            <value>2</value>
+          </values>
+        </simplesequenceref>
+        <simplesequenceref refid="Connection::ports">
+          <values>
+            <value>32191</value>
+            <value>32192</value>
+          </values>
+        </simplesequenceref>
+        <simplesequenceref refid="Connections::tcp_nodelays">
+          <values>
+            <value>false</value>
+            <value>true</value>
+          </values>
+        </simplesequenceref>
+      </structvalue>
+    </structsequenceref>
+  </componentproperties>
+</componentinstantiation>
 ```
 
-## Branches and Tags
-
-This content is currently under development.
 
 ## REDHAWK 2.2.x Version Compatibility
 
 These versions of `rh.sinksocket` are compatible with REDHAWK 2.2.x:
 
 * 2.0.x
-
-## Copyright
-
-This work is protected by Copyright. Please refer to the [Copyright File](COPYRIGHT) for updated copyright information.
-
-## License
-
-REDHAWK rh.sinksocket is licensed under the GNU Lesser General Public License (LGPL).
