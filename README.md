@@ -1,16 +1,11 @@
-# REDHAWK Consolidated Core Asset Library
+# REDHAWK Assets
 
-## Description
-This repository contains a consolidation of the REDHAWK core assets. The CI build is performed by the .gitlab-ci.yml file in the root directory of this repository. This file needs to be generated when assets are added to the repository or a new version is created.
+This file contains information that pertains to the assets repository. For detailed information on an individual asset, consult the `README.md` file in its sub-directory.
 
-To generate a new .gitlab-ci.yml file, run generate_gitlab.py. This script needs to be updated with release information (supported operating systems and version number). The file gitlab-ci.yml.template is used by generate_gitlab.py and contains information like the job and anchor descriptions.
+## Copyright
 
-The assets in this repo depend on libraries libRFSimulators and vrt, which are managed from redhawk-dependencies. The reason for this separation is because those two libraries install to the standard Linux locations rather than $SDRROOT.
-
-## Copyrights
-
-Each asset in this work is protected by Copyright. Please refer to the corresponding [Copyright File](COPYRIGHT) for updated copyright information.
+This work is protected by Copyright. Please refer to the [COPYRIGHT](COPYRIGHT) file.
 
 ## License
 
-The REDHAWK Core Assets are licensed under the GNU Lesser General Public License (LGPL).
+Please refer to the [LICENSE](license/LICENSE) file for REDHAWK assets licensing information.
