@@ -5,7 +5,6 @@
 * [Description](#description)
 * [Installation Instructions](#installation-instructions)
 * [Asset Use](#asset-use)
-* [REDHAWK 2.2.x Version Compatibility](#redhawk-22x-version-compatibility)
 
 ## Description
 
@@ -252,9 +251,3 @@ A waveform's SAD file contains configuration information for its components.  Th
 </componentinstantiation>
 ```
 
-
-## REDHAWK 2.2.x Version Compatibility
-
-These versions of `rh.sinksocket` are compatible with REDHAWK 2.2.x:
-
-* 2.0.x
