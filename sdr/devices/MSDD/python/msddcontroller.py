@@ -536,7 +536,7 @@ class baseModule(object):
             raise
 
     def get_value_valid_list(self,value,value_tolerance_perc, values, return_max=None):
-        return get_value_valid_list(value, value_tolerance_per, values, return_max)
+        return get_value_valid_list(value, value_tolerance_perc, values, return_max)
 
     def setter_with_validation(self, value,
                                _set_,
@@ -2609,10 +2609,8 @@ class OUTModule(baseModule):
     def setIPP(self,ipp_args):
         if self._debug:
             print "OUTModule, setIPP args: ", ipp_args
-        #self.connection._debug=True
         self.send_set_command("IPP", ipp_args)
 	ipp_resp=self.getIPP()
-        #self.connection._debug=False
         ipp_set = ipp_args.split(":")
         if self._debug:
             print "OUTModule, IPP set: ", ipp_set, " result: ", ipp_resp
@@ -3029,20 +3027,20 @@ class MSDDRadio:
             return self.registration_name + ':' + str(self.channel_number)
 
     class object_module(object):
-        def __init__(self, registration_name, installation_name, channel_number, object_module = None):
-            self.channel_number = channel_number
-            self.installation_name = installation_name
-            self.registration_name = registration_name
+        def __init__(self, registered, object_module = None):
+            self.channel_number = registered.channel_number
+            self.installation_name = registered.installation_name
+            self.registration_name = registered.registration_name
             self.object = object_module
 
         def channel_id(self):
             return self.registration_name + ':' + str(self.channel_number)
 
     class msdd_channel_module(registered_module):
-        def __init__(self, registration_name, installation_name, channel_number,rx_channel_num,coherent=False, msdd_rx_type="UNKNOWN"):
-            self.channel_number = channel_number
-            self.installation_name = installation_name
-            self.registration_name = registration_name
+        def __init__(self, reg_mod, rx_channel_num,coherent=False, msdd_rx_type="UNKNOWN"):
+            self.channel_number = reg_mod.channel_number
+            self.installation_name = reg_mod.installation_name
+            self.registration_name = reg_mod.registration_name
             self.rx_channel_num = rx_channel_num
             self.coherent = coherent
             self.msdd_rx_type = msdd_rx_type
@@ -3060,6 +3058,7 @@ class MSDDRadio:
             self._debug=False
             self._srates={}
             self._bw_rates={}
+            self.fft_channel=None
 
         def msdd_channel_id(self):
             return self.registration_name + ":" + str(self.channel_number)
@@ -3090,6 +3089,19 @@ class MSDDRadio:
             return self.msdd_rx_type == MSDDRadio.MSDDRXTYPE_FFT
         def is_spectral_scan(self):
             return self.msdd_rx_type == MSDDRadio.MSDDRXTYPE_SPC
+
+        def addFFTChannel(self, fft ):
+            self.fft_channel=fft
+            self.fft_object=fft.fft
+
+        def removeFFTChannel(self):
+            fft=self.fft_channel
+            self.fft_object=None
+            self.fft_channel=None
+            return fft
+
+        def hasFFTChannel(self):
+            return self.fft_channel != None
 
         def get_registration_name_csv(self):
             reg_name_list = []
@@ -3316,7 +3328,54 @@ class MSDDRadio:
                 return self._bw_rates[bw][3]
             return None
 
-    
+    class fft_channel(object):
+        def __init__(self, fft_mod, output_mod,router ):
+            self._debug=False
+            self.fft=fft_mod
+            self.output=output_mod
+            self.stream_router=router
+            self.upstream=None
+            # disable modules
+            self.setEnable(False)
+            self.stream_router.linkModules(self.fft.channel_id(), self.output.channel_id())
+
+        def channel_number(self):
+            return self.fft.channel_number
+
+        def channel_id(self):
+            if self.fft:
+                return self.fft.channel_id()
+            return None
+
+        def setEnable(self, enable):
+            if self.fft:
+                self.fft.object.enable=enable
+            if self.output:
+                self.output.object.enable=enable
+
+        def set_fft_enable(self, enable):
+            if self.fft:
+                self.fft.object.enable=enable
+
+        def set_output_enable(self, enable):
+            if self.output:
+                self.output.object.enable=enable
+
+        def link(self, upstream_mod ):
+            if self.stream_router:
+                if upstream_mod:
+                    self.stream_router.linkModules(upstream_mod.channel_id(), self.fft.channel_id())
+                    self.upstream=upstream_mod
+
+        def unlink(self):
+            mod=self.upstream
+            if mod:
+                if self.stream_router:
+                    self.stream_router.unlinkModule(self.fft.channel_id())
+                    self.upstream=None
+            return mod
+
+
     """Class to manage a single MSDD-X000 radio instance"""
     """Note that this class is just a container for the individual modules"""
     """The module instances should be accessed directly for command and control"""
@@ -3401,6 +3460,8 @@ class MSDDRadio:
         self.output_object_container = object_container()
         self.swddc_object_container = object_container()
         
+        self.fft_channels_container = object_container()
+        self.fft_channels = []
         self.rx_channels = []
         self.fullRegName_to_RxChanNum = {}
         self.msdd_channel_to_rx_channel = {}
@@ -3414,76 +3475,76 @@ class MSDDRadio:
                         " channel ID: " +  str(reg_mod.registration_name) + ':' +str(reg_mod.channel_number)
                     if inst_name == "CON":
                         obj= ConsoleModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.console_modules.append(obj_mod)
                         break #Do not need more than one console module
                     elif inst_name == "SRT":
                         obj= StreamRouterModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.stream_modules.append(obj_mod)
                     elif inst_name == "BRD":
                         obj= BoardModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.board_modules.append(obj_mod)
                     elif inst_name == "NETWORK":
                         obj= NetModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.network_modules.append(obj_mod)
                     elif inst_name == "SWDDCDEC2":
                         obj= SWDDCModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.software_ddc_modules.append(obj_mod)
                         self.swddc_object_container.put_object(obj_mod)
                     elif inst_name == "IQB":
                         obj= IQCircularBufferModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.iq_circular_buffer_modules.append(obj_mod)
                     elif inst_name == "OUT":
                         obj= OUTModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.out_modules.append(obj_mod)
                         self.output_object_container.put_object(obj_mod)
                     elif inst_name == "TOD":
                         obj= TODModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.tod_modules.append(obj_mod)
                     elif inst_name == "SPC":
                         obj= SpectralScanModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.spectral_scan_modules.append(obj_mod)
                         self.spectral_scan_object_container.put_object(obj_mod)
                     elif inst_name == "FFT":
                         obj= FFTModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.fft_modules.append(obj_mod)
                         self.fft_object_container.put_object(obj_mod)
                     elif inst_name == "LOG":
                         obj= LOGModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.log_modules.append(obj_mod)
                     elif inst_name == "WBDDC":
                         obj= WBDDCModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.wb_ddc_modules.append(obj_mod)
                     elif inst_name == "NBDDC":
                         obj= NBDDCModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.nb_ddc_modules.append(obj_mod)
                     elif inst_name == "MSDR3000":
                         obj= MSDDX000_RcvModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.msdrx000_modules.append(obj_mod)
                     elif inst_name == "MSDR_RS422":
                         obj= RS422_RcvModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.msdr_rs422_modules.append(obj_mod)
                     elif inst_name == "TFN":
                         obj= TFNModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.tfn_modules.append(obj_mod)
                     elif inst_name == "GPS":
                         obj= GpsNavModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod.registration_name,reg_mod.installation_name,reg_mod.channel_number,obj)
+                        obj_mod = self.object_module(reg_mod,obj)
                         self.gps_modules.append(obj_mod)
                     
                     if obj_mod != None:
@@ -3510,7 +3571,7 @@ class MSDDRadio:
 
         # Create RX Channel array for external use
         for mod in self.msdrx000_modules + self.msdr_rs422_modules:
-            rx_mod = self.msdd_channel_module(mod.registration_name, mod.installation_name, mod.channel_number,len(self.rx_channels),True,self.MSDDRXTYPE_ANALOG_RX)
+            rx_mod = self.msdd_channel_module(mod,len(self.rx_channels),True,self.MSDDRXTYPE_ANALOG_RX)
             rx_mod.analog_rx_object = mod
             current_position=len(self.rx_channels)
             if self._debug:
@@ -3525,11 +3586,10 @@ class MSDDRadio:
                     oreg_name = rx_mod.output_object.object.full_reg_name
                 print " wb_ddc analog-rx:", mod.object.channel_id(),  "digital-rx:", rx_mod.digital_rx_object.object.channel_id(),  "output:",oreg_name
             self.output_object_container.mark_as_used(rx_mod.output_object)
-            #self.update_rx_channel_mapping(rx_mod, len(self.rx_channels))
             self.rx_channels.append(rx_mod)
-        
+
         for mod in self.nb_ddc_modules:
-            rx_mod = self.msdd_channel_module(mod.registration_name, mod.installation_name, mod.channel_number,len(self.rx_channels), True, self.MSDDRXTYPE_HW_DDC)
+            rx_mod = self.msdd_channel_module(mod,len(self.rx_channels), True, self.MSDDRXTYPE_HW_DDC)
             rx_mod.digital_rx_object = mod
             rx_mod.swddc_object = self.get_inline_swddc_module_object(mod)
             if rx_mod.swddc_object:
@@ -3546,7 +3606,6 @@ class MSDDRadio:
                 print " nb_ddc  digital-ddc:", mod.channel_id(), "swddc", swddc_name, "output:", oreg_name
             self.output_object_container.mark_as_used(rx_mod.output_object)
             self.swddc_object_container.mark_as_used(rx_mod.swddc_object)
-            #self.update_rx_channel_mapping(rx_mod, len(self.rx_channels))
             self.rx_channels.append(rx_mod)
 
         # assign an output module to an rx_channel that is missing
@@ -3568,11 +3627,6 @@ class MSDDRadio:
                 src_mod_name=src_mod.object.full_reg_name
                 mod_type="nb_ddc"
 
-            if rx_mod.msdd_rx_type ==  self.MSDDRXTYPE_FFT:
-                src_mod_name=rx_mod.fft_object.object.full_reg_name
-                src_mod=rx_mod.fft_object
-                mod_type="fft"
-
             out_mod = self.output_object_container.get_object()
             if out_mod == None:
                 print "ERROR: CAN NOT GET FREE OUTPUT OBJECT FOR RX_CHANNEL ", rx_mod.channel_id()
@@ -3590,43 +3644,69 @@ class MSDDRadio:
                 print " For NBDDC modules, ensure a SWDDC module is place in-line before output modules"
             # place an inline swddc module for each nbddc modules
             for rx_mod in self.rx_channels:
-                src_mod=None
-                src_mod_name=""
-                mod_type=""
-                if rx_mod.msdd_rx_type ==  self.MSDDRXTYPE_HW_DDC:
-                    swddc_object=rx_mod.swddc_object
-                    src_mod=rx_mod.digital_rx_object
-                    src_mod_name=src_mod.object.full_reg_name
-                    # add a sw_ddc to the nb_ddc path
-                    if not swddc_object:
-                        swddc_object=self.swddc_object_container.get_object()
+                try:
+                    src_mod=None
+                    src_mod_name=""
+                    mod_type=""
+                    if rx_mod.msdd_rx_type ==  self.MSDDRXTYPE_HW_DDC:
+                        swddc_object=rx_mod.swddc_object
+                        src_mod=rx_mod.digital_rx_object
+                        src_mod_name=src_mod.object.full_reg_name
+                        # add a sw_ddc to the nb_ddc path
+                        if swddc_object is None:
+                            swddc_object=self.swddc_object_container.get_object()
+                            if swddc_object:
+                                if self._debug:
+                                    print "  linking swddc to nbddc, ", src_mod_name, swddc_object.object.full_reg_name
+                                self.stream_router.linkModules(src_mod_name, swddc_object.object.full_reg_name)
+                                src_mod=swddc_object
+
                         if swddc_object:
-                            if self._debug:
-                                print "  linking swddc to nbddc, ", src_mod_name, swddc_object.object.full_reg_name
-                            self.stream_router.linkModules(src_mod_name, swddc_object.object.full_reg_name)
                             src_mod=swddc_object
 
-                    if swddc_object:
-                        src_mod=swddc_object
-
-                    src_mod_name=src_mod.object.full_reg_name
-                    out_mod = rx_mod.output_object
-                    if not out_mod:
-                        out_mod = self.output_object_container.get_object()
-                    self.swddc_object_container.mark_as_used(swddc_object)
-                    mod_type="nb_ddc"
-
-                    link_op=src_mod_name + " --> " + out_mod.object.full_reg_name
-                    if self._debug:
-                        print "  link for output, modules ", mod_type, " " , link_op
-                    if src_mod:
-                        if self.stream_router.linkModules(src_mod_name, out_mod.object.full_reg_name):
-                            self.output_object_container.mark_as_used(out_mod)
-                            rx_mod.output_object = out_mod
-                        else:
-                            print "Error performing link operation:", link_op
+                        src_mod_name=src_mod.object.full_reg_name
+                        out_mod = rx_mod.output_object
+                        if not out_mod:
+                            out_mod = self.output_object_container.get_object()
                         self.swddc_object_container.mark_as_used(swddc_object)
-                        rx_mod.swddc_object = swddc_object
+                        mod_type="nb_ddc"
+
+                        link_op=src_mod_name + " --> " + out_mod.object.full_reg_name
+                        if self._debug:
+                            print "  link for output, modules ", mod_type, " " , link_op
+                        if src_mod:
+                            if self.stream_router.linkModules(src_mod_name, out_mod.object.full_reg_name):
+                                self.output_object_container.mark_as_used(out_mod)
+                                rx_mod.output_object = out_mod
+                            else:
+                                print "Error performing link operation:", link_op
+                            self.swddc_object_container.mark_as_used(swddc_object)
+                            rx_mod.swddc_object = swddc_object
+                except:
+                    traceback.print_exc()
+
+        if self._debug:
+            print "MSDD creating FFT channels ", len(self.fft_modules)
+        # create fft channels
+        for fft_mod in self.fft_modules:
+            self.stream_router.unlinkModule(fft_mod.channel_id())
+
+            output = self.get_corresponding_output_module_object(fft_mod)
+            if output is None:
+                output=self.output_object_container.get_object()
+
+            if output is None: break
+
+            fft=self.fft_object_container.get_object()
+            if fft is None:
+                if output:
+                    output_object_containter.put_object(output)
+                    break
+            if self._debug:
+                print "FFT channel ", fft.channel_id(),  " -> ", output.channel_id()
+            fft_ch=self.fft_channel( fft, output, self.stream_router )
+            self.fft_channels.append(fft_ch)
+            self.fft_channels_container.put_object(fft_ch)
 
         # create reverse lookup tables based on msdd channel id values to rx_channel numbers
         for rx_pos, rx_channel in zip(range(len(self.rx_channels)), self.rx_channels):
@@ -3648,7 +3728,7 @@ class MSDDRadio:
                     # skip over ourself.
                     if child == mod.object.channel_id(): continue
                     try:
-                        # skip over module that are mapped this channel
+                        # skip over module that are linked to this channel
                         rx_child=self.msdd_channel_to_rx_channel[child]
                         if self._debug:
                             print " Child module ", child , " rx_channel id: ", rx_child.msdd_channel_id()
@@ -3663,8 +3743,10 @@ class MSDDRadio:
                         # skip over modules that are not part of our lookup index
                         pass
 
- 
-    
+
+        print time.ctime(), "Finshed setting up MSDD ", self.msdd_id , " connection ", self.radioAddress, " RX CHANNELS ", len(self.rx_channels), " FFT CHANNELS ", len(self.fft_channels)
+
+
     def update_rx_channel_mapping(self, rx_chan_mod, position):
         if rx_chan_mod == None:
             return
@@ -3834,7 +3916,7 @@ class MSDDRadio:
         return None
 
 
-    def get_fft_channle_for_module(self,full_reg_name):
+    def get_fft_channel_for_module(self,full_reg_name):
         modList = self.stream_router.getModulesFlowListBySource(full_reg_name)
         for module in modList:
             if module == "FFT":
@@ -3846,6 +3928,11 @@ class MSDDRadio:
         return None
 
 
+    def save_fft_channel(self, fft ):
+        self.fft_channels_container.put_object(fft)
+
+    def get_fft_channel(self):
+        return self.fft_channels_container.get_object()
 
 
 if __name__ == '__main__':

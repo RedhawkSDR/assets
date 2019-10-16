@@ -327,6 +327,79 @@ Bit 7: RF Gain
     </struct>
     <configurationkind kindtype="property"/>
   </structsequence>
+  <structsequence id="msdd_psd_output_configuration" mode="readonly">
+    <struct id="msdd_psd_output_configuration_struct">
+      <simple id="msdd_psd_output_configuration::fft_channel_start" name="fft_channel_start" type="short">
+        <value>0</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::fft_channel_stop" name="fft_channel_stop" type="short">
+        <value>0</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::protocol" name="protocol" type="string">
+        <value>UDP_SDDS</value>
+        <enumerations>
+          <enumeration label="SDDS" value="UDP_SDDS"/>
+          <enumeration label="SDDSX" value="UDP_SDDSX"/>
+          <enumeration label="SDDSA" value="UDP_SDDSA"/>
+          <enumeration label="RAW" value="UDP_RAW"/>
+          <enumeration label="VITA49" value="UDP_VITA49"/>
+        </enumerations>
+      </simple>
+      <simple id="msdd_psd_output_configuration::ip_address" name="ip_address" type="string">
+        <value></value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::increment_ip_address" name="increment_ip_address" type="boolean">
+        <value>False</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::port" name="port" type="short">
+        <value>8800</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::increment_port" name="increment_port" type="boolean">
+        <value>True</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::vlan" name="vlan" type="short">
+        <description>vlan &lt;= 0 disables vlan tagging</description>
+        <value>-1</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::increment_vlan" name="increment_vlan" type="boolean">
+        <value>False</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::enabled" name="enabled" type="boolean">
+        <value>False</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::timestamp_offset" name="timestamp_offset" type="short">
+        <value>0</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::endianess" name="endianess" type="short">
+        <value>1</value>
+        <enumerations>
+          <enumeration label="BIG ENDIAN" value="0"/>
+          <enumeration label="LITTLE ENDIAN" value="1"/>
+        </enumerations>
+      </simple>
+      <simple id="msdd_psd_output_configuration::mfp_flush" name="mfp_flush" type="long">
+        <description>Determine what paramters will initiate a packet flush.
+
+Bit 0: IF Frequency Offset
+Bit 1: RF Tuned Frequency
+Bit 2: Scan Stop Frequency
+Bit 3: Number of spectral Bins
+Bit 4: Digital Decimation
+Bit 5: Digital Interpolation
+Bit 6: Digital Gain
+Bit 7: RF Gain
+</description>
+        <value>63</value>
+        <range max="255" min="0"/>
+      </simple>
+      <simple id="msdd_psd_output_configuration::vlan_enable" name="vlan_enable" type="boolean">
+        <description>This property will enable vlan tagging on the msdd if set to True. When set to false, the sdds output port will still pass the vlan tag on a push.  Set this value as false if you want the vlan tagging to occur elsewhere, such as an access mode port on a switch.</description>
+        <value>True</value>
+      </simple>
+    </struct>
+    <configurationkind kindtype="property"/>
+  </structsequence>
+
   <struct id="msdd_psd_configuration" mode="readwrite">
     <description>This is global across all fft modules.</description>
     <simple id="msdd_psd_configuration::fft_size" name="fft_size" type="double">

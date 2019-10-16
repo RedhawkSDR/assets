@@ -1188,6 +1188,158 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                                                              mode="readonly")
 
 
+        class msdd_psd_output_configuration_struct_struct(object):
+            fft_channel_start = simple_property(
+                                                 id_="msdd_psd_output_configuration::fft_channel_start",
+                                                 name="fft_channel_start",
+                                                 type_="short",
+                                                 defvalue=0
+                                                 )
+
+            fft_channel_stop = simple_property(
+                                                id_="msdd_psd_output_configuration::fft_channel_stop",
+                                                name="fft_channel_stop",
+                                                type_="short",
+                                                defvalue=0
+                                                )
+
+            protocol = simple_property(
+                                       id_="msdd_psd_output_configuration::protocol",
+                                       name="protocol",
+                                       type_="string",
+                                       defvalue="UDP_SDDS"
+                                       )
+
+            ip_address = simple_property(
+                                         id_="msdd_psd_output_configuration::ip_address",
+                                         name="ip_address",
+                                         type_="string",
+                                         defvalue=""
+                                         )
+
+            increment_ip_address = simple_property(
+                                                   id_="msdd_psd_output_configuration::increment_ip_address",
+                                                   name="increment_ip_address",
+                                                   type_="boolean",
+                                                   defvalue=False
+                                                   )
+
+            port = simple_property(
+                                   id_="msdd_psd_output_configuration::port",
+                                   name="port",
+                                   type_="short",
+                                   defvalue=8800
+                                   )
+
+            increment_port = simple_property(
+                                             id_="msdd_psd_output_configuration::increment_port",
+                                             name="increment_port",
+                                             type_="boolean",
+                                             defvalue=True
+                                             )
+
+            vlan = simple_property(
+                                   id_="msdd_psd_output_configuration::vlan",
+                                   name="vlan",
+                                   type_="short",
+                                   defvalue=-1
+                                   )
+
+            increment_vlan = simple_property(
+                                             id_="msdd_psd_output_configuration::increment_vlan",
+                                             name="increment_vlan",
+                                             type_="boolean",
+                                             defvalue=False
+                                             )
+
+            enabled = simple_property(
+                                      id_="msdd_psd_output_configuration::enabled",
+                                      name="enabled",
+                                      type_="boolean",
+                                      defvalue=False
+                                      )
+
+            timestamp_offset = simple_property(
+                                               id_="msdd_psd_output_configuration::timestamp_offset",
+                                               name="timestamp_offset",
+                                               type_="short",
+                                               defvalue=0
+                                               )
+
+            endianess = simple_property(
+                                        id_="msdd_psd_output_configuration::endianess",
+                                        name="endianess",
+                                        type_="short",
+                                        defvalue=1
+                                        )
+
+            mfp_flush = simple_property(
+                                        id_="msdd_psd_output_configuration::mfp_flush",
+                                        name="mfp_flush",
+                                        type_="long",
+                                        defvalue=63
+                                        )
+
+            vlan_enable = simple_property(
+                                          id_="msdd_psd_output_configuration::vlan_enable",
+                                          name="vlan_enable",
+                                          type_="boolean",
+                                          defvalue=True
+                                          )
+
+            def __init__(self, fft_channel_start=0, fft_channel_stop=0, protocol="UDP_SDDS", ip_address="", increment_ip_address=False, port=8800, increment_port=True, vlan=-1, increment_vlan=False, enabled=False, timestamp_offset=0, endianess=1, mfp_flush=63, vlan_enable=True):
+                self.fft_channel_start = fft_channel_start
+                self.fft_channel_stop = fft_channel_stop
+                self.protocol = protocol
+                self.ip_address = ip_address
+                self.increment_ip_address = increment_ip_address
+                self.port = port
+                self.increment_port = increment_port
+                self.vlan = vlan
+                self.increment_vlan = increment_vlan
+                self.enabled = enabled
+                self.timestamp_offset = timestamp_offset
+                self.endianess = endianess
+                self.mfp_flush = mfp_flush
+                self.vlan_enable = vlan_enable
+
+            def __str__(self):
+                """Return a string representation of this structure"""
+                d = {}
+                d["fft_channel_start"] = self.fft_channel_start
+                d["fft_channel_stop"] = self.fft_channel_stop
+                d["protocol"] = self.protocol
+                d["ip_address"] = self.ip_address
+                d["increment_ip_address"] = self.increment_ip_address
+                d["port"] = self.port
+                d["increment_port"] = self.increment_port
+                d["vlan"] = self.vlan
+                d["increment_vlan"] = self.increment_vlan
+                d["enabled"] = self.enabled
+                d["timestamp_offset"] = self.timestamp_offset
+                d["endianess"] = self.endianess
+                d["mfp_flush"] = self.mfp_flush
+                d["vlan_enable"] = self.vlan_enable
+                return str(d)
+
+            @classmethod
+            def getId(cls):
+                return "msdd_psd_output_configuration_struct"
+
+            @classmethod
+            def isStruct(cls):
+                return True
+
+            def getMembers(self):
+                return [("fft_channel_start",self.fft_channel_start),("fft_channel_stop",self.fft_channel_stop),("protocol",self.protocol),("ip_address",self.ip_address),("increment_ip_address",self.increment_ip_address),("port",self.port),("increment_port",self.increment_port),("vlan",self.vlan),("increment_vlan",self.increment_vlan),("enabled",self.enabled),("timestamp_offset",self.timestamp_offset),("endianess",self.endianess),("mfp_flush",self.mfp_flush),("vlan_enable",self.vlan_enable)]
+
+        msdd_psd_output_configuration = structseq_property(id_="msdd_psd_output_configuration",
+                                                             structdef=msdd_psd_output_configuration_struct_struct,
+                                                             defvalue=[],
+                                                             configurationkind=("property",),
+                                                             mode="readonly")
+
+
         class frontend_tuner_status_struct_struct(frontend.default_frontend_tuner_status_struct_struct):
             available_bandwidth = simple_property(
                                                   id_="FRONTEND::tuner_status::available_bandwidth",

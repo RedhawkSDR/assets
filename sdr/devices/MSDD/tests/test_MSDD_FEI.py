@@ -38,12 +38,14 @@ dut_config = {}
 '''
 
 #******* MODIFY CONFIG BELOW **********#
-DUT = 'MSDD|3000|s100|vr1a'
+#DUT = 'MSDD|3000|s100|vr1a'
+DUT = "MSDD|3000|s98"
 
 # Optional:
-DEBUG_LEVEL = 3    # typical values include 0, 1, 2, 3, 4 and 5
+DEBUG_LEVEL = 4    # typical values include 0, 1, 2, 3, 4 and 5
 DUT_INDEX = None
-DUT_IP_ADDR = "192.168.11.97"
+#DUT_IP_ADDR = "192.168.11.97"
+DUT_IP_ADDR = "192.168.12.2"
 DUT_PORT = None
 DUT_IFACE = None
 MCAST_GROUP = "234.168.103.100"
@@ -240,7 +242,24 @@ dut_config['MSDD'] = {
                 'msdd_output_configuration::mfp_flush'       : 63,
                 'msdd_output_configuration::vlan_enable'     : False                        
             } # more added below
+        ],
+
+        'msdd_psd_output_configuration': [
+            {
+                'msdd_psd_output_configuration::fft_channel_start'    : 0,
+                'msdd_psd_output_configuration::fft_channel_stop'    : 0,
+                'msdd_psd_output_configuration::protocol'        : 'UDP_SDDS',
+                'msdd_psd_output_configuration::ip_address'      : MCAST_GROUP or '233.0.0.100',
+                'msdd_psd_output_configuration::port'            : MCAST_PORT or 0,
+                'msdd_psd_output_configuration::vlan'            : MCAST_VLAN or 0,
+                'msdd_psd_output_configuration::enabled'         : True,
+                'msdd_psd_output_configuration::timestamp_offset': 0,
+                'msdd_psd_output_configuration::endianess'       : 1,
+                'msdd_psd_output_configuration::mfp_flush'       : 63,
+                'msdd_psd_output_configuration::vlan_enable'     : False
+            } # more added below
         ]
+
     },
     'properties'  : {},
     
@@ -381,7 +400,7 @@ dut_config['MSDD|3000|s98']['capabilities'] = [
                 'BW'      : [1.3e6,1.3e6],
                 'SR'      : [4.9152e6, 4.9152e6],
                 'GAIN'    : [-48.0, 12.0],
-                'NUMDDCs' : 16,
+                'NUMDDCs' : 5,
             }
         }
     ]
