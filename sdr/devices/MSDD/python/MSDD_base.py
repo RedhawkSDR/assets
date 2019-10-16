@@ -171,7 +171,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                                           id_="advanced::udp_timeout",
                                           name="udp_timeout",
                                           type_="double",
-                                          defvalue=1.0
+                                          defvalue=0.5
                                           )
         
             rcvr_mode = simple_property(
@@ -215,6 +215,28 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                                        type_="short",
                                        defvalue=0
                                        )
+
+            enable_inline_swddc = simple_property(
+                                       id_="advanced::enable_inline_swddc",
+                                       name="enable_inline_swddc",
+                                       type_="boolean",
+                                       defvalue=True
+                                       )
+
+            max_cpu_load = simple_property(
+                                       id_="advanced::max_cpu_load",
+                                       name="max_cpu_load",
+                                       type_="float",
+                                       defvalue=95.0
+                                       )
+
+            max_nic_percentage = simple_property(
+                                       id_="advanced::max_nic_percentage",
+                                       name="max_nic_percentage",
+                                       type_="float",
+                                       defvalue=0.90
+                                       )
+
         
             minimum_connected_nic_rate = simple_property(
                                                          id_="minimum_connected_nic_rate",
@@ -242,6 +264,9 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                 d["sw_ddc_mode"] = self.sw_ddc_mode
                 d["psd_mode"] = self.psd_mode
                 d["spc_mode"] = self.spc_mode
+                d["enable_inline_swddc"] = self.enable_inline_swddc
+                d["max_cpu_load"] = self.max_cpu_load
+                d["max_nic_percentage"] = self.max_nic_percentage
                 d["minimum_connected_nic_rate"] = self.minimum_connected_nic_rate
                 return str(d)
         
@@ -254,7 +279,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                 return True
         
             def getMembers(self):
-                return [("enable_msdd_advanced_debugging_tools",self.enable_msdd_advanced_debugging_tools),("allow_internal_allocations",self.allow_internal_allocations),("udp_timeout",self.udp_timeout),("rcvr_mode",self.rcvr_mode),("wb_ddc_mode",self.wb_ddc_mode),("hw_ddc_mode",self.hw_ddc_mode),("sw_ddc_mode",self.sw_ddc_mode),("psd_mode",self.psd_mode),("spc_mode",self.spc_mode),("minimum_connected_nic_rate",self.minimum_connected_nic_rate)]
+                return [("enable_msdd_advanced_debugging_tools",self.enable_msdd_advanced_debugging_tools),("allow_internal_allocations",self.allow_internal_allocations),("udp_timeout",self.udp_timeout),("rcvr_mode",self.rcvr_mode),("wb_ddc_mode",self.wb_ddc_mode),("hw_ddc_mode",self.hw_ddc_mode),("sw_ddc_mode",self.sw_ddc_mode),("psd_mode",self.psd_mode),("spc_mode",self.spc_mode),("enable_inline_swddc",self.enable_inline_swddc),("max_cpu_loadc",self.max_cpu_load),("max_nic_percentage",self.max_nic_percentage),("minimum_connected_nic_rate",self.minimum_connected_nic_rate)]
 
         advanced = struct_property(id_="advanced",
                                    structdef=advanced_struct,
@@ -1008,7 +1033,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                                                        structdef=msdd_output_configuration_struct_struct,
                                                        defvalue=[],
                                                        configurationkind=("property",),
-                                                       mode="readwrite")
+                                                       mode="readonly")
 
 
         class msdd_block_output_configuration_struct_struct(object):
@@ -1160,7 +1185,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                                                              structdef=msdd_block_output_configuration_struct_struct,
                                                              defvalue=[],
                                                              configurationkind=("property",),
-                                                             mode="readwrite")
+                                                             mode="readonly")
 
 
         class frontend_tuner_status_struct_struct(frontend.default_frontend_tuner_status_struct_struct):

@@ -60,7 +60,7 @@ with this program.  If not, see http://www.gnu.org/licenses/.
     </simple>
     <simple id="advanced::udp_timeout" name="udp_timeout" type="double">
       <description>Timeout to receive data after a command is sent</description>
-      <value>1.0</value>
+      <value>0.5</value>
       <units>seconds</units>
     </simple>
     <simple id="advanced::rcvr_mode" name="rcvr_mode" type="short">
@@ -123,6 +123,19 @@ with this program.  If not, see http://www.gnu.org/licenses/.
         <enumeration label="Enable SPC Mode" value="32"/>
       </enumerations>
     </simple>
+    <simple id="advanced::enable_inline_swddc" name="enable_inline_swddc" type="boolean">
+      <description>Attach a SWDDC module to NBDDC module on startup.</description>
+      <value>True</value>
+    </simple>
+     <simple id="advanced::max_cpu_load" name="max_cpu_load" type="float">
+      <description>Maximum value to determine device BUSY state for MSDD DSP load..</description>
+      <value>95.0</value>
+     </simple>
+     <simple id="advanced::max_nic_percentage" name="max_nic_percentage" type="float">
+      <description>Maximum utilization of nic rate determine device BUSY state for MSDD.</description>
+      <value>.90</value>
+    </simple>
+
     <simple id="minimum_connected_nic_rate" mode="readwrite" type="float">
       <description>If the MSDD is connected at a lower rate, then error the connection</description>
       <value>1000</value>
@@ -181,7 +194,7 @@ with this program.  If not, see http://www.gnu.org/licenses/.
     </simple>
     <configurationkind kindtype="property"/>
   </struct>
-  <structsequence id="msdd_output_configuration" mode="readwrite">
+  <structsequence id="msdd_output_configuration" mode="readonly">
     <struct id="msdd_output_configuration_struct">
       <simple id="msdd_output_configuration::tuner_number" name="tuner_number" type="short">
         <description>Tuner number from the frontend_tuner_status property</description>
@@ -242,7 +255,7 @@ Bit 7: RF Gain
     </struct>
     <configurationkind kindtype="property"/>
   </structsequence>
-  <structsequence id="msdd_block_output_configuration" mode="readwrite">
+  <structsequence id="msdd_block_output_configuration" mode="readonly">
     <struct id="msdd_block_output_configuration_struct">
       <simple id="msdd_block_output_configuration::tuner_number_start" name="tuner_number_start" type="short">
         <value>0</value>

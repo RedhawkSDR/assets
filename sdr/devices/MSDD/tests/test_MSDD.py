@@ -47,6 +47,7 @@ def _generateRFInfoPkt(rf_freq=1e9,rf_bw=1e9,if_freq=0,spec_inverted=False,rf_fl
 
         return rf_info_pkt
 
+
 class DeviceTests(ossie.utils.testing.RHTestCase):
     # Path to the SPD file, relative to this file. This must be set in order to
     # launch the device.
@@ -557,6 +558,7 @@ if __name__ == "__main__":
         args = parser.parse_args()
         IP_ADDRESS=args.ip
         DEBUG_LEVEL=args.debug
+	INTERFACE=args.inf
     except:
         pass
     sys.argv[1:] = args.unittest_args
