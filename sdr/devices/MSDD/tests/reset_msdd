@@ -1,0 +1,17 @@
+#!/usr/bin/python
+
+import sys
+import time
+try:
+    from msddcontroller import *
+except:
+    sys.path += [ '../python' ]
+    from msddcontroller import *
+
+c=Connection((sys.argv[1],23))
+
+try:
+    c.sendStringCommand('brd reset', expect_output=False)
+    time.sleep(1)
+except:
+    pass

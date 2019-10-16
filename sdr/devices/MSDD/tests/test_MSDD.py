@@ -18,6 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
+import subprocess
 import sys
 import ossie.utils.testing
 from ossie.utils import sb
@@ -77,13 +78,22 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
 
 
     def setUp(self):
+        # reset device
+        subprocess.call(['./reset_msdd', IP_ADDRESS])
+
         # Launch the device, using the selected implementation
         configure = {
+                'DEBUG_LEVEL': DEBUG_LEVEL,
                  "msdd_configuration" : {
                      "msdd_configuration::msdd_ip_address": IP_ADDRESS,
                      "msdd_configuration::msdd_port":"23"
                       }
-                 ,
+                ,
+                "advanced":{
+                        "advanced::udp_timeout" : 0.10,
+                        "advanced::enable_secondary_tuners" : True,
+                        "advanced::enable_fft_channels" : True
+                     },
                 "msdd_output_configuration": [{
                      "msdd_output_configuration::tuner_number":0,
                      "msdd_output_configuration::protocol":"UDP_SDDS",
@@ -100,7 +110,7 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
                  }
         
         
-        self.comp = sb.launch(self.spd_file, impl=self.impl,configure=configure,execparams={'DEBUG_LEVEL': DEBUG_LEVEL})
+        self.comp = sb.launch(self.spd_file, impl=self.impl,properties=configure)
     
     def tearDown(self):
         # Clean up all sandbox artifacts created during test
@@ -209,15 +219,18 @@ class MsddDeviceTests(ossie.utils.testing.RHTestCase):
     SPD_FILE = '../MSDD.spd.xml'
 
     def setUp(self):
+        # reset device
+        subprocess.call(['./reset_msdd', IP_ADDRESS])
 
         self.comp=sb.launch(self.spd_file,
                       properties={ 
                 "DEBUG_LEVEL": DEBUG_LEVEL, 
                 "msdd_configuration" : { "msdd_configuration::msdd_ip_address" :  IP_ADDRESS },
                 "advanced":{
-                                  "advanced::allow_internal_allocations" : False 
+                        "advanced::allow_internal_allocations" : False
                              },
-                "msdd_output_configuration": [{
+                "msdd_output_configuration": [
+                        {
                              "msdd_output_configuration::tuner_number":0,
                              "msdd_output_configuration::protocol":"UDP_SDDS",
                              "msdd_output_configuration::ip_address":"234.168.103.100",
@@ -228,6 +241,18 @@ class MsddDeviceTests(ossie.utils.testing.RHTestCase):
                              "msdd_output_configuration::endianess":1,
                              "msdd_output_configuration::mfp_flush":63,
                              "msdd_output_configuration::vlan_enable": False                        
+                             },
+                        {
+                                "msdd_output_configuration::tuner_number":1,
+                             "msdd_output_configuration::protocol":"UDP_SDDS",
+                             "msdd_output_configuration::ip_address":"234.168.103.100",
+                             "msdd_output_configuration::port":1,
+                             "msdd_output_configuration::vlan":0,
+                             "msdd_output_configuration::enabled":True,
+                             "msdd_output_configuration::timestamp_offset":0,
+                             "msdd_output_configuration::endianess":1,
+                             "msdd_output_configuration::mfp_flush":63,
+                             "msdd_output_configuration::vlan_enable": False
                              }]
                 }
 
@@ -357,6 +382,9 @@ class RFInfoTest(ossie.utils.testing.RHTestCase):
     SPD_FILE = '../MSDD.spd.xml'
 
     def setUp(self):
+        # reset device
+        subprocess.call(['./reset_msdd', IP_ADDRESS])
+
         self.alloc1=None
         self.alloc2=None
         self.comp=sb.launch(self.spd_file,

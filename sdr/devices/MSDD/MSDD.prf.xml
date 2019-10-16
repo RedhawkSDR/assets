@@ -60,7 +60,7 @@ with this program.  If not, see http://www.gnu.org/licenses/.
     </simple>
     <simple id="advanced::udp_timeout" name="udp_timeout" type="double">
       <description>Timeout to receive data after a command is sent</description>
-      <value>0.5</value>
+      <value>0.2</value>
       <units>seconds</units>
     </simple>
     <simple id="advanced::rcvr_mode" name="rcvr_mode" type="short">
@@ -127,13 +127,21 @@ with this program.  If not, see http://www.gnu.org/licenses/.
       <description>Attach a SWDDC module to NBDDC module on startup.</description>
       <value>True</value>
     </simple>
+    <simple id="advanced::enable_secondary_tuners" name="enable_secondary_tuners" type="boolean">
+      <description>Use remaining SWDDC modules as piggyback tuners on NBDDC module on startup.</description>
+      <value>False</value>
+    </simple>
+    <simple id="advanced::enable_fft_channels" name="enable_fft_channels" type="boolean">
+      <description>Enable FFT modules to be dynamically assigned to controlling allocations.</description>
+      <value>False</value>
+    </simple>
      <simple id="advanced::max_cpu_load" name="max_cpu_load" type="float">
       <description>Maximum value to determine device BUSY state for MSDD DSP load..</description>
       <value>95.0</value>
      </simple>
      <simple id="advanced::max_nic_percentage" name="max_nic_percentage" type="float">
       <description>Maximum utilization of nic rate determine device BUSY state for MSDD.</description>
-      <value>.90</value>
+      <value>90</value>
     </simple>
 
     <simple id="minimum_connected_nic_rate" mode="readwrite" type="float">

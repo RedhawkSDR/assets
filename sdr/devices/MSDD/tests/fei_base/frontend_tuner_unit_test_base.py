@@ -17,6 +17,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 
 import unittest
+import subprocess
 import nose
 from ossie.utils import sb#, testing
 import ossie.utils.testing
@@ -402,6 +403,11 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
             generateTunerRequest=defaultGenerateTunerRequest
     
     def setUp(self):
+        try:
+            ipaddr=DEVICE_INFO['configure']['msdd_configuration']['msdd_configuration::msdd_ip_address']
+            subprocess.call(['./reset_msdd', ipaddr])
+        except:
+            pass
         signal.signal(signal.SIGINT, self.tearDown)
         signal.signal(signal.SIGTERM, self.tearDown)
         signal.signal(signal.SIGQUIT, self.tearDown)
@@ -2996,6 +3002,7 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
             #No RX_DIGITIZER_CHANNELIZER Capability
             pass
    
+
     def testFRONTEND_2_5_2(self):
         ''' RX_DIG 2.5.2 Allocate a single RX_DIGITIZER_CHANNELIZER and multiple DDC
         '''
@@ -3011,18 +3018,20 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
             error = False
             numDDCs = DEVICE_INFO['capabilities'][0]["DDC"]["NUMDDCs"]
             for tuner_num in xrange(0,numDDCs):
-                t2 = generateDDCRequest(idx=0,cf=t1['CF']+5000*tuner_num)
-                allocations.append(generateTunerAlloc(t2))
-                if not self.dut_ref.allocateCapacity(allocations[tuner_num]):
-                    self.check(True, False, 'Cannot allocate DDC')
-                    error = True
-            self.check(error, False, 'Allocate Multiple DDCs without error')
+                dev_state=self.dut_ref._get_usageState()
+                if dev_state != CF.Device.BUSY:
+                    t2 = generateDDCRequest(idx=0,cf=t1['CF']+5000*tuner_num)
+                    allocations.append(generateTunerAlloc(t2))
+                    if not self.dut_ref.allocateCapacity(allocations[tuner_num]):
+                        self.check(True, False, 'Cannot allocate DDC')
+                        error = True
+                    self.check(error, False, 'Allocate Multiple DDCs without error')
                 
             time.sleep(1)
                 
             #Deallocate all DDCs
             error = False
-            for tuner_num in xrange(0,numDDCs):
+            for tuner_num in xrange(0,len(allocations)):
                 try:
                     self.dut_ref.deallocateCapacity(allocations[tuner_num])
                 except:
@@ -3041,7 +3050,6 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
         else:
             #No RX_DIGITIZER_CHANNELIZER Capability
             pass
-    
     
     
     def testFRONTEND_2_5_3(self):
@@ -3347,15 +3355,17 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
         for idx in range(len(DEVICE_INFO['capabilities'])):
             if DEVICE_INFO['capabilities'][idx].has_key('DDC'):
                 for tuner_num in range(DEVICE_INFO['capabilities'][idx]['DDC']['NUMDDCs']):
-                    ddcAlloc = generateDDCRequest(idx)
-                    print " tuner ", tuner_num, " alloc ", ddcAlloc
-                    ddcAlloc['CF'] =cf+(100*tuner_num)
-                    ddcAllocs.append(generateTunerAlloc(ddcAlloc))
-                    try:
-                        success = self.dut_ref.allocateCapacity(ddcAllocs[-1])
-                        self.check(success, True, "Allocate DDC Num %s" % (tuner_num))
-                    except:
-                        self.check(True,False, "Allocate DDC Num %s" % (tuner_num))
+                    dev_state=self.dut_ref._get_usageState()
+                    if dev_state != CF.Device.BUSY:
+                        ddcAlloc = generateDDCRequest(idx)
+                        print " tuner ", tuner_num, " alloc ", ddcAlloc
+                        ddcAlloc['CF'] =cf+(100*tuner_num)
+                        ddcAllocs.append(generateTunerAlloc(ddcAlloc))
+                        try:
+                            success = self.dut_ref.allocateCapacity(ddcAllocs[-1])
+                            self.check(success, True, "Allocate DDC Num %s" % (tuner_num))
+                        except:
+                            self.check(True,False, "Allocate DDC Num %s" % (tuner_num))
           
         tuner_count = 0 
         props = self.dut.query([])

@@ -59,24 +59,40 @@ class InvalidValue(Exception):
 #
 
 def create_csv(val_list):
+    """
+    Create comma separate list of values
+    """
     return ','.join([ str(x) for x in val_list])
 
-#
-#  expand bit mask into a list of 1,0 in reverse
-#  i.e. 11 bin 1011  returns [ 1,1,0,1]
-#
 def expand_bitmask(bit_mask, lsb=True, ltype=int):
+    """
+    expand a bit mask value into a list of 1 and 0. ltype
+    defaults to int but could be str
+    """
     blist=[ ltype(x) for x in "{0:b}".format(bit_mask)]
     # put lsb bit in list first
     if lsb:
         blist.reverse()
     return blist
 
-#
-# search for a value in a list of numbers that
-# equals the value or closest to value+ (value*1.tolerance_percentage)
-#
 def get_value_valid_list(value,value_tolerance_perc, values, return_max=None):
+    """
+    Validate that value is in a list of values is within a given tolerance. Search for
+    value equal to or closest to value+(value*1.tolerance_percentage). If no value
+    is provided then return the min or max value in the list specified by return_max
+
+    Parameters:
+    value : value to search for
+    value_tolerance_perc : percentage tolerance to use when searching 0..100
+    values : list of valid values
+    return_max: if no search value give returns min (None/False) or max (True) value
+
+    Returns:
+    --------
+    If value provided, returns a matching or closest matching value in the list or
+    throws InvalidValue exception
+    If no value provided returns minimum or maximum in list of values
+    """
     sorted_list = sorted(values)
     idx=0
     if return_max: idx=-1
@@ -91,12 +107,53 @@ def get_value_valid_list(value,value_tolerance_perc, values, return_max=None):
     for num in range(0,len(sorted_list)):
         if sorted_list[num] < value:
             continue
-        if sorted_list[num] >= value and ( not max_tolerance_val or sorted_list[num] <= max_tolerance_val):
+        if sorted_list[num] >= value and ( max_tolerance_val is None or sorted_list[num] <= max_tolerance_val):
             return sorted_list[num]
         if sorted_list[num] > max_tolerance_val:
             continue
 
     raise InvalidValue("Invalid value, requested value: %s (tolerance:%s%%) not in range: %s " % (value,value_tolerance_perc,','.join([str(x) for x in values])))
+
+
+def check_value_from_values( value, _get_values_list):
+    """
+    search for a value in a list an return the position of the value in the list. If values is not
+    found returns InvalidValue.
+
+    Parameters:
+    ----------
+    value : value to search for
+    _get_values_list : callable that generates a list or an actual list
+
+    Returns:
+    index of value in list or throw InvalidValue
+
+    """
+    if callable(_get_values_list):
+        vlist=_get_values_list()
+    else:
+        vlist=_get_values_list
+    try:
+        idx=vlist.index(value)
+    except:
+        raise InvalidValue("Item not found in list, item <" + str(value) + "> list " + ",".join([ str(x) for x in vlist]) )
+    return True
+
+
+#
+# search for a value in a list of expected values
+# throw exception if match was not found, else return the index in the list
+#
+# def get_index_from_value( value, _get_values_list):
+#     if callable(_get_values_list):
+#         vlist=_get_values_list()
+#     else:
+#         vlist=_get_values_list
+#     for i, v in zip(range(len(vlist)),vlist):
+#         if str(value) == str(v):
+#             return i
+#     raise InvalidValue("Item not found in list, item <" + str(value) + "> list " + ",".join(vlist) )
+
 
 
 class Connection(object):
@@ -427,6 +484,11 @@ class baseModule(object):
             raise Exception("COULD NOT PARSE OUTPUT \"" + str(resp) + "\"AS DESIRED.")
         return resp_split_ws
 
+    def _setEnable(self, enable):
+        arg="0"
+        if enable: arg="1"
+        self.send_set_command("ENB",str(arg))
+
     def create_range_string(self,min,max,step,sep="::"):
         return str(min) + str(sep) +  str(step) + str(sep) +  str(max)
 
@@ -445,7 +507,9 @@ class baseModule(object):
         return ','.join( [ bit_names[x[0]] for x in enumerate(blist) if x[1] == 1 ])
 
     def process_bit_mask(self, _get_mask, _get_mask_names ):
-        bmask=_get_mask()
+        bmask=_get_mask
+        if callable(_get_mask):
+            bmask=_get_mask()
         bnames=_get_mask_names()
         return self.decode_bit_mask(bmask,bnames)
 
@@ -495,15 +559,8 @@ class baseModule(object):
         
         return val
 
-    def get_index_from_value(self,value, _get_values_list):
-        if callable(_get_values_list):
-            vlist=_get_values_list()
-        else:
-            vlist=_get_values_list
-        for i, v in zip(range(len(vlist)),vlist):
-            if str(value) == str(v):
-                return i
-        raise InvalidValue("Item not found in list, item <" + str(value) + "> list " + ",".join(vlist) )
+    # def get_index_from_value(self,value, _get_values_list):
+    #     return get_index_from_value(value, _get_values_list)
 
     def get_indexed_value(self, _get_index, _get_values_list, rtype=None):
         if callable(_get_index) :
@@ -582,7 +639,20 @@ class baseModule(object):
             print "setter_with_validation valid: ", successful_validation, " value ", value, "  get value ", ret
         return successful_validation
 
-        
+    def _setEnable(self, enable):
+        arg="0"
+        if enable: arg="1"
+        self.send_set_command("ENB",arg)
+
+    def getEnable(self):
+        resp = self.send_query_command("ENB")
+        return (int(self.parseResponse(resp, -1,':')[0]) == 1)
+
+    def setEnable(self, enable):
+        return self.setter_with_validation(enable, self._setEnable, self.getEnable)
+
+    enable = property(getEnable, setEnable, doc="Enable/Disable module")
+
 #end class baseModule
 
 class ConsoleModule(baseModule):
@@ -683,7 +753,7 @@ class ConsoleModule(baseModule):
     def getAdcClk_Hz(self):
         return float(self.getCfg('ADC_CLK')[0])
 
-    def getRfBoardType(self):
+    def getRFBoardType(self):
         return self.getCfg('RF_BRD_TYPE')[0]
 
     def getNumIFPorts(self):
@@ -754,7 +824,7 @@ class ConsoleModule(baseModule):
     maxFreq_Hz = property(getMaxFreq_Hz,doc="Max tune frequency")
     dspRef_Hz = property(getDspRef_Hz,doc="DSP reference frequency")
     adcClk_Hz = property(getAdcClk_Hz,doc="ADC clock rate")
-    rf_board_type = property(getRfBoardType,doc="RF board type, example MSDR3000")
+    rf_board_type = property(getRFBoardType,doc="RF board type, example MSDR3000")
     num_if_ports = property(getNumIFPorts,doc="Number of IF inputs on DSP board, this will be the same as number of receivers")
     bit_adc_exists = property(getHasBitAdc,doc="0 if the DSP board has no BIT ADC, 1 if there is a BIT ADC")
     num_eth_ports = property(getNumEthPorts,doc="Number of Ethernet ports on DSP board")
@@ -849,8 +919,11 @@ class BoardModule(baseModule):
         resp = self.send_query_command("BIT")
         return int(self.parseResponse(resp, 1)[0]) 
 
-    def getBITStr(self):
-        return self.process_bit_mask( self.getBIT, self.getBITList )
+    def getBITStr(self,bit=None):
+        if bit is None:
+            return self.process_bit_mask( self.getBIT, self.getBITList )
+        else:
+            return self.process_bit_mask( bit, self.getBITList )
 
     def getBITList(self):
         resp = self.send_query_command("BITL")
@@ -1145,6 +1218,7 @@ class RS422_RcvModule(RcvBaseModule):
         for i in range(0,len(respList)):
             hz_List.append(float(respList[i])*1e3)
         return hz_List
+
     def getBandwidthListStr(self):
         res_list = self.getBandwidthList_Hz()
         return self.create_csv(res_list)
@@ -1380,7 +1454,7 @@ class DDCBaseModule(baseModule):
         self._gain_list=None
         self._attenuation_list=None
 
-    def updateRfFrequencyOffset(self,rf_offset_hz):
+    def updateRFFrequencyOffset(self,rf_offset_hz):
         self.rf_offset_hz = float(rf_offset_hz)
     def _setFrequency_Hz(self, freq):
         freq_offset = freq - self.rf_offset_hz
@@ -1415,7 +1489,7 @@ class DDCBaseModule(baseModule):
         idx=bw_list.index(bw)
         dlist=self.getDecimationList()
         if self._debug:
-            print " BASE DDC _setBandwidth ", bw, bw_list, " index ", idx, " decimation ", dlist[idx]
+            print " DDCBase _setBandwidth ", bw, bw_list, " index ", idx, " decimation ", dlist[idx]
         self.setDecimation(dlist[idx])
 
     # seed bandwidth list using decimation values and then getting bandwidth from device
@@ -1428,6 +1502,8 @@ class DDCBaseModule(baseModule):
                 ret.append( float(isr/x))
             except:
                 pass
+        if self._debug:
+            print "DDCBase, _getBandwidthList_Hz ", self.channel_id(), " list ", ret
         return ret
 
     def getBandwidth_Hz(self):
@@ -1435,8 +1511,8 @@ class DDCBaseModule(baseModule):
 
     def getBandwidthList_Hz(self):
         if self._bw_hz_list is None:
-            self._bw_hz_list=self._getBandwidthList_Hz/()
-        return self._bw_hz_list
+            self._bw_hz_list=self._getBandwidthList_Hz()
+        return self._bw_hz_list[:]
 
     def getBandwidthListStr(self):
         return self.create_csv(self.getBandwidthList_Hz())
@@ -1449,7 +1525,7 @@ class DDCBaseModule(baseModule):
         bw_list=self.getBandwidthList_Hz()
         try:
             if self._debug:
-                print "DDC Module, validBandwidth ", bandwidth_hz, " list ", bw_list
+                print "DDCBase, validBandwidth ", bandwidth_hz, " list ", bw_list
             idx=bw_list.index(bandwidth_hz)
         except:
             raise InvalidValue("Invalid bandwidth value " + str(bandwidth_hz))
@@ -1817,7 +1893,6 @@ class NBDDCModule(DDCBaseModule):
     def __init__(self, connection, channel_number=0, mapping_version=2):
         super(NBDDCModule,self).__init__(connection, channel_number, mapping_version)
 
-
     def _getBandwidthList_Hz(self):
         """
         Get the list of valid bandwidths for the channel. This requires actually setting
@@ -1832,6 +1907,8 @@ class NBDDCModule(DDCBaseModule):
                 ret.append( self.getBandwidth_Hz() )
             except:
                 pass
+        if self._debug:
+            print " nbddc _getBandwidthList ", self.channel_id(), " list " ,ret
         return ret
    
     def setBandwidth_Hz(self, bandwidth_hz):
@@ -1844,7 +1921,7 @@ class NBDDCModule(DDCBaseModule):
     def getBandwidthList_Hz(self):
         if self._bw_hz_list is None:
             self._bw_hz_list=self._getBandwidthList_Hz()
-        return self._bw_hz_list
+        return self._bw_hz_list[:]
 
     def getBandwidthListStr(self):
         return self.create_csv(self.getBandwidthList_Hz())
@@ -1854,7 +1931,6 @@ class NBDDCModule(DDCBaseModule):
     valid_bandwidth_list_hz = property(getBandwidthList_Hz)
     available_bandwidth_hz =  property(getBandwidthListStr, doc="Available Bandwidths")
 
-    
     
 class SWDDCModule(DDCBaseModule):
     MOD_NAME_MAPPING={1:"SDC",2:"SWDDCDEC2"}
@@ -1904,28 +1980,42 @@ class SWDDCModule(DDCBaseModule):
     def getBITList(self):
         return []
 
+    def setParent(self, parent):
+        self._parent=parent
+
     # if parent is known then we are basing the bandwidth list on the parent's current bandwidth
     def _getBandwidthList_Hz(self):
         ret=[]
+        parent_bw=None
         if self._parent:
-            sr=self._parent.getBandwidth_Hz()
-        else:
-            sr=self.getInputSampleRate()
+            parent_bw=self._parent.getBandwidth_Hz()
+
+        sr=self.getInputSampleRate()
         decs=self.getDecimationList()
+
         for x in decs:
             try:
-                ret.append( float(sr/x))
+                bw=float(sr/x)
+                if parent_bw:
+                    bw=min(bw,parent_bw)
+                ret.append(bw)
             except:
                 pass
         return ret
 
     def getBandwidth_Hz(self):
-        return self.getSampleRate()
+        if self._parent:
+            # take the smaller of parent's current bw and our sample rate
+            bw=self._parent.getBandwidth_Hz()
+            sr=self.getSampleRate()
+            return min(bw,sr)
+        else:
+            return self.getSampleRate()
 
     def getBandwidthList_Hz(self):
-        if self._bw_hz_list is None:
-            self._bw_hz_list=self._getBandwidthList_Hz()
-        return self._bw_hz_list
+        # always rebuild list since upstream could reset sample rate on us
+        self._bw_hz_list=self._getBandwidthList_Hz()
+        return self._bw_hz_list[:]
 
     def getBandwidthListStr(self):
         return self.create_csv(self.getBandwidthList_Hz())
@@ -2656,10 +2746,10 @@ class OUTModule(baseModule):
     def _setEnable(self, enable, block_xfer_size=None, sync_channel=None):
         enable_arg="0"
         if enable: enable_arg="1"
-        if not block_xfer_size or block_xfer_size < 0:
+        if block_xfer_size is None or block_xfer_size < 0:
             block_xfer_size=0
         enable_arg+=":" + str(block_xfer_size)
-        if sync_channel >= 0:
+        if sync_channel is not None and sync_channel >= 0:
             enable_arg+=":" + str(sync_channel)
         if self._debug:
             print " OUTModule, setEnable ENB :", str(enable_arg)
@@ -2697,8 +2787,11 @@ class OUTModule(baseModule):
         resp = self.send_query_command("BIT")
         return int(self.parseResponse(resp, 1)[0])
 
-    def getBITStr(self):
-        return self.process_bit_mask( self.getBIT, self.getBITList )
+    def getBITStr(self,bit=None):
+        if bit is None:
+            return self.process_bit_mask( self.getBIT, self.getBITList )
+        else:
+            return self.process_bit_mask( bit, self.getBITList )
 
     def getBITList(self):
         resp = self.send_query_command("BITL")
@@ -2969,8 +3062,6 @@ class OUTModule(baseModule):
 #end class OUTModule
 
 
-
-
 class object_container(object):
     def __init__(self):
         self.used_objects = []
@@ -2979,6 +3070,16 @@ class object_container(object):
         if self.used_objects.count(obj) > 0:
             self.used_objects.remove(obj)
         self.free_objects.append(obj)
+
+    def is_used(self, obj):
+        if obj == None:
+            return False
+        try:
+            idx=self.used_object.index(obj)
+            return True
+        except:
+            return False
+
         
     def mark_as_used(self, obj):
         if obj == None:
@@ -3036,8 +3137,9 @@ class MSDDRadio:
         def channel_id(self):
             return self.registration_name + ':' + str(self.channel_number)
 
-    class msdd_channel_module(registered_module):
-        def __init__(self, reg_mod, rx_channel_num,coherent=False, msdd_rx_type="UNKNOWN"):
+    class rx_channel(object):
+        def __init__(self, msdd_radio, reg_mod, rx_channel_num,coherent=False, msdd_rx_type="UNKNOWN"):
+            self._msdd = msdd_radio
             self.channel_number = reg_mod.channel_number
             self.installation_name = reg_mod.installation_name
             self.registration_name = reg_mod.registration_name
@@ -3049,7 +3151,6 @@ class MSDDRadio:
             self.digital_rx_object = None
             self.output_object = None
             self.swddc_object=None
-            self.fft_object = None
             self.spectral_scan_object = None
             self.spectral_scan_wbddc_object = None
             
@@ -3069,7 +3170,7 @@ class MSDDRadio:
         def has_streaming_output(self):
             return self.output_object != None
         def has_fft_object(self):
-            return self.fft_object != None
+            return self.fft_channel != None
         def has_spectral_scan_object(self):
             return self.spectral_scan_object != None
         
@@ -3090,27 +3191,14 @@ class MSDDRadio:
         def is_spectral_scan(self):
             return self.msdd_rx_type == MSDDRadio.MSDDRXTYPE_SPC
 
-        def addFFTChannel(self, fft ):
-            self.fft_channel=fft
-            self.fft_object=fft.fft
-
-        def removeFFTChannel(self):
-            fft=self.fft_channel
-            self.fft_object=None
-            self.fft_channel=None
-            return fft
-
-        def hasFFTChannel(self):
-            return self.fft_channel != None
-
         def get_registration_name_csv(self):
             reg_name_list = []
             if self.analog_rx_object != None:
                 reg_name_list.append(self.analog_rx_object.object.get_full_reg_name())
             if self.digital_rx_object != None:
                 reg_name_list.append(self.digital_rx_object.object.get_full_reg_name())
-            if self.fft_object != None:
-                reg_name_list.append(self.fft_object.object.get_full_reg_name())
+            if self.fft_channel != None:
+                reg_name_list.append(self.fft_channel.object.get_full_reg_name())
             if self.spectral_scan_object != None:
                 reg_name_list.append(self.spectral_scan_object.object.get_full_reg_name())
             if self.output_object != None:
@@ -3123,29 +3211,162 @@ class MSDDRadio:
                 install_name_list.append(self.analog_rx_object.installation_name)
             if self.digital_rx_object != None:
                 install_name_list.append(self.digital_rx_object.installation_name)
-            if self.fft_object != None:
-                install_name_list.append(self.fft_object.installation_name)
+            if self.fft_channel != None:
+                install_name_list.append(self.fft_channel.installation_name)
             if self.spectral_scan_object != None:
                 install_name_list.append(self.spectral_scan_object.installation_name)
             if self.output_object != None:
                 install_name_list.append(self.output_object.installation_name)
             return create_csv(install_name_list)
 
-        def setEnable(self, enable=True):
+        def addFFTChannel(self, fft ):
+            self.fft_channel=fft
+            self.fft_channel=fft.fft
+
+        def removeFFTChannel(self):
+            fft=self.fft_channel
+            self.fft_channel=None
+            return fft
+
+        def hasFFTChannel(self):
+            return self.fft_channel != None
+
+        # status return object
+        class _status(object):
+            pass
+
+        def _get_analog_status(self):
+            status=self._status()
+            status.center_frequency = self.getFrequeny_Hz()
+            status.available_frequency = self.analog_rx_object.object.available_frequency_hz
+            status.gain = self.analog_rx_object.object.gain
+            status.available_gain = self.analog_rx_object.object.available_gain
+            status.attenuation = self.analog_rx_object.object.attenuation
+            status.available_attenuation = self.analog_rx_object.object.available_attenuation
+            status.adc_meter_values = self.analog_rx_object.object.adc_meter_readable
+            status.bandwidth = self.getBandwidth_Hz()
+            status.available_bandwidth = self.analog_rx_object.object.available_bandwidth_hz
+            status.rcvr_gain = self.digital_rx_object.object.gain
+            return status
+
+
+        def _get_analog_digital_status(self):
+            status=self._status()
+            status.enabled = self.getEnable()
+            status.decimation = self.digital_rx_object.object.decimation
+            status.available_decimation = self.digital_rx_object.object.available_decimation
+            status.attenuation = self.analog_rx_object.object.attenuation
+            status.available_attenuation = self.analog_rx_object.object.available_attenuation
+            status.gain = self.analog_rx_object.object.gain
+            status.available_gain = self.analog_rx_object.object.available_gain
+            status.input_sample_rate = self.digital_rx_object.object.input_sample_rate
+            status.sample_rate = self.getSampleRate()
+            status.available_sample_rate = create_csv(self.getSampleRateLimits())
+            status.bandwidth = self.getBandwidth_Hz()
+            status.available_bandwidth = create_csv(self.getBandwidthLimits())
+            status.center_frequency = self.getFrequency_Hz()
+            status.available_frequency = self.analog_rx_object.object.available_frequency_hz
+            status.ddc_gain = self.digital_rx_object.object.gain
+            return status
+
+        def _get_digital_status(self):
+            status=self._status()
+            status.enabled = self.getEnable()
+            status.decimation = self.digital_rx_object.object.decimation
+            status.available_decimation = self.digital_rx_object.object.available_decimation
+            status.attenuation = self.digital_rx_object.object.attenuation
+            status.available_attenuation = self.digital_rx_object.object.available_attenuation
+            status.gain = self.digital_rx_object.object.gain
+            status.available_gain = self.digital_rx_object.object.available_gain
+            status.input_sample_rate = self.digital_rx_object.object.input_sample_rate
+            status.sample_rate = self.getSampleRate()
+            status.available_sample_rate = create_csv(self.getSampleRateLimits())
+            status.bandwidth = self.getBandwidth_Hz()
+            status.available_bandwidth = create_csv(self.getBandwidthLimits())
+            status.center_frequency = self.getFrequency_Hz()
+            status.available_frequency = self.digital_rx_object.object.available_frequency_hz
+            status.ddc_gain = self.digital_rx_object.object.gain
+            return status
+
+        def getStatus(self):
+            if self.is_analog() and not self.is_digital():
+                return self._get_analog_status()
+            if self.is_analog() and self.is_digital():
+                return self._get_analog_digital_status()
+            if not self.is_analog() and self.is_digital():
+                return self._get_digital_status()
+            return None
+
+        def getOutputStatus(self):
+            status=None
+            if self.output_object:
+                status=self._status()
+                status.output_multicast = self.output_object.object.ip_addr
+                status.output_port = int(self.output_object.object.ip_port)
+                status.output_enabled = self.output_object.object.enable
+                status.output_protocol = self.output_object.object.protocol_readable
+                status.output_vlan_enabled = int(self.output_object.object.vlan_tagging_enable) == 1
+                status.output_vlan_tci = str(self.output_object.object.vlan_tci)
+                status.output_vlan = int(self.output_object.object.vlan_tci) & 0xFFF
+                status.output_flow = self._msdd.get_stream_flow(self.output_object)
+                status.output_timestamp_offset = str(self.output_object.object.timestamp_offset)
+                status.output_channel = str(self.output_object.object.channel_number)
+                status.output_endianess = self.output_object.object.endianess
+                status.output_mfp_flush = str(self.output_object.object.mfp)
+            return status
+
+        def getFFTStatus(self):
+            status=None
+            if self.output_object:
+                status=self._status()
+                status.psd_fft_size = self.fft_channel.object.fftSize
+                status.psd_averages = self.fft_channel.object.num_averages
+                status.psd_time_between_ffts = self.fft_channel.object.time_between_fft_ms
+                status.psd_output_bin_size = self.fft_channel.object.outputBins
+                status.psd_window_type = self.fft_channel.object.window_type_str
+                status.psd_peak_mode = self.fft_channel.object.peak_mode_str
+            return status
+
+        def get_digital_signal_path(self):
+            """
+            For information only, return src tuner --> out module for this channel
+            """
+            ret=""
+            if self.digital_rx_object:
+                ret+=self.digital_rx_object.object.full_reg_name
+            ret+=" --> "
+            if self.output_object:
+                ret+=self.output_object.object.full_reg_name
+            return ret
+
+        def getEnable(self):
+            """
+            Get enable status for tuner modules assigned to channel
+            """
+            ret=True
+            if self.analog_rx_object:
+                ret&=self.analog_rx_object.object.enable
+            if self.digital_rx_object:
+                ret&=self.digital_rx_object.object.enable
+            if self.swddc_object:
+                ret&=self.swddc_object.object.enable
+            return ret
+
+        def setEnable(self, enable=True, enabled_secondary=False):
             """
             Enable or disable tuner/output
             """
-            ret=self.set_tuner_enable(enable)
+            ret=self.set_tuner_enable(enable, enabled_secondary )
             if ret:
                 ret&=self.set_output_enable(enable)
             return ret
 
-        def set_tuner_enable(self, enable=True):
+        def set_tuner_enable(self, enable=True, enabled_secondary=False):
             """
             Enable/Disable all tuners assigned to this channel
             """
             ret=True
-            if self.digital_rx_object:
+            if self.digital_rx_object and not enabled_secondary:
                 ret&=self.digital_rx_object.object.setEnable(enable)
             if self.swddc_object:
                 ret&=self.swddc_object.object.setEnable(enable)
@@ -3160,30 +3381,77 @@ class MSDDRadio:
                 ret=self.output_object.object.setEnable(enable)
             return ret
 
+        def getChildChannels(self):
+            return self.rx_child_objects[:]
+
+        def updateChildChannelOffsets(self, new_cf):
+            if self.rx_child_objects:
+                for ch in self.rx_child_objects:
+                    ch.updateRFFrequencyOffset(new_cf)
+
+        def centerFrequencyRetune(self, new_cf, keepOffset=False):
+            retval=True
+            # try to keep the channels frequency the same for the new_cf value
+            # if not and keepOffset is True, then we just move relative to the new cf
+            #
+            old_offset=ch.getRFFrequencyOffset()
+            old_cf = ch.getFrequency_Hz()
+            if self._debug:
+                print "centerFrequencyRetune, channel ", ch.msdd_channel_id(), " new center frequency ", new_cf, " old freq ", old_cf, " old offset", old_cf-old_offset
+            ch.updateRFFrequencyOffset(new_cf)
+            try:
+                ch.setFrequency_Hz(old_cf)
+                if self._debug:
+                    print "centerFrequencyRetune, channel ", ch.msdd_channelc_id(), " able to keep same frequency ", old_cf
+                retval=True
+            except:
+                if self._debug:
+                    traceback.print_exc()
+                # unable to keep the same frequency so keep same offset
+                retval=False
+                if keepOffset:
+                    freq_diff=old_cf - old_offset
+                    ch_new_freq = new_cf + freq_diff
+                    try:
+                        ch.setFrequency_Hz(ch_new_freq)
+                        if self_debug:
+                            print "centerFrequencyRetune, channel ", ch.msdd_channel_id(), " keep offset same new freq ", ch_new_freq
+                        retval=True
+                    except:
+                        retval=False
+                        if self._debug:
+                            traceback.print_exc()
+
+            return retval
+
+        def updateRFFrequencyOffset(self, new_cf):
+            if self.digital_rx_object:
+                self.digital_rx_object.object.updateRFFrequencyOffset(new_cf)
+
+        def getRFFrequencyOffset(self):
+            if self.digital_rx_object:
+                return self.digital_rx_object.object.rf_offset_hz
+
         def get_valid_frequency(self, if_freq_hz):
             if self.analog_rx_object:
                 return self.analog_rx_object.object.get_valid_frequency(if_freq_hz)
             if self.digital_rx_object:
                 return self.digital_rx_object.object.get_valid_frequency(if_freq_hz)
 
-        def setFrequency_Hz(self, freq):
+        def getFrequency_Hz(self):
+            if self.analog_rx_object:
+                return self.analog_rx_object.object.getFrequency_Hz()
+            if self.digital_rx_object:
+                return self.digital_rx_object.object.getFrequency_Hz()
+
+        def setFrequency_Hz(self, freq, updateOffsets=False):
             if self.analog_rx_object:
                 return self.analog_rx_object.object.setFrequency_Hz(freq)
             if self.digital_rx_object:
+                if updateOffsets:
+                    self.updateChildChannelOffsets(freq)
                 return self.digital_rx_object.object.setFrequency_Hz(freq)
         
-        def get_digital_signal_path(self):
-            """
-            For information only, return src tuner --> out module for this channel
-            """
-            ret=""
-            if self.digital_rx_object:
-                ret+=self.digital_rx_object.object.full_reg_name
-            ret+=" --> "
-            if self.output_object:
-                ret+=self.output_object.object.full_reg_name
-            return ret
-
         def getSampleRate(self):
             if self.swddc_object is None:
                 return self.digital_rx_object.object.getSampleRate()
@@ -3210,6 +3478,11 @@ class MSDDRadio:
 
             return success
 
+        def getSampleRateLimits(self):
+            srates=self._get_sample_rates().keys()
+            srates.sort()
+            return srates
+
         def _get_sample_rates(self):
             if len(self._srates) == 0:
                 srates={}
@@ -3223,7 +3496,8 @@ class MSDDRadio:
                                 sw_srates = self.swddc_object.object.getSampleRateList()
                                 sw_bw_rates = self.swddc_object.object.getBandwidthList_Hz()
                                 for i, sw_srate in zip(range(len(sw_srates)), sw_srates):
-                                    srates[sw_srate] = ( None, nb_srate, sw_srate, sw_bw_rates[i])
+                                    bw=min(sw_bw_rates[i],nb_bw_rates[n])
+                                    srates[sw_srate] = ( None, nb_srate, sw_srate, bw )
                             else:
                                 srates[ nb_srate ] = ( None, nb_srate, None, nb_bw_rates[n])
                 except:
@@ -3232,6 +3506,11 @@ class MSDDRadio:
                 self._srates=srates
             return self._srates
 
+
+        def validate_sample_rate(self, srate):
+            srates=self.getSampleRateLimits()
+            srates.sort()
+            return check_value_from_values(srate, srates)
 
         def get_valid_sample_rate(self, srate=None, srate_tolerance=None, return_max=None ):
             """
@@ -3248,6 +3527,7 @@ class MSDDRadio:
             if self._debug:
                 print "get_valid_sample_rate, digital rx check srate ", srate, " valid sample rate", valid_sr
             return valid_sr
+
 
         def getBandwidth_Hz(self):
             if self.swddc_object is None:
@@ -3269,6 +3549,11 @@ class MSDDRadio:
                     success&=self.swddc_object.object.setBandwidth_Hz(self._bw_rates[bw_hz][2])
             return success
 
+        def getBandwidthLimits(self):
+            bw_rates=self._get_bandwidths().keys()
+            bw_rates.sort()
+            return bw_rates
+
         def _get_bandwidths(self):
             if len(self._bw_rates) == 0:
                 bw_rates={}
@@ -3283,28 +3568,36 @@ class MSDDRadio:
                             nb_srates = self.digital_rx_object.object.getSampleRateList()
                             nb_bw_rates = self.digital_rx_object.object.getBandwidthList_Hz()
                             for n, nb_bw in zip(range(len(nb_bw_rates)), nb_bw_rates):
-                                self.digital_rx_object.object.setBandwidth_Hz(nb_bw)
+                                self.digital_rx_object.object.setSampleRate(nb_srates[n])
                                 if self.swddc_object:
                                     sw_srates = self.swddc_object.object.getSampleRateList()
                                     sw_bw_rates = self.swddc_object.object.getBandwidthList_Hz()
                                     for i, sw_bw in zip(range(len(sw_bw_rates)), sw_bw_rates):
-                                        bw_rates[sw_bw] = ( al_bw, nb_bw, sw_bw, sw_srates[i])
+                                        # choose more filter bw as actual bw
+                                        srate=min( nb_srates[n], sw_srates[i])
+                                        bw=min(nb_bw, sw_bw)
+                                        bw_rates[bw] = ( al_bw, nb_bw, sw_bw, srate)
                                 else:
                                     bw_rates[ nb_bw ] = ( al_bw, nb_bw, None, nb_srates[n])
                         else:
                             if al_bw:
                                 bw_rates[al_bw] = ( al_bw, None, None, None)
                 except:
+                    traceback.print_exc()
                     bw_rates={}
 
                 self._bw_rates=bw_rates
             return self._bw_rates
 
+        def validate_bandwidth(self, bw_hz):
+            bw_list = self.getBandwidthLimits()
+            return check_value_from_values(bw_hz, bw_list)
+
         def get_valid_bandwidth(self, bw_hz=None, bw_tolerance=None, return_max=None):
             """
-            For a given sample rate (srate), determine if the channel can support the rate. Return
-            an actual sample rate supported between srate to (srate + (srate*(srate_tolerance/100))) or None
-            if srate == None or  <= 0.0 return lowest possible sample rate
+            For a given bandwidth bw_hz, determine if the channel can support the rate. Return
+            an actual bandwidth supported between bw_hz to (bw_hz + (bw_hz*bw_tolerance/100))) or None
+            if bw_hz == None or  <= 0.0 return lowest possible bw_hz
             """
             valid_bw=None
             bw_rates=self._get_bandwidths().keys()
@@ -3315,29 +3608,181 @@ class MSDDRadio:
             if self._debug:
                 print "get_valid_bandwidth, digital rx check bw ", bw_hz, " valid bandwidth", valid_bw
             return valid_bw
-   
+
         def get_bandwidth_for_sample_rate(self, srate ):
+            """
+            For a specified sample rate find the matching bandwidth for the channel
+
+            Parameters:
+            -----------
+            srate : sample rate in hz to use for the look up
+            """
             if not len(self._srates): self._get_sample_rates()
             if srate in self._srates:
+                # the sample rate cache contains the bandwidth setting for a sample rate
                 return self._srates[srate][3]
             return None
 
         def get_sample_rate_for_bandwidth(self, bw ):
+            """
+            For a specified bandwidth find the matching sample rate for the channel
+
+            Parameters:
+            -----------
+            bw : bandwidth in hz to use for the look up
+            """
             if not len(self._bw_rates): x=self._get_bandwidths()
             if bw in self._bw_rates:
+                # the bandwidth cache contains the sample rate for a specifc bandwidth
                 return self._bw_rates[bw][3]
             return None
 
+    class secondary_channel_module(rx_channel):
+        def __init__(self, msdd_radio, digital_mod, primary_mod, output_mod, rx_channel_num ):
+            super(MSDDRadio.secondary_channel_module,self).__init__( msdd_radio,
+                                                                     digital_mod,
+                                                                     rx_channel_num,
+                                                                     False,
+                                                                     MSDDRadio.MSDDRXTYPE_SW_DDC )
+            self.digital_rx_object=digital_mod
+            self.primary_channel=primary_mod
+            self.digital_rx_object.object.setParent(self.primary_channel.object)
+            self.output_object=output_mod
+
+        def get_digital_signal_path(self):
+            """
+            For information only, return src tuner --> out module for this channel
+            """
+            ret=""
+            pb=None
+            if self.primary_channel:
+                pb=self.primary_channel.channel_id()
+            if self.digital_rx_object:
+                ret+=self.digital_rx_object.object.full_reg_name
+            if pb:
+                ret+=" (piggyback:"+pb+") --> "
+            else:
+                ret+=" --> "
+            if self.output_object:
+                ret+=self.output_object.object.full_reg_name
+            return ret
+
+
+        def setEnable(self, enable=True):
+            """
+            Enable or disable tuner/output
+            """
+            ret=self.set_tuner_enable(enable)
+            if ret:
+                ret=self.set_output_enable(enable)
+
+        def set_tuner_enable(self, enable=True):
+            """
+            Enable/Disable all tuners assigned to this channel
+            """
+            ret=True
+            if self.digital_rx_object:
+                ret&=self.digital_rx_object.object.setEnable(enable)
+            return ret
+
+        def set_output_enable(self, enable=True):
+            """
+            Enable/Disable output modules assigned to the source digital tuner for this channel
+            """
+            ret=True
+            if self.has_streaming_output():
+                ret=self.output_object.object.setEnable(enable)
+            return ret
+
+        def _get_bandwidths(self):
+            """
+            Get the current set of bandwidths supported by this channel. Since
+            we are secondary channel, then we are tied the parent's current bandwidth
+            """
+            bw_list=[]
+            if self.digital_rx_object:
+                bw_list=self.digital_rx_object.object.getBandwidthList_Hz()[:]
+            return bw_list
+
+        def valid_bandwidth(self, bw_hz):
+            bw_list=self._get_bandwidths()
+            return check_value_from_values(bw_hz, bw_list)
+
+        def get_valid_bandwidth(self, bw_hz=None, bw_tolerance=None, return_max=None):
+            """
+            # grab primary's sample rate.. apply swddc decimations
+            """
+            valid_bw=None
+            bw_list=self._get_bandwidths()
+            if self._debug:
+                print "get_valid_bandwidth,  check bw ", bw_hz, " bw_tol ", bw_tolerance, " bw_list ", bw_list
+            valid_bw = get_value_valid_list( bw_hz, bw_tolerance, bw_list, return_max )
+            return valid_bw
+
+        def setBandwidth_Hz(self, bw ):
+            if self.digital_rx_object:
+                return self.digital_rx_object.object.setBandwidth_Hz(bw)
+            return False
+
+        def getBandwidthLimits(self):
+            bw_list=self._get_bandwidths()
+            bw_list.sort()
+            return bw_list
+
+        def _get_sample_rates(self):
+            """
+            Get the current set of sample rates supported by this channel. Since
+            we are secondary channel, then we are tied the parent's current sample rate
+            """
+            srate_list=[]
+            if self.digital_rx_object:
+                srate_list=self.digital_rx_object.object.getSampleRateList()[:]
+            return srate_list
+
+        def valid_sample_rate(self, srate):
+            srate_list=self._get_sample_rates()[:]
+            return check_value_from_values(srate, srate_list)
+
+        def get_valid_sample_rate(self, srate=None, srate_tolerance=None, return_max=None ):
+            """
+            # grab primary's sample rate.. apply my decimations
+            """
+            valid_sr=None
+            if self.digital_rx_object and self.primary_channel:
+                parent_srate = self.primary_channel.object.getSampleRate()
+                dec_list  = self.digital_rx_object.object.getDecimationList()
+                if self._debug:
+                    print "get_valid_sample_rate, swddc decimation list ", dec_list
+                srate_list = [ parent_srate/x for x in dec_list ]
+                valid_sr = get_value_valid_list( srate, srate_tolerance, srate_list, return_max )
+
+            return valid_sr
+
+        def getSampleRateLimits(self):
+            srate_list=self._get_sample_rates()
+            srate_list.sort()
+            return srate_list
+
+        def getSampleRate(self):
+            if self.digital_rx_object:
+                return self.digital_rx_object.object.getSampleRate()
+            return None
+
+        def setSampleRate(self, srate ):
+            if self.digital_rx_object:
+                return self.digital_rx_object.object.setSampleRate(srate)
+            return False
+
+
     class fft_channel(object):
-        def __init__(self, fft_mod, output_mod,router ):
+        def __init__(self, fft_mod, output_mod,router, link_output=False ):
             self._debug=False
             self.fft=fft_mod
             self.output=output_mod
             self.stream_router=router
             self.upstream=None
-            # disable modules
-            self.setEnable(False)
-            self.stream_router.linkModules(self.fft.channel_id(), self.output.channel_id())
+            if link_output:
+                self.stream_router.linkModules(self.fft.channel_id(), self.output.channel_id())
 
         def channel_number(self):
             return self.fft.channel_number
@@ -3389,8 +3834,11 @@ class MSDDRadio:
                  udp_timeout=0.25,
                  validation_polling_time=0.25,
                  validation_number_retries = 0,
-                 enable_inline_swddc=True):
+                 enable_inline_swddc=True,
+                 enable_secondary_tuners=True,
+                 enable_fft_channels=True):
 
+        start_time_total = time.time()
 
         #Set up sockets
         self.radioAddress = (address, int(port))
@@ -3431,8 +3879,10 @@ class MSDDRadio:
         m = re.search('_Gen(\d+)_Map',batch_filename)
         if m:
             mapping_version = int(m.group(1))
-        
+
+        start_time=time.time()
         # create map of module type to instances, Key: module type, Value: list of all corresponding module instances
+        mod_count=0
         self.registered_modules={}
         if self._debug:
             print "MSDD Application Modules ", self.stream_router.modules
@@ -3445,16 +3895,19 @@ class MSDDRadio:
                 if self._debug:
                     print "Module ", reg_name, " channels ", ch_list
                 for channel in ch_list:
+                    mod_count+=1
                     reg_full = str(reg_name) + ':' + str(channel)
                     inst_name = self.stream_router.getInstallName(reg_full)
                     self.registered_modules.setdefault(module,[]).append(self.registered_module(reg_name,inst_name,channel))
             except:
                 None
 
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD registered module count ", mod_count
         self.msdd_id = self.console.ID
         if self._debug:
             print "Completed building registered module lists for ", self.msdd_id
                 
+        start_time=time.time()
         self.fft_object_container = object_container()
         self.spectral_scan_object_container = object_container()
         self.output_object_container = object_container()
@@ -3553,14 +4006,29 @@ class MSDDRadio:
                 except NotImplementedError:
                     None       
 
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD creating individual modules"
+
+
+        start_time=time.time()
         # mark all existing used swddc modules if they are already defined in a flow
 	for mod in self.software_ddc_modules:
             src_mods = self.stream_router.getModulesFlowListByDestination(mod.object.full_reg_name)
             if len(src_mods)>1:
                 if self._debug:
                     print "Found a used sw_ddc module: ", mod.object.full_reg_name, " sources : ",  src_mods
-                self.swddc_object_container.mark_as_used(mod)
+                # unlink the module, to allow for secondary piggyback channels
+                self.stream_router.unlinkModule(mod.channel_id())
 
+            # remove swddc from an output module
+            output = self.get_corresponding_output_module_object(mod)
+            if output:
+                if self._debug:
+                    print "found output for swddc ", mod.channel_id(), " output ", output.channel_id()
+                self.stream_router.unlinkModule(output.channel_id())
+
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD cleaning up SWDDC modules"
+
+        start_time=time.time()
         # mark all existing used output modules if they are already defined as output for a flow
 	for mod in self.out_modules:
             src_mods = self.stream_router.getModulesFlowListByDestination(mod.object.full_reg_name)
@@ -3568,10 +4036,16 @@ class MSDDRadio:
                 if self._debug:
                      print "Found a used output module: ", mod.object.full_reg_name, " sources : ",  src_mods
                 self.output_object_container.mark_as_used(mod)
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD finding used OUT modules"
 
-        # Create RX Channel array for external use
+        #
+        # Create RX Channels for external use
+        #
+
+        # generate channels for RCV modules and find its associated WBDDC module
+        start_time=time.time()
         for mod in self.msdrx000_modules + self.msdr_rs422_modules:
-            rx_mod = self.msdd_channel_module(mod,len(self.rx_channels),True,self.MSDDRXTYPE_ANALOG_RX)
+            rx_mod = self.rx_channel(self,mod,len(self.rx_channels),True,self.MSDDRXTYPE_ANALOG_RX)
             rx_mod.analog_rx_object = mod
             current_position=len(self.rx_channels)
             if self._debug:
@@ -3587,9 +4061,12 @@ class MSDDRadio:
                 print " wb_ddc analog-rx:", mod.object.channel_id(),  "digital-rx:", rx_mod.digital_rx_object.object.channel_id(),  "output:",oreg_name
             self.output_object_container.mark_as_used(rx_mod.output_object)
             self.rx_channels.append(rx_mod)
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD finished RX channels RCV/WBDDC ", len(self.rx_channels)
 
+        # generate channels for NBDDC modules and check for swddc module and output modules
+        start_time=time.time()
         for mod in self.nb_ddc_modules:
-            rx_mod = self.msdd_channel_module(mod,len(self.rx_channels), True, self.MSDDRXTYPE_HW_DDC)
+            rx_mod = self.rx_channel(self,mod,len(self.rx_channels), True, self.MSDDRXTYPE_HW_DDC)
             rx_mod.digital_rx_object = mod
             rx_mod.swddc_object = self.get_inline_swddc_module_object(mod)
             if rx_mod.swddc_object:
@@ -3607,8 +4084,11 @@ class MSDDRadio:
             self.output_object_container.mark_as_used(rx_mod.output_object)
             self.swddc_object_container.mark_as_used(rx_mod.swddc_object)
             self.rx_channels.append(rx_mod)
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD RX channels for NBDDC/SWDDC ", len(self.nb_ddc_modules)
 
-        # assign an output module to an rx_channel that is missing
+        # Assign output modules to existing channels before continuing
+        start_time=time.time()
+        mod_count=0
         for rx_mod in self.rx_channels:
             if rx_mod.output_object != None:
                 continue
@@ -3635,11 +4115,18 @@ class MSDDRadio:
             if self._debug:
                 print "  link for output, modules ", mod_type, " " , src_mod_name, " --> " , out_mod.object.full_reg_name
             if src_mod :
+                mod_count += 1
                 self.stream_router.linkModules(src_mod_name, out_mod.object.full_reg_name)
                 self.output_object_container.mark_as_used(out_mod)
                 rx_mod.output_object = self.get_corresponding_output_module_object(src_mod)
 
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD Assign missing output modules  ", mod_count
+
         if enable_inline_swddc:
+            # Assign output modules to existing channels before continuing
+            start_time=time.time()
+            mod_count=0
+
             if self._debug:
                 print " For NBDDC modules, ensure a SWDDC module is place in-line before output modules"
             # place an inline swddc module for each nbddc modules
@@ -3666,7 +4153,7 @@ class MSDDRadio:
 
                         src_mod_name=src_mod.object.full_reg_name
                         out_mod = rx_mod.output_object
-                        if not out_mod:
+                        if out_mod is None:
                             out_mod = self.output_object_container.get_object()
                         self.swddc_object_container.mark_as_used(swddc_object)
                         mod_type="nb_ddc"
@@ -3680,41 +4167,107 @@ class MSDDRadio:
                                 rx_mod.output_object = out_mod
                             else:
                                 print "Error performing link operation:", link_op
+                            mod_count +=1
                             self.swddc_object_container.mark_as_used(swddc_object)
                             rx_mod.swddc_object = swddc_object
                 except:
                     traceback.print_exc()
+            print "(duration:%.4f" % (time.time()-start_time), " MSDD Assign inline SWDDCs  ", mod_count
 
-        if self._debug:
-            print "MSDD creating FFT channels ", len(self.fft_modules)
-        # create fft channels
-        for fft_mod in self.fft_modules:
-            self.stream_router.unlinkModule(fft_mod.channel_id())
-
-            output = self.get_corresponding_output_module_object(fft_mod)
-            if output is None:
-                output=self.output_object_container.get_object()
-
-            if output is None: break
-
-            fft=self.fft_object_container.get_object()
-            if fft is None:
-                if output:
-                    output_object_containter.put_object(output)
-                    break
+        if enable_secondary_tuners:
             if self._debug:
-                print "FFT channel ", fft.channel_id(),  " -> ", output.channel_id()
-            fft_ch=self.fft_channel( fft, output, self.stream_router )
-            self.fft_channels.append(fft_ch)
-            self.fft_channels_container.put_object(fft_ch)
+                print "MSDD Adding remaining SWDDCs as secondary (piggyback) tuners "
 
+            # Add in remaining SWDDCs as secondary (piggyback) tuners
+            start_time=time.time()
+            mod_count=0
+            nidx=0
+            num_nbddc=len(self.nb_ddc_modules)
+            for swddc_mod in self.software_ddc_modules:
+                try:
+                    if self.swddc_object_container.is_used(swddc_mod):
+                        if self._debug:
+                            print "swddc ", swddc_mod.channel_id(), " already in use..."
+                        continue
+
+                    swddc=self.swddc_object_container.get_object()
+                    if swddc is None :
+                        break
+
+                    if self._debug:
+                        print "swddc create secondary ", swddc.channel_id()
+                    self.stream_router.unlinkModule(swddc.channel_id())
+
+                    output = self.get_corresponding_output_module_object(swddc)
+                    if output is None:
+                        output=self.output_object_container.get_object()
+
+                    if output is None:
+                        self.swddc_object_container.put_object(swddc)
+                        break
+
+                    nbddc = self.nb_ddc_modules[nidx]
+                    nidx = (nidx+1)%num_nbddc
+                    #link nbddc to swddc
+                    if self._debug:
+                        print "secondary link " , nbddc.channel_id(), " --> ", swddc.channel_id()
+                    self.stream_router.linkModules(nbddc.channel_id(),swddc.channel_id())
+                    #link swddc  to output
+                    if self._debug:
+                        print "secondary link " , swddc.channel_id(), " --> ", output.channel_id()
+                    self.stream_router.linkModules(swddc.channel_id(), output.channel_id())
+
+                    self.output_object_container.mark_as_used(output)
+                    self.swddc_object_container.is_used(swddc)
+                    rx_channel = self.secondary_channel_module( self, swddc, nbddc, output, len(self.rx_channels))
+                    if self._debug:
+                        print "MSDD creating Secondary channels ", rx_channel.msdd_channel_id()
+                    mod_count += 1
+                    self.rx_channels.append(rx_channel)
+                except:
+                    traceback.print_exc()
+            print "(duration:%.4f" % (time.time()-start_time), " MSDD Secondary (piggyback) SWDDC tuners  ", mod_count
+
+        if enable_fft_channels:
+            if self._debug:
+                print "MSDD creating FFT channels ", len(self.fft_modules)
+            start_time=time.time()
+            # create fft channels
+            for fft_mod in self.fft_modules:
+                self.stream_router.unlinkModule(fft_mod.channel_id())
+                fft_mod.object._setEnable(False)
+
+                link_output=False
+                output = self.get_corresponding_output_module_object(fft_mod)
+                if output is None:
+                    output=self.output_object_container.get_object()
+                    link_output=True
+
+                if output is None: break
+
+                fft=self.fft_object_container.get_object()
+                if fft is None:
+                    if output:
+                        output_object_containter.put_object(output)
+                        break
+
+                if self._debug:
+                    print "FFT channel ", fft.channel_id(),  " -> ", output.channel_id()
+                fft_ch=self.fft_channel( fft, output, self.stream_router, link_output )
+                self.fft_channels.append(fft_ch)
+                self.fft_channels_container.put_object(fft_ch)
+            print "(duration:%.4f" % (time.time()-start_time), " MSDD FFT Channels ", len(self.fft_channels)
+
+        start_time=time.time()
         # create reverse lookup tables based on msdd channel id values to rx_channel numbers
         for rx_pos, rx_channel in zip(range(len(self.rx_channels)), self.rx_channels):
             if self._debug:
                 print "update Channel ", rx_channel.msdd_channel_id()
             self.update_rx_channel_mapping( rx_channel, rx_pos)
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD build reverse lookup, mod->rx_channel ", len(self.msdd_channel_to_rx_channel)
 
 
+        start_time=time.time()
         # CREATE PARENT CHILD MAPPING FOR TUNERS
         for rx_pos, rx_channel in zip(range(len(self.rx_channels)), self.rx_channels):
             rx_channel.rx_child_objects=[]
@@ -3730,21 +4283,21 @@ class MSDDRadio:
                     try:
                         # skip over module that are linked to this channel
                         rx_child=self.msdd_channel_to_rx_channel[child]
+                        if rx_child == rx_channel:
+                            continue
                         if self._debug:
-                            print " Child module ", child , " rx_channel id: ", rx_child.msdd_channel_id()
-                        if rx_child == rx_channel: continue
-                        if self._debug:
-                            print "Assigning Child ", rx_child.msdd_channel_id() , " to ", rx_channel.msdd_channel_id()
+                            print "Adding Child ", rx_child.msdd_channel_id() , " to ", rx_channel.msdd_channel_id()
                         rx_channel.rx_child_objects.append(rx_child)
                         rx_child.rx_parent_object = rx_channel
                         if self._debug:
-                            print "Adding Parent ", rx_channel.msdd_channel_id(), "to ", rx_child.msdd_channel_id()
+                            print "Assigning Parent ", rx_channel.msdd_channel_id(), "to ", rx_child.msdd_channel_id()
                     except:
                         # skip over modules that are not part of our lookup index
                         pass
 
-
-        print time.ctime(), "Finshed setting up MSDD ", self.msdd_id , " connection ", self.radioAddress, " RX CHANNELS ", len(self.rx_channels), " FFT CHANNELS ", len(self.fft_channels)
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD Find tuner parent/child relationships "
+        print time.ctime(), "Finished (duration:%.4f" % (time.time()-start_time_total), ") setting up MSDD ", \
+            self.msdd_id , " connection ", self.radioAddress, " RX CHANNELS ", len(self.rx_channels), " FFT CHANNELS ", len(self.fft_channels)
 
 
     def update_rx_channel_mapping(self, rx_chan_mod, position):
@@ -3763,9 +4316,9 @@ class MSDDRadio:
         if rx_chan_mod.output_object != None:
             self.fullRegName_to_RxChanNum[rx_chan_mod.output_object.object.full_reg_name] = position
             self.msdd_channel_to_rx_channel[rx_chan_mod.output_object.object.full_reg_name] = rx_chan_mod
-        if rx_chan_mod.fft_object != None:
-            self.fullRegName_to_RxChanNum[rx_chan_mod.fft_object.object.full_reg_name] = position
-            self.msdd_channel_to_rx_channel[rx_chan_mod.fft_object.object.full_reg_name] = rx_chan_mod
+        if rx_chan_mod.fft_channel != None:
+            self.fullRegName_to_RxChanNum[rx_chan_mod.fft_channel.fft.object.full_reg_name] = position
+            self.msdd_channel_to_rx_channel[rx_chan_mod.fft_channel.fft.object.full_reg_name] = rx_chan_mod
         if rx_chan_mod.spectral_scan_object != None:
             self.fullRegName_to_RxChanNum[rx_chan_mod.spectral_scan_object.object.full_reg_name] = position
             self.msdd_channel_to_rx_channel[rx_chan_mod.spectral_scan_object.object.full_reg_name] = rx_chan_mod
@@ -3914,7 +4467,6 @@ class MSDDRadio:
                 if m:
                     return int(m.group(1))
         return None
-
 
     def get_fft_channel_for_module(self,full_reg_name):
         modList = self.stream_router.getModulesFlowListBySource(full_reg_name)

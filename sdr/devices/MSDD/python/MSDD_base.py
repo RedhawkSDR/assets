@@ -171,7 +171,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                                           id_="advanced::udp_timeout",
                                           name="udp_timeout",
                                           type_="double",
-                                          defvalue=0.5
+                                          defvalue=0.20
                                           )
         
             rcvr_mode = simple_property(
@@ -223,6 +223,20 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                                        defvalue=True
                                        )
 
+            enable_secondary_tuners = simple_property(
+                                       id_="advanced::enable_secondary_tuners",
+                                       name="enable_secondary_tuners",
+                                       type_="boolean",
+                                       defvalue=False
+                                       )
+
+            enable_fft_channels = simple_property(
+                                       id_="advanced::enable_fft_channels",
+                                       name="enable_fft_channels",
+                                       type_="boolean",
+                                       defvalue=False
+                                       )
+
             max_cpu_load = simple_property(
                                        id_="advanced::max_cpu_load",
                                        name="max_cpu_load",
@@ -234,7 +248,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                                        id_="advanced::max_nic_percentage",
                                        name="max_nic_percentage",
                                        type_="float",
-                                       defvalue=0.90
+                                       defvalue=90.0
                                        )
 
         
@@ -265,6 +279,8 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                 d["psd_mode"] = self.psd_mode
                 d["spc_mode"] = self.spc_mode
                 d["enable_inline_swddc"] = self.enable_inline_swddc
+                d["enable_secondary_tuners"] = self.enable_secondary_tuners
+                d["enable_fft_channels"] = self.enable_fft_channels
                 d["max_cpu_load"] = self.max_cpu_load
                 d["max_nic_percentage"] = self.max_nic_percentage
                 d["minimum_connected_nic_rate"] = self.minimum_connected_nic_rate
@@ -279,7 +295,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                 return True
         
             def getMembers(self):
-                return [("enable_msdd_advanced_debugging_tools",self.enable_msdd_advanced_debugging_tools),("allow_internal_allocations",self.allow_internal_allocations),("udp_timeout",self.udp_timeout),("rcvr_mode",self.rcvr_mode),("wb_ddc_mode",self.wb_ddc_mode),("hw_ddc_mode",self.hw_ddc_mode),("sw_ddc_mode",self.sw_ddc_mode),("psd_mode",self.psd_mode),("spc_mode",self.spc_mode),("enable_inline_swddc",self.enable_inline_swddc),("max_cpu_loadc",self.max_cpu_load),("max_nic_percentage",self.max_nic_percentage),("minimum_connected_nic_rate",self.minimum_connected_nic_rate)]
+                return [("enable_msdd_advanced_debugging_tools",self.enable_msdd_advanced_debugging_tools),("allow_internal_allocations",self.allow_internal_allocations),("udp_timeout",self.udp_timeout),("rcvr_mode",self.rcvr_mode),("wb_ddc_mode",self.wb_ddc_mode),("hw_ddc_mode",self.hw_ddc_mode),("sw_ddc_mode",self.sw_ddc_mode),("psd_mode",self.psd_mode),("spc_mode",self.spc_mode),("enable_inline_swddc",self.enable_inline_swddc),("enable_secondary_tuners",self.enable_secondary_tuners),("enable_fft_channels",self.enable_fft_channels),("max_cpu_loadc",self.max_cpu_load),("max_nic_percentage",self.max_nic_percentage),("minimum_connected_nic_rate",self.minimum_connected_nic_rate)]
 
         advanced = struct_property(id_="advanced",
                                    structdef=advanced_struct,
