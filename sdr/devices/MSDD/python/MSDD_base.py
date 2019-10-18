@@ -3,17 +3,17 @@
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
 #
-# This file is part of REDHAWK rh.MSDD.
+# This file is part of REDHAWK.
 #
-# REDHAWK rh.MSDD is free software: you can redistribute it and/or modify it under
-# the terms of the GNU Lesser General Public License as published by the Free
-# Software Foundation, either version 3 of the License, or (at your option) any
-# later version.
+# REDHAWK is free software: you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published by the
+# Free Software Foundation, either version 3 of the License, or (at your
+# option) any later version.
 #
-# REDHAWK rh.MSDD is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
-# details.
+# REDHAWK is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
+# for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
@@ -34,15 +34,165 @@ from ossie.properties import simple_property
 from ossie.properties import simpleseq_property
 from ossie.properties import struct_property
 from ossie.properties import structseq_property
-from ossie.properties import struct_to_props
-from omniORB import any as _any
 
 import Queue, copy, time, threading
-from ossie.resource import usesport, providesport
+from ossie.resource import usesport, providesport, PortCallError
 import bulkio
 import frontend
+from omniORB import any as _any
 from frontend import FRONTEND
+from ossie.properties import struct_to_props
 BOOLEAN_VALUE_HERE=False
+
+class enums:
+    # Enumerated values for clock_ref
+    class clock_ref:
+        INTERNAL = 0
+        EXTERNAL = 10
+
+    # Enumerated values for advanced
+    class advanced:
+        # Enumerated values for advanced::rcvr_mode
+        class rcvr_mode:
+            Not_allocatable = 0
+            RX_Only = 8
+
+        # Enumerated values for advanced::wb_ddc_mode
+        class wb_ddc_mode:
+            Not_allocatable = 0
+            DDC_Only = 1
+            RX_DIGITIZER_CHANNELIZER_Only = 2
+            RX_DIGITIZER_CHANNELIZER_or_DDC = 3
+            RX_DIGITIZER_Only = 4
+            RX_DIGITIZER_or_DDC = 5
+            RX_DIGITIZER_or_RX_DIGITIZER_CHANNELIZER = 6
+            RX_DIGITIZER_or_RX_DIGITIZER_CHANNELIZER_or_DDC = 7
+
+        # Enumerated values for advanced::hw_ddc_mode
+        class hw_ddc_mode:
+            Not_allocatable = 0
+            DDC_Only = 1
+            RX_DIGITIZER_CHANNELIZER_Only = 2
+            RX_DIGITIZER_CHANNELIZER_or_DDC = 3
+            RX_DIGITIZER_Only = 4
+            RX_DIGITIZER_or_DDC = 5
+            RX_DIGITIZER_or_RX_DIGITIZER_CHANNELIZER = 6
+            RX_DIGITIZER_or_RX_DIGITIZER_CHANNELIZER_or_DDC = 7
+
+        # Enumerated values for advanced::sw_ddc_mode
+        class sw_ddc_mode:
+            Not_allocatable = 0
+            DDC_Only = 1
+            RX_DIGITIZER_CHANNELIZER_Only = 2
+            RX_DIGITIZER_CHANNELIZER_or_DDC = 3
+            RX_DIGITIZER_Only = 4
+            RX_DIGITIZER_or_DDC = 5
+            RX_DIGITIZER_or_RX_DIGITIZER_CHANNELIZER = 6
+            RX_DIGITIZER_or_RX_DIGITIZER_CHANNELIZER_or_DDC = 7
+
+    # Enumerated values for msdd_time_of_day_configuration
+    class msdd_time_of_day_configuration:
+        # Enumerated values for msdd_time_of_day_configuration::mode
+        class mode:
+            SIMULATED = "SIM"
+            ONE_PPS = "ONEPPS"
+            IRIG = "IRIGB"
+            NAV__IF_AVAILABLE_ = "NAV"
+            TFN__IF_AVAILABLE_ = "TFN"
+
+        # Enumerated values for msdd_time_of_day_configuration::reference_track
+        class reference_track:
+            OFF = 0
+            CALIBRATE = 1
+            TRACK = 2
+
+        # Enumerated values for msdd_time_of_day_configuration::toy
+        class toy:
+            _24_Hour_offset_from_IRIGB = 0
+            Direct_from_IRIGB = 1
+
+    # Enumerated values for msdd_psd_configuration
+    class msdd_psd_configuration:
+        # Enumerated values for msdd_psd_configuration::window_type
+        class window_type:
+            HANNING = "HANNING"
+            HAMMING = "HAMMING"
+            BLACKMAN = "BLACKMAN"
+            RECT = "RECT"
+
+        # Enumerated values for msdd_psd_configuration::peak_mode
+        class peak_mode:
+            INST = "INST"
+            PEAK = "PEAK"
+            BOTH = "BOTH"
+
+    # Enumerated values for msdd_output_configuration_struct
+    class msdd_output_configuration_struct:
+        # Enumerated values for msdd_output_configuration::protocol
+        class protocol:
+            SDDS = "UDP_SDDS"
+            SDDSX = "UDP_SDDSX"
+            SDDSA = "UDP_SDDSA"
+            RAW = "UDP_RAW"
+            VITA49 = "UDP_VITA49"
+
+        # Enumerated values for msdd_output_configuration::endianess
+        class endianess:
+            BIG_ENDIAN = 0
+            LITTLE_ENDIAN = 1
+
+    # Enumerated values for msdd_block_output_configuration_struct
+    class msdd_block_output_configuration_struct:
+        # Enumerated values for msdd_block_output_configuration::protocol
+        class protocol:
+            SDDS = "UDP_SDDS"
+            SDDSX = "UDP_SDDSX"
+            SDDSA = "UDP_SDDSA"
+            RAW = "UDP_RAW"
+            VITA49 = "UDP_VITA49"
+
+        # Enumerated values for msdd_block_output_configuration::endianess
+        class endianess:
+            BIG_ENDIAN = 0
+            LITTLE_ENDIAN = 1
+
+    # Enumerated values for msdd_psd_output_configuration_struct
+    class msdd_psd_output_configuration_struct:
+        # Enumerated values for msdd_psd_output_configuration::protocol
+        class protocol:
+            SDDS = "UDP_SDDS"
+            SDDSX = "UDP_SDDSX"
+            SDDSA = "UDP_SDDSA"
+            RAW = "UDP_RAW"
+            VITA49 = "UDP_VITA49"
+
+        # Enumerated values for msdd_psd_output_configuration::endianess
+        class endianess:
+            BIG_ENDIAN = 0
+            LITTLE_ENDIAN = 1
+
+    # Enumerated values for FRONTEND::tuner_status_struct
+    class frontend_tuner_status_struct:
+        # Enumerated values for FRONTEND::tuner_status::output_format
+        class output_format:
+            SP = "SP"
+            SB = "SB"
+            SI = "SI"
+            SL = "SL"
+            SX = "SX"
+            SF = "SF"
+            SD = "SD"
+            CB = "CB"
+            CI = "CI"
+            CL = "CL"
+            CX = "CX"
+            CF = "CF"
+            CD = "CD"
+
+        # Enumerated values for FRONTEND::tuner_status::output_endianess
+        class output_endianess:
+            BIG_ENDIAN = 0
+            LITTLE_ENDIAN = 1
 
 class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, rfinfo_delegation, ThreadedComponent):
         # These values can be altered in the __init__ of your derived class
@@ -62,14 +212,20 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
             self.auto_start = False
             # Instantiate the default implementations for all ports on this device
             self.port_RFInfo_in = frontend.InRFInfoPort("RFInfo_in", self)
+            self.port_RFInfo_in._portLog = self._baseLog.getChildLogger('RFInfo_in', 'ports')
             self.port_DigitalTuner_in = frontend.InDigitalTunerPort("DigitalTuner_in", self)
+            self.port_DigitalTuner_in._portLog = self._baseLog.getChildLogger('DigitalTuner_in', 'ports')
             self.port_dataSDDS_out = bulkio.OutSDDSPort("dataSDDS_out")
+            self.port_dataSDDS_out._portLog = self._baseLog.getChildLogger('dataSDDS_out', 'ports')
             self.port_dataVITA49_out = bulkio.OutVITA49Port("dataVITA49_out")
+            self.port_dataVITA49_out._portLog = self._baseLog.getChildLogger('dataVITA49_out', 'ports')
             self.port_dataSDDS_out_PSD = bulkio.OutSDDSPort("dataSDDS_out_PSD")
-            self.port_dataSDDS_out_SPC = bulkio.OutSDDSPort("dataSDDS_out_SPC")
+            self.port_dataSDDS_out_PSD._portLog = self._baseLog.getChildLogger('dataSDDS_out_PSD', 'ports')
             self.port_dataVITA49_out_PSD = bulkio.OutVITA49Port("dataVITA49_out_PSD")
+            self.port_dataVITA49_out_PSD._portLog = self._baseLog.getChildLogger('dataVITA49_out_PSD', 'ports')
             self.addPropertyChangeListener('connectionTable',self.updated_connectionTable)
             self.device_kind = "FRONTEND::TUNER"
+            self.device_model = "MSDD3000"
             self.frontend_listener_allocation = frontend.fe_types.frontend_listener_allocation()
             self.frontend_tuner_allocation = frontend.fe_types.frontend_tuner_allocation()
 
@@ -86,14 +242,13 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
             self.port_dataSDDS_out.updateConnectionFilter(newval)
             self.port_dataVITA49_out.updateConnectionFilter(newval)
             self.port_dataSDDS_out_PSD.updateConnectionFilter(newval)
-            self.port_dataSDDS_out_SPC.updateConnectionFilter(newval)
             self.port_dataVITA49_out_PSD.updateConnectionFilter(newval)
 
         def releaseObject(self):
             try:
                 self.stop()
             except Exception:
-                self._log.exception("Error stopping")
+                self._baseLog.exception("Error stopping")
             FrontendTunerDevice.releaseObject(self)
 
         ######################################################################
@@ -104,31 +259,39 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
 
         port_RFInfo_in = providesport(name="RFInfo_in",
                                       repid="IDL:FRONTEND/RFInfo:1.0",
-                                      type_="data")
+                                      type_="data",
+                                      description="""RFInfo In port for antenna data. """
+                                      )
 
         port_DigitalTuner_in = providesport(name="DigitalTuner_in",
                                             repid="IDL:FRONTEND/DigitalTuner:1.0",
-                                            type_="control")
+                                            type_="control",
+                                            description="""Digital Tuner Control Port"""
+                                            )
 
         port_dataSDDS_out = usesport(name="dataSDDS_out",
                                      repid="IDL:BULKIO/dataSDDS:1.0",
-                                     type_="data")
+                                     type_="data",
+                                     description="""Pre-d output data from tuners via SDDS. Output format is controlled via msdd_output_configuration property. """
+                                     )
 
         port_dataVITA49_out = usesport(name="dataVITA49_out",
                                        repid="IDL:BULKIO/dataVITA49:1.0",
-                                       type_="control")
+                                       type_="control",
+                                       description="""Pre-d output data from tuners via VITA-49. Output format is controlled via msdd_output_configuration property. """
+                                       )
 
         port_dataSDDS_out_PSD = usesport(name="dataSDDS_out_PSD",
                                          repid="IDL:BULKIO/dataSDDS:1.0",
-                                         type_="control")
-
-        port_dataSDDS_out_SPC = usesport(name="dataSDDS_out_SPC",
-                                         repid="IDL:BULKIO/dataSDDS:1.0",
-                                         type_="control")
+                                         type_="control",
+                                         description="""PSD output data from tuners via SDDS. Output format is controlled via msdd_output_configuration property. """
+                                         )
 
         port_dataVITA49_out_PSD = usesport(name="dataVITA49_out_PSD",
                                            repid="IDL:BULKIO/dataVITA49:1.0",
-                                           type_="control")
+                                           type_="control",
+                                           description="""PSD output data from tuners via VITA49. Output format is controlled via msdd_output_configuration property. """
+                                           )
 
         ######################################################################
         # PROPERTIES
@@ -153,25 +316,11 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
 
 
         class advanced_struct(object):
-            enable_msdd_advanced_debugging_tools = simple_property(
-                                                                   id_="advanced::enable_msdd_advanced_debugging_tools",
-                                                                   name="enable_msdd_advanced_debugging_tools",
-                                                                   type_="boolean",
-                                                                   defvalue=False
-                                                                   )
-        
-            allow_internal_allocations = simple_property(
-                                                         id_="advanced::allow_internal_allocations",
-                                                         name="allow_internal_allocations",
-                                                         type_="boolean",
-                                                         defvalue=False
-                                                         )
-        
             udp_timeout = simple_property(
                                           id_="advanced::udp_timeout",
                                           name="udp_timeout",
                                           type_="double",
-                                          defvalue=0.20
+                                          defvalue=0.20000000000000001
                                           )
         
             rcvr_mode = simple_property(
@@ -202,26 +351,12 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                                           defvalue=1
                                           )
         
-            psd_mode = simple_property(
-                                       id_="advanced::psd_mode",
-                                       name="psd_mode",
-                                       type_="short",
-                                       defvalue=0
-                                       )
-        
-            spc_mode = simple_property(
-                                       id_="advanced::spc_mode",
-                                       name="spc_mode",
-                                       type_="short",
-                                       defvalue=0
-                                       )
-
             enable_inline_swddc = simple_property(
-                                       id_="advanced::enable_inline_swddc",
-                                       name="enable_inline_swddc",
-                                       type_="boolean",
-                                       defvalue=True
-                                       )
+                                                  id_="advanced::enable_inline_swddc",
+                                                  name="enable_inline_swddc",
+                                                  type_="boolean",
+                                                  defvalue=True
+                                                  )
 
             enable_secondary_tuners = simple_property(
                                        id_="advanced::enable_secondary_tuners",
@@ -238,19 +373,18 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                                        )
 
             max_cpu_load = simple_property(
-                                       id_="advanced::max_cpu_load",
-                                       name="max_cpu_load",
-                                       type_="float",
-                                       defvalue=95.0
-                                       )
+                                           id_="advanced::max_cpu_load",
+                                           name="max_cpu_load",
+                                           type_="float",
+                                           defvalue=95.0
+                                           )
 
             max_nic_percentage = simple_property(
-                                       id_="advanced::max_nic_percentage",
-                                       name="max_nic_percentage",
-                                       type_="float",
-                                       defvalue=90.0
-                                       )
-
+                                                 id_="advanced::max_nic_percentage",
+                                                 name="max_nic_percentage",
+                                                 type_="float",
+                                                 defvalue=90.0
+                                                 )
         
             minimum_connected_nic_rate = simple_property(
                                                          id_="minimum_connected_nic_rate",
@@ -269,15 +403,11 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
             def __str__(self):
                 """Return a string representation of this structure"""
                 d = {}
-                d["enable_msdd_advanced_debugging_tools"] = self.enable_msdd_advanced_debugging_tools
-                d["allow_internal_allocations"] = self.allow_internal_allocations
                 d["udp_timeout"] = self.udp_timeout
                 d["rcvr_mode"] = self.rcvr_mode
                 d["wb_ddc_mode"] = self.wb_ddc_mode
                 d["hw_ddc_mode"] = self.hw_ddc_mode
                 d["sw_ddc_mode"] = self.sw_ddc_mode
-                d["psd_mode"] = self.psd_mode
-                d["spc_mode"] = self.spc_mode
                 d["enable_inline_swddc"] = self.enable_inline_swddc
                 d["enable_secondary_tuners"] = self.enable_secondary_tuners
                 d["enable_fft_channels"] = self.enable_fft_channels
@@ -295,7 +425,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                 return True
         
             def getMembers(self):
-                return [("enable_msdd_advanced_debugging_tools",self.enable_msdd_advanced_debugging_tools),("allow_internal_allocations",self.allow_internal_allocations),("udp_timeout",self.udp_timeout),("rcvr_mode",self.rcvr_mode),("wb_ddc_mode",self.wb_ddc_mode),("hw_ddc_mode",self.hw_ddc_mode),("sw_ddc_mode",self.sw_ddc_mode),("psd_mode",self.psd_mode),("spc_mode",self.spc_mode),("enable_inline_swddc",self.enable_inline_swddc),("enable_secondary_tuners",self.enable_secondary_tuners),("enable_fft_channels",self.enable_fft_channels),("max_cpu_loadc",self.max_cpu_load),("max_nic_percentage",self.max_nic_percentage),("minimum_connected_nic_rate",self.minimum_connected_nic_rate)]
+                return [("udp_timeout",self.udp_timeout),("rcvr_mode",self.rcvr_mode),("wb_ddc_mode",self.wb_ddc_mode),("hw_ddc_mode",self.hw_ddc_mode),("sw_ddc_mode",self.sw_ddc_mode),("enable_inline_swddc",self.enable_inline_swddc),("enable_secondary_tuners",self.enable_secondary_tuners),("enable_fft_channels",self.enable_fft_channels),("max_cpu_load",self.max_cpu_load),("max_nic_percentage",self.max_nic_percentage),("minimum_connected_nic_rate",self.minimum_connected_nic_rate)]
 
         advanced = struct_property(id_="advanced",
                                    structdef=advanced_struct,
@@ -490,103 +620,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                                                  structdef=msdd_psd_configuration_struct,
                                                  configurationkind=("property",),
                                                  mode="readwrite",
-                                                 description="""Currently this is global across all fft modules.This may be changed in future releases.""")
-
-
-        class msdd_spc_configuration_struct(object):
-            fft_size = simple_property(
-                                       id_="msdd_spc_configuration::fft_size",
-                                       name="fft_size",
-                                       type_="short",
-                                       defvalue=8192
-                                       )
-        
-            num_fft_averages = simple_property(
-                                               id_="msdd_spc_configuration::num_fft_averages",
-                                               name="num_fft_averages",
-                                               type_="short",
-                                               defvalue=0
-                                               )
-        
-            time_between_ffts = simple_property(
-                                                id_="msdd_spc_configuration::time_between_ffts",
-                                                name="time_between_ffts",
-                                                type_="double",
-                                                defvalue=200.0
-                                                )
-        
-            output_bin_size = simple_property(
-                                              id_="msdd_spc_configuration::output_bin_size",
-                                              name="output_bin_size",
-                                              type_="short",
-                                              defvalue=4096
-                                              )
-        
-            window_type = simple_property(
-                                          id_="msdd_spc_configuration::window_type",
-                                          name="window_type",
-                                          type_="string",
-                                          defvalue="HAMMING"
-                                          )
-        
-            peak_mode = simple_property(
-                                        id_="msdd_spc_configuration::peak_mode",
-                                        name="peak_mode",
-                                        type_="string",
-                                        defvalue="INST"
-                                        )
-        
-            start_frequency = simple_property(
-                                              id_="msdd_spc_configuration::start_frequency",
-                                              name="start_frequency",
-                                              type_="double",
-                                              defvalue=100000000.0
-                                              )
-        
-            stop_frequency = simple_property(
-                                             id_="msdd_spc_configuration::stop_frequency",
-                                             name="stop_frequency",
-                                             type_="double",
-                                             defvalue=1000000000.0
-                                             )
-        
-            def __init__(self, **kw):
-                """Construct an initialized instance of this struct definition"""
-                for classattr in type(self).__dict__.itervalues():
-                    if isinstance(classattr, (simple_property, simpleseq_property)):
-                        classattr.initialize(self)
-                for k,v in kw.items():
-                    setattr(self,k,v)
-        
-            def __str__(self):
-                """Return a string representation of this structure"""
-                d = {}
-                d["fft_size"] = self.fft_size
-                d["num_fft_averages"] = self.num_fft_averages
-                d["time_between_ffts"] = self.time_between_ffts
-                d["output_bin_size"] = self.output_bin_size
-                d["window_type"] = self.window_type
-                d["peak_mode"] = self.peak_mode
-                d["start_frequency"] = self.start_frequency
-                d["stop_frequency"] = self.stop_frequency
-                return str(d)
-        
-            @classmethod
-            def getId(cls):
-                return "msdd_spc_configuration"
-        
-            @classmethod
-            def isStruct(cls):
-                return True
-        
-            def getMembers(self):
-                return [("fft_size",self.fft_size),("num_fft_averages",self.num_fft_averages),("time_between_ffts",self.time_between_ffts),("output_bin_size",self.output_bin_size),("window_type",self.window_type),("peak_mode",self.peak_mode),("start_frequency",self.start_frequency),("stop_frequency",self.stop_frequency)]
-
-        msdd_spc_configuration = struct_property(id_="msdd_spc_configuration",
-                                                 structdef=msdd_spc_configuration_struct,
-                                                 configurationkind=("property",),
-                                                 mode="readwrite",
-                                                 description="""This is for configuration of the spectral scanning.""")
+                                                 description="""This is global across all FFT channels. Changes to this property are applied to the next time a FFT channel is used.""")
 
 
         class msdd_status_struct(object):
@@ -834,12 +868,16 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
             command = simple_property(
                                       id_="msdd_advanced_debugging_tools::command",
                                       name="command",
-                                      type_="string")
+                                      type_="string",
+                                      defvalue=""
+                                      )
         
             response = simple_property(
                                        id_="msdd_advanced_debugging_tools::response",
                                        name="response",
-                                       type_="string")
+                                       type_="string",
+                                       defvalue=""
+                                       )
         
             def __init__(self, **kw):
                 """Construct an initialized instance of this struct definition"""
@@ -870,7 +908,8 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
         msdd_advanced_debugging_tools = struct_property(id_="msdd_advanced_debugging_tools",
                                                         structdef=msdd_advanced_debugging_tools_struct,
                                                         configurationkind=("property",),
-                                                        mode="readwrite")
+                                                        mode="readwrite",
+                                                        description="""Send a command to the MSDD radio and process the response message. """)
 
 
         class msdd_gain_configuration_struct(object):
@@ -933,7 +972,8 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
         msdd_gain_configuration = struct_property(id_="msdd_gain_configuration",
                                                   structdef=msdd_gain_configuration_struct,
                                                   configurationkind=("property",),
-                                                  mode="readwrite")
+                                                  mode="readwrite",
+                                                  description="""Applies the gain settings to the appropriate module.  Changes to these setting will affect the next time tuner channel is allocated.""")
 
 
         class msdd_output_configuration_struct_struct(object):
@@ -1138,7 +1178,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                                         )
         
             mfp_flush = simple_property(
-                                        id_="msdd_block_output_configuration:mfp_flush",
+                                        id_="msdd_block_output_configuration::mfp_flush",
                                         name="mfp_flush",
                                         type_="long",
                                         defvalue=63
@@ -1206,18 +1246,18 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
 
         class msdd_psd_output_configuration_struct_struct(object):
             fft_channel_start = simple_property(
-                                                 id_="msdd_psd_output_configuration::fft_channel_start",
-                                                 name="fft_channel_start",
-                                                 type_="short",
-                                                 defvalue=0
-                                                 )
-
-            fft_channel_stop = simple_property(
-                                                id_="msdd_psd_output_configuration::fft_channel_stop",
-                                                name="fft_channel_stop",
+                                                id_="msdd_psd_output_configuration::fft_channel_start",
+                                                name="fft_channel_start",
                                                 type_="short",
                                                 defvalue=0
                                                 )
+
+            fft_channel_stop = simple_property(
+                                               id_="msdd_psd_output_configuration::fft_channel_stop",
+                                               name="fft_channel_stop",
+                                               type_="short",
+                                               defvalue=0
+                                               )
 
             protocol = simple_property(
                                        id_="msdd_psd_output_configuration::protocol",
@@ -1350,10 +1390,11 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                 return [("fft_channel_start",self.fft_channel_start),("fft_channel_stop",self.fft_channel_stop),("protocol",self.protocol),("ip_address",self.ip_address),("increment_ip_address",self.increment_ip_address),("port",self.port),("increment_port",self.increment_port),("vlan",self.vlan),("increment_vlan",self.increment_vlan),("enabled",self.enabled),("timestamp_offset",self.timestamp_offset),("endianess",self.endianess),("mfp_flush",self.mfp_flush),("vlan_enable",self.vlan_enable)]
 
         msdd_psd_output_configuration = structseq_property(id_="msdd_psd_output_configuration",
-                                                             structdef=msdd_psd_output_configuration_struct_struct,
-                                                             defvalue=[],
-                                                             configurationkind=("property",),
-                                                             mode="readonly")
+                                                           structdef=msdd_psd_output_configuration_struct_struct,
+                                                           defvalue=[],
+                                                           configurationkind=("property",),
+                                                           mode="readonly",
+                                                           description="""Define the output configuration for each FFT channel.""")
 
 
         class frontend_tuner_status_struct_struct(frontend.default_frontend_tuner_status_struct_struct):
@@ -1584,7 +1625,9 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
             available_tuner_type = simple_property(
                                                    id_="FRONTEND::tuner_status::available_tuner_type",
                                                    name="available_tuner_type",
-                                                   type_="string")
+                                                   type_="string",
+                                                   defvalue=""
+                                                   )
         
             spc_stop_frequency = simple_property(
                                                  id_="FRONTEND::tuner_status::spc_stop_frequency",
@@ -1729,11 +1772,8 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
             tuner_id = self.getTunerMapping(allocation_id)
             if tuner_id < 0:
                 raise FRONTEND.FrontendException(("ERROR: ID: " + str(allocation_id) + " IS NOT ASSOCIATED WITH ANY TUNER!"))
-            #return struct_to_props(self.frontend_tuner_status[tuner_id])
-            #return [CF.DataType(id=self.frontend_tuner_status[tuner_id].getId(),value=self.frontend_tuner_status[tuner_id]._toAny())]
             _props = self.query([CF.DataType(id='FRONTEND::tuner_status',value=_any.to_any(None))])
             return _props[0].value._v[tuner_id]._v
-
 
         def assignListener(self,listen_alloc_id, allocation_id):
             # find control allocation_id
@@ -1770,17 +1810,11 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
             self.port_dataSDDS_out.updateConnectionFilter(newValue)
             self.port_dataVITA49_out.updateConnectionFilter(newValue)
             self.port_dataSDDS_out_PSD.updateConnectionFilter(newValue)
-            self.port_dataSDDS_out_SPC.updateConnectionFilter(newValue)
             self.port_dataVITA49_out_PSD.updateConnectionFilter(newValue)
 
         def removeListener(self,listen_alloc_id):
             if self.listeners.has_key(listen_alloc_id):
                 del self.listeners[listen_alloc_id]
-
-            old_table = self.connectionTable
-            for entry in list(self.connectionTable):
-                if entry.connection_id == listen_alloc_id:
-                    self.connectionTable.remove(entry)
 
             # Check to see if port "port_dataSDDS_out" has a connection for this listener
             tmp = self.port_dataSDDS_out._get_connections()
@@ -1800,18 +1834,18 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                 connection_id = tmp[i].connectionId
                 if connection_id == listen_alloc_id:
                     self.port_dataSDDS_out_PSD.disconnectPort(connection_id)
-            # Check to see if port "port_dataSDDS_out_SPC" has a connection for this listener
-            tmp = self.port_dataSDDS_out_SPC._get_connections()
-            for i in range(len(self.port_dataSDDS_out_SPC._get_connections())):
-                connection_id = tmp[i].connectionId
-                if connection_id == listen_alloc_id:
-                    self.port_dataSDDS_out_SPC.disconnectPort(connection_id)
             # Check to see if port "port_dataVITA49_out_PSD" has a connection for this listener
             tmp = self.port_dataVITA49_out_PSD._get_connections()
             for i in range(len(self.port_dataVITA49_out_PSD._get_connections())):
                 connection_id = tmp[i].connectionId
                 if connection_id == listen_alloc_id:
                     self.port_dataVITA49_out_PSD.disconnectPort(connection_id)
+
+            old_table = self.connectionTable
+            for entry in list(self.connectionTable):
+                if entry.connection_id == listen_alloc_id:
+                    self.connectionTable.remove(entry)
+
             self.connectionTableChanged(old_table, self.connectionTable)
 
 
@@ -1872,23 +1906,19 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
             old_table = self.connectionTable;
             tmp = bulkio.connection_descriptor_struct()
             tmp.connection_id = allocation_id
-            tmp.port_name = "port_dataSDDS_out"
+            tmp.port_name = "dataSDDS_out"
             tmp.stream_id = stream_id
             self.connectionTable.append(tmp)
             tmp.connection_id = allocation_id
-            tmp.port_name = "port_dataVITA49_out"
+            tmp.port_name = "dataVITA49_out"
             tmp.stream_id = stream_id
             self.connectionTable.append(tmp)
             tmp.connection_id = allocation_id
-            tmp.port_name = "port_dataSDDS_out_PSD"
+            tmp.port_name = "dataSDDS_out_PSD"
             tmp.stream_id = stream_id
             self.connectionTable.append(tmp)
             tmp.connection_id = allocation_id
-            tmp.port_name = "port_dataSDDS_out_SPC"
-            tmp.stream_id = stream_id
-            self.connectionTable.append(tmp)
-            tmp.connection_id = allocation_id
-            tmp.port_name = "port_dataVITA49_out_PSD"
+            tmp.port_name = "dataVITA49_out_PSD"
             tmp.stream_id = stream_id
             self.connectionTable.append(tmp)
             self.connectionTableChanged(old_table, self.connectionTable)

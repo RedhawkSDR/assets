@@ -2,17 +2,17 @@
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
 #
-# This file is part of REDHAWK rh.MSDD.
+# This file is part of REDHAWK.
 #
-# REDHAWK rh.MSDD is free software: you can redistribute it and/or modify it under
-# the terms of the GNU Lesser General Public License as published by the Free
-# Software Foundation, either version 3 of the License, or (at your option) any
-# later version.
+# REDHAWK is free software: you can redistribute it and/or modify it
+# under the terms of the GNU Lesser General Public License as published by the
+# Free Software Foundation, either version 3 of the License, or (at your
+# option) any later version.
 #
-# REDHAWK rh.MSDD is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
-# details.
+# REDHAWK is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
+# for more details.
 #
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
@@ -30,7 +30,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.MSDD
-Version:        3.0.2
+Version:        4.0.0
 Release:        1%{?dist}
 Summary:        Device %{name}
 
@@ -39,11 +39,13 @@ License:        None
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.1.1
-Requires:       redhawk >= 2.1.1
+BuildRequires:  redhawk-devel >= 2.2
+Requires:       redhawk >= 2.2
+
 
 # Interface requirements
-BuildRequires:  frontendInterfaces >= 2.4.1 bulkioInterfaces >= 2.1.1
+BuildRequires:  frontendInterfaces >= 2.4 bulkioInterfaces >= 2.2
+Requires:       frontendInterfaces >= 2.4 bulkioInterfaces >= 2.2
 
 BuildArch: noarch
 

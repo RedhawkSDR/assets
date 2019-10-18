@@ -223,12 +223,9 @@ class MsddDeviceTests(ossie.utils.testing.RHTestCase):
         subprocess.call(['./reset_msdd', IP_ADDRESS])
 
         self.comp=sb.launch(self.spd_file,
-                      properties={ 
-                "DEBUG_LEVEL": DEBUG_LEVEL, 
+                      properties={
+                "DEBUG_LEVEL": DEBUG_LEVEL,
                 "msdd_configuration" : { "msdd_configuration::msdd_ip_address" :  IP_ADDRESS },
-                "advanced":{
-                        "advanced::allow_internal_allocations" : False
-                             },
                 "msdd_output_configuration": [
                         {
                              "msdd_output_configuration::tuner_number":0,
@@ -391,9 +388,6 @@ class RFInfoTest(ossie.utils.testing.RHTestCase):
                             properties={ 
                 "DEBUG_LEVEL": DEBUG_LEVEL, 
                 "msdd_configuration" : { "msdd_configuration::msdd_ip_address" : IP_ADDRESS },
-                "advanced":{
-                    "advanced::allow_internal_allocations" : False 
-                     },
                 "msdd_output_configuration": [{
                      "msdd_output_configuration::tuner_number":0,
                      "msdd_output_configuration::protocol":"UDP_SDDS",

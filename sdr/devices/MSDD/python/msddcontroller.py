@@ -3116,9 +3116,12 @@ class MSDDRadio:
     MSDDRXTYPE_HW_DDC="HW_DDC"          #NB_DDC
     MSDDRXTYPE_SW_DDC="SW_DDC"          #SW_DDC
     MSDDRXTYPE_FFT="FFT"                #FFT
-    MSDDRXTYPE_SPC="SPC"                #FFT
+    MSDDRXTYPE_SPC="SPC"                #SPC
 
     class registered_module(object):
+        """
+        Registered module name for each msdd channel module (commands RNA(register modules), RCL(registered channel limits)
+        """
         def __init__(self, registration_name, installation_name, channel_number):
             self.channel_number = channel_number
             self.installation_name = installation_name
@@ -3128,6 +3131,9 @@ class MSDDRadio:
             return self.registration_name + ':' + str(self.channel_number)
 
     class object_module(object):
+        """
+        Defines the relationship of actual xxxModule class and the registered name
+        """
         def __init__(self, registered, object_module = None):
             self.channel_number = registered.channel_number
             self.installation_name = registered.installation_name
@@ -3138,6 +3144,12 @@ class MSDDRadio:
             return self.registration_name + ':' + str(self.channel_number)
 
     class rx_channel(object):
+        """
+        Exposed receiver channels that are created from the following receiver paths:
+         rcv -> wbddc -> out
+         rcv -> wbddc -> nbddc -> swddc -> out
+         rcv -> wbddc -> nbddc -> swddc (piggyback) -> out
+        """
         def __init__(self, msdd_radio, reg_mod, rx_channel_num,coherent=False, msdd_rx_type="UNKNOWN"):
             self._msdd = msdd_radio
             self.channel_number = reg_mod.channel_number
