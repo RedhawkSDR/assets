@@ -29,6 +29,7 @@ import Sdds
 import binascii
 import sys
 import random, datetime
+import traceback
 from bulkio import BULKIO
 
 from ossie.utils.bulkio.bulkio_data_helpers import SDDSSink
@@ -170,7 +171,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
     def testSpectralSense(self):
         self.octetConnect()
-        sink = sb.DataSinkSDDS()
         
         for ss in range(2):
             time.sleep(0.1)
@@ -185,7 +185,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             
     def testOriginalFormat(self):
         self.octetConnect()
-        sink = sb.DataSinkSDDS()
         
         for of in range(2):
             time.sleep(0.1)
@@ -200,7 +199,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             
     def testStandardFormat(self):
         self.octetConnect()
-        sink = sb.DataSinkSDDS()
         
         for sf in range(2):
             time.sleep(0.1)
@@ -242,7 +240,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
     def testFrequencyOverride(self):
         self.octetConnect()
-        sink = sb.DataSinkSDDS()
         self.comp.override_sdds_header.enabled = True
         
         for freq in [x * .1 for x in range(10)]:
@@ -258,7 +255,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             
     def testDfdtOverride(self):
         self.octetConnect()
-        sink = sb.DataSinkSDDS()
         self.comp.override_sdds_header.enabled = True
         
         for dfdt in [x * .1 for x in range(10)]:
@@ -274,7 +270,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
 
     def testMsdelOverride(self):
         self.octetConnect()
-        sink = sb.DataSinkSDDS()
         self.comp.override_sdds_header.enabled = True
         
         for i in range(10):
@@ -292,7 +287,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             
     def testMsptrOverride(self):
         self.octetConnect()
-        sink = sb.DataSinkSDDS()
         self.comp.override_sdds_header.enabled = True
         
         for i in range(10):
@@ -309,7 +303,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
 
     def testSsvOverride(self):
         self.octetConnect()
-        sink = sb.DataSinkSDDS()
         self.comp.override_sdds_header.enabled = True
         
         for ssv in range(2):
@@ -325,7 +318,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             
     def testTtvOverride(self):
         self.octetConnect()
-        sink = sb.DataSinkSDDS()
         self.comp.override_sdds_header.enabled = True
         
         for ttv in range(2):
@@ -341,7 +333,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
 
     def testTtvOverride(self):
         self.octetConnect()
-        sink = sb.DataSinkSDDS()
         self.comp.override_sdds_header.enabled = True
         
         for ttv in range(2):
@@ -357,7 +348,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             
     def testMsvOverride(self):
         self.octetConnect()
-        sink = sb.DataSinkSDDS()
         self.comp.override_sdds_header.enabled = True
         
         for msv in range(2):
@@ -373,7 +363,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
 
     def testCxOverride(self):
         self.octetConnect()
-        sink = sb.DataSinkSDDS()
         self.comp.override_sdds_header.enabled = True
         
         for cx in range(2):
@@ -387,8 +376,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             sb.stop()
             
     def testBPSOverride(self):
-        self.octetConnect()
-        sink = sb.DataSinkSDDS()
+        self.source = sb.StreamSource(self.id(),'octet')
+        self.source.connect(self.comp, usesPortName='octetOut')
         self.comp.override_sdds_header.enabled = True
         
         for bps in range(32):
@@ -396,7 +385,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             self.comp.override_sdds_header.bps = bps
             sb.start()
             fakeData = 1024*[1];
-            self.source.push(fakeData, EOS=False, streamID=self.id(), sampleRate=1.0, complexData=False, loop=False)
+            self.source.write(fakeData)
             rcv = self.getPacket()
             sdds_header = self.getHeader(rcv)
             self.assertEqual(bps, sum(sdds_header.bps), "Received BPS that did not match expected")
@@ -747,7 +736,13 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def tearDown(self):
         # Clean up all sandbox artifacts created during test
         sb.release()
-        del(self.uclient)
+        if self.uclient:
+            if self.uclient.sock:
+                try:
+                    self.uclient.sock.close()
+                except:
+                    traceback.print_exc()
+            del(self.uclient)
 
     def testBasicBehavior(self):
         #######################################################################
@@ -793,6 +788,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         MSV_MASK = (1 << 7 + 8)
         TTV_MASK = (1 << 6 + 8)
         SSV_MASK = (1 << 5 + 8)
+        
+        tlen=len(p[:56])
+        self.assertEqual(tlen, 56, "Incorrect SDDS header len (" + str(tlen)+")")
         
         raw_header = struct.unpack('>HHHHQLLQ24B', p[:56])
         SF = (raw_header[0] & SF_MASK) >> (7 + 8)

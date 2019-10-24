@@ -30,8 +30,8 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.SourceVITA49
-Version:        3.1.0
-Release:        3%{?dist}
+Version:        3.1.1
+Release:        1%{?dist}
 Summary:        Component %{name}
 
 Group:          REDHAWK/Components

@@ -490,7 +490,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             matplotlib.pyplot.plot(range(frameLen), c)
             matplotlib.pyplot.show()
         
-        #make sure the outputFrame is the right lenght
+        #make sure the outputFrame is the right length
         self.assertTrue(len(outFrame)==len(c)==frameLen)
         #make sure our output is the same as the numpy output
         self.assertTrue(all([abs(x-y)<.1 for x, y in zip(outFrame, c)]))

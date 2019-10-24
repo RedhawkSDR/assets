@@ -164,7 +164,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                                                          id_="advanced::allow_internal_allocations",
                                                          name="allow_internal_allocations",
                                                          type_="boolean",
-                                                         defvalue=True
+                                                         defvalue=False
                                                          )
         
             udp_timeout = simple_property(
