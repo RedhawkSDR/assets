@@ -17,6 +17,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 
 import unittest
+from  functools import wraps
 import subprocess
 import nose
 from ossie.utils import sb#, testing
@@ -121,6 +122,21 @@ class ParameterizedTestCase(object):
     parameters = None
     func = None
 
+def test_attributes(**func_attrs):
+    """Set attributes in the decorated function, at definition time.
+    Only accepts keyword arguments.
+    """
+    def attr_decorator(fn):
+        @wraps(fn)
+        def wrapper(*args, **kwargs):
+            return fn(*args, **kwargs)
+
+        for attr, value in func_attrs.iteritems():
+            setattr(wrapper, attr, value)
+
+        return wrapper
+
+    return attr_decorator
 
 class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
     ''' FrontEnd device compatibility tests
@@ -293,7 +309,7 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
         pass
 
     @classmethod
-    def getToBasicState(self, execparams={}, configure={}, initialize=True):
+    def getToBasicState(self, spd_file, execparams={}, configure={}, initialize=True):
         ''' Function used to launch device before each test case
             With no arguments, uses execparams defined in global DEVICE_INFO['execparams'] dict,
             configures props with values from prf, and initializes device.
@@ -303,31 +319,24 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
         '''
         if not execparams:
             #execparams = self.getPropertySet(kinds=('execparam',), modes=('readwrite', 'writeonly'), includeNil=False)
-            execparams = getPropertySet(DEVICE_INFO['spd'],kinds=('execparam',), modes=('readwrite', 'writeonly'), includeNil=False)
+            execparams = getPropertySet(spd_file,kinds=('execparam',), modes=('readwrite', 'writeonly'), includeNil=False)
             execparams = dict([(x.id, any.from_any(x.value)) for x in execparams])
             execparams['DEBUG_LEVEL'] = DEBUG_LEVEL
-            #Add custom execparams here
-            for param,val in DEVICE_INFO['execparams'].items():
-                execparams[param] = val
-        
-        #Add custom configure here
-        for param,val in DEVICE_INFO['configure'].items():
-            configure[param] = val
                 
         ### device-specific pre-launch commands
         self.devicePreLaunch()
         
-        print 'Launching device --',DEVICE_INFO['spd']
-        print '\texecparams:',str(execparams)
-        print '\tconfigure:',str(configure)
-        print '\tinitialize:',str(initialize)
+        print 'Launching device --', spd_file
+        print '\texecparams:',pp(execparams)
+        print '\tconfigure:',pp(configure)
+        print '\tinitialize:',pp(initialize)
 
         try:
             # new method, use in versions >= 1.9
-            self.dut = sb.launch(DEVICE_INFO['spd'],execparams=execparams,configure=configure,initialize=initialize,impl=IMPL_ID)
+            self.dut = sb.launch(spd_file,execparams=execparams,configure=configure,initialize=initialize,impl=IMPL_ID)
         except:
             # deprecated, use in 1.8.x versions
-            self.dut = sb.Component(DEVICE_INFO['spd'],execparams=execparams,configure=configure,initialize=initialize,impl=IMPL_ID)
+            self.dut = sb.Component(spd_file,execparams=execparams,configure=configure,initialize=initialize,impl=IMPL_ID)
         
         self.dut_ref = self.dut.ref._narrow(CF.Device)
 
@@ -376,7 +385,9 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
         #    self._props = prop_helpers.getPropNameDict(self.prf)
             
         self.testReport = ['\nDiscovering Tuner Types']
-        self.getToBasicState()
+        self.getToBasicState( spd_file=DEVICE_INFO['spd'],
+                              execparams=DEVICE_INFO['execparams'],
+                              configure=DEVICE_INFO['configure'])
         
         #Count # of each tuner type
         props = self.dut.query([])
@@ -401,10 +412,66 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
             print generateTunerRequest
         else:
             generateTunerRequest=defaultGenerateTunerRequest
-    
-    def setUp(self):
+
+    def cfg_channel_output(self, out_cfg_definitions, ch_list, enable_disable=True):
         try:
-            ipaddr=DEVICE_INFO['configure']['msdd_configuration']['msdd_configuration::msdd_ip_address']
+            if len(ch_list)== 0:
+                ch_list=range(len(out_cfg))
+            for ch_id in ch_list:
+                try:
+                    out_cfg_definitions[ch_id]['msdd_output_configuration::enabled'] = enable_disable
+                except:
+                    pass
+        except:
+            pass
+
+
+    def process_test_attributes(self, test_func):
+        tm=getattr(self, test_func)
+        if tm:
+            if  hasattr(tm,'enable_channels') == False and \
+                hasattr(tm,'ist_channels') == False:
+                return
+
+            out_cfg=self.dut_properties['msdd_output_configuration']
+
+            # first disable output for all channels
+            self.cfg_channel_output( out_cfg, [], False)
+            enable_disable_order="disable"
+            try:
+                enable_disable_order=tm.enable_order
+            except:
+                pass
+
+            # check if we perform enable first, all others disable first
+            if enable_disable_order == "enable":
+                try:
+                    ch_list=tm.enable_channels
+                    self.cfg_channel_output( out_cfg, ch_list, True)
+                except:
+                    pass
+
+                try:
+                    ch_list=tm.disable_channels
+                    self.cfg_channel_output( out_cfg, ch_list, False)
+                except:
+                    pass
+            else:
+                try:
+                    ch_list=tm.enable_channels
+                    self.cfg_channel_output( out_cfg, ch_list, True)
+                except:
+                    pass
+
+
+
+    def setUp(self):
+
+        self.dut_properties=copy.deepcopy(DEVICE_INFO['configure'])
+        self.process_test_attributes(self._testMethodName)
+
+        try:
+            ipaddr=self.dut_properties['msdd_configuration']['msdd_configuration::msdd_ip_address']
             subprocess.call(['./reset_msdd', ipaddr])
         except:
             pass
@@ -412,7 +479,9 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
         signal.signal(signal.SIGTERM, self.tearDown)
         signal.signal(signal.SIGQUIT, self.tearDown)
         self.currentTestName = None
-        self.getToBasicState()       
+        self.getToBasicState( spd_file=DEVICE_INFO['spd'],
+                              execparams=DEVICE_INFO['execparams'],
+                              configure=self.dut_properties )
             
     def tearDown(self):
         self.getToShutdownState()
@@ -606,13 +675,15 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
         # Verify over-allocation failure
         over_t = generateTunerRequest()
         over_tAlloc = generateTunerAlloc(over_t)
-        if not self.check(self.dut_ref.allocateCapacity(over_tAlloc), False, 'Over-allocate RX_DIGITIZER check') and DEBUG_LEVEL >= 4:
-            # Do some DEBUG
-            print 'RX_DIG 1.3 FAILURE - Over-allocate RX_DIGITIZER check'
-            pp(ts)
-            pp(over_t)
-            pp(over_tAlloc)
-           
+        try:
+            if not self.check(self.dut_ref.allocateCapacity(over_tAlloc), False, 'Over-allocate RX_DIGITIZER check') and DEBUG_LEVEL >= 4:
+                # Do some DEBUG
+                print 'RX_DIG 1.3 FAILURE - Over-allocate RX_DIGITIZER check'
+                pp(ts)
+                pp(over_t)
+                pp(over_tAlloc)
+        except CF.Device.InvalidState, e :
+            self.check(False, False, 'Over-allocate RX_DIGITIZER check')
         try:
             self.dut_ref.deallocateCapacity(over_tAlloc)
         except:
@@ -2317,36 +2388,41 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
         else:
             self.check(False,True,'%s.setTunerEnable called with bad alloc_id produces FrontendException (no exception)'%(port_name))
    
-           
+
+    @test_attributes(enable_channels=[0])
     def testFRONTEND_3_4_DataFlow1(self):
         ''' RX_DIG 4 DataFlow - First Port
         '''
         self._testFRONTEND_3_4_DataFlow(1)
-   
+
+    @test_attributes(enable_channels=[0])
     def testFRONTEND_3_4_DataFlow2(self):
         ''' RX_DIG 4 DataFlow - Second Port
         '''
         self._testFRONTEND_3_4_DataFlow(2)
    
+    @test_attributes(enable_channels=[0])
     def testFRONTEND_3_4_DataFlow3(self):
         ''' RX_DIG 4 DataFlow - Third Port
         '''
         self._testFRONTEND_3_4_DataFlow(3)
    
+    @test_attributes(enable_channels=[0])
     def testFRONTEND_3_4_DataFlow4(self):
         ''' RX_DIG 4 DataFlow - Fourth Port
         '''
         self._testFRONTEND_3_4_DataFlow(4)
    
+    @test_attributes(enable_channels=[0])
     def testFRONTEND_3_4_DataFlow5(self):
         ''' RX_DIG 4 DataFlow - Fourth Port
         '''
         self._testFRONTEND_3_4_DataFlow(5)
     
+    @test_attributes(enable_channels=[0])
     def _testFRONTEND_3_4_DataFlow(self, port_num):
         ''' RX_DIG 4 DataFlow
         '''
- 
         
         controller = generateTunerRequest()
         ttype=controller['TYPE']
@@ -2934,6 +3010,7 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
                 else:
                     self.check(status_val, val, 'correct value for FRONTEND::tuner_status::rf_flow_id property')
            
+    @test_attributes(enable_channels=[0])
     def testFRONTEND_2_5(self):
         ''' RX_DIG 2.5 Allocate a single RX_DIGITIZER_CHANNELIZER 
         '''
@@ -2959,9 +3036,12 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
             #No RX_DIGITIZER_CHANNELIZER Capability
             pass
    
+    @test_attributes(enable_channels=[], disable_channels=[0], enable_order="enable" )
     def testFRONTEND_2_5_1(self):
         ''' RX_DIG 2.5 Allocate a single RX_DIGITIZER_CHANNELIZER and DDC
         '''
+        t1=None
+        t1Alloc=None
         if "RX_DIGITIZER_CHANNELIZER" in DEVICE_INFO['capabilities'][0]:
    
             t1 = generateRXDigitizerChannelizerRequest(idx=0)
@@ -2972,40 +3052,44 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
                 pp(t1)
                 pp(t1Alloc)
    
-               
-            t2 = generateDDCRequest(idx=0,cf=t1['CF'])
-            t2Alloc = generateTunerAlloc(t2)
-            if not self.check(self.dut_ref.allocateCapacity(t2Alloc), True, 'Can allocate single DDC') and DEBUG_LEVEL >= 4:
-                # Do some DEBUG
-                print 'RX_DIGITIZER_CHANNELIZER 2.5.1 FAILURE - Can allocate single DDC'
-                pp(t2)
-                pp(t2Alloc)            
-   
-            # Deallocate the DDC
-            error = False
-            try:
-                self.dut_ref.deallocateCapacity(t2Alloc)
-            except:
-                error = True
-            self.check(error, False, 'Deallocated DDC without error') 
-               
-            # Deallocate the RX_DIGITIZER_CHANNELIZER
-            error = False
-            try:
-                self.dut_ref.deallocateCapacity(t1Alloc)
-            except Exception, e:
-                print e
-                error = True
-            self.check(error, False, 'Deallocated RX_DIGITIZER_CHANNELIZER without error')            
-               
-        else:
-            #No RX_DIGITIZER_CHANNELIZER Capability
-            pass
-   
+            t2=None
+            t2Alloc=None
+            if "DDC" in DEVICE_INFO['capabilities'][0] and \
+                DEVICE_INFO['capabilities'][0]['DDC'] is not None:
+                t2 = generateDDCRequest(idx=0,cf=t1['CF'])
+                t2Alloc = generateTunerAlloc(t2)
+                if not self.check(self.dut_ref.allocateCapacity(t2Alloc), True, 'Can allocate single DDC') and DEBUG_LEVEL >= 4:
+                    # Do some DEBUG
+                    print 'RX_DIGITIZER_CHANNELIZER 2.5.1 FAILURE - Can allocate single DDC'
+                    pp(t2)
+                    pp(t2Alloc)
 
+            if t2Alloc:
+                # Deallocate the DDC
+                error = False
+                try:
+                    self.dut_ref.deallocateCapacity(t2Alloc)
+                except:
+                    error = True
+                self.check(error, False, 'Deallocated DDC without error')
+
+            if t1Alloc:
+                # Deallocate the RX_DIGITIZER_CHANNELIZER
+                error = False
+                try:
+                    self.dut_ref.deallocateCapacity(t1Alloc)
+                except Exception, e:
+                    print e
+                    error = True
+                self.check(error, False, 'Deallocated RX_DIGITIZER_CHANNELIZER without error')
+               
+   
+    @test_attributes(enable_channels=[], disable_channels=[0], enable_order="enable" )
     def testFRONTEND_2_5_2(self):
         ''' RX_DIG 2.5.2 Allocate a single RX_DIGITIZER_CHANNELIZER and multiple DDC
         '''
+        t1=None
+        t1Alloc=None
         if "RX_DIGITIZER_CHANNELIZER" in DEVICE_INFO['capabilities'][0]:
     
             t1 = generateRXDigitizerChannelizerRequest(idx=0)
@@ -3016,19 +3100,22 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
                 
             allocations = []
             error = False
-            numDDCs = DEVICE_INFO['capabilities'][0]["DDC"]["NUMDDCs"]
-            for tuner_num in xrange(0,numDDCs):
-                dev_state=self.dut_ref._get_usageState()
-                if dev_state != CF.Device.BUSY:
-                    t2 = generateDDCRequest(idx=0,cf=t1['CF']+5000*tuner_num)
-                    allocations.append(generateTunerAlloc(t2))
-                    if not self.dut_ref.allocateCapacity(allocations[tuner_num]):
-                        self.check(True, False, 'Cannot allocate DDC')
-                        error = True
-                    self.check(error, False, 'Allocate Multiple DDCs without error')
-                
+            numDDCs=0
+            if "DDC" in DEVICE_INFO['capabilities'][0] and \
+                DEVICE_INFO['capabilities'][0]['DDC'] is not None:
+                numDDCs = DEVICE_INFO['capabilities'][0]["DDC"]["NUMDDCs"]
+                for tuner_num in xrange(0,numDDCs):
+                    dev_state=self.dut_ref._get_usageState()
+                    if dev_state != CF.Device.BUSY:
+                        t2 = generateDDCRequest(idx=0,cf=t1['CF']+5000*tuner_num)
+                        allocations.append(generateTunerAlloc(t2))
+                        if not self.dut_ref.allocateCapacity(allocations[tuner_num]):
+                            self.check(True, False, 'Cannot allocate DDC')
+                            error = True
+                        self.check(error, False, 'Allocate Multiple DDCs without error')
+
             time.sleep(1)
-                
+
             #Deallocate all DDCs
             error = False
             for tuner_num in xrange(0,len(allocations)):
@@ -3040,21 +3127,23 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
                 
             # Deallocate the RX_DIGITIZER_CHANNELIZER
             error = False
-            try:
-                self.dut_ref.deallocateCapacity(t1Alloc)
-            except Exception, e:
-                print e
-                error = True
+            if t1Alloc:
+                try:
+                    self.dut_ref.deallocateCapacity(t1Alloc)
+                except Exception, e:
+                    print e
+                    error = True
                 self.check(error, False, 'Deallocated RX_DIGITIZER_CHANNELIZER without error')            
                 
-        else:
-            #No RX_DIGITIZER_CHANNELIZER Capability
-            pass
     
     
+    @test_attributes(enable_channels=[1], disable_channels=[0], enable_order="enable" )
     def testFRONTEND_2_5_3(self):
         ''' RX_DIG 2.5 Test Output of DDC
         '''
+
+        t1=None
+        t1Alloc=None
         if "RX_DIGITIZER_CHANNELIZER" in DEVICE_INFO['capabilities'][0]:
     
             t1 = generateRXDigitizerChannelizerRequest(idx=0)
@@ -3063,24 +3152,23 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
                 self.check(True, False, 'Cannot allocate single RX_DIGITIZER_CHANNELIZER')
     
             time.sleep(2)
-                
-            t2 = generateDDCRequest(idx=0,cf=t1['CF'])
-            tuner_control = self.dut.getPort('DigitalTuner_in')
-                
-            self._testSDDS(tuner_control,"dataSDDS_out","dataSDDS","DDC",t2,None,None)
-               
+            if "DDC" in DEVICE_INFO['capabilities'][0] and \
+                DEVICE_INFO['capabilities'][0]['DDC'] is not None:
+                t2 = generateDDCRequest(idx=0,cf=t1['CF'])
+                tuner_control = self.dut.getPort('DigitalTuner_in')
+
+                self._testSDDS(tuner_control,"dataSDDS_out","dataSDDS","DDC",t2,None,None)
+
             # Deallocate the RX_DIGITIZER_CHANNELIZER
             error = False
-            try:
-                self.dut_ref.deallocateCapacity(t1Alloc)
-            except Exception, e:
-                print e
-                error = True
+            if t1Alloc:
+                try:
+                    self.dut_ref.deallocateCapacity(t1Alloc)
+                except Exception, e:
+                    print e
+                    error = True
                 self.check(error, False, 'Deallocated RX_DIGITIZER_CHANNELIZER without error')            
-                
-        else:
-            #No RX_DIGITIZER_CHANNELIZER Capability
-            pass
+
    
     def testFRONTEND_RF_Info_Pkt(self):
         """
@@ -3343,6 +3431,7 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
    
   
     #Channelizer Test
+    @test_attributes( enable_channels=[], disable_channels=[0], enable_order="enable" )
     def testAllDDCsAllocation(self):
         if not self.hasChannelizer():
             return
@@ -3353,7 +3442,8 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
         cf = cvalues['CF']
         ddcAllocs = []
         for idx in range(len(DEVICE_INFO['capabilities'])):
-            if DEVICE_INFO['capabilities'][idx].has_key('DDC'):
+            if DEVICE_INFO['capabilities'][idx].has_key('DDC') and \
+               DEVICE_INFO['capabilities'][idx]['DDC'] is not None:
                 for tuner_num in range(DEVICE_INFO['capabilities'][idx]['DDC']['NUMDDCs']):
                     dev_state=self.dut_ref._get_usageState()
                     if dev_state != CF.Device.BUSY:

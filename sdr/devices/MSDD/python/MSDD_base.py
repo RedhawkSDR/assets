@@ -1585,42 +1585,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
             psd_peak_mode = simple_property(
                                             id_="FRONTEND::tuner_status::psd_peak_mode",
                                             name="psd_peak_mode",
-                                            type_="string")
-        
-            spc_fft_size = simple_property(
-                                           id_="FRONTEND::tuner_status::spc_fft_size",
-                                           name="spc_fft_size",
-                                           type_="short")
-        
-            spc_averages = simple_property(
-                                           id_="FRONTEND::tuner_status::spc_averages",
-                                           name="spc_averages",
-                                           type_="short")
-        
-            spc_time_between_ffts = simple_property(
-                                                    id_="FRONTEND::tuner_status::spc_time_between_ffts",
-                                                    name="spc_time_between_ffts",
-                                                    type_="double")
-        
-            spc_output_bin_size = simple_property(
-                                                  id_="FRONTEND::tuner_status::spc_output_bin_size",
-                                                  name="spc_output_bin_size",
-                                                  type_="short")
-        
-            spc_window_type = simple_property(
-                                              id_="FRONTEND::tuner_status::spc_window_type",
-                                              name="spc_window_type",
-                                              type_="string")
-        
-            spc_peak_mode = simple_property(
-                                            id_="FRONTEND::tuner_status::spc_peak_mode",
-                                            name="spc_peak_mode",
-                                            type_="string")
-        
-            spc_start_frequency = simple_property(
-                                                  id_="FRONTEND::tuner_status::spc_start_frequency",
-                                                  name="spc_start_frequency",
-                                                  type_="double")
+                                            type_="string")        
         
             available_tuner_type = simple_property(
                                                    id_="FRONTEND::tuner_status::available_tuner_type",
@@ -1629,12 +1594,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                                                    defvalue=""
                                                    )
         
-            spc_stop_frequency = simple_property(
-                                                 id_="FRONTEND::tuner_status::spc_stop_frequency",
-                                                 name="spc_stop_frequency",
-                                                 type_="double")
-        
-            def __init__(self, allocation_id_csv="", available_bandwidth="", available_frequency="", available_gain="", available_sample_rate="", bandwidth=0.0, center_frequency=0.0, complex=False, decimation=0, enabled=False, gain=0.0, group_id="", output_format="", output_multicast="", output_port=0, output_vlan=0, rf_flow_id="", sample_rate=0.0, tuner_number=0, tuner_type="", available_decimation="", msdd_channel_type="", msdd_installation_name_csv="", msdd_registration_name_csv="", bits_per_sample=0, adc_meter_values="", rcvr_gain=0.0, ddc_gain=0.0, allocated=False, input_sample_rate=0.0, output_channel="", output_enabled=False, output_protocol="", output_vlan_enabled=False, output_vlan_tci="", output_flow="", output_timestamp_offset="", output_endianess=1, output_mfp_flush=0, psd_fft_size=0.0, psd_averages=0.0, psd_time_between_ffts=0.0, psd_output_bin_size=0.0, psd_window_type="", psd_peak_mode="", spc_fft_size=0, spc_averages=0, spc_time_between_ffts=0.0, spc_output_bin_size=0, spc_window_type="", spc_peak_mode="", spc_start_frequency=0.0, available_tuner_type="", spc_stop_frequency=0.0):
+            def __init__(self, allocation_id_csv="", available_bandwidth="", available_frequency="", available_gain="", available_sample_rate="", bandwidth=0.0, center_frequency=0.0, complex=False, decimation=0, enabled=False, gain=0.0, group_id="", output_format="", output_multicast="", output_port=0, output_vlan=0, rf_flow_id="", sample_rate=0.0, tuner_number=0, tuner_type="", available_decimation="", msdd_channel_type="", msdd_installation_name_csv="", msdd_registration_name_csv="", bits_per_sample=0, adc_meter_values="", rcvr_gain=0.0, ddc_gain=0.0, allocated=False, input_sample_rate=0.0, output_channel="", output_enabled=False, output_protocol="", output_vlan_enabled=False, output_vlan_tci="", output_flow="", output_timestamp_offset="", output_endianess=1, output_mfp_flush=0, psd_fft_size=0.0, psd_averages=0.0, psd_time_between_ffts=0.0, psd_output_bin_size=0.0, psd_window_type="", psd_peak_mode="", available_tuner_type="" ):
                 frontend.default_frontend_tuner_status_struct_struct.__init__(self, allocation_id_csv=allocation_id_csv, bandwidth=bandwidth, center_frequency=center_frequency, enabled=enabled, group_id=group_id, rf_flow_id=rf_flow_id, sample_rate=sample_rate, tuner_type=tuner_type)
                 self.available_bandwidth = available_bandwidth
                 self.available_frequency = available_frequency
@@ -1673,15 +1633,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                 self.psd_output_bin_size = psd_output_bin_size
                 self.psd_window_type = psd_window_type
                 self.psd_peak_mode = psd_peak_mode
-                self.spc_fft_size = spc_fft_size
-                self.spc_averages = spc_averages
-                self.spc_time_between_ffts = spc_time_between_ffts
-                self.spc_output_bin_size = spc_output_bin_size
-                self.spc_window_type = spc_window_type
-                self.spc_peak_mode = spc_peak_mode
-                self.spc_start_frequency = spc_start_frequency
                 self.available_tuner_type = available_tuner_type
-                self.spc_stop_frequency = spc_stop_frequency
         
             def __str__(self):
                 """Return a string representation of this structure"""
@@ -1731,15 +1683,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                 d["psd_output_bin_size"] = self.psd_output_bin_size
                 d["psd_window_type"] = self.psd_window_type
                 d["psd_peak_mode"] = self.psd_peak_mode
-                d["spc_fft_size"] = self.spc_fft_size
-                d["spc_averages"] = self.spc_averages
-                d["spc_time_between_ffts"] = self.spc_time_between_ffts
-                d["spc_output_bin_size"] = self.spc_output_bin_size
-                d["spc_window_type"] = self.spc_window_type
-                d["spc_peak_mode"] = self.spc_peak_mode
-                d["spc_start_frequency"] = self.spc_start_frequency
                 d["available_tuner_type"] = self.available_tuner_type
-                d["spc_stop_frequency"] = self.spc_stop_frequency
                 return str(d)
         
             @classmethod
@@ -1751,7 +1695,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                 return True
         
             def getMembers(self):
-                return frontend.default_frontend_tuner_status_struct_struct.getMembers(self) + [("available_bandwidth",self.available_bandwidth),("available_frequency",self.available_frequency),("available_gain",self.available_gain),("available_sample_rate",self.available_sample_rate),("complex",self.complex),("decimation",self.decimation),("gain",self.gain),("output_format",self.output_format),("output_multicast",self.output_multicast),("output_port",self.output_port),("output_vlan",self.output_vlan),("tuner_number",self.tuner_number),("available_decimation",self.available_decimation),("msdd_channel_type",self.msdd_channel_type),("msdd_installation_name_csv",self.msdd_installation_name_csv),("msdd_registration_name_csv",self.msdd_registration_name_csv),("bits_per_sample",self.bits_per_sample),("adc_meter_values",self.adc_meter_values),("rcvr_gain",self.rcvr_gain),("ddc_gain",self.ddc_gain),("allocated",self.allocated),("input_sample_rate",self.input_sample_rate),("output_channel",self.output_channel),("output_enabled",self.output_enabled),("output_protocol",self.output_protocol),("output_vlan_enabled",self.output_vlan_enabled),("output_vlan_tci",self.output_vlan_tci),("output_flow",self.output_flow),("output_timestamp_offset",self.output_timestamp_offset),("output_endianess",self.output_endianess),("output_mfp_flush",self.output_mfp_flush),("psd_fft_size",self.psd_fft_size),("psd_averages",self.psd_averages),("psd_time_between_ffts",self.psd_time_between_ffts),("psd_output_bin_size",self.psd_output_bin_size),("psd_window_type",self.psd_window_type),("psd_peak_mode",self.psd_peak_mode),("spc_fft_size",self.spc_fft_size),("spc_averages",self.spc_averages),("spc_time_between_ffts",self.spc_time_between_ffts),("spc_output_bin_size",self.spc_output_bin_size),("spc_window_type",self.spc_window_type),("spc_peak_mode",self.spc_peak_mode),("spc_start_frequency",self.spc_start_frequency),("available_tuner_type",self.available_tuner_type),("spc_stop_frequency",self.spc_stop_frequency)]
+                return frontend.default_frontend_tuner_status_struct_struct.getMembers(self) + [("available_bandwidth",self.available_bandwidth),("available_frequency",self.available_frequency),("available_gain",self.available_gain),("available_sample_rate",self.available_sample_rate),("complex",self.complex),("decimation",self.decimation),("gain",self.gain),("output_format",self.output_format),("output_multicast",self.output_multicast),("output_port",self.output_port),("output_vlan",self.output_vlan),("tuner_number",self.tuner_number),("available_decimation",self.available_decimation),("msdd_channel_type",self.msdd_channel_type),("msdd_installation_name_csv",self.msdd_installation_name_csv),("msdd_registration_name_csv",self.msdd_registration_name_csv),("bits_per_sample",self.bits_per_sample),("adc_meter_values",self.adc_meter_values),("rcvr_gain",self.rcvr_gain),("ddc_gain",self.ddc_gain),("allocated",self.allocated),("input_sample_rate",self.input_sample_rate),("output_channel",self.output_channel),("output_enabled",self.output_enabled),("output_protocol",self.output_protocol),("output_vlan_enabled",self.output_vlan_enabled),("output_vlan_tci",self.output_vlan_tci),("output_flow",self.output_flow),("output_timestamp_offset",self.output_timestamp_offset),("output_endianess",self.output_endianess),("output_mfp_flush",self.output_mfp_flush),("psd_fft_size",self.psd_fft_size),("psd_averages",self.psd_averages),("psd_time_between_ffts",self.psd_time_between_ffts),("psd_output_bin_size",self.psd_output_bin_size),("psd_window_type",self.psd_window_type),("psd_peak_mode",self.psd_peak_mode), ("available_tuner_type",self.available_tuner_type)]
 
         connectionTable = structseq_property(id_="connectionTable",
                                              structdef=bulkio.connection_descriptor_struct,

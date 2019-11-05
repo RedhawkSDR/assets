@@ -588,21 +588,11 @@ and comprise it unless you looking for the strongest signal.</description>
       <simple id="FRONTEND::tuner_status::psd_output_bin_size" name="psd_output_bin_size" type="double"/>
       <simple id="FRONTEND::tuner_status::psd_window_type" name="psd_window_type" type="string"/>
       <simple id="FRONTEND::tuner_status::psd_peak_mode" name="psd_peak_mode" type="string"/>
-      <simple id="FRONTEND::tuner_status::spc_fft_size" name="spc_fft_size" type="short"/>
-      <simple id="FRONTEND::tuner_status::spc_averages" name="spc_averages" type="short"/>
-      <simple id="FRONTEND::tuner_status::spc_time_between_ffts" name="spc_time_between_ffts" type="double">
-        <units>ms</units>
-      </simple>
-      <simple id="FRONTEND::tuner_status::spc_output_bin_size" name="spc_output_bin_size" type="short"/>
-      <simple id="FRONTEND::tuner_status::spc_window_type" name="spc_window_type" type="string"/>
-      <simple id="FRONTEND::tuner_status::spc_peak_mode" name="spc_peak_mode" type="string"/>
-      <simple id="FRONTEND::tuner_status::spc_start_frequency" name="spc_start_frequency" type="double"/>
       <simple id="FRONTEND::tuner_status::available_tuner_type" mode="readwrite" name="available_tuner_type" type="string">
         <value></value>
         <kind kindtype="property"/>
         <action type="external"/>
       </simple>
-      <simple id="FRONTEND::tuner_status::spc_stop_frequency" name="spc_stop_frequency" type="double"/>
       <configurationkind kindtype="configure"/>
     </struct>
     <configurationkind kindtype="property"/>

@@ -416,7 +416,6 @@ class baseModule(object):
     def send_set_command(self,command_str, arg1_str="", check_for_output=True, expect_output=False):
         command=self.make_command(command_str,arg1_str)
 	try:
-            #self.connection._debug=True
             res = self.connection.sendStringCommand(command,
                                               check_for_output=check_for_output,
                                               expect_output=expect_output)
@@ -1449,7 +1448,6 @@ class DDCBaseModule(baseModule):
         self._decimation_by_position=None
         self._decimation_list=None
         self._frequency_list=None
-        self._sample_rate=None
         self._sample_rate_list=None
         self._gain_list=None
         self._attenuation_list=None
@@ -1836,9 +1834,7 @@ class WBDDCModule(DDCBaseModule):
                                            self.getSampleRate)
 
     def getSampleRate(self):
-        if self._sample_rate is None:
-            self._sample_rate=super(WBDDCModule,self).getSampleRate()
-        return self._sample_rate
+        return super(WBDDCModule,self).getSampleRate()
 
     def getSampleRateList(self, isr_override=None):
         if self._sample_rate_list is None:
@@ -1856,21 +1852,33 @@ class WBDDCModule(DDCBaseModule):
         return ret
 
     def getBandwidth_Hz(self):
-        if (self.sample_rate <= 25000000):
-            return self.MSDD_X000_BANDWIDTH
-        elif self.sample_rate == 50000000:
-            return self.MSDD_X000EX_BANDWIDTH
+        dec=self.getDecimation()
+        dec_list=self.getDecimationList()
+        idx=dec_list.index(dec)
+        bw_list=self.getBandwidthList_Hz()
+        if idx < len(bw_list):
+            return bw_list[idx]
+        else:
+            # prior method
+            if (self.sample_rate <= 25000000):
+                return self.MSDD_X000_BANDWIDTH
+            elif self.sample_rate == 50000000:
+                return self.MSDD_X000EX_BANDWIDTH
+
+    def _get_ratio(self):
+        min_sr=min(self.getSampleRateList())
+        min_bw=self.MSDD_X000_BANDWIDTH
+        if min_sr > self.MSDD_X000EX_BANDWIDTH : min_bw=self.MSDD_X000EX_BANDWIDTH
+        return min_bw/min_sr
 
     def getBandwidthList_Hz(self):
         rv = []
-        for rate in super(WBDDCModule,self).getSampleRateList():
-            if rate <= 25000000.0:
-                rv.append(self.MSDD_X000_BANDWIDTH)
-            elif rate == 50000000.0:
-                rv.append(self.MSDD_X000EX_BANDWIDTH)
-            else:
-                if self._debug:
-                    print "ERROR: Trying to match BW for unknown rate" , rate
+        bw_ratio=self._get_ratio()
+        for srate in self.getSampleRateList():
+            bw = srate*bw_ratio
+            if self._debug:
+                   print "wbddc, bw:", bw, " srate", srate, " ratio ", bw_ratio
+            rv.append(bw)
         return rv
 
     def getBandwidthListStr(self):
@@ -3500,19 +3508,24 @@ class MSDDRadio:
                 srates={}
                 try:
                     if self.digital_rx_object:
-                        nb_srates = self.digital_rx_object.object.getSampleRateList()
-                        nb_bw_rates = self.digital_rx_object.object.getBandwidthList_Hz()
-                        for n, nb_srate in zip(range(len(nb_srates)), nb_srates):
-                            self.digital_rx_object.object.setSampleRate(nb_srate)
+                        hw_ddc_srates = self.digital_rx_object.object.getSampleRateList()
+                        hw_ddc_bw_rates = self.digital_rx_object.object.getBandwidthList_Hz()
+                        # fill out bw list if shorter than srates
+                        if len(hw_ddc_bw_rates) < len(hw_ddc_srates):
+                            hw_ddc_bw_rates = hw_ddc_bw_rates + [ hw_ddc_bw_rates[-1] ]*(len(hw_ddc_srates)-len(hw_ddc_bw_rates))
+                        for n, hw_ddc_srate in zip(range(len(hw_ddc_srates)), hw_ddc_srates):
+                            self.digital_rx_object.object.setSampleRate(hw_ddc_srate)
                             if self.swddc_object:
-                                sw_srates = self.swddc_object.object.getSampleRateList()
-                                sw_bw_rates = self.swddc_object.object.getBandwidthList_Hz()
-                                for i, sw_srate in zip(range(len(sw_srates)), sw_srates):
-                                    bw=min(sw_bw_rates[i],nb_bw_rates[n])
-                                    srates[sw_srate] = ( None, nb_srate, sw_srate, bw )
+                                sw_ddc_srates = self.swddc_object.object.getSampleRateList()
+                                sw_ddc_bw_rates = self.swddc_object.object.getBandwidthList_Hz()
+                                for i, sw_ddc_srate in zip(range(len(sw_ddc_srates)), sw_ddc_srates):
+                                    bw=min(sw_ddc_bw_rates[i],hw_ddc_bw_rates[n])
+                                    srates[sw_ddc_srate] = ( None, hw_ddc_srate, sw_ddc_srate, bw )
                             else:
-                                srates[ nb_srate ] = ( None, nb_srate, None, nb_bw_rates[n])
+                                if n >= len(hw_ddc_bw_rates): n=-1
+                                srates[ hw_ddc_srate ] = ( None, hw_ddc_srate, None, hw_ddc_bw_rates[n])
                 except:
+                    traceback.print_exc()
                     srates={}
 
                 self._srates=srates
@@ -3570,32 +3583,36 @@ class MSDDRadio:
             if len(self._bw_rates) == 0:
                 bw_rates={}
                 try:
-                    al_bws=[None]
+                    analog_bws=[None]
                     if self.analog_rx_object:
-                        al_bws = self.analog_rx_object.object.getBandwidthList_Hz()
-                    for al_bw in al_bws:
-                        if al_bw:
-                            self.analog_rx_object.object.setBandwidth_Hz(al_bw)
+                        analog_bws = self.analog_rx_object.object.getBandwidthList_Hz()
+                    for analog_bw in analog_bws:
+                        if analog_bw:
+                            self.analog_rx_object.object.setBandwidth_Hz(analog_bw)
                         if self.digital_rx_object:
-                            nb_srates = self.digital_rx_object.object.getSampleRateList()
-                            nb_bw_rates = self.digital_rx_object.object.getBandwidthList_Hz()
-                            for n, nb_bw in zip(range(len(nb_bw_rates)), nb_bw_rates):
-                                self.digital_rx_object.object.setSampleRate(nb_srates[n])
+                            # get sample rate and bandwidth list from hw ddc module
+                            hw_ddc_srates = self.digital_rx_object.object.getSampleRateList()
+                            hw_ddc_bw_rates = self.digital_rx_object.object.getBandwidthList_Hz()
+                            # fill out bw list if shorter than srates
+                            if len(hw_ddc_bw_rates) < len(hw_ddc_srates):
+                                hw_ddc_bw_rates = hw_ddc_bw_rates + [ hw_ddc_bw_rates[-1] ]*(len(hw_ddc_srates)-len(hw_ddc_bw_rates))
+                            for n, hw_ddc_bw in zip(range(len(hw_ddc_bw_rates)), hw_ddc_bw_rates):
+                                self.digital_rx_object.object.setSampleRate(hw_ddc_srates[n])
                                 if self.swddc_object:
-                                    sw_srates = self.swddc_object.object.getSampleRateList()
-                                    sw_bw_rates = self.swddc_object.object.getBandwidthList_Hz()
-                                    for i, sw_bw in zip(range(len(sw_bw_rates)), sw_bw_rates):
-                                        # choose more filter bw as actual bw
-                                        srate=min( nb_srates[n], sw_srates[i])
-                                        bw=min(nb_bw, sw_bw)
-                                        bw_rates[bw] = ( al_bw, nb_bw, sw_bw, srate)
+                                    sw_ddc_rates = self.swddc_object.object.getSampleRateList()
+                                    sw_ddc_bw_rates = self.swddc_object.object.getBandwidthList_Hz()
+                                    for i, sw_ddc_bw in zip(range(len(sw_ddc_bw_rates)), sw_ddc_bw_rates):
+                                        # choose lowest possible value for srate/bw pair
+                                        srate=min( hw_ddc_srates[n], sw_ddc_rates[i])
+                                        bw=min(hw_ddc_bw, sw_ddc_bw)
+                                        bw_rates[bw] = ( analog_bw, hw_ddc_bw, sw_ddc_bw, srate)
                                 else:
-                                    bw_rates[ nb_bw ] = ( al_bw, nb_bw, None, nb_srates[n])
+                                    if n>= len(hw_ddc_srates) : n = -1
+                                    bw_rates[ hw_ddc_bw ] = ( analog_bw, hw_ddc_bw, None, hw_ddc_srates[n])
                         else:
-                            if al_bw:
-                                bw_rates[al_bw] = ( al_bw, None, None, None)
+                            if analog_bw:
+                                bw_rates[analog_bw] = ( analog_bw, None, None, None)
                 except:
-                    traceback.print_exc()
                     bw_rates={}
 
                 self._bw_rates=bw_rates
@@ -3847,8 +3864,8 @@ class MSDDRadio:
                  validation_polling_time=0.25,
                  validation_number_retries = 0,
                  enable_inline_swddc=True,
-                 enable_secondary_tuners=True,
-                 enable_fft_channels=True):
+                 enable_secondary_tuners=False,
+                 enable_fft_channels=False):
 
         start_time_total = time.time()
 
@@ -4022,33 +4039,31 @@ class MSDDRadio:
 
 
         start_time=time.time()
-        # mark all existing used swddc modules if they are already defined in a flow
 	for mod in self.software_ddc_modules:
-            src_mods = self.stream_router.getModulesFlowListByDestination(mod.object.full_reg_name)
-            if len(src_mods)>1:
-                if self._debug:
-                    print "Found a used sw_ddc module: ", mod.object.full_reg_name, " sources : ",  src_mods
-                # unlink the module, to allow for secondary piggyback channels
-                self.stream_router.unlinkModule(mod.channel_id())
+            if self._debug:
+                print "Found a sw_ddc module unlinke", mod.object.full_reg_name, " channel id ", mod.channel_id()
+            self.stream_router.unlinkModule(mod.channel_id())
 
-            # remove swddc from an output module
+            # remove swddc from its output module
             output = self.get_corresponding_output_module_object(mod)
             if output:
                 if self._debug:
                     print "found output for swddc ", mod.channel_id(), " output ", output.channel_id()
                 self.stream_router.unlinkModule(output.channel_id())
 
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD cleaning up SWDDC modules"
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD Cleaning up SWDDC modules"
 
         start_time=time.time()
         # mark all existing used output modules if they are already defined as output for a flow
 	for mod in self.out_modules:
+            if mod.object.enable:
+                mod.object.enable=False
             src_mods = self.stream_router.getModulesFlowListByDestination(mod.object.full_reg_name)
             if len(src_mods)>1:
                 if self._debug:
-                     print "Found a used output module: ", mod.object.full_reg_name, " sources : ",  src_mods
+                    print "Found a used output module: ", mod.object.full_reg_name, " sources : ",  src_mods,  " enable ", mod.object.enable
                 self.output_object_container.mark_as_used(mod)
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD finding used OUT modules"
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD Finding used OUT modules"
 
         #
         # Create RX Channels for external use
@@ -4073,7 +4088,7 @@ class MSDDRadio:
                 print " wb_ddc analog-rx:", mod.object.channel_id(),  "digital-rx:", rx_mod.digital_rx_object.object.channel_id(),  "output:",oreg_name
             self.output_object_container.mark_as_used(rx_mod.output_object)
             self.rx_channels.append(rx_mod)
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD finished RX channels RCV/WBDDC ", len(self.rx_channels)
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD Finished RX channels RCV->WBDDC ", len(self.rx_channels)
 
         # generate channels for NBDDC modules and check for swddc module and output modules
         start_time=time.time()
@@ -4096,7 +4111,7 @@ class MSDDRadio:
             self.output_object_container.mark_as_used(rx_mod.output_object)
             self.swddc_object_container.mark_as_used(rx_mod.swddc_object)
             self.rx_channels.append(rx_mod)
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD RX channels for NBDDC/SWDDC ", len(self.nb_ddc_modules)
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD RX channels for NBDDC->SWDDC ", len(self.nb_ddc_modules)
 
         # Assign output modules to existing channels before continuing
         start_time=time.time()
@@ -4132,15 +4147,14 @@ class MSDDRadio:
                 self.output_object_container.mark_as_used(out_mod)
                 rx_mod.output_object = self.get_corresponding_output_module_object(src_mod)
 
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD Assign missing output modules  ", mod_count
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD Assign missing output modules for RX channels  ", mod_count
 
         if enable_inline_swddc:
-            # Assign output modules to existing channels before continuing
             start_time=time.time()
             mod_count=0
 
             if self._debug:
-                print " For NBDDC modules, ensure a SWDDC module is place in-line before output modules"
+                print " For NBDDC modules, ensure a SWDDC module is placed in-line before output modules"
             # place an inline swddc module for each nbddc modules
             for rx_mod in self.rx_channels:
                 try:
@@ -4184,9 +4198,10 @@ class MSDDRadio:
                             rx_mod.swddc_object = swddc_object
                 except:
                     traceback.print_exc()
-            print "(duration:%.4f" % (time.time()-start_time), " MSDD Assign inline SWDDCs  ", mod_count
+            print "(duration:%.4f" % (time.time()-start_time), " MSDD Assign inline SWDDC to NBDDC  ", mod_count
 
-        if enable_secondary_tuners:
+        num_nbddc=len(self.nb_ddc_modules)
+        if enable_secondary_tuners and num_nbddc > 0:
             if self._debug:
                 print "MSDD Adding remaining SWDDCs as secondary (piggyback) tuners "
 
@@ -4194,7 +4209,6 @@ class MSDDRadio:
             start_time=time.time()
             mod_count=0
             nidx=0
-            num_nbddc=len(self.nb_ddc_modules)
             for swddc_mod in self.software_ddc_modules:
                 try:
                     if self.swddc_object_container.is_used(swddc_mod):
@@ -4238,7 +4252,7 @@ class MSDDRadio:
                     self.rx_channels.append(rx_channel)
                 except:
                     traceback.print_exc()
-            print "(duration:%.4f" % (time.time()-start_time), " MSDD Secondary (piggyback) SWDDC tuners  ", mod_count
+            print "(duration:%.4f" % (time.time()-start_time), " MSDD Assigning Secondary (piggyback) SWDDC tuners  ", mod_count
 
         if enable_fft_channels:
             if self._debug:
@@ -4276,8 +4290,7 @@ class MSDDRadio:
             if self._debug:
                 print "update Channel ", rx_channel.msdd_channel_id()
             self.update_rx_channel_mapping( rx_channel, rx_pos)
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD build reverse lookup, mod->rx_channel ", len(self.msdd_channel_to_rx_channel)
-
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD Build reverse lookup, msdd mod->rx_channel ", len(self.msdd_channel_to_rx_channel)
 
         start_time=time.time()
         # CREATE PARENT CHILD MAPPING FOR TUNERS
