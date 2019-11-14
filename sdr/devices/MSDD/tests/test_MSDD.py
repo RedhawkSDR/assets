@@ -18,18 +18,21 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
+import os
+import subprocess
 import sys
-import ossie.utils.testing
-from ossie.utils import sb
-from ossie.cf import CF
-from omniORB import any
-from omniORB import CORBA
-from ossie.utils.bulkio.bulkio_data_helpers import SDDSSink
-from redhawk.frontendInterfaces import FRONTEND
-from ossie.utils import uuid
-from ossie import properties
 import time
+
 import frontend
+from ossie import properties
+from ossie.utils import sb, uuid
+import ossie.utils.testing
+
+cwd = os.getcwd()
+dpath_python = os.path.join(os.path.dirname(cwd), 'python')
+sys.path.append(dpath_python)
+import MSDD
+import msddcontroller
 
 DEBUG_LEVEL = 3
 IP_ADDRESS='192.168.11.97'
@@ -73,8 +76,6 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
     #  sb.start()
 
 
-
-
     def setUp(self):
         # Launch the device, using the selected implementation
         configure = {
@@ -110,7 +111,6 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
         # Make sure start and stop can be called without throwing exceptions
         self.comp.start()
         self.comp.stop()
-
 
     def testSingleTunerAllocation(self):
         
@@ -544,6 +544,173 @@ class RFInfoTest(ossie.utils.testing.RHTestCase):
             pass
         self.assertEqual( kws["FRONTEND::RF_FLOW_ID"] , flow_id, "Missing RF_FLOW_ID from keyword list")
 
+class OnePpsTests(ossie.utils.testing.RHTestCase):
+    # Path to the SPD file, relative to this file. This must be set in order to launch the device.
+    SPD_FILE = '../MSDD.spd.xml'
+
+    def setUp(self):
+        self.temp_files = []
+
+        properties = {
+                "msdd_configuration" : {
+                     "msdd_configuration::msdd_ip_address": IP_ADDRESS,
+                     "msdd_configuration::msdd_port":"23"
+                      },
+                "msdd_time_of_day_configuration": {
+                    "msdd_time_of_day_configuration::mode": "ONEPPS",
+                    },
+                "msdd_output_configuration": [{
+                     "msdd_output_configuration::tuner_number":0,
+                     "msdd_output_configuration::protocol":"UDP_SDDS",
+                     "msdd_output_configuration::ip_address":"234.168.103.100",
+                     "msdd_output_configuration::port":0,
+                     "msdd_output_configuration::vlan":0,
+                     "msdd_output_configuration::enabled":True,
+                     "msdd_output_configuration::timestamp_offset":0,
+                     "msdd_output_configuration::endianess":1,
+                     "msdd_output_configuration::mfp_flush":63,
+                     "msdd_output_configuration::vlan_enable": False                        
+                    }],
+                'LOGGING_CONFIG_URI': 'file://' + os.getcwd() + '/OnePpsTests.log.cfg',
+                 }
+        self.comp = sb.launch(self.spd_file, impl=self.impl, properties=properties)
+    
+    def tearDown(self):
+        for fname in self.temp_files:
+            try:
+                os.remove(fname)
+            except:
+                pass
+        sb.release()
+
+    def _testSetTimeOfDayManual(self):
+        """
+        This is intended to run under 2 scenarios.
+        scenario 1:  disconnect 1PPS cable, then run the test.
+        scenario 2:  while the test is running, disconnect the 1PPS cable.
+        To run the test, either rename it without the leading `_`, or list it on the command line.
+        This test does not need to run every time the test suite is run, but would
+        be useful, for example, with new hardware.
+        """
+        fname_log = 'OnePpsTests.log'
+        self.temp_files.append(fname_log)
+
+        self.comp.start()
+
+        msdd_time_of_day_configuration = self.comp.msdd_time_of_day_configuration.queryValue()
+        mode = msdd_time_of_day_configuration['msdd_time_of_day_configuration::mode']
+        self.assertEqual(mode, 'ONEPPS', msg='tod_module.mode must be ONEPPS for this test.')
+
+        # for scenario 2, unplug 1PPS cable here.
+        raw_input('press ENTER to continue: ')
+
+        log_contents = ''
+        try:
+            log_contents = open(fname_log).read()
+        except:
+            pass
+        self.assertTrue(len(log_contents) > 0, msg='log file for test was not written')
+        msg = 'did not see log WARNING about missed 1PPS pulse'
+        condition = 'WARNING' in log_contents and 'Missed 1PPS Pulse' in log_contents
+        self.assertTrue(condition, msg=msg)
+
+        self.comp.stop()
+
+    def testSetTimeOfDay(self):
+        fname_log = 'OnePpsTests.log'
+        self.temp_files.append(fname_log)
+        self.comp.start()
+        tod_host_delta_orig = self.comp.msdd_status.tod_host_delta.queryValue()
+
+        msdd_time_of_day_configuration = self.comp.msdd_time_of_day_configuration.queryValue()
+        mode = msdd_time_of_day_configuration['msdd_time_of_day_configuration::mode']
+        self.assertEqual(mode, 'ONEPPS', msg='tod_module.mode must be ONEPPS for this test.')
+
+        # Create a 2nd instance of MSDDRadio to read `tod_module.time`.
+        msdd_radio = msddcontroller.MSDDRadio(IP_ADDRESS, 23)
+        tod_module = msdd_radio.tod_modules[0].object
+
+        deltas = []
+        num_reads = 30
+        for _ in xrange(num_reads):
+            host_time = MSDD.get_seconds_from_start_of_year()
+            tod_time = tod_module.time
+            deltas.append(host_time - tod_time)
+            time.sleep(1)
+        delta_avg = sum(deltas) / len(deltas)
+
+        ntp_accuracy = self._get_ntp_accuracy()
+        self.assertTrue(ntp_accuracy >= 0, msg='failed to get a number for ntp accuracy')
+
+        msg = 'abs(host_time - tod_time) exceeds NTP estimated accuracy'
+        self.assertTrue(abs(delta_avg) < ntp_accuracy, msg=msg)
+
+        # Check that msdd_status.tod_host_delta was written.
+        tod_host_delta = self.comp.msdd_status.tod_host_delta.queryValue()
+        msg = 'msdd_status.tod_host_delta not written over {0} seconds'.format(num_reads)
+        self.assertFalse(tod_host_delta == tod_host_delta_orig, msg=msg)
+
+        # Check that msdd_status.tod_host_delta contains a reasonable value.
+        msg = 'msdd_status::tod_host_delta value is larger than expected'
+        self.assertTrue(tod_host_delta < delta_avg + 0.5 and
+                        tod_host_delta > delta_avg - 0.5, msg=msg)
+
+        log_contents, has_warning = self._check_log(fname_log)
+        self.assertTrue(len(log_contents) > 0, msg='log file for test was not written')
+        # Check for time synchronization errors, at ERROR or WARNING.
+        msg = 'Time synchronization error(s) occurred.'
+        self.assertFalse(has_warning, msg=msg)
+
+        self.comp.stop()
+
+    def _check_log(self, fname_log):
+        log_contents = ''
+        try:
+            log_contents = open(fname_log).read()
+        except:
+            pass
+        has_warning = False
+        for line in log_contents.split('\n'):
+            if 'WARNING' in line and 'time' in line.lower():
+                has_warning = True
+            if 'ERROR' in line and 'time' in line.lower():
+                has_warning = True
+        return log_contents, has_warning
+
+    def _run_ntpstat(self):
+        stdout = None
+        returncode = None
+        proc = subprocess.Popen(['ntpstat'], stdout=subprocess.PIPE)
+        stdout = proc.communicate()[0]
+        returncode = proc.wait()
+        return stdout, returncode
+
+    def _parse_ntpstat(self, stdout):
+        """Return stratum as int or None; accuracy as string or None.
+        ref:  https://github.com/darkhelmet/ntpstat/blob/master/ntpstat.c """
+        stratum = None
+        accuracy = None
+        for line in stdout.split('\n'):
+            words = line.split()
+            if line.startswith('synchronised to NTP server') and words[-2] == 'stratum':
+                try:
+                    stratum = int(words[-1])
+                except:
+                    pass
+            if 'time correct to within' in line and words[-1] == 'ms':
+                try:
+                    accuracy = float(words[-2])
+                except:
+                    pass
+        return stratum, accuracy
+
+    def _get_ntp_accuracy(self):
+        stdout, returncode = self._run_ntpstat()
+        if returncode in [1, 2]:
+            return None
+        stratum, accuracy = self._parse_ntpstat(stdout)
+        return accuracy
+
 
 if __name__ == "__main__":
     import argparse
@@ -561,4 +728,3 @@ if __name__ == "__main__":
         pass
     sys.argv[1:] = args.unittest_args
     ossie.utils.testing.main() # By default tests all implementations
-

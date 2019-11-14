@@ -45,8 +45,9 @@ import inspect
 # MSDD helper files/packages
 from msddcontroller import MSDDRadio
 from msddcontroller import create_csv
-from datetime import datetime, time, timedelta
-from time import sleep
+from datetime import datetime, timedelta
+import subprocess
+import time
 import traceback
 
 querycounter = 0 
@@ -69,7 +70,7 @@ def get_seconds_in_utc():
 def get_utc_time_pair(previous_time = datetime(1970,1,1)):
     utcdiff = datetime.utcnow() - previous_time
     whole_sec = (utcdiff.seconds + utcdiff.days * 24 * 3600)
-    fract_sec = utcdiff.microseconds/10e6
+    fract_sec = utcdiff.microseconds / 1e6
     return [whole_sec,fract_sec]
 
 def increment_ip(ip_string):
@@ -94,9 +95,7 @@ def increment_ip(ip_string):
     if ip_octets[0] > 255:
         raise Exception("CAN NOT INCREMENT ANY FURTHER")
     return str(ip_octets[0]) + '.' + str(ip_octets[1]) + '.' + str(ip_octets[2]) + '.' + str(ip_octets[3])
-         
-         
-    
+
 
 class output_config(object):
     def __init__(self, tuner_channel_number, enabled, ip_address, port, protocol,vlan_enabled, vlan_tci, timestamp_offset,endianess,mfp_flush):
@@ -155,6 +154,8 @@ class MSDD_i(MSDD_base):
         return aid_csv    
     
     def constructor(self):
+        self.skip_msdd_time_of_day_configuration_changed = True
+        self.skip_update_msdd_status = True
         self.MSDD = None
         self.disconnect_from_msdd()
         self.pending_fft_registrations = []
@@ -162,6 +163,10 @@ class MSDD_i(MSDD_base):
         self.device_rf_flow = ""
         self.device_rf_info_pkt=None
         self.dig_tuner_base_nums= []
+        self.interval_update_msdd_status_tod_host_delta = 10
+        self.interval_update_msdd_status_ntp_running = 60
+        self.interval_check_tod_bit = 10
+        self.get_time = None  # an alias to the function used to get current time
         
         self.addPropertyChangeListener("msdd_configuration",self.msdd_configuration_changed)
         self.addPropertyChangeListener("msdd_gain_configuration",self.msdd_gain_configuration_changed)
@@ -182,6 +187,8 @@ class MSDD_i(MSDD_base):
         self.msdd_block_output_configuration_changed("msdd_block_output_configuration",self.msdd_block_output_configuration,self.msdd_block_output_configuration)
         self.msdd_psd_configuration_changed("msdd_psd_configuration",self.msdd_psd_configuration,self.msdd_psd_configuration)
         self.msdd_spc_configuration_changed("msdd_spc_configuration",self.msdd_spc_configuration,self.msdd_spc_configuration)
+        self.skip_msdd_time_of_day_configuration_changed = False
+        self.skip_update_msdd_status = False
         self.msdd_time_of_day_configuration_changed("msdd_time_of_day_configuration",self.msdd_time_of_day_configuration,self.msdd_time_of_day_configuration)
         self.msdd_advanced_debugging_tools_changed("msdd_advanced_debugging_tools",self.msdd_advanced_debugging_tools,self.msdd_advanced_debugging_tools )        
         
@@ -257,7 +264,9 @@ class MSDD_i(MSDD_base):
     def update_msdd_status(self):
         if self.MSDD == None:
             self.msdd_status=MSDD_base.msdd_status_struct() #Reset to defaults
-            return True
+            return
+        if self.skip_update_msdd_status:
+            return
         try:
             self.msdd_status.connected = True
             self.msdd_status.ip_address = str(self.msdd_configuration.msdd_ip_address)
@@ -294,13 +303,11 @@ class MSDD_i(MSDD_base):
                 self.msdd_status.tod_meter_list = str(self.MSDD.tod_modules[0].object.meter_list_string)
                 self.msdd_status.tod_tod_reference_adjust = str(self.MSDD.tod_modules[0].object.ref_adjust)
                 self.msdd_status.tod_track_mode_state = str(self.MSDD.tod_modules[0].object.ref_track)
-                self.msdd_status.tod_bit_state = str(self.MSDD.tod_modules[0].object.BIT_string)
+                self.msdd_status.tod_bit_state = str(self.check_tod_bit(force=True))
                 self.msdd_status.tod_toy = str(self.getter_with_default(self.MSDD.tod_modules[0].object.getToy,""))
         except:
             self._log.error("ERROR WHEN UPDATING MSDD_STATUS STRUCTURE")
-            return False
     
-        return True
     def getTunerTypeList(self,type_mode):
             tuner_lst = []
             if (type_mode & self.FE_RX_BW) == self.FE_RX_BW:
@@ -345,7 +352,7 @@ class MSDD_i(MSDD_base):
                 elif msdd_type_string == MSDDRadio.MSDDRXTYPE_SPC:
                     tuner_types = self.getTunerTypeList(self.advanced.spc_mode)
                 else:
-                    self._log.error("UNKOWN TUNER TYPE REPORTED BY THE MSDD")
+                    self._log.error("UNKNOWN TUNER TYPE REPORTED BY THE MSDD")
                 
                 # skip tuners without tuner types
                 if len(tuner_types) == 0: continue
@@ -651,55 +658,192 @@ class MSDD_i(MSDD_base):
         for tuner_num in range(0,len(self.frontend_tuner_status)):
             self.update_spc_configuration(tuner_num)
 
-        
+    def update_msdd_status_tod_host_delta(self):
+        if not hasattr(self.update_msdd_status_tod_host_delta.__func__, 'last_ran'): 
+            self.update_msdd_status_tod_host_delta.__func__.last_ran = 0
+        if time.time() - self.update_msdd_status_tod_host_delta.__func__.last_ran < self.interval_update_msdd_status_tod_host_delta:
+            return
+        tod = self.MSDD.tod_modules[0].object
+        if tod.mode_string != 'ONEPPS':
+            return
+        host_time = self.get_time()
+        tod_time = tod.time
+        self.msdd_status.tod_host_delta = host_time - tod_time
+        if abs(host_time - tod_time) > 0.5:
+            self._log.warn('host time and TOD module time differ by >0.5s')
+        self.update_msdd_status_tod_host_delta.__func__.last_ran = time.time()
+
+    def get_ntp_status(self):
+        exception = None
+        stdout = ''
+        try:
+            proc = subprocess.Popen(['service', 'ntpd', 'status'], stdout=subprocess.PIPE)
+            stdout = proc.communicate()[0]
+        except Exception as e:
+            exception = e
+        return exception, stdout
+
+    def parse_ntp_status(self, stdout):
+        for line in stdout.split('\n'):
+            # el6
+            if 'ntpd' in line and 'is running' in line:
+                return True
+            # el7
+            if 'Active' in line and 'active (running)' in line:
+                return True
+        return False
+
+    def update_msdd_status_ntp_running(self):
+        if not hasattr(self.update_msdd_status_ntp_running.__func__, 'last_ran'):
+            self.update_msdd_status_ntp_running.__func__.last_ran = 0
+        if time.time() - self.update_msdd_status_ntp_running.__func__.last_ran < self.interval_update_msdd_status_ntp_running:
+            return
+        if not self.MSDD.tod_modules:
+            return
+        tod = self.MSDD.tod_modules[0].object
+        if tod.mode_string != 'ONEPPS':
+            return
+        exception, stdout = self.get_ntp_status()
+        if exception:
+            self._log.warn('`service ntpd status`:  {0}'.format(exception))
+            self.msdd_status.ntp_running = False
+        else:
+            ntp_running = self.parse_ntp_status(stdout)
+            self._log.debug('ntp_running:  {0}'.format(ntp_running))
+            self.msdd_status.ntp_running = ntp_running
+        self.update_msdd_status_ntp_running.__func__.last_ran = time.time()
+
+    def get_tod_bit(self):
+        """Return value of `tod bit?`.
+
+        `tod.bit` is not reset when `tod mod <n>` is set.
+        It is reset when it is read.
+        Usually, it is repopulated at the next whole second. However, if tod.mode == ONEPPS and the
+        1PPS cable is unplugged, it is not repopulated until somewhere between 20 to 30s later.
+        """
+        if not self.MSDD.tod_modules:
+            return
+        tod = self.MSDD.tod_modules[0].object
+
+        tod.BIT  # clear existing value
+        start = int(time.time())
+        while int(time.time()) == start:  # wait for next second rollover
+            time.sleep(0.01)
+        tod_bit = tod.BIT
+        self._log.debug('tod.mode:  {0},  tod.bit:  {1}'.format(tod.mode_string, tod_bit))
+        return tod_bit
+
+    def check_tod_bit(self, force=False):
+        if not hasattr(self.check_tod_bit.__func__, 'last_ran'):
+            self.check_tod_bit.__func__.last_ran = 0
+        if not force and time.time() - self.check_tod_bit.__func__.last_ran < self.interval_check_tod_bit:
+            return
+        tod_bit = self.get_tod_bit()
+        if tod_bit & int('1111', 2):
+            phrases = []
+            msg = '`tod bit? = {0}`:  '.format(tod_bit)
+            if tod_bit & int('0001', 2):
+                phrases.append('Time Not Valid')
+            if tod_bit & int('0010', 2):
+                phrases.append('Missed 1PPS Pulse')
+            if tod_bit & int('0100', 2):
+                phrases.append('Sub-Second Mismatch')
+            if tod_bit & int('1000', 2):
+                phrases.append('Second Mismatch')
+            msg += ', '.join(phrases)
+            self._log.warn(msg)
+        self.check_tod_bit.__func__.last_ran = time.time()
+        return tod_bit
+
+    def set_time_for_onepps(self):
+        """Set tod.time for the case tod.mode is ONEPPS."""
+        tod = self.MSDD.tod_modules[0].object
+        # Record when the host and the tod roll over to the next second.
+        host_rollover = 0
+        tod_rollover = 0
+        host_time_orig = time.time()
+        tod_time_orig = tod.time
+        time_limit = 3
+        while not (host_rollover and tod_rollover):
+            now = time.time()
+            tod_time = tod.time
+            if not host_rollover and int(now) > int(host_time_orig):
+                host_rollover = now
+            if not tod_rollover and int(tod_time) > int(tod_time_orig):
+                tod_rollover = now
+            if time.time() - host_time_orig > time_limit:
+                self._log.error('failure reading host and device time of day')
+                break
+        # Consider a pair of rollover events to be when both the host and the tod rollover
+        # within less than half a second of each other.  If the two observed rollover events
+        # are apart by more than that, they are not a pair. In that case, wait for the second
+        # event of a pair before setting tod.time.
+        if abs(host_rollover - tod_rollover) > 0.5:
+            if host_rollover - tod_rollover > 0:  # The host rolls over last in the pair.
+                time.sleep(time.time() - host_rollover)
+            else:  # The tod rolls over last in the pair.
+                time.sleep(time.time() - tod_rollover)
+        time.sleep(0.01)  # Wait just a little before writing.
+        # The truncated time is set at the next whole second, so add 1 second.
+        tod.time = self.get_time() + 1
+        time.sleep(1)  # wait to latch the time
+
     def msdd_time_of_day_configuration_changed(self,propid, oldval, newval):
+        if self.skip_msdd_time_of_day_configuration_changed:
+            return
         self.msdd_time_of_day_configuration = newval
         if self.MSDD == None:
-            return False
-        
-        if len(self.MSDD.tod_modules) > 0:
-            mode_num = self.MSDD.tod_modules[0].object.getModeNumFromString(self.msdd_time_of_day_configuration.mode)
-            self.MSDD.tod_modules[0].object.mode = mode_num
-            self.msdd_time_of_day_configuration.mode = str(self.MSDD.tod_modules[0].object.mode_string)
-            self.MSDD.tod_modules[0].object.ref_adjust = int(self.msdd_time_of_day_configuration.reference_adjust)
-            self.MSDD.tod_modules[0].object.reference_track = int(self.msdd_time_of_day_configuration.reference_track)
-            if str(self.msdd_time_of_day_configuration.mode) == "IRIGB":
-                self.MSDD.tod_modules[0].object.toy = int(self.msdd_time_of_day_configuration.toy)
-            else:
-                self.MSDD.tod_modules[0].object.toy = 1
-            if self.MSDD.tod_modules[0].object.mode <= 1:
-                vita49_time = False
-                for tuner_num in range(0,len(self.frontend_tuner_status)):
-                    try:
-                        if not self.frontend_tuner_status[tuner_num].rx_object.has_streaming_output():
-                            continue
-                        if not self.frontend_tuner_status[tuner_num].rx_object.output_object.object.getEnable():
-                            continue
-                        
-                        if str(self.frontend_tuner_status[tuner_num].rx_object.output_object.object.getOutputProtocolString()).find("VITA49") >= 0:
-                            vita49_time = True
+            return
+        if not self.MSDD.tod_modules:
+            return
+
+        tod = self.MSDD.tod_modules[0].object
+        mode_str = self.msdd_time_of_day_configuration.mode
+        mode_num = tod.getModeNumFromString(mode_str)
+        tod.mode = mode_num
+        tod.ref_adjust = int(self.msdd_time_of_day_configuration.reference_adjust)
+        tod.reference_track = int(self.msdd_time_of_day_configuration.reference_track)
+        if str(self.msdd_time_of_day_configuration.mode) == "IRIGB":
+            tod.toy = int(self.msdd_time_of_day_configuration.toy)
+        else:
+            tod.toy = 1
+        if mode_str in ['SIM', 'ONEPPS']:
+            vita49_time = False
+            for tuner_num in range(0,len(self.frontend_tuner_status)):
+                try:
+                    if not self.frontend_tuner_status[tuner_num].rx_object.has_streaming_output():
+                        continue
+                    if not self.frontend_tuner_status[tuner_num].rx_object.output_object.object.getEnable():
+                        continue
+                    if str(self.frontend_tuner_status[tuner_num].rx_object.output_object.object.getOutputProtocolString()).find("VITA49") >= 0:
+                        vita49_time = True
                         break
-                    except:
-                        None
-                        
-                '''
-                The time is set on the next pps so the time we want is now +1 second to be accurate.
-                '''        
-                if vita49_time:
-                    self._log.debug("Setting timestamp to GPS time")
-                    self.MSDD.tod_modules[0].object.time = get_seconds_in_gps_time() + 1 
-                else:
-                    self._log.debug("Setting timestamp to SDDS time")
-                    self.MSDD.tod_modules[0].object.time = get_seconds_from_start_of_year() + 1
-        
+                except:
+                    pass
+                    
+            if vita49_time:
+                self._log.debug("Setting timestamp to GPS time")
+                self.get_time = get_seconds_in_gps_time
+            else:
+                self._log.debug("Setting timestamp to SDDS time")
+                self.get_time = get_seconds_from_start_of_year
+
+            if mode_str == 'SIM':  # mode is Simulated
+                # The truncated time is set at the next whole second, so add 1 second.
+                tod.time = self.get_time() + 1
+                time.sleep(1)
+            else:  # mode is ONEPPS
+                self.set_time_for_onepps()
+
+        self.update_msdd_status_tod_host_delta()
+        self.update_msdd_status_ntp_running()
         self.update_msdd_status()
-        
-        
+
     def msdd_configuration_changed(self, propid,oldval, newval):
         self._log.debug("MSDD Configuration changed. New value: " + str(newval))
         self.msdd_configuration = newval
         if not self.connect_to_msdd(): 
-            sleep(0.25)
+            time.sleep(0.25)
             self.connect_to_msdd()
         
     def msdd_advanced_debugging_tools_changed(self, propid,oldval, newval):
@@ -724,7 +868,11 @@ class MSDD_i(MSDD_base):
         except:
             self.msdd_advanced_debugging_tools.response = "[ NO RESPONSE RECEIVED FROM RADIO. THIS IS VALID FOR SETTER COMMANDS ]"
             return     
+
     def process(self):
+        self.check_tod_bit()
+        self.update_msdd_status_tod_host_delta()
+        self.update_msdd_status_ntp_running()
         return NOOP   
 
     def range_check(self, req_cf, req_bw, req_bw_tol, req_sr, req_sr_tol , cur_cf, cur_bw, cur_sr):

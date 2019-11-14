@@ -625,6 +625,8 @@ and comprise it unless you looking for the strongest signal.</description>
     <simple id="msdd_status::tod_track_mode_state" name="tod_track_mode_state" type="string"/>
     <simple id="msdd_status::tod_bit_state" name="tod_bit_state" type="string"/>
     <simple id="msdd_status::tod_toy" name="tod_toy" type="string"/>
+    <simple id="msdd_status::tod_host_delta" name="tod_host_delta" type="double"/>
+    <simple id="msdd_status::ntp_running" name="ntp_running" type="boolean"/>
     <configurationkind kindtype="property"/>
   </struct>
   <struct id="msdd_advanced_debugging_tools" mode="readwrite">
