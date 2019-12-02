@@ -3,43 +3,20 @@
 ## Table of Contents
 
 * [Description](#description)
-* [Branches and Tags](#branches-and-tags)
-* [REDHAWK Version Compatibility](#redhawk-version-compatibility)
-* [Installation Instructions](#installation-instructions)
+* [Installation](#installation)
 * [Design](#design)
-* [Asset Use](#asset-use)
+* [Usage](#usage)
 * [Unimplemented Optimizations](#unimplemented-optimizations)
-* [Copyrights](#copyrights)
-* [License](#license)
 
 ## Description
 
-The rh.SourceSDDS will consume a single SDDS formatted multicast or unicast UDP stream and output it via the cooresponding bulkIO port. The component provides a number of status properties including buffer montioring of both kernel space socket and internal component buffers. Source IP and port information may either be expressed via the attachment override property or via the bulkIO SDDS ports attach call. See the [properties](#properties) and [SRI](#sri) section for details on how to configure the components advanced optimizations and the list of SRI keywords checked for within the component.
+The `rh.SourceSDDS` will consume a single SDDS formatted multicast or unicast UDP stream and output it via the corresponding bulkIO port. The component provides a number of status properties including buffer monitoring of both kernel space socket and internal component buffers. Source IP and port information may either be expressed via the attachment override property or via the bulkIO SDDS ports attach call. See the [properties](#properties) and [SRI](#sri) section for details on how to configure the components advanced optimizations and the list of SRI keywords checked for within the component.
 
-## Branches and Tags
+## Installation
 
-All REDHAWK core assets use the same branching and tagging policy. Upon release,
-the `master` branch is rebased with the specific commit released, and that
-commit is tagged with the asset version number. For example, the commit released
-as version 1.0.0 is tagged with `1.0.0`.
-
-Development branches (i.e. `develop` or `develop-X.X`, where *X.X* is an asset
-version number) contain the latest unreleased development code for the specified
-version. If no version is specified (i.e. `develop`), the branch contains the
-latest unreleased development code for the latest released version.
-
-## REDHAWK Version Compatibility
-
-| Asset Version | Minimum REDHAWK Version Required |
-| ------------- | -------------------------------- |
-| 2.x           | 2.1                              |
-| 1.x           | 2.0                              |
-
-## Installation Instructions
-
-To build from source, run the `build.sh` script found at the top level
-directory. To install to $SDRROOT, run `build.sh install`. Note: root privileges
-(`sudo`) may be required to install.
+To build from source, run the `build.sh` script.
+To install to `$SDRROOT`, run `build.sh install`.
+Note: root privileges (`sudo`) may be required to install.
 
 ## Design
 
@@ -48,7 +25,7 @@ The design goals for this component were to provide a clean, easy to follow, Sou
 The dataflow and source code can be broken up into four distict sections; component logic, socket reader, internal buffers, and the SDDS to bulkIO processor. The component class has no service loop and instead starts two threads on start; the socket reader and the SDDS to BulkIO processor. The socket reader thread pulls a user defined number of SDDS packets off the socket at a time and places them into the shared buffer for the SDDS to BulkIO thread to consume and push
 out the BulkIO ports.
 
-## Asset Use
+## Usage
 
 SourceSDDS ingests network SDDS and outputs BULKIO data as Octet, Short, or Float. The component receives information on how and where to consume the network data either from receiving and attach() and pushSRI() call in the dataSddsIn port or by using the attachment_override property. The component has a property for the network "interface" indicating which network interface on the host computer must be used in order to receive the network data. If the interface is left blank the component will try to resolve the correct interface based on the IP address and VLAN of the desired incoming data. Once the component has acquired the network stream it will remove the the SDDS network headers package the data as BULKIO and push it out the appropriate BULKIO port.    
 
@@ -129,13 +106,3 @@ This is a short list of additional optimizations which were considered but not i
 * **Circular buffer over deque** - deques are pretty fast as they allocate memory in chunks but they still require some memory allocation on the fly and are not contiguous which may impact cache performance. If you ditch the smart pointers, it may make sense to ditch the deque in place of a circular buffer. Some limited testing was done using a circular buffer with smart pointers but no obvious performance difference was seen.
 
 * **Reduce number of memcopies in SDDS to BulkIO thread** - Currently, a memcopy occurs pulling the data portion of the SDDS Packet out and into the BulkIO packet. This memcopy could be avoided if the SDDS Data is copied into a contiguous portion of memory right off of the socket. This is possible with two changes. The pool of SDDS Packets data portions would need to be constructed in a contiguous block; this would require changes to the SmartPacketBuffer. To get the socket to write into two different memory blocks a second iovec would be made. Then one could directly point to to the internal buffer on the push packet as long as the push packet did not span the end of the memory block.
-
-## Copyrights
-
-This work is protected by Copyright. Please refer to the
-[Copyright File](COPYRIGHT) for updated copyright information.
-
-## License
-
-REDHAWK rh.SourceSDDS is licensed under the GNU Lesser General Public License
-(LGPL).

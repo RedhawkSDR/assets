@@ -3,8 +3,8 @@
 ## Table of Contents
 
 * [Description](#description)
-* [Installation Instructions](#installation-instructions)
-* [Asset Use](#asset-use)
+* [Installation](#installation)
+* [Usage](#usage)
 
 ## Description
 
@@ -52,7 +52,7 @@ The following table describes the properties within a single `ConnectionStat`.  
 | `bytes_sent` | `double` | Bytes-per-second, for data sent over the network, for the connection. |
 
 
-## Installation Instructions
+## Installation
 
 The following procedure explains how to install `rh.sinksocket` from source. `rh.sinksocket` is one of the REDHAWK basic assets. For information about how to install the REDHAWK basic assets from RPMs, refer to the REDHAWK Manual.
 
@@ -73,7 +73,7 @@ $ ./build.sh install
 ```
 The `rh.sinksocket` executable is created in the `cpp` subdirectory, and then the component is installed to `SDRROOT`.
 
-## Asset Use
+## Usage
 
 The following examples explain how to use the `rh.sinksocket` component.
 

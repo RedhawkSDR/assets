@@ -344,7 +344,7 @@ void SourceSDDS_i::setupSocketReaderOptions() throw (BadParameterError) {
  * the attachment_override struct. Note that the supplied stream sample rate IS NOT USED. The sample
  * rate is retrieved directly from the SDDS header or from the provided SRI if the proper keywords
  * are used. (See the relevant documentation for details) If the component had been started and running
- * from an attachment_override value then the componet will stop, setup the new stream, and restart.
+ * from an attachment_override value then the component will stop, setup the new stream, and restart.
  *
  * @param stream A struct containing the stream definition including network parameters and stream ID. Note that the sample rate is NOT USED!
  * @param userid Used only to log who has made the attach called. This value is not used for anything other than logging.
