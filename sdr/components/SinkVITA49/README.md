@@ -3,7 +3,7 @@
 ## Description
 
 Contains the source and build script for the REDHAWK
-`rh.SinkVITA49`. The `rh.SinkVITA49` component creates a UDP/multicast or TCP VITA49
+`rh.SinkVITA49` component. The `rh.SinkVITA49` component creates a UDP/multicast or TCP VITA49
 packet stream and converts the data and SRI Keywords to IF data packets and
 Context packets for use within/between/outside of a REDHAWK domain application.
  

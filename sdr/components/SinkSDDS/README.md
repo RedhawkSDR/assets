@@ -11,7 +11,7 @@
 
 ## Description
 
-The `rh.SinkSDDS` component will take in a single BulkIO stream on one of the three input ports and serve a single SDDS stream over the provided multicast or unicast address. The component is currently limited to a single stream. The component will perform a BulkIO attach call on any existing connections at start and will call attach on any dynamically made connections during runtime. BulkIO SRI is used to set the SDDS header information unless overridden via properties and the SRI is passed across the SDDS BulkIO connection to any downstream components. See the [Properties](#properties) section for information on overriding SDDS header values and the [SRI Keywords](#sri-keywords) section for information on KEYWORDs created.
+The `rh.SinkSDDS` component takes in a single BulkIO stream on one of the three input ports and serves a single SDDS stream over the provided multicast or unicast address. The component is currently limited to a single stream. The component  performs a BulkIO attach call on any existing connections at start and calls attach on any dynamically made connections during runtime. BulkIO SRI is used to set the SDDS header information unless overridden via properties, and the SRI is passed across the SDDS BulkIO connection to any downstream components. See the [Properties](#properties) section for information on overriding SDDS header values and the [SRI Keywords](#sri-keywords) section for information on KEYWORDs created.
 
 ## Installation
 
@@ -21,37 +21,37 @@ Note: root privileges (`sudo`) may be required to install.
 
 ## Design
 
-The code is divided into two main classes, the component class and the templated BulkIOToSDDS processor class. The component class contains three instances of the processor class, one for each port type; float, short, and octet.
+The code is divided into two main classes, the component class and the templated BulkIOToSDDS processor class. The component class contains three instances of the processor class, one for each port type: `float`, `short`, and `octet`.
 
 The component class is responsible for the following actions:
- - Stream listeners - The component class registers new stream listeners and remove stream listeners for each port so that it can provide the appropriate processor with the new stream. It is also the only entity aware of all three bulkIO to SDDS processors so it ensures that only a single stream is active when new streams come in.
- - Property callbacks - Using the setPropertyConfigureImpl API, the Component class intercepts the REDHAWK configure call for the struct properties and ensures that the component is not running when trying to set these properties.
- - New Connection Listener - When a new dynamic connection is made after the component is already running, the SRI and BulkIO Attach call need to be made, the component class informs the processor classes of new dynamic connections so this may occur.
- - Socket creation - The component class is responsible for creating the unicast or multicast socket connection and throwing an appropriate exception if the socket cannot be opened. A successful socket creation will then be handed down to the processor classes to reference.
- - Start/Stop API - The component class overrides the start / stop REDHAWK calls so that it can create the socket and start the appropriate processors. During stop, it will cleanup the processor threads and close the socket. The traditional service function / process thread is not used by this component.
+ - Stream listeners - The component class registers new stream listeners and removes stream listeners for each port so that it can provide the appropriate processor with the new stream. It is also the only entity aware of all three BulkIO to SDDS processors so it ensures that only a single stream is active when new streams come in.
+ - Property callbacks - Using the `setPropertyConfigureImpl` API, the component class intercepts the REDHAWK configure call for the struct properties and ensures that the component is not running when trying to set these properties.
+ - New Connection Listener - When a new dynamic connection is made after the component is already running, the SRI and BulkIO Attach calls need to be made. The component class informs the processor classes of new dynamic connections so this may occur.
+ - Socket creation - The component class is responsible for creating the unicast or multicast socket connection and throwing an appropriate exception if the socket cannot be opened. A successful socket creation is then handed down to the processor classes to reference.
+ - Start/Stop API - The component class overrides the start/stop REDHAWK calls so that it can create the socket and start the appropriate processors. During stop, it cleans up the processor threads and closes the socket. The traditional service function/process thread is not used by this component.
 
-The BulkIOToSDDSProcessor class is a templated class so that it can handle any of the current port type. It is responsible for the following actions:
- - Pulling data from BulkIO - Using the stream API, the processor will attempt to pull exactly 1024 bytes, the SDDS payload size, from the BulkIO stream. This may not always be the case due to end of streams, SRI changes etc and is discussed in more depth below.
+The BulkIOToSDDSProcessor class is a templated class so that it can handle any of the current port types. It is responsible for the following actions:
+ - Pulling data from BulkIO - Using the stream API, the processor will attempt to pull exactly 1024 bytes, the SDDS payload size, from the BulkIO stream. This may not always be the case due to end of streams, SRI changes, and so forth, which is discussed in more depth below.
  - Setting SDDS header values - Fields such as, but not limited to the SDDS timing, frequency, and complex field are derived from the BulkIO SRI. Optionally a user may override these fields. 
- - Pushing SDDS Packets - Using the socket connection passed in from the Component class, the processor class will push SDDS packets down to the kernel using the sendmsg API and the scatter / gather approach. The scatter / gather approach allows the packet to be divided into three separate arrays
-   - SDDS Header Template - The class has a single SDDS header that is updated for each packet
-   - SDDS Payload - Read from BulkIO this is usually 1024 however can be less on an EOS of SRI change
-   - Zero Padding - Generally not used but in cases where the SDDS Payload is less than 1024 the packet is padded
+ - Pushing SDDS Packets - Using the socket connection passed in from the component class, the processor class will push SDDS packets down to the kernel using the `sendmsg` API and the scatter/gather approach. The scatter/gather approach allows the packet to be divided into three separate arrays:
+   - SDDS Header Template - The class has a single SDDS header that is updated for each packet.
+   - SDDS Payload - Read from BulkIO; this is usually 1024; however, can be less on an EOS or SRI change.
+   - Zero Padding - Generally not used, but in cases where the SDDS Payload is less than 1024, the packet is padded
 
 ## Properties
 
-Properties and their descriptions are below, struct props are shown with their struct properties in a table below:
+Properties and their descriptions are below. Struct props are shown with their struct properties in a table below:
 
 **network_settings** - Settings for the network connection.
 
 | Struct Property      | Description  |
 | ------------- | -----|
-| interface | The network interface you intend to be present or blank if no check is needed. Do not include the VLAN in the interface name. (eg. For eth0.28 the interface should be set to "eth0" NOT "eth0.28"). |
-| ip_address | For the unicast case this is the destination IP address to send the UDP packets. For the multicast case this is the multicast group. |
+| interface | The network interface you intend to be present or blank if no check is needed. Do not include the VLAN in the interface name. (For example, for eth0.28 the interface should be set to "eth0" NOT "eth0.28"). |
+| ip_address | For the unicast case, this is the destination IP address to send the UDP packets. For the multicast case, this is the multicast group. |
 | port | UDP port used to publish data. (default SDDS port is: 29495)  |
 | vlan | UDP port used to publish data. |
 
-**sdds_settings** - Settings related to standard fields in the SDDS Packet or data portion which cannot be derived from BulkIO metadata.
+**sdds_settings** - Settings related to standard fields in the SDDS Packet or data portion that cannot be derived from BulkIO metadata.
 
 | Struct Property      | Description  |
 | ------------- | -----|
@@ -93,5 +93,5 @@ The SinkSDDS component does not check for or react to any specific keywords. Any
 
 ## Known Issues
 
-* Calculation of dfdt field - Currently the df/dt field in the SDDS header defaults to zero unless overridden by the user. The df/dt field is supposed to represents the change in sample clock frequency in units of Hz/sec between the first and last sample in the SDDS packet. This exact information is not found in BulkIO so a direct mapping is not possible however BulkIO does allow you to check if multiple timestamps are available and some estimation based on that may be possible.
+* Calculation of dfdt field - Currently the df/dt field in the SDDS header defaults to zero unless overridden by the user. The df/dt field is supposed to represent the change in sample clock frequency in units of Hz/sec between the first and last sample in the SDDS packet. This exact information is not found in BulkIO, so a direct mapping is not possible; however, BulkIO does allow you to check if multiple timestamps are available. Some estimation based on that may be possible.
 * Change of BulkIO Mode - Changing the BulkIO mode field mid-stream is not recommended, a user should send an EOS and start a new stream with the changed mode. The component will gracefully deal with a mode change though with the following outcomes. Going from Real->Complex this will cause 1 SDDS packets worth of data to have an incorrect time stamp. Going from Complex->Real will cause a single packet to be erroneously padded with zeros.

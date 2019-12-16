@@ -3,6 +3,7 @@
 ## Table of Contents
 
 * [Description](#description)
+* [Properties](#properties)
 * [Installation](#installation)
 * [Usage](#usage)
 

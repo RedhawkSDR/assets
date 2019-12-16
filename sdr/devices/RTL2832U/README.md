@@ -2,7 +2,7 @@
 
 ## Description
 
-Contains the source and build script for the REDHAWK `rh.RTL2832U`.
+Contains the source and build script for the REDHAWK `rh.RTL2832U` device.
 Realtek RTL2832U usb dongle device using `librtlsdr`. Supports various tuners,
 including Elonics E4000, Rafael Micro R820T and R828D, Fitipower FC0012 and
 FC0013, and FCI FC2580.

@@ -2,7 +2,7 @@
  
 ## Description
 
-Contains the source and build script for the REDHAWK `rh.psd`.
+Contains the source and build script for the REDHAWK `rh.psd` component.
 FFT-based power spectral density (PSD) component that transforms data from the
 time domain to the frequency domain.  Output data is framed data where each
 frame contains the frequency domain representation of a subsection of the input.

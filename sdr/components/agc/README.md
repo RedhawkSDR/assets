@@ -2,7 +2,7 @@
 
 ## Description
 
-Contains the source and build script for the REDHAWK `rh.agc`.
+Contains the source and build script for the REDHAWK `rh.agc` component.
 This component provides automatic gain control to normalize power levels for real
 or complex signals.
 

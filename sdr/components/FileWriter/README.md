@@ -3,7 +3,7 @@
 ## Description
 
 Contains the source and build script for the REDHAWK
-`rh.FileWriter`. The `rh.FileWriter` component receives streaming data from the
+`rh.FileWriter` component. The `rh.FileWriter` component receives streaming data from the
 BulkIO provides (input) ports and writes the data to a file on the SCA or local
 file system.
 
@@ -18,17 +18,17 @@ Note: root privileges (`sudo`) may be required to install.
 
 To use `rh.FileWriter`, connect an input port to the desired input data stream
 that matches the input data type. Configure the `destination_uri` property with
-the path to the file to be written and optionally the `destination_uri_suffix`
+the path to the file to be written, and optionally, the `destination_uri_suffix`,
 if a suffix is desired. Select the desired format for the output file using the
 `file_format` property. Ensure the `recording_enabled` property is set to true,
 which is the default value.
 
-There are several key words that can be used to insert stream- or data-specific
+There are several keywords that can be used to insert stream- or data-specific
 information into the file name. Any SRI Keyword name with percent symbols (%)
 on either side will be replaced with the value of the SRI Keyword. Other
-pre-defined key words for string replacement are listed below:
+pre-defined keywords for string replacement are listed below:
 
-| Key word string             | Description                                   |
+| Keyword string             | Description                                   |
 | --------------------------- | --------------------------------------------- |
 | %STREAMID%                  | Stream ID                                     |
 | %TIMESTAMP%                 | Timestamp of the first sample of the file     |
@@ -51,7 +51,7 @@ order is assumed to be host byte order. Use the `input_bulkio_byte_order` and
 `swap_bytes` properties to alter this behavior as desired. The byte order of the
 host is provided by the `host_byte_order` property.
 
-The data format tag (i.e. %DT%) is based on the BulkIO input port and the byte
+The data format tag (%DT%) is based on the BulkIO input port and the byte
 order of the data being written. The byte order is determined using the
 `input_bulkio_byte_order` and `swap_bytes` properties.
 
@@ -71,4 +71,4 @@ order of the data being written. The byte order is determined using the
 The `advanced_properties` struct property and the `recording_timer` struct
 sequence property are available to support more complicated use cases. Each of
 the features available are documented in the description of each property when
-viewing the Properties Descriptor XML file (i.e. FileWriter.prf.xml).
+viewing the Properties Descriptor XML file (FileWriter.prf.xml).

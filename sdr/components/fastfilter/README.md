@@ -3,7 +3,7 @@
 ## Description
 
 Contains the source and build script for the REDHAWK
-`rh.fastfilter`. This component is a FIR filter implementation using the FFT-based
+`rh.fastfilter` component. This component is a FIR filter implementation using the FFT-based
 overlap-add technique.
 
 ## Installation

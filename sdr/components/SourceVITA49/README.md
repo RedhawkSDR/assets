@@ -3,7 +3,7 @@
 ## Description
 
 Contains the source and build script for the REDHAWK
-`rh.SourceVITA49`. The `rh.SourceVITA49` component connects to a UDP/multicast or
+`rh.SourceVITA49` component. The `rh.SourceVITA49` component connects to a UDP/multicast or
 TCP VITA49 packet stream and converts the headers to SRI Keywords and data to
 the BULKIO interface of the user's choice for use within REDHAWK domain
 applications.

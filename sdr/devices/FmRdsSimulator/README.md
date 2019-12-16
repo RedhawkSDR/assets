@@ -3,8 +3,8 @@
 ## Description
 
 Contains the source and build script for the REDHAWK
-`rh.FmRdsSimulator`. This device is designed to be used in conjunction with the
-`libRfSimulators` library.  Using the simulator library, this Front End Interfaces
+`rh.FmRdsSimulator` device. This device is designed to be used in conjunction with the
+`libRfSimulators` library.  Using the simulator library, this FRONTEND Interfaces
 compliant REDHAWK device will generate FM modulated mono or stereo audio with
 RDS encoded PI (Call Sign), PS (Short Text), and RT (Full Text) data.
 
@@ -12,14 +12,7 @@ Additional documentation is available within the `libRfSimulators` README.
 
 ## Installation
 
-This asset requires the `libRfSimulators` library. This must be installed in order
-to build and run this asset.
-```sh
-./reconf
-./configure
-make -j
-sudo make install
-```
+This asset requires the `libRfSimulators` share library, which must be installed in order to build and run this asset.  To build and run from source, run the `build.sh` script. To install to `$SDRROOT`, run `build.sh install`.
 
 ## Notes
 

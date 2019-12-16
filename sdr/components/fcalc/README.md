@@ -2,7 +2,7 @@
  
 ## Description
 
-Contains the source and build script for the REDHAWK `rh.fcalc`.
+Contains the source and build script for the REDHAWK `rh.fcalc` component.
 This component allows users to perform calculations on one or two input streams
 simultaneously on an element by element basis. Set the equation property for the
 function you wish to calculate with the variable `a` as the first input and `b`

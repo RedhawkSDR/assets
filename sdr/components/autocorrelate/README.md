@@ -3,10 +3,10 @@
 ## Description
 
 Contains the source and build script for the REDHAWK
-`rh.autocorrelate`. This component is a frequency domain implemenation of a
+`rh.autocorrelate` component. This component is a frequency domain implementation of a
 windowed autocorrelation algorithm.  This algorithm works by windowing the
 input data to break it up into separate frames.  Each frame is independently
-autocorrelated with each other using a &quot;full&quot; autocorrelation which
+autocorrelated with each other using a &quot;full&quot; autocorrelation, which
 includes the full transient response.  This is efficiently computed in the
 frequency domain.
 

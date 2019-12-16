@@ -8,6 +8,6 @@ demonstrate how VITA49 network data can move into and out of REDHAWK.
 
 ## Installation
 
-This is a waveform project and thus does not need to be built just installed into
-the `$SDRROOT/dom/waveforms` directory. One way to do that is to open the project
-in the REDHAWK IDE and drag it into the Target SDR Folder.
+This is a waveform project; therefore, it does not need to be built.  It must be installed into
+the `$SDRROOT/dom/waveforms` directory. To install it, open the project
+in the REDHAWK IDE and drag it into the Target SDR folder..

@@ -3,7 +3,7 @@
 ## Description
 
 Contains the source and build script for the REDHAWK
-`rh.RBDSDecoder`. This component decodes RBDS data from broadcast FM using the
+`rh.RBDSDecoder` component. This component decodes RBDS data from broadcast FM using the
 RBDS Standard Specification.
 
 ## Installation

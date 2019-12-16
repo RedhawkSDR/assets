@@ -3,7 +3,7 @@
 ## Description
 
 Contains the source and build script for the REDHAWK
-`rh.TuneFilterDecimate`. This component selects a narrowband cut from an input
+`rh.TuneFilterDecimate` component. This component selects a narrowband cut from an input
 signal. Tuning, filtering and decimation are used to remove noise and
 interference in other frequency bands and reduce the sampling rate for more
 efficient downstream processing.

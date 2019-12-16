@@ -3,8 +3,8 @@
 ## Description
 
 Contains the source and build script for the REDHAWK 
-`rh.FileReader`. The `rh.FileReader` component is responsible for reading data from
-a file on the SCA or local file system, and streaming the data out a BULKIO
+`rh.FileReader` component. The `rh.FileReader` component reads data from
+a file on the SCA or local file system, and streams the data out a BulkIO
 output port.
 
 ## Installation
@@ -79,4 +79,4 @@ The `advanced_properties`, `default_timestamp`, and `default_sri` struct
 properties, as well as the `default_sri_keywords` struct sequence property are
 available to support more complicated use cases. Each of the features available
 are documented in the description of each property when viewing the Properties
-Descriptor XML file (i.e. FileReader.prf.xml).
+Descriptor XML file (FileReader.prf.xml).
