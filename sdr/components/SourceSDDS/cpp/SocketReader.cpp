@@ -119,6 +119,7 @@ void SocketReader::setConnectionInfo(std::string interface, std::string ip, uint
 
 	in_addr_t lowMulti = inet_network("224.0.0.0");
 	in_addr_t highMulti = inet_network("239.255.255.255");
+        in_addr_t ipMulti = inet_network(ip.c_str());
 
 	if (vlan) {
 		std::stringstream ss;
@@ -127,7 +128,7 @@ void SocketReader::setConnectionInfo(std::string interface, std::string ip, uint
 	}
 
 	// This throws BAD_PARAM if there are issues....sometimes. Other times it just returns -1.
-	if ((inet_network(ip.c_str()) >= lowMulti) && (inet_addr(ip.c_str()) <= highMulti)) {
+	if ((ipMulti >= lowMulti) && (ipMulti <= highMulti)) {
 		// If interface is blank, try using routing table
 		if (interface.empty()) {
 			interface = getMcastIfaceFromRoutes(ip);
