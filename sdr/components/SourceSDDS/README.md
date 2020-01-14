@@ -87,7 +87,7 @@ Properties and their descriptions are below, struct props are shown with their s
 
 ## Usage
 
-SourceSDDS ingests network SDDS and outputs BULKIO data as Octet, Short, or Float. The component receives information on how and where to consume the network data either from receiving and attach() and pushSRI() call in the dataSddsIn port or by using the attachment_override property. The component has a property for the network "interface" indicating which network interface on the host computer must be used in order to receive the network data. If the interface is left blank the component will try to resolve the correct interface based on the IP address and VLAN of the desired incoming data. Once the component has acquired the network stream it will remove the the SDDS network headers package the data as BULKIO and push it out the appropriate BULKIO port.    
+SourceSDDS ingests network SDDS and outputs BULKIO data as `octet`, `short`, or `float`. The component receives information on how and where to consume the network data either from receiving and attach() and pushSRI() call in the dataSddsIn port or by using the attachment_override property. The component has a property for the network "interface" indicating which network interface on the host computer must be used in order to receive the network data. If the interface is left blank the component will try to resolve the correct interface based on the IP address and VLAN of the desired incoming data. Once the component has acquired the network stream it will remove the the SDDS network headers package the data as BULKIO and push it out the appropriate BULKIO port.
 
 ### SRI
 

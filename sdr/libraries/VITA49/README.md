@@ -1,4 +1,4 @@
-# REDHAWK rh.VITA49 shared library
+# REDHAWK rh.VITA49
  
 ## Description
 

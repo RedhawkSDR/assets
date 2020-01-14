@@ -1,9 +1,9 @@
-# REDHAWK Socket Loopback Demo
+# REDHAWK socket_loopback_demo
  
 ## Description
 
-Contains the source and build script for the REDHAWK Socket Loopback Demo
-Waveform. This waveform puts REDHAWK data out onto a network socket using
+Contains the source and build script for the REDHAWK `socket_loopback_demo`
+waveform. This waveform puts REDHAWK data out onto a network socket using
 `rh.sinksocket` and then reads it back from the socket into REDHAWK via `rh.sourcesocket`.
 
 ## Installation

@@ -1,4 +1,4 @@
-# REDHAWK rh.dsp shared library
+# REDHAWK rh.dsp
  
 ## Description
 

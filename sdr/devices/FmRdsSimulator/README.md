@@ -12,7 +12,7 @@ Additional documentation is available within the `libRfSimulators` README.
 
 ## Installation
 
-This asset requires the `libRfSimulators` share library, which must be installed in order to build and run this asset.  To build and run from source, run the `build.sh` script. To install to `$SDRROOT`, run `build.sh install`.
+This asset requires the `libRfSimulators` shared library, which must be installed in order to build and run this asset.  To build and run from source, run the `build.sh` script. To install to `$SDRROOT`, run `build.sh install`.
 
 ## Notes
 

@@ -1,4 +1,4 @@
-# REDHAWK rh.blueFileLib shared library
+# REDHAWK rh.blueFileLib
  
 ## Description
 

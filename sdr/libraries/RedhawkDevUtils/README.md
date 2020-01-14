@@ -1,4 +1,4 @@
-# REDHAWK rh.RedhawkDevUtils shared library
+# REDHAWK rh.RedhawkDevUtils
  
 ## Description
 

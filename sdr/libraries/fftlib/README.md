@@ -1,4 +1,4 @@
-# REDHAWK rh.fftlib shared library
+# REDHAWK rh.fftlib
  
 ## Description
 

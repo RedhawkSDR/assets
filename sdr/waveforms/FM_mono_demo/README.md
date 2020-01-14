@@ -1,8 +1,8 @@
-# REDHAWK FM Mono Demo
+# REDHAWK FM_mono_demo
  
 ## Description
 
-Contains the source and build script for the REDHAWK FM Mono Demo Waveform. This
+Contains the source and build script for the REDHAWK `FM_mono_demo` waveform. This
 waveform processes the mono audio channel of broadcast FM Radio.
 
 ## Installation
