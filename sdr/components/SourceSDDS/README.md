@@ -3,8 +3,6 @@
 ## Table of Contents
 
 * [Description](#description)
-* [Branches and Tags](#branches-and-tags)
-* [REDHAWK Version Compatibility](#redhawk-version-compatibility)
 * [Installation Instructions](#installation-instructions)
 * [Design](#design)
 * [Asset Use](#asset-use)
