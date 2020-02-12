@@ -4012,7 +4012,7 @@ class MSDDRadio:
                         obj= NBDDCModule(self.connection,reg_mod.channel_number,mapping_version)
                         obj_mod = self.object_module(reg_mod,obj)
                         self.nb_ddc_modules.append(obj_mod)
-                    elif inst_name == "MSDR3000":
+                    elif re.match('MSDR\d{4}', inst_name):
                         obj= MSDDX000_RcvModule(self.connection,reg_mod.channel_number,mapping_version)
                         obj_mod = self.object_module(reg_mod,obj)
                         self.msdrx000_modules.append(obj_mod)
