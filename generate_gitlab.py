@@ -21,7 +21,6 @@ package_template = """package:__DIST____V__:rh__SHORT_V__:__ASSET_NAME__:
   stage: __BUILD__
   variables:
     dist: __DIST__
-__NAMESPACE__
     uhd_repo: __UHDREPO__
     asset_name: __ASSET_NAME__
     lowercase_asset_name: __ASSET_LC_NAME__
@@ -63,7 +62,6 @@ __DEPS__
 test_template = """test:__DIST____V__:rh__SHORT_V__:__ASSET_NAME__:
   variables:
     dist: __DIST__
-__NAMESPACE__
     uhd_repo: __UHDREPO__
     comp_type: __COMP_TYPE__
     asset_name: __ASSET_NAME__
@@ -97,10 +95,6 @@ def replace_package_template(os_version, rh_version, comp_name, base_library=Fal
         retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch')
     elif "el7" in os_version:
         retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch')
-    if comp_name == "RX_Digitizer_Sim":
-        retval = retval.replace('__NAMESPACE__\n', '    namespace: ""\n')
-    else:
-        retval = retval.replace('__NAMESPACE__\n', '')
     if base_library:
         retval = retval.replace('package', 'base_package')
 
@@ -137,10 +131,6 @@ def replace_test_template(os_version, rh_version, comp_name, branches=False, bas
         retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch')
     elif "el7" in os_version:
         retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch')
-    if comp_name == "RX_Digitizer_Sim":
-        retval = retval.replace('__NAMESPACE__\n', '    namespace: ""\n')
-    else:
-        retval = retval.replace('__NAMESPACE__\n', '')
     if isComponent:
         retval = retval.replace('__COMP_TYPE__', 'components')
     else:
