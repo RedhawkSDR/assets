@@ -156,8 +156,6 @@ void FileReader_i::start() throw (CF::Resource::StartError, CORBA::SystemExcepti
 }
 
 void FileReader_i::stop() throw (CF::Resource::StopError, CORBA::SystemException) {
-    FileReader_base::stop();
-
     try{
         CF::Properties props;
         props.length(1);
@@ -165,6 +163,7 @@ void FileReader_i::stop() throw (CF::Resource::StopError, CORBA::SystemException
         props[0].value <<= CORBA::string_dup("STOP");
         configure(props);
     } catch(...){};
+    FileReader_base::stop();
 }
 
 void FileReader_i::advanced_propertiesChanged(const advanced_properties_struct &oldValue, const advanced_properties_struct &newValue) {
