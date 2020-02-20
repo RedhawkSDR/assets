@@ -17,21 +17,29 @@
 # program.  If not, see http://www.gnu.org/licenses/.
 #
 
-import ossie.utils.testing
-from ossie.cf import CF
-import os, sys, subprocess
-from omniORB import any
-import time
-from ossie.utils import sb
-import struct
-import random
 from math import isnan
-from ossie.properties import props_from_dict, props_to_dict
-from ossie.utils.bluefile import bluefile, bluefile_helpers
+import os
+import random
+import re
+import shlex
+import struct
+import subprocess
+import sys
+import time
+import unittest
+
+import psutil
+
+import bulkio
 from bulkio.bulkioInterfaces import BULKIO__POA
 from bulkio.sri import create as createSri
 from bulkio.timestamp import create as createTs
-import bulkio
+from omniORB import any
+from ossie.cf import CF
+from ossie.properties import props_from_dict, props_to_dict
+from ossie.utils import sb
+from ossie.utils.bluefile import bluefile, bluefile_helpers
+import ossie.utils.testing
 
 DEBUG_LEVEL = 3
 
@@ -80,6 +88,88 @@ def swap(data, dataType):
     dataStr = toStr(data, dataType)
     strFlip = flip(dataStr, dataType)
     return fromStr(strFlip, dataType)
+ 
+def is_regexp_in_file_lines(fpath, regexp):
+    lines = open(fpath).readlines()  # let it raise
+    for line in lines:
+        if re.search(regexp, line):
+            return True
+
+class ShutdownTests(unittest.TestCase):
+    def setUp(self):
+        self._tempfiles = []
+        self._consumers = []
+
+    def tearDown(self):
+        self._delete_tempfiles()
+        self._kill_consumers()
+
+    def _delete_tempfiles(self):
+        for tempfile in self._tempfiles:
+            try:
+                os.unlink(tempfile)
+            except:
+                pass
+
+    def _kill_consumers(self):
+        for process in self._consumers:
+            process.terminate()  # Does nothing if pid has been reused.
+
+    def _create_zeros_file(self, fpath, kb=1):
+        if not os.path.exists(fpath):
+            cmd = shlex.split('dd if=/dev/zero of={0} bs=1024 count={1}'.format(fpath, kb))
+            subprocess.call(cmd)
+
+    def _testSlowConsumer_releaseObject(self):
+        fpath_data = '/var/tmp/zeros1MiB.16tr'
+        self._tempfiles.append(fpath_data)
+        self._create_zeros_file(fpath_data, kb=1024)
+
+        file_readers = []
+        for num in range(3):
+            file_reader = sb.launch('rh.FileReader', properties={'DEBUG_LEVEL': 2})
+            file_reader.advanced_properties.looping = True
+            file_reader.source_uri = fpath_data
+            file_reader.playback_state = 'PLAY'
+            file_readers.append(file_reader)
+            consumer = sb.launch('SlowConsumer/SlowConsumer.spd.xml')
+            file_reader.connect(consumer, usesPortName='dataShort_out')
+            file_reader.start()
+            consumer.start()
+
+        time.sleep(5)
+        parent = psutil.Process(os.getpid())
+        sys.stderr.write('---- parent command line:  {}\n'.format(parent.cmdline()))
+        self._consumers = [p for p in parent.children(recursive=True) if 'SlowConsumer' in str(p.cmdline())]
+        for r in [p for p in parent.children(recursive=True) if 'SlowConsumer' not in str(p.cmdline())]:
+            sys.stderr.write('.... {}  {}   {}\n'.format(r.pid, r.name(), r.cmdline()[0]))
+        time.sleep(5)
+        for f in file_readers:
+            f.releaseObject()
+
+    def testSlowConsumer_releaseObject(self):
+        """
+        CCB-1042 A FileReader shut down while its serviceFunction is busy could segfault.
+        """
+        fpath_stdout = '/var/tmp/FileReader.stdout'
+        self._tempfiles.append(fpath_stdout)
+        sys.stdout = open(fpath_stdout, 'w')
+        try:
+            self._testSlowConsumer_releaseObject()
+        finally:
+            sys.stdout = sys.__stdout__
+        print '%%%%% error start'
+        print open(fpath_stdout).read()
+        print '%%%%% error end'
+        #regexp = r'terminated with signal'
+        #expected_output_found = is_regexp_in_file_lines(fpath_stdout, regexp)
+        regexp = r'terminated with signal 11'
+        segfault_occurred = is_regexp_in_file_lines(fpath_stdout, regexp)
+        #TODO expected_output does not occur if no segfault
+        # ? because the log level of the message is not high enough ?
+        #self.assertTrue(expected_output_found)
+        self.assertFalse(segfault_occurred)
+
 
 class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     """Test for all resource implementations in FileReader"""
@@ -1910,7 +2000,6 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #######################################################################
         # Test the CPU utilization when playback state is STOP and throttle 0
         print "\n**TESTING IDLE CPU UTILIZATION"
-        import psutil
 
         # Create Component
         comp = sb.launch('../FileReader.spd.xml')
