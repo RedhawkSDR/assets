@@ -28,8 +28,6 @@ import sys
 import time
 import unittest
 
-import psutil
-
 import bulkio
 from bulkio.bulkioInterfaces import BULKIO__POA
 from bulkio.sri import create as createSri
@@ -95,6 +93,72 @@ def is_regexp_in_file_lines(fpath, regexp):
         if re.search(regexp, line):
             return True
 
+def create_zeros_file(fpath, kb=1):
+    if not os.path.exists(fpath):
+        cmd = shlex.split('dd if=/dev/zero of={0} bs=1024 count={1}'.format(fpath, kb))
+        subprocess.call(cmd)
+
+def shell_stdout(cmd):
+    cmd = shlex.split(cmd)
+    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    stdout, _ = proc.communicate()
+    return stdout
+
+class Process(object):
+    def __init__(self, pid, ppid, starttime, cmdline):
+        self.pid = pid
+        self.ppid = ppid
+        self.starttime = starttime
+        self.cmdline = cmdline
+
+    def __hash__(self):
+        return hash((self.starttime, self.pid))
+
+    def __cmp__(self, other):
+        return cmp(self.__hash__(), other.__hash__())
+
+    def terminate(self):
+        starttime = self._get_current_starttime(self.pid)
+        if starttime == self.starttime:  # make sure pid is not reused for diff process
+            cmd = shlex.split('kill -9 {0}'.format(self.pid))
+            subprocess.call(cmd)
+
+    def _get_current_starttime(self, pid):
+        cmd = 'ps -p {0} -f'.format(pid)
+        lines = shell_stdout(cmd).strip().split('\n')
+        starttime = lines[-1].split()[4]
+        return starttime
+
+
+def get_child_processes(parent_pid_in, recursive=False):
+    try:
+        parent_pid = int(parent_pid_in)
+    except:
+        sys.stderr.write('error: get_child_processes() arg "{0}" was neither int nor str-of-digits\n'.format(parent_pid_in))
+        return None
+    cmd = 'ps -f'
+    lines = shell_stdout(cmd).strip().split('\n')
+    child_processes = set()
+    for line in lines:
+        words = line.split()
+        if len(words) < 8:
+            continue
+        ppid = words[2]
+        if ppid == str(parent_pid):
+            pid = words[1]
+            cmdline = words[7:]
+            starttime = words[4]
+            process = Process(pid, parent_pid, starttime, cmdline)
+            child_processes.add(process)
+    if recursive:
+        pids = set()
+        for c in child_processes:
+            pids.add(c.pid)
+        for pid in pids:
+            child_processes |= get_child_processes(pid, recursive=recursive)
+    return child_processes
+
+
 class ShutdownTests(unittest.TestCase):
     def setUp(self):
         self._tempfiles = []
@@ -112,45 +176,34 @@ class ShutdownTests(unittest.TestCase):
                 pass
 
     def _kill_consumers(self):
+        """One is usually left with ppid == 1."""
         for process in self._consumers:
-            process.terminate()  # Does nothing if pid has been reused.
-
-    def _create_zeros_file(self, fpath, kb=1):
-        if not os.path.exists(fpath):
-            cmd = shlex.split('dd if=/dev/zero of={0} bs=1024 count={1}'.format(fpath, kb))
-            subprocess.call(cmd)
+            process.terminate()
 
     def _testSlowConsumer_releaseObject(self):
         fpath_data = '/var/tmp/zeros1MiB.16tr'
         self._tempfiles.append(fpath_data)
-        self._create_zeros_file(fpath_data, kb=1024)
+        create_zeros_file(fpath_data, kb=1024)
 
         file_readers = []
-        for num in range(3):
-            file_reader = sb.launch('rh.FileReader', properties={'DEBUG_LEVEL': 2})
+        for _ in range(3):
+            file_reader = sb.launch('../FileReader.spd.xml', properties={'DEBUG_LEVEL': 2})
             file_reader.advanced_properties.looping = True
             file_reader.source_uri = fpath_data
             file_reader.playback_state = 'PLAY'
             file_readers.append(file_reader)
             consumer = sb.launch('SlowConsumer/SlowConsumer.spd.xml')
             file_reader.connect(consumer, usesPortName='dataShort_out')
-            file_reader.start()
-            consumer.start()
 
-        time.sleep(5)
-        parent = psutil.Process(os.getpid())
-        sys.stderr.write('---- parent command line:  {}\n'.format(parent.cmdline()))
-        self._consumers = [p for p in parent.children(recursive=True) if 'SlowConsumer' in str(p.cmdline())]
-        for r in [p for p in parent.children(recursive=True) if 'SlowConsumer' not in str(p.cmdline())]:
-            sys.stderr.write('.... {}  {}   {}\n'.format(r.pid, r.name(), r.cmdline()[0]))
-        time.sleep(5)
+        child_processes = get_child_processes(os.getpid(), recursive=True)
+        self._consumers = [p for p in child_processes if 'SlowConsumer' in str(p.cmdline[1])]
+        sb.start()
+        time.sleep(10)
         for f in file_readers:
             f.releaseObject()
 
     def testSlowConsumer_releaseObject(self):
-        """
-        CCB-1042 A FileReader shut down while its serviceFunction is busy could segfault.
-        """
+        """CCB-1042 FileReader.releaseObject() with busy serviceFunction segfault."""
         fpath_stdout = '/var/tmp/FileReader.stdout'
         self._tempfiles.append(fpath_stdout)
         sys.stdout = open(fpath_stdout, 'w')
@@ -158,16 +211,9 @@ class ShutdownTests(unittest.TestCase):
             self._testSlowConsumer_releaseObject()
         finally:
             sys.stdout = sys.__stdout__
-        print '%%%%% error start'
-        print open(fpath_stdout).read()
-        print '%%%%% error end'
-        #regexp = r'terminated with signal'
-        #expected_output_found = is_regexp_in_file_lines(fpath_stdout, regexp)
+
         regexp = r'terminated with signal 11'
         segfault_occurred = is_regexp_in_file_lines(fpath_stdout, regexp)
-        #TODO expected_output does not occur if no segfault
-        # ? because the log level of the message is not high enough ?
-        #self.assertTrue(expected_output_found)
         self.assertFalse(segfault_occurred)
 
 
@@ -2000,6 +2046,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #######################################################################
         # Test the CPU utilization when playback state is STOP and throttle 0
         print "\n**TESTING IDLE CPU UTILIZATION"
+        import psutil
 
         # Create Component
         comp = sb.launch('../FileReader.spd.xml')
