@@ -1,32 +1,8 @@
 #================= begin AmFmPmBasebandDemod
 
-package:el6:rh2.0:AmFmPmBasebandDemod:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: AmFmPmBasebandDemod
-  <<: *package
-
-package:el6-i386:rh2.0:AmFmPmBasebandDemod:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: AmFmPmBasebandDemod
-  <<: *package
-
 package:el7:rh2.0:AmFmPmBasebandDemod:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: AmFmPmBasebandDemod
-  <<: *package
-
-package:el6:rh2.2:AmFmPmBasebandDemod:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: AmFmPmBasebandDemod
-  <<: *package
-
-package:el6-i386:rh2.2:AmFmPmBasebandDemod:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: AmFmPmBasebandDemod
   <<: *package
 
@@ -35,35 +11,9 @@ package:el7:rh2.2:AmFmPmBasebandDemod:
   extends: .template_rh2.2
   <<: *package
 
-test:el6:rh2.0:AmFmPmBasebandDemod:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: AmFmPmBasebandDemod
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:AmFmPmBasebandDemod:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: AmFmPmBasebandDemod
-  <<: *test
-
 test:el7:rh2.0:AmFmPmBasebandDemod:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: AmFmPmBasebandDemod
-  <<: *test
-
-test:el6:rh2.2:AmFmPmBasebandDemod:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: AmFmPmBasebandDemod
-  <<: *test
-
-test:el6-i386:rh2.2:AmFmPmBasebandDemod:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: AmFmPmBasebandDemod
   <<: *test
 
@@ -89,68 +39,12 @@ deploy-el7-2.0:AmFmPmBasebandDemod:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:AmFmPmBasebandDemod:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: AmFmPmBasebandDemod
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:AmFmPmBasebandDemod:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: AmFmPmBasebandDemod
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:AmFmPmBasebandDemod:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: AmFmPmBasebandDemod
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:AmFmPmBasebandDemod:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: AmFmPmBasebandDemod
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end AmFmPmBasebandDemod
 #================= begin ArbitraryRateResampler
-
-package:el6:rh2.0:ArbitraryRateResampler:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: ArbitraryRateResampler
-  <<: *package
-
-package:el6-i386:rh2.0:ArbitraryRateResampler:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: ArbitraryRateResampler
-  <<: *package
 
 package:el7:rh2.0:ArbitraryRateResampler:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: ArbitraryRateResampler
-  <<: *package
-
-package:el6:rh2.2:ArbitraryRateResampler:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: ArbitraryRateResampler
-  <<: *package
-
-package:el6-i386:rh2.2:ArbitraryRateResampler:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: ArbitraryRateResampler
   <<: *package
 
@@ -160,35 +54,9 @@ package:el7:rh2.2:ArbitraryRateResampler:
   asset_name: ArbitraryRateResampler
   <<: *package
 
-test:el6:rh2.0:ArbitraryRateResampler:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: ArbitraryRateResampler
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:ArbitraryRateResampler:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: ArbitraryRateResampler
-  <<: *test
-
 test:el7:rh2.0:ArbitraryRateResampler:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: ArbitraryRateResampler
-  <<: *test
-
-test:el6:rh2.2:ArbitraryRateResampler:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: ArbitraryRateResampler
-  <<: *test
-
-test:el6-i386:rh2.2:ArbitraryRateResampler:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: ArbitraryRateResampler
   <<: *test
 
@@ -214,68 +82,12 @@ deploy-el7-2.0:ArbitraryRateResampler:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:ArbitraryRateResampler:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: ArbitraryRateResampler
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:ArbitraryRateResampler:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: ArbitraryRateResampler
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:ArbitraryRateResampler:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: ArbitraryRateResampler
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:ArbitraryRateResampler:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: ArbitraryRateResampler
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end ArbitraryRateResampler
 #================= begin FileReader
-
-package:el6:rh2.0:FileReader:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: FileReader
-  <<: *package
-
-package:el6-i386:rh2.0:FileReader:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: FileReader
-  <<: *package
 
 package:el7:rh2.0:FileReader:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: FileReader
-  <<: *package
-
-package:el6:rh2.2:FileReader:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: FileReader
-  <<: *package
-
-package:el6-i386:rh2.2:FileReader:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: FileReader
   <<: *package
 
@@ -285,35 +97,9 @@ package:el7:rh2.2:FileReader:
   asset_name: FileReader
   <<: *package
 
-test:el6:rh2.0:FileReader:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: FileReader
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:FileReader:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: FileReader
-  <<: *test
-
 test:el7:rh2.0:FileReader:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: FileReader
-  <<: *test
-
-test:el6:rh2.2:FileReader:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: FileReader
-  <<: *test
-
-test:el6-i386:rh2.2:FileReader:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: FileReader
   <<: *test
 
@@ -339,68 +125,12 @@ deploy-el7-2.0:FileReader:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:FileReader:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: FileReader
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:FileReader:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: FileReader
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:FileReader:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: FileReader
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:FileReader:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: FileReader
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end FileReader
 #================= begin FileWriter
-
-package:el6:rh2.0:FileWriter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: FileWriter
-  <<: *package
-
-package:el6-i386:rh2.0:FileWriter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: FileWriter
-  <<: *package
 
 package:el7:rh2.0:FileWriter:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: FileWriter
-  <<: *package
-
-package:el6:rh2.2:FileWriter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: FileWriter
-  <<: *package
-
-package:el6-i386:rh2.2:FileWriter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: FileWriter
   <<: *package
 
@@ -410,35 +140,9 @@ package:el7:rh2.2:FileWriter:
   asset_name: FileWriter
   <<: *package
 
-test:el6:rh2.0:FileWriter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: FileWriter
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:FileWriter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: FileWriter
-  <<: *test
-
 test:el7:rh2.0:FileWriter:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: FileWriter
-  <<: *test
-
-test:el6:rh2.2:FileWriter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: FileWriter
-  <<: *test
-
-test:el6-i386:rh2.2:FileWriter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: FileWriter
   <<: *test
 
@@ -464,68 +168,12 @@ deploy-el7-2.0:FileWriter:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:FileWriter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: FileWriter
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:FileWriter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: FileWriter
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:FileWriter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: FileWriter
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:FileWriter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: FileWriter
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end FileWriter
 #================= begin HardLimit
-
-package:el6:rh2.0:HardLimit:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: HardLimit
-  <<: *package
-
-package:el6-i386:rh2.0:HardLimit:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: HardLimit
-  <<: *package
 
 package:el7:rh2.0:HardLimit:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: HardLimit
-  <<: *package
-
-package:el6:rh2.2:HardLimit:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: HardLimit
-  <<: *package
-
-package:el6-i386:rh2.2:HardLimit:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: HardLimit
   <<: *package
 
@@ -535,35 +183,9 @@ package:el7:rh2.2:HardLimit:
   asset_name: HardLimit
   <<: *package
 
-test:el6:rh2.0:HardLimit:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: HardLimit
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:HardLimit:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: HardLimit
-  <<: *test
-
 test:el7:rh2.0:HardLimit:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: HardLimit
-  <<: *test
-
-test:el6:rh2.2:HardLimit:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: HardLimit
-  <<: *test
-
-test:el6-i386:rh2.2:HardLimit:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: HardLimit
   <<: *test
 
@@ -589,68 +211,12 @@ deploy-el7-2.0:HardLimit:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:HardLimit:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: HardLimit
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:HardLimit:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: HardLimit
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:HardLimit:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: HardLimit
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:HardLimit:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: HardLimit
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end HardLimit
 #================= begin RBDSDecoder
-
-package:el6:rh2.0:RBDSDecoder:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: RBDSDecoder
-  <<: *package
-
-package:el6-i386:rh2.0:RBDSDecoder:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: RBDSDecoder
-  <<: *package
 
 package:el7:rh2.0:RBDSDecoder:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: RBDSDecoder
-  <<: *package
-
-package:el6:rh2.2:RBDSDecoder:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: RBDSDecoder
-  <<: *package
-
-package:el6-i386:rh2.2:RBDSDecoder:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: RBDSDecoder
   <<: *package
 
@@ -660,35 +226,9 @@ package:el7:rh2.2:RBDSDecoder:
   asset_name: RBDSDecoder
   <<: *package
 
-test:el6:rh2.0:RBDSDecoder:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: RBDSDecoder
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:RBDSDecoder:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: RBDSDecoder
-  <<: *test
-
 test:el7:rh2.0:RBDSDecoder:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: RBDSDecoder
-  <<: *test
-
-test:el6:rh2.2:RBDSDecoder:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: RBDSDecoder
-  <<: *test
-
-test:el6-i386:rh2.2:RBDSDecoder:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: RBDSDecoder
   <<: *test
 
@@ -714,68 +254,12 @@ deploy-el7-2.0:RBDSDecoder:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:RBDSDecoder:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: RBDSDecoder
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:RBDSDecoder:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: RBDSDecoder
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:RBDSDecoder:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: RBDSDecoder
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:RBDSDecoder:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: RBDSDecoder
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end RBDSDecoder
 #================= begin SigGen
-
-package:el6:rh2.0:SigGen:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: SigGen
-  <<: *package
-
-package:el6-i386:rh2.0:SigGen:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: SigGen
-  <<: *package
 
 package:el7:rh2.0:SigGen:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: SigGen
-  <<: *package
-
-package:el6:rh2.2:SigGen:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: SigGen
-  <<: *package
-
-package:el6-i386:rh2.2:SigGen:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: SigGen
   <<: *package
 
@@ -785,35 +269,9 @@ package:el7:rh2.2:SigGen:
   asset_name: SigGen
   <<: *package
 
-test:el6:rh2.0:SigGen:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: SigGen
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:SigGen:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: SigGen
-  <<: *test
-
 test:el7:rh2.0:SigGen:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: SigGen
-  <<: *test
-
-test:el6:rh2.2:SigGen:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: SigGen
-  <<: *test
-
-test:el6-i386:rh2.2:SigGen:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: SigGen
   <<: *test
 
@@ -839,68 +297,12 @@ deploy-el7-2.0:SigGen:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:SigGen:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: SigGen
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:SigGen:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: SigGen
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:SigGen:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: SigGen
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:SigGen:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: SigGen
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end SigGen
 #================= begin SinkSDDS
-
-package:el6:rh2.0:SinkSDDS:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: SinkSDDS
-  <<: *package
-
-package:el6-i386:rh2.0:SinkSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: SinkSDDS
-  <<: *package
 
 package:el7:rh2.0:SinkSDDS:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: SinkSDDS
-  <<: *package
-
-package:el6:rh2.2:SinkSDDS:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: SinkSDDS
-  <<: *package
-
-package:el6-i386:rh2.2:SinkSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: SinkSDDS
   <<: *package
 
@@ -910,35 +312,9 @@ package:el7:rh2.2:SinkSDDS:
   asset_name: SinkSDDS
   <<: *package
 
-test:el6:rh2.0:SinkSDDS:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: SinkSDDS
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:SinkSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: SinkSDDS
-  <<: *test
-
 test:el7:rh2.0:SinkSDDS:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: SinkSDDS
-  <<: *test
-
-test:el6:rh2.2:SinkSDDS:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: SinkSDDS
-  <<: *test
-
-test:el6-i386:rh2.2:SinkSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: SinkSDDS
   <<: *test
 
@@ -964,68 +340,12 @@ deploy-el7-2.0:SinkSDDS:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:SinkSDDS:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: SinkSDDS
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:SinkSDDS:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: SinkSDDS
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:SinkSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: SinkSDDS
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:SinkSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: SinkSDDS
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end SinkSDDS
 #================= begin SinkVITA49
-
-package:el6:rh2.0:SinkVITA49:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: SinkVITA49
-  <<: *package
-
-package:el6-i386:rh2.0:SinkVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: SinkVITA49
-  <<: *package
 
 package:el7:rh2.0:SinkVITA49:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: SinkVITA49
-  <<: *package
-
-package:el6:rh2.2:SinkVITA49:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: SinkVITA49
-  <<: *package
-
-package:el6-i386:rh2.2:SinkVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: SinkVITA49
   <<: *package
 
@@ -1035,35 +355,9 @@ package:el7:rh2.2:SinkVITA49:
   asset_name: SinkVITA49
   <<: *package
 
-test:el6:rh2.0:SinkVITA49:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: SinkVITA49
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:SinkVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: SinkVITA49
-  <<: *test
-
 test:el7:rh2.0:SinkVITA49:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: SinkVITA49
-  <<: *test
-
-test:el6:rh2.2:SinkVITA49:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: SinkVITA49
-  <<: *test
-
-test:el6-i386:rh2.2:SinkVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: SinkVITA49
   <<: *test
 
@@ -1089,68 +383,12 @@ deploy-el7-2.0:SinkVITA49:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:SinkVITA49:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: SinkVITA49
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:SinkVITA49:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: SinkVITA49
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:SinkVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: SinkVITA49
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:SinkVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: SinkVITA49
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end SinkVITA49
 #================= begin SourceSDDS
-
-package:el6:rh2.0:SourceSDDS:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: SourceSDDS
-  <<: *package
-
-package:el6-i386:rh2.0:SourceSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: SourceSDDS
-  <<: *package
 
 package:el7:rh2.0:SourceSDDS:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: SourceSDDS
-  <<: *package
-
-package:el6:rh2.2:SourceSDDS:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: SourceSDDS
-  <<: *package
-
-package:el6-i386:rh2.2:SourceSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: SourceSDDS
   <<: *package
 
@@ -1160,35 +398,9 @@ package:el7:rh2.2:SourceSDDS:
   asset_name: SourceSDDS
   <<: *package
 
-test:el6:rh2.0:SourceSDDS:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: SourceSDDS
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:SourceSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: SourceSDDS
-  <<: *test
-
 test:el7:rh2.0:SourceSDDS:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: SourceSDDS
-  <<: *test
-
-test:el6:rh2.2:SourceSDDS:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: SourceSDDS
-  <<: *test
-
-test:el6-i386:rh2.2:SourceSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: SourceSDDS
   <<: *test
 
@@ -1214,68 +426,12 @@ deploy-el7-2.0:SourceSDDS:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:SourceSDDS:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: SourceSDDS
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:SourceSDDS:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: SourceSDDS
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:SourceSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: SourceSDDS
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:SourceSDDS:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: SourceSDDS
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end SourceSDDS
 #================= begin SourceVITA49
-
-package:el6:rh2.0:SourceVITA49:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: SourceVITA49
-  <<: *package
-
-package:el6-i386:rh2.0:SourceVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: SourceVITA49
-  <<: *package
 
 package:el7:rh2.0:SourceVITA49:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: SourceVITA49
-  <<: *package
-
-package:el6:rh2.2:SourceVITA49:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: SourceVITA49
-  <<: *package
-
-package:el6-i386:rh2.2:SourceVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: SourceVITA49
   <<: *package
 
@@ -1285,35 +441,9 @@ package:el7:rh2.2:SourceVITA49:
   asset_name: SourceVITA49
   <<: *package
 
-test:el6:rh2.0:SourceVITA49:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: SourceVITA49
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:SourceVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: SourceVITA49
-  <<: *test
-
 test:el7:rh2.0:SourceVITA49:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: SourceVITA49
-  <<: *test
-
-test:el6:rh2.2:SourceVITA49:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: SourceVITA49
-  <<: *test
-
-test:el6-i386:rh2.2:SourceVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: SourceVITA49
   <<: *test
 
@@ -1339,68 +469,12 @@ deploy-el7-2.0:SourceVITA49:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:SourceVITA49:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: SourceVITA49
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:SourceVITA49:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: SourceVITA49
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:SourceVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: SourceVITA49
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:SourceVITA49:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: SourceVITA49
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end SourceVITA49
 #================= begin TuneFilterDecimate
-
-package:el6:rh2.0:TuneFilterDecimate:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: TuneFilterDecimate
-  <<: *package
-
-package:el6-i386:rh2.0:TuneFilterDecimate:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: TuneFilterDecimate
-  <<: *package
 
 package:el7:rh2.0:TuneFilterDecimate:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: TuneFilterDecimate
-  <<: *package
-
-package:el6:rh2.2:TuneFilterDecimate:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: TuneFilterDecimate
-  <<: *package
-
-package:el6-i386:rh2.2:TuneFilterDecimate:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: TuneFilterDecimate
   <<: *package
 
@@ -1410,35 +484,9 @@ package:el7:rh2.2:TuneFilterDecimate:
   asset_name: TuneFilterDecimate
   <<: *package
 
-test:el6:rh2.0:TuneFilterDecimate:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: TuneFilterDecimate
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:TuneFilterDecimate:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: TuneFilterDecimate
-  <<: *test
-
 test:el7:rh2.0:TuneFilterDecimate:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: TuneFilterDecimate
-  <<: *test
-
-test:el6:rh2.2:TuneFilterDecimate:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: TuneFilterDecimate
-  <<: *test
-
-test:el6-i386:rh2.2:TuneFilterDecimate:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: TuneFilterDecimate
   <<: *test
 
@@ -1464,68 +512,12 @@ deploy-el7-2.0:TuneFilterDecimate:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:TuneFilterDecimate:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: TuneFilterDecimate
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:TuneFilterDecimate:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: TuneFilterDecimate
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:TuneFilterDecimate:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: TuneFilterDecimate
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:TuneFilterDecimate:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: TuneFilterDecimate
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end TuneFilterDecimate
 #================= begin agc
-
-package:el6:rh2.0:agc:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: agc
-  <<: *package
-
-package:el6-i386:rh2.0:agc:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: agc
-  <<: *package
 
 package:el7:rh2.0:agc:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: agc
-  <<: *package
-
-package:el6:rh2.2:agc:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: agc
-  <<: *package
-
-package:el6-i386:rh2.2:agc:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: agc
   <<: *package
 
@@ -1535,35 +527,9 @@ package:el7:rh2.2:agc:
   asset_name: agc
   <<: *package
 
-test:el6:rh2.0:agc:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: agc
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:agc:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: agc
-  <<: *test
-
 test:el7:rh2.0:agc:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: agc
-  <<: *test
-
-test:el6:rh2.2:agc:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: agc
-  <<: *test
-
-test:el6-i386:rh2.2:agc:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: agc
   <<: *test
 
@@ -1589,68 +555,12 @@ deploy-el7-2.0:agc:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:agc:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: agc
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:agc:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: agc
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:agc:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: agc
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:agc:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: agc
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end agc
 #================= begin autocorrelate
-
-package:el6:rh2.0:autocorrelate:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: autocorrelate
-  <<: *package
-
-package:el6-i386:rh2.0:autocorrelate:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: autocorrelate
-  <<: *package
 
 package:el7:rh2.0:autocorrelate:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: autocorrelate
-  <<: *package
-
-package:el6:rh2.2:autocorrelate:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: autocorrelate
-  <<: *package
-
-package:el6-i386:rh2.2:autocorrelate:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: autocorrelate
   <<: *package
 
@@ -1660,35 +570,9 @@ package:el7:rh2.2:autocorrelate:
   asset_name: autocorrelate
   <<: *package
 
-test:el6:rh2.0:autocorrelate:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: autocorrelate
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:autocorrelate:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: autocorrelate
-  <<: *test
-
 test:el7:rh2.0:autocorrelate:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: autocorrelate
-  <<: *test
-
-test:el6:rh2.2:autocorrelate:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: autocorrelate
-  <<: *test
-
-test:el6-i386:rh2.2:autocorrelate:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: autocorrelate
   <<: *test
 
@@ -1714,68 +598,12 @@ deploy-el7-2.0:autocorrelate:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:autocorrelate:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: autocorrelate
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:autocorrelate:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: autocorrelate
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:autocorrelate:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: autocorrelate
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:autocorrelate:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: autocorrelate
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end autocorrelate
 #================= begin fastfilter
-
-package:el6:rh2.0:fastfilter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: fastfilter
-  <<: *package
-
-package:el6-i386:rh2.0:fastfilter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: fastfilter
-  <<: *package
 
 package:el7:rh2.0:fastfilter:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: fastfilter
-  <<: *package
-
-package:el6:rh2.2:fastfilter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: fastfilter
-  <<: *package
-
-package:el6-i386:rh2.2:fastfilter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: fastfilter
   <<: *package
 
@@ -1785,35 +613,9 @@ package:el7:rh2.2:fastfilter:
   asset_name: fastfilter
   <<: *package
 
-test:el6:rh2.0:fastfilter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: fastfilter
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:fastfilter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: fastfilter
-  <<: *test
-
 test:el7:rh2.0:fastfilter:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: fastfilter
-  <<: *test
-
-test:el6:rh2.2:fastfilter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: fastfilter
-  <<: *test
-
-test:el6-i386:rh2.2:fastfilter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: fastfilter
   <<: *test
 
@@ -1839,68 +641,12 @@ deploy-el7-2.0:fastfilter:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:fastfilter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: fastfilter
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:fastfilter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: fastfilter
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:fastfilter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: fastfilter
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:fastfilter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: fastfilter
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end fastfilter
 #================= begin fcalc
-
-package:el6:rh2.0:fcalc:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: fcalc
-  <<: *package
-
-package:el6-i386:rh2.0:fcalc:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: fcalc
-  <<: *package
 
 package:el7:rh2.0:fcalc:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: fcalc
-  <<: *package
-
-package:el6:rh2.2:fcalc:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: fcalc
-  <<: *package
-
-package:el6-i386:rh2.2:fcalc:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: fcalc
   <<: *package
 
@@ -1910,35 +656,9 @@ package:el7:rh2.2:fcalc:
   asset_name: fcalc
   <<: *package
 
-test:el6:rh2.0:fcalc:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: fcalc
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:fcalc:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: fcalc
-  <<: *test
-
 test:el7:rh2.0:fcalc:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: fcalc
-  <<: *test
-
-test:el6:rh2.2:fcalc:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: fcalc
-  <<: *test
-
-test:el6-i386:rh2.2:fcalc:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: fcalc
   <<: *test
 
@@ -1964,68 +684,12 @@ deploy-el7-2.0:fcalc:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:fcalc:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: fcalc
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:fcalc:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: fcalc
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:fcalc:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: fcalc
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:fcalc:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: fcalc
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end fcalc
 #================= begin psd
-
-package:el6:rh2.0:psd:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: psd
-  <<: *package
-
-package:el6-i386:rh2.0:psd:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: psd
-  <<: *package
 
 package:el7:rh2.0:psd:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: psd
-  <<: *package
-
-package:el6:rh2.2:psd:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: psd
-  <<: *package
-
-package:el6-i386:rh2.2:psd:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: psd
   <<: *package
 
@@ -2035,35 +699,9 @@ package:el7:rh2.2:psd:
   asset_name: psd
   <<: *package
 
-test:el6:rh2.0:psd:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: psd
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:psd:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: psd
-  <<: *test
-
 test:el7:rh2.0:psd:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: psd
-  <<: *test
-
-test:el6:rh2.2:psd:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: psd
-  <<: *test
-
-test:el6-i386:rh2.2:psd:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: psd
   <<: *test
 
@@ -2089,68 +727,12 @@ deploy-el7-2.0:psd:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:psd:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: psd
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:psd:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: psd
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:psd:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: psd
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:psd:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: psd
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end psd
 #================= begin psk_soft
-
-package:el6:rh2.0:psk_soft:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: psk_soft
-  <<: *package
-
-package:el6-i386:rh2.0:psk_soft:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: psk_soft
-  <<: *package
 
 package:el7:rh2.0:psk_soft:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: psk_soft
-  <<: *package
-
-package:el6:rh2.2:psk_soft:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: psk_soft
-  <<: *package
-
-package:el6-i386:rh2.2:psk_soft:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: psk_soft
   <<: *package
 
@@ -2160,35 +742,9 @@ package:el7:rh2.2:psk_soft:
   asset_name: psk_soft
   <<: *package
 
-test:el6:rh2.0:psk_soft:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: psk_soft
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:psk_soft:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: psk_soft
-  <<: *test
-
 test:el7:rh2.0:psk_soft:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: psk_soft
-  <<: *test
-
-test:el6:rh2.2:psk_soft:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: psk_soft
-  <<: *test
-
-test:el6-i386:rh2.2:psk_soft:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: psk_soft
   <<: *test
 
@@ -2214,68 +770,12 @@ deploy-el7-2.0:psk_soft:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:psk_soft:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: psk_soft
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:psk_soft:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: psk_soft
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:psk_soft:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: psk_soft
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:psk_soft:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: psk_soft
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end psk_soft
 #================= begin sinksocket
-
-package:el6:rh2.0:sinksocket:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: sinksocket
-  <<: *package
-
-package:el6-i386:rh2.0:sinksocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: sinksocket
-  <<: *package
 
 package:el7:rh2.0:sinksocket:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: sinksocket
-  <<: *package
-
-package:el6:rh2.2:sinksocket:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: sinksocket
-  <<: *package
-
-package:el6-i386:rh2.2:sinksocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: sinksocket
   <<: *package
 
@@ -2285,35 +785,9 @@ package:el7:rh2.2:sinksocket:
   asset_name: sinksocket
   <<: *package
 
-test:el6:rh2.0:sinksocket:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: sinksocket
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:sinksocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: sinksocket
-  <<: *test
-
 test:el7:rh2.0:sinksocket:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: sinksocket
-  <<: *test
-
-test:el6:rh2.2:sinksocket:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: sinksocket
-  <<: *test
-
-test:el6-i386:rh2.2:sinksocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: sinksocket
   <<: *test
 
@@ -2339,68 +813,12 @@ deploy-el7-2.0:sinksocket:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:sinksocket:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: sinksocket
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:sinksocket:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: sinksocket
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:sinksocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: sinksocket
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:sinksocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: sinksocket
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end sinksocket
 #================= begin sourcesocket
-
-package:el6:rh2.0:sourcesocket:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: sourcesocket
-  <<: *package
-
-package:el6-i386:rh2.0:sourcesocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: sourcesocket
-  <<: *package
 
 package:el7:rh2.0:sourcesocket:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: sourcesocket
-  <<: *package
-
-package:el6:rh2.2:sourcesocket:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: sourcesocket
-  <<: *package
-
-package:el6-i386:rh2.2:sourcesocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: sourcesocket
   <<: *package
 
@@ -2410,35 +828,9 @@ package:el7:rh2.2:sourcesocket:
   asset_name: sourcesocket
   <<: *package
 
-test:el6:rh2.0:sourcesocket:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: sourcesocket
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:sourcesocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: sourcesocket
-  <<: *test
-
 test:el7:rh2.0:sourcesocket:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: sourcesocket
-  <<: *test
-
-test:el6:rh2.2:sourcesocket:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: sourcesocket
-  <<: *test
-
-test:el6-i386:rh2.2:sourcesocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: sourcesocket
   <<: *test
 
@@ -2464,68 +856,12 @@ deploy-el7-2.0:sourcesocket:
     - package:el7:rh2.0
   <<: *s3
 
-deploy-el6-2.2:sourcesocket:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: sourcesocket
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:sourcesocket:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: sourcesocket
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:sourcesocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: sourcesocket
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:sourcesocket:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: sourcesocket
-  dependencies:
-    - package:el6-i386:rh2.0
-  <<: *s3
-
 #================= end sourcesocket
 #================= begin DataConverter
-
-package:el6:rh2.0:DataConverter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: DataConverter
-  <<: *package
-
-package:el6-i386:rh2.0:DataConverter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: DataConverter
-  <<: *package
 
 package:el7:rh2.0:DataConverter:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: DataConverter
-  <<: *package
-
-package:el6:rh2.2:DataConverter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: DataConverter
-  <<: *package
-
-package:el6-i386:rh2.2:DataConverter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: DataConverter
   <<: *package
 
@@ -2535,35 +871,9 @@ package:el7:rh2.2:DataConverter:
   asset_name: DataConverter
   <<: *package
 
-test:el6:rh2.0:DataConverter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: DataConverter
-  <<: *test
-  only:
-    - branches
-
-test:el6-i386:rh2.0:DataConverter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: DataConverter
-  <<: *test
-
 test:el7:rh2.0:DataConverter:
   extends: .template_el7
   extends: .template_rh2.0
-  asset_name: DataConverter
-  <<: *test
-
-test:el6:rh2.2:DataConverter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: DataConverter
-  <<: *test
-
-test:el6-i386:rh2.2:DataConverter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
   asset_name: DataConverter
   <<: *test
 
@@ -2587,38 +897,6 @@ deploy-el7-2.0:DataConverter:
   asset_name: DataConverter
   dependencies:
     - package:el7:rh2.0
-  <<: *s3
-
-deploy-el6-2.2:DataConverter:
-  extends: .template_el6
-  extends: .template_rh2.2
-  asset_name: DataConverter
-  dependencies:
-    - package:el6:rh2.2
-  <<: *s3
-
-deploy-el6-2.0:DataConverter:
-  extends: .template_el6
-  extends: .template_rh2.0
-  asset_name: DataConverter
-  dependencies:
-    - package:el6:rh2.0
-  <<: *s3
-
-deploy-el6-i386-2.2:DataConverter:
-  extends: .template_el6-i386
-  extends: .template_rh2.2
-  asset_name: DataConverter
-  dependencies:
-    - package:el6-i386:rh2.2
-  <<: *s3
-
-deploy-el6-i386-2.0:DataConverter:
-  extends: .template_el6-i386
-  extends: .template_rh2.0
-  asset_name: DataConverter
-  dependencies:
-    - package:el6-i386:rh2.0
   <<: *s3
 
 #================= end DataConverter
