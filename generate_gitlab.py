@@ -299,7 +299,7 @@ if __name__ == '__main__':
             for os_version in versions[next(iter(versions))]['platform_keys']:
                 jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
 
-        if (comp != 'MSDD') and (not(comp == 'RX_Digitizer_Sim' and rh_version == '2.0')):
+        if (comp != 'MSDD') and (rh_version != '2.0'):
             for os_version in versions[next(iter(versions))]['platform_keys']:
                 test_jobs += replace_test_job_name_template(os_version, rh_version, comp, False, base_package, isComponent)
                 jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
