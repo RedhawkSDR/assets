@@ -25,6 +25,7 @@ import shlex
 import struct
 import subprocess
 import sys
+import tempfile
 import time
 import unittest
 
@@ -94,69 +95,8 @@ def is_regexp_in_file_lines(fpath, regexp):
             return True
 
 def create_zeros_file(fpath, kb=1):
-    if not os.path.exists(fpath):
-        cmd = shlex.split('dd if=/dev/zero of={0} bs=1024 count={1}'.format(fpath, kb))
-        subprocess.call(cmd)
-
-def shell_stdout(cmd):
-    cmd = shlex.split(cmd)
-    proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    stdout, _ = proc.communicate()
-    return stdout
-
-class Process(object):
-    def __init__(self, pid, ppid, starttime, cmdline):
-        self.pid = pid
-        self.ppid = ppid
-        self.starttime = starttime
-        self.cmdline = cmdline
-
-    def __hash__(self):
-        return hash((self.starttime, self.pid))
-
-    def __cmp__(self, other):
-        return cmp(self.__hash__(), other.__hash__())
-
-    def terminate(self):
-        starttime = self._get_current_starttime(self.pid)
-        if starttime == self.starttime:  # make sure pid is not reused for diff process
-            cmd = shlex.split('kill -9 {0}'.format(self.pid))
-            subprocess.call(cmd)
-
-    def _get_current_starttime(self, pid):
-        cmd = 'ps -p {0} -f'.format(pid)
-        lines = shell_stdout(cmd).strip().split('\n')
-        starttime = lines[-1].split()[4]
-        return starttime
-
-
-def get_child_processes(parent_pid_in, recursive=False):
-    try:
-        parent_pid = int(parent_pid_in)
-    except:
-        sys.stderr.write('error: get_child_processes() arg "{0}" was neither int nor str-of-digits\n'.format(parent_pid_in))
-        return None
-    cmd = 'ps -f'
-    lines = shell_stdout(cmd).strip().split('\n')
-    child_processes = set()
-    for line in lines:
-        words = line.split()
-        if len(words) < 8:
-            continue
-        ppid = words[2]
-        if ppid == str(parent_pid):
-            pid = words[1]
-            cmdline = words[7:]
-            starttime = words[4]
-            process = Process(pid, parent_pid, starttime, cmdline)
-            child_processes.add(process)
-    if recursive:
-        pids = set()
-        for c in child_processes:
-            pids.add(c.pid)
-        for pid in pids:
-            child_processes |= get_child_processes(pid, recursive=recursive)
-    return child_processes
+    cmd = shlex.split('dd if=/dev/zero of={0} bs=1024 count={1}'.format(fpath, kb))
+    subprocess.call(cmd)
 
 
 class ShutdownTests(unittest.TestCase):
@@ -169,19 +109,19 @@ class ShutdownTests(unittest.TestCase):
         self._kill_consumers()
 
     def _delete_tempfiles(self):
-        for tempfile in self._tempfiles:
+        for tf in self._tempfiles:
             try:
-                os.unlink(tempfile)
+                os.unlink(tf)
             except:
                 pass
 
     def _kill_consumers(self):
-        """One is usually left with ppid == 1."""
+        # For testSlowConsumer_releaseObject, one is usually left with ppid == 1.
         for process in self._consumers:
-            process.terminate()
+            process._terminate()
 
     def _testSlowConsumer_releaseObject(self):
-        fpath_data = '/var/tmp/zeros1MiB.16tr'
+        _, fpath_data = tempfile.mkstemp(dir='/var/tmp', prefix='zeros1MiB.', suffix='.16tr', text=True)
         self._tempfiles.append(fpath_data)
         create_zeros_file(fpath_data, kb=1024)
 
@@ -193,18 +133,17 @@ class ShutdownTests(unittest.TestCase):
             file_reader.playback_state = 'PLAY'
             file_readers.append(file_reader)
             consumer = sb.launch('SlowConsumer/SlowConsumer.spd.xml')
+            self._consumers.append(consumer)
             file_reader.connect(consumer, usesPortName='dataShort_out')
 
-        child_processes = get_child_processes(os.getpid(), recursive=True)
-        self._consumers = [p for p in child_processes if 'SlowConsumer' in str(p.cmdline[1])]
         sb.start()
         time.sleep(10)
         for f in file_readers:
             f.releaseObject()
 
     def testSlowConsumer_releaseObject(self):
-        """CCB-1042 FileReader.releaseObject() with busy serviceFunction segfault."""
-        fpath_stdout = '/var/tmp/FileReader.stdout'
+        # CCB-1042 FileReader.releaseObject() with busy serviceFunction segfault.
+        _, fpath_stdout = tempfile.mkstemp(dir='/var/tmp/', prefix='FileReader.', suffix='.stdout', text=True)
         self._tempfiles.append(fpath_stdout)
         sys.stdout = open(fpath_stdout, 'w')
         try:
