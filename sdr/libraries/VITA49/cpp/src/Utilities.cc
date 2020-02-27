@@ -22,7 +22,7 @@
 #include "Utilities.h"
 #include "TimeStamp.h"
 #include "VRTObject.h"
-#include <math.h>     // for fmod(..) [do not use tgmath.h in place of this]
+#include <cmath>     // for fmod(..) [do not use tgmath.h in place of this]
 #include <cctype>     // for toupper(..) and tolower(..)
 #include <algorithm>  // for transform(..)
 #include <ctime>      // for gettimeofday(..) / clock_gettime(..)

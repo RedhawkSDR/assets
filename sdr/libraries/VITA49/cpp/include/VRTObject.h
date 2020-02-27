@@ -24,6 +24,7 @@
 
 #include <cctype>
 #include <climits>
+#include <cmath>    // required for isnan(..)
 #include <exception>
 #include <ostream>
 #include <string>
@@ -35,9 +36,11 @@
 #include <stdio.h>   // required for printf(..) on GCC4.4/libc6 2.11.1
 #include <pthread.h>
 #include <stdlib.h>  // required for free(..) under clang
-#include <math.h>    // required for isnan(..)
 
-#define __STDC_LIMIT_MACROS  1 /* Required to include the __INT64_C(..) macro in stdint.h */
+// This #ifndef guard is needed to compile with -std=c++11.
+#ifndef __STDC_LIMIT_MACROS
+#  define __STDC_LIMIT_MACROS  1 /* Required to include the __INT64_C(..) macro in stdint.h */
+#endif
 #define __STDC_FORMAT_MACROS 1 /* Required to include the PRI?64 constants in inttypes.h */
 #include <stdint.h>
 #include <inttypes.h>
@@ -664,12 +667,12 @@ namespace vrt {
    *  simple <tt>if (val == FLOAT_NAN)</tt> check is invalid since an equality check will always
    *  return false if either value is NaN.
    */
-  inline bool isNull (float            val) { return isnan(val); }
+  inline bool isNull (float            val) { return std::isnan(val); }
   /** Checks to see if a 64-bit floating-point value matches <tt>DOUBLE_NAN</tt>. Note that a
    *  simple <tt>if (val == FLOAT_NAN)</tt> check is invalid since an equality check will always
    *  return false if either value is NaN.
    */
-  inline bool isNull (double           val) { return isnan(val); }
+  inline bool isNull (double           val) { return std::isnan(val); }
 
 #if NOT_USING_JNI
   /** Checks to see if a {@link VRTObject} value is null.
