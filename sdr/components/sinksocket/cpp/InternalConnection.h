@@ -38,45 +38,45 @@ typedef std::map<unsigned short, QuickStats *> portStatsMap;
  * an object of this type's current status
  */
 class InternalConnection {
-	ENABLE_LOGGING
+    ENABLE_LOGGING
 public:
-	InternalConnection();
-	InternalConnection(const Connection_struct &connection);
-	virtual ~InternalConnection();
+    InternalConnection();
+    InternalConnection(const Connection_struct &connection);
+    virtual ~InternalConnection();
 
 private:
-	/* Make the copy constructor private so that it
-	 * can't be called by anyone else.  The internal
-	 * pointers require move semantics as opposed to
-	 * copy semantics
-	 */
-	InternalConnection(const InternalConnection &copy);
+    /* Make the copy constructor private so that it
+     * can't be called by anyone else.  The internal
+     * pointers require move semantics as opposed to
+     * copy semantics
+     */
+    InternalConnection(const InternalConnection &copy);
 
 public:
-	std::vector<unsigned short> getByteSwaps() const;
+    std::vector<unsigned short> getByteSwaps() const;
 
-	bool operator==(const Connection_struct &connection) const;
-	std::vector<ConnectionStat_struct> setConnection(const Connection_struct &connection);
+    bool operator==(const Connection_struct &connection) const;
+    std::vector<ConnectionStat_struct> setConnection(const Connection_struct &connection);
 
-	template <typename T, typename U>
-	std::vector<ConnectionStat_struct> write(std::vector<T, U> &data);
+    template <typename T, typename U>
+    std::vector<ConnectionStat_struct> write(std::vector<T, U> &data);
 
-	std::vector<ConnectionStat_struct> writeByteSwap(std::map<unsigned short, std::vector<char> > &dataMap);
-
-private:
-	void cleanUp();
-	ConnectionStat_struct createClientConnection(const unsigned short &port, const std::string &ip);
-	ConnectionStat_struct createServerConnection(const unsigned short &port);
-	std::vector<ConnectionStat_struct> populateClientMap(const Connection_struct &connection);
-	std::vector<ConnectionStat_struct> populateServerMap(const Connection_struct &connection);
+    std::vector<ConnectionStat_struct> writeByteSwap(std::map<unsigned short, std::vector<char> > &dataMap);
 
 private:
-	portStatsMap bytesPerSec;
-	portByteSwapMap byteSwaps;
-	portBytesMap bytesSent;
-	portClientMap *clients;
-	Connection_struct connectionInfo;
-	portServerMap *servers;
+    void cleanUp();
+    ConnectionStat_struct createClientConnection(const unsigned short &port, const std::string &ip, bool tcp_nodelay);
+    ConnectionStat_struct createServerConnection(const unsigned short &port, bool tcp_nodelay);
+    std::vector<ConnectionStat_struct> populateClientMap(const Connection_struct &connection);
+    std::vector<ConnectionStat_struct> populateServerMap(const Connection_struct &connection);
+
+private:
+    portStatsMap bytesPerSec;
+    portByteSwapMap byteSwaps;
+    portBytesMap bytesSent;
+    portClientMap *clients;
+    Connection_struct connectionInfo;
+    portServerMap *servers;
 };
 
 #include "InternalConnectionTemplate.h"

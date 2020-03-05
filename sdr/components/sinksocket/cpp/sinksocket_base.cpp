@@ -1,19 +1,21 @@
 /*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
- * source distribution.
- * 
- * This file is part of REDHAWK Basic Components sinksocket.
- * 
- * REDHAWK Basic Components sinksocket is free software: you can redistribute it and/or modify it under the terms of 
- * the GNU Lesser General Public License as published by the Free Software Foundation, either 
- * version 3 of the License, or (at your option) any later version.
- * 
- * REDHAWK Basic Components sinksocket is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
- * without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
- * PURPOSE.  See the GNU Lesser General Public License for more details.
- * 
- * You should have received a copy of the GNU Lesser General Public License along with this 
- * program.  If not, see http://www.gnu.org/licenses/.
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
+ * distributed with this source distribution.
+ *
+ * This file is part of REDHAWK.
+ *
+ * REDHAWK is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
+ *
+ * REDHAWK is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
 
 #include "sinksocket_base.h"
@@ -32,43 +34,53 @@ sinksocket_base::sinksocket_base(const char *uuid, const char *label) :
     Component(uuid, label),
     ThreadedComponent()
 {
+    setThreadName(label);
+
     loadProperties();
 
     dataOctet_in = new bulkio::InOctetPort("dataOctet_in");
-    addPort("dataOctet_in", "Octet port for input data. ", dataOctet_in);
+    dataOctet_in->setLogger(this->_baseLog->getChildLogger("dataOctet_in", "ports"));
+    addPort("dataOctet_in", "Octet port for input data.", dataOctet_in);
     dataChar_in = new bulkio::InCharPort("dataChar_in");
-    addPort("dataChar_in", "Char port for input data. ", dataChar_in);
+    dataChar_in->setLogger(this->_baseLog->getChildLogger("dataChar_in", "ports"));
+    addPort("dataChar_in", "Char port for input data.", dataChar_in);
     dataShort_in = new bulkio::InShortPort("dataShort_in");
-    addPort("dataShort_in", "Short port for input data. ", dataShort_in);
+    dataShort_in->setLogger(this->_baseLog->getChildLogger("dataShort_in", "ports"));
+    addPort("dataShort_in", "Short port for input data.", dataShort_in);
     dataUshort_in = new bulkio::InUShortPort("dataUshort_in");
-    addPort("dataUshort_in", "Unsigned short port for input data. ", dataUshort_in);
+    dataUshort_in->setLogger(this->_baseLog->getChildLogger("dataUshort_in", "ports"));
+    addPort("dataUshort_in", "Unsigned short port for input data.", dataUshort_in);
     dataLong_in = new bulkio::InLongPort("dataLong_in");
-    addPort("dataLong_in", "Long port for input data. ", dataLong_in);
+    dataLong_in->setLogger(this->_baseLog->getChildLogger("dataLong_in", "ports"));
+    addPort("dataLong_in", "Long port for input data.", dataLong_in);
     dataUlong_in = new bulkio::InULongPort("dataUlong_in");
-    addPort("dataUlong_in", "Unsigned long port for input data. ", dataUlong_in);
+    dataUlong_in->setLogger(this->_baseLog->getChildLogger("dataUlong_in", "ports"));
+    addPort("dataUlong_in", "Unsigned long port for input data.", dataUlong_in);
     dataFloat_in = new bulkio::InFloatPort("dataFloat_in");
-    addPort("dataFloat_in", "Float port for input data. ", dataFloat_in);
+    dataFloat_in->setLogger(this->_baseLog->getChildLogger("dataFloat_in", "ports"));
+    addPort("dataFloat_in", "Float port for input data.", dataFloat_in);
     dataDouble_in = new bulkio::InDoublePort("dataDouble_in");
-    addPort("dataDouble_in", "Double port for input data. ", dataDouble_in);
+    dataDouble_in->setLogger(this->_baseLog->getChildLogger("dataDouble_in", "ports"));
+    addPort("dataDouble_in", "Double port for input data.", dataDouble_in);
 }
 
 sinksocket_base::~sinksocket_base()
 {
-    delete dataOctet_in;
+    dataOctet_in->_remove_ref();
     dataOctet_in = 0;
-    delete dataChar_in;
+    dataChar_in->_remove_ref();
     dataChar_in = 0;
-    delete dataShort_in;
+    dataShort_in->_remove_ref();
     dataShort_in = 0;
-    delete dataUshort_in;
+    dataUshort_in->_remove_ref();
     dataUshort_in = 0;
-    delete dataLong_in;
+    dataLong_in->_remove_ref();
     dataLong_in = 0;
-    delete dataUlong_in;
+    dataUlong_in->_remove_ref();
     dataUlong_in = 0;
-    delete dataFloat_in;
+    dataFloat_in->_remove_ref();
     dataFloat_in = 0;
-    delete dataDouble_in;
+    dataDouble_in->_remove_ref();
     dataDouble_in = 0;
 }
 
@@ -139,5 +151,6 @@ void sinksocket_base::loadProperties()
                 "property");
 
 }
+
 
 

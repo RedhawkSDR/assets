@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 
-This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
-source distribution.
+<!--
+This file is protected by Copyright. Please refer to the COPYRIGHT file
+distributed with this source distribution.
 
-This file is part of REDHAWK Basic Components sinksocket.
+This file is part of REDHAWK.
 
-REDHAWK Basic Components sinksocket is free software: you can redistribute it and/or modify it under the terms of 
-the GNU Lesser General Public License as published by the Free Software Foundation, either 
-version 3 of the License, or (at your option) any later version.
+REDHAWK is free software: you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your option)
+any later version.
 
-REDHAWK Basic Components sinksocket is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
-without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
-PURPOSE.  See the GNU Lesser General Public License for more details.
+REDHAWK is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
+for more details.
 
-You should have received a copy of the GNU Lesser General Public License along with this 
-program.  If not, see http://www.gnu.org/licenses/.
+You should have received a copy of the GNU Lesser General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
 <!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
 <properties>
@@ -61,6 +63,12 @@ Otherwise data will be swapped according to this value
         <description>Ports to listen on for server mode, or ports to connect to for client mode.</description>
         <values>
           <value>32191</value>
+        </values>
+      </simplesequence>
+      <simplesequence id="Connections::tcp_nodelays" name="tcp_nodelays" type="boolean">
+        <description>Disable Nagle's algorithm for combining TCP packets.</description>
+        <values>
+          <value>false</value>
         </values>
       </simplesequence>
     </struct>
