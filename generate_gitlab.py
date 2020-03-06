@@ -82,6 +82,7 @@ test_template_add = """  only:
 deploy_template = """deploy-__DIST____V__-__SHORT_V__:__ASSET_NAME__:
   variables:
     dist: __DIST__
+__NAMESPACE__
     asset_name: __ASSET_NAME__
     lowercase_asset_name: __ASSET_LC_NAME__
   dependencies:
@@ -163,7 +164,10 @@ def replace_deploy_template(os_version, rh_version, comp_name, base_library=Fals
 
     if base_library:
         retval = retval.replace('package', 'base_package')
-
+    if comp_name == "RX_Digitizer_Sim":
+        retval = retval.replace('__NAMESPACE__\n', '    namespace: ""\n')
+    else:
+        retval = retval.replace('__NAMESPACE__\n', '')
     if '32' in os_version:
         retval = retval.replace('__V__', ':32')
     else:
