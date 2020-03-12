@@ -357,7 +357,7 @@ double TimeStamp::getDoubleSeconds (double sr) const {
 }
 
 double TimeStamp::getDoubleSeconds () const {
-  if (isnan(sr) && tsfMode == FractionalMode_SampleCount) {
+  if (std::isnan(sr) && tsfMode == FractionalMode_SampleCount) {
     throw VRTException("Cannot compute double seconds from SampleCount without sampling rate.");
   }
   return getDoubleSeconds(sr);
