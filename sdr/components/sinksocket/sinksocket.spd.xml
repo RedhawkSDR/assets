@@ -19,7 +19,7 @@ for more details.
 You should have received a copy of the GNU Lesser General Public License
 along with this program.  If not, see http://www.gnu.org/licenses/.
 -->
-<softpkg id="DCE:c811d8ae-16d3-11e5-aedc-3417ebc4aab5" name="rh.sinksocket" type="2.0.0" version="2.0.2">
+<softpkg id="DCE:c811d8ae-16d3-11e5-aedc-3417ebc4aab5" name="rh.sinksocket" type="2.0.0" version="2.1.0">
   <title></title>
   <author>
     <name>null</name>
