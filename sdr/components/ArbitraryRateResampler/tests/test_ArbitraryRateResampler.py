@@ -446,7 +446,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.validateSRIPushing(streamName, self.comp.outputRate, True)
 
     def testChangeA(self):
-        """ change the parameter "a" and verify the componet functions properly
+        """ change the parameter "a" and verify the component functions properly
         """
         inputRate =500 
         self.comp.outputRate=16123.45
@@ -471,7 +471,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.validateSRIPushing(streamName, self.comp.outputRate, False)
 
     def testChangeQuantization(self):
-        """ change the parameter "quantization" and verify the componet functions properly
+        """ change the parameter "quantization" and verify the component functions properly
         """
         inputRate =500 
         self.comp.outputRate=16123.45
@@ -494,7 +494,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.validateSRIPushing(streamName, self.comp.outputRate, False)
 
     def testChangeOutputRate(self):
-        """ change the parameter "outputRate" and verify the componet functions properly
+        """ change the parameter "outputRate" and verify the component functions properly
         """
         inputRate =500 
         self.comp.outputRate=16123.45
