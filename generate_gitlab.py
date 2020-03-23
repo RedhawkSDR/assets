@@ -153,7 +153,6 @@ def replace_deploy_template(os_version, rh_version, comp_name, base_library=Fals
 
     if base_library:
         retval = retval.replace('package', 'base_package')
-
     if '32' in os_version:
         retval = retval.replace('__V__', ':32')
     else:
