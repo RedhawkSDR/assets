@@ -62,27 +62,27 @@ FileReader_base::FileReader_base(const char *uuid, const char *label) :
 
 FileReader_base::~FileReader_base()
 {
-    delete dataChar_out;
+    dataChar_out->_remove_ref();
     dataChar_out = 0;
-    delete dataDouble_out;
+    dataDouble_out->_remove_ref();
     dataDouble_out = 0;
-    delete dataFloat_out;
+    dataFloat_out->_remove_ref();
     dataFloat_out = 0;
-    delete dataLong_out;
+    dataLong_out->_remove_ref();
     dataLong_out = 0;
-    delete dataLongLong_out;
+    dataLongLong_out->_remove_ref();
     dataLongLong_out = 0;
-    delete dataOctet_out;
+    dataOctet_out->_remove_ref();
     dataOctet_out = 0;
-    delete dataShort_out;
+    dataShort_out->_remove_ref();
     dataShort_out = 0;
-    delete dataUlong_out;
+    dataUlong_out->_remove_ref();
     dataUlong_out = 0;
-    delete dataUlongLong_out;
+    dataUlongLong_out->_remove_ref();
     dataUlongLong_out = 0;
-    delete dataUshort_out;
+    dataUshort_out->_remove_ref();
     dataUshort_out = 0;
-    delete dataXML_out;
+    dataXML_out->_remove_ref();
     dataXML_out = 0;
 }
 

@@ -17,21 +17,28 @@
 # program.  If not, see http://www.gnu.org/licenses/.
 #
 
-import ossie.utils.testing
-from ossie.cf import CF
-import os, sys, subprocess
-from omniORB import any
-import time
-from ossie.utils import sb
-import struct
-import random
 from math import isnan
-from ossie.properties import props_from_dict, props_to_dict
-from ossie.utils.bluefile import bluefile, bluefile_helpers
+import os
+import random
+import re
+import shlex
+import struct
+import subprocess
+import sys
+import tempfile
+import time
+import unittest
+
+import bulkio
 from bulkio.bulkioInterfaces import BULKIO__POA
 from bulkio.sri import create as createSri
 from bulkio.timestamp import create as createTs
-import bulkio
+from omniORB import any
+from ossie.cf import CF
+from ossie.properties import props_from_dict, props_to_dict
+from ossie.utils import sb
+from ossie.utils.bluefile import bluefile, bluefile_helpers
+import ossie.utils.testing
 
 DEBUG_LEVEL = 3
 
@@ -80,6 +87,74 @@ def swap(data, dataType):
     dataStr = toStr(data, dataType)
     strFlip = flip(dataStr, dataType)
     return fromStr(strFlip, dataType)
+ 
+def is_regexp_in_file_lines(fpath, regexp):
+    lines = open(fpath).readlines()  # let it raise
+    for line in lines:
+        if re.search(regexp, line):
+            return True
+
+def create_zeros_file(fpath, kb=1):
+    cmd = shlex.split('dd if=/dev/zero of={0} bs=1024 count={1}'.format(fpath, kb))
+    subprocess.call(cmd)
+
+
+class ShutdownTests(unittest.TestCase):
+    def setUp(self):
+        self._tempfiles = []
+        self._consumers = []
+
+    def tearDown(self):
+        self._delete_tempfiles()
+        self._kill_consumers()
+
+    def _delete_tempfiles(self):
+        for tf in self._tempfiles:
+            try:
+                os.unlink(tf)
+            except:
+                pass
+
+    def _kill_consumers(self):
+        # For testSlowConsumer_releaseObject, one is usually left with ppid == 1.
+        for process in self._consumers:
+            process._terminate()
+
+    def _testSlowConsumer_releaseObject(self):
+        _, fpath_data = tempfile.mkstemp(dir='/var/tmp', prefix='zeros1MiB.', suffix='.16tr', text=True)
+        self._tempfiles.append(fpath_data)
+        create_zeros_file(fpath_data, kb=1024)
+
+        file_readers = []
+        for _ in range(3):
+            file_reader = sb.launch('../FileReader.spd.xml', properties={'DEBUG_LEVEL': 2})
+            file_reader.advanced_properties.looping = True
+            file_reader.source_uri = fpath_data
+            file_reader.playback_state = 'PLAY'
+            file_readers.append(file_reader)
+            consumer = sb.launch('SlowConsumer/SlowConsumer.spd.xml')
+            self._consumers.append(consumer)
+            file_reader.connect(consumer, usesPortName='dataShort_out')
+
+        sb.start()
+        time.sleep(10)
+        for f in file_readers:
+            f.releaseObject()
+
+    def testSlowConsumer_releaseObject(self):
+        # CCB-1042 FileReader.releaseObject() with busy serviceFunction segfault.
+        _, fpath_stdout = tempfile.mkstemp(dir='/var/tmp/', prefix='FileReader.', suffix='.stdout', text=True)
+        self._tempfiles.append(fpath_stdout)
+        sys.stdout = open(fpath_stdout, 'w')
+        try:
+            self._testSlowConsumer_releaseObject()
+        finally:
+            sys.stdout = sys.__stdout__
+
+        regexp = r'terminated with signal 11'
+        segfault_occurred = is_regexp_in_file_lines(fpath_stdout, regexp)
+        self.assertFalse(segfault_occurred)
+
 
 class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     """Test for all resource implementations in FileReader"""
