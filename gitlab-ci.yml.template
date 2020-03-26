@@ -147,6 +147,7 @@ before_script:
     - if [ -d cpp ] && [ "${dist}" == "el7" ]; then
         export CXXFLAGS='-g -Og -fprofile-arcs -ftest-coverage' V=1;
       fi
+    - yum install --nogpgcheck -y redhawk-sdrroot-dom-mgr
     - ./build.sh
     - IFS='/'; currdir=("$(pwd)")
     - arr=($currdir)
