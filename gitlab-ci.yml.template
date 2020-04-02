@@ -38,8 +38,6 @@ before_script:
     - redhawk_repo=$s3_repo_url/redhawk/cf-and-deps/yum/__REDHAWK_VERSION__/$dist/$arch
     - rtl_repo=$s3_repo_url/redhawk-dependencies/librtlsdr/yum/0.5.2/$dist/$arch
     - librf_repo=$s3_repo_url/redhawk-dependencies/libRfSimulators/yum/develop/$dist/$arch
-    #- uhd_repo=$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch # el6
-    #- uhd_repo=$s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch # el7
     - asset_repo=$s3_repo_url/redhawk/assets/yum/$redhawk_version/$dist/$arch
 
 .create_local_repo: &create_local_repo
