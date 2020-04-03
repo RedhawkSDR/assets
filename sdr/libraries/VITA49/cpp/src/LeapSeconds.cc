@@ -34,7 +34,7 @@ using namespace vrt;
 LeapSeconds* LeapSeconds::defaultInstance = NULL;
 
 static const size_t  PRE_1972_LENGTH    = 13;
-static const size_t  FIRST_LINES_LENGTH = 40;
+static const size_t  FIRST_LINES_LENGTH = 41;
 
 /** Day In Month map. Maps the day-of-year to the month that day falls in.
  *  <pre>
@@ -112,6 +112,7 @@ static const char FIRST_LINES[FIRST_LINES_LENGTH][128] = {
     " 2009 JAN  1 =JD 2454832.5  TAI-UTC=  34.0       S + (MJD - 41317.) X 0.0      S", // 37
     " 2012 JUL  1 =JD 2456109.5  TAI-UTC=  35.0       S + (MJD - 41317.) X 0.0      S", // 38
     " 2015 JUL  1 =JD 2457204.5  TAI-UTC=  36.0       S + (MJD - 41317.) X 0.0      S", // 39
+    " 2017 JAN  1 =JD 2457754.5  TAI-UTC=  37.0       S + (MJD - 41317.) X 0.0      S", // 40
 };
 
 int32_t LeapSeconds::ymdToGpsDay (int32_t year, int32_t month, int32_t day) {
