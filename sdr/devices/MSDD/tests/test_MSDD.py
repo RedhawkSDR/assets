@@ -31,9 +31,10 @@ from ossie.utils import uuid
 from ossie import properties
 import time
 import frontend
+import traceback
 
 DEBUG_LEVEL = 3
-IP_ADDRESS='192.168.11.97'
+IP_ADDRESS='192.168.11.2'
 INTERFACE='em3'
 
 def get_debug_level( debug ):
@@ -656,19 +657,140 @@ class RFInfoTest(ossie.utils.testing.RHTestCase):
         self.assertEqual( kws["FRONTEND::RF_FLOW_ID"] , flow_id, "Missing RF_FLOW_ID from keyword list")
 
 
+class IPPInterfaceTest(ossie.utils.testing.RHTestCase):
+    # Path to the SPD file, relative to this file. This must be set in order to
+    # launch the device.
+    SPD_FILE = '../MSDD.spd.xml'
+
+    def setUp(self):
+
+        # reset device
+        subprocess.call(['./reset_msdd', IP_ADDRESS])
+
+        try:
+            self.alloc_params = getAllocationParams(IP_ADDRESS)
+        except Exception, e:
+                self.fail("Unable to identify MSDD, " + str(IP_ADDRESS) + " reason:" + str(e))
+
+	import sys
+	sys.path.append('../python')
+	import msddcontroller
+	msdd=msddcontroller.MSDDRadio(IP_ADDRESS,23)
+        omsg="Does not report"
+	if '170314' in msdd.console.filename_app:
+                omsg= "reports "
+        msg="*** Application firmware: " + \
+                msdd.console.filename_app + \
+                " Output Module: "+omsg+ " interface numbers ***"
+        print>>sys.stderr, "\n",msg
+
+
+        self.alloc1=None
+        self.alloc2=None
+        configure = {
+                "DEBUG_LEVEL": DEBUG_LEVEL, 
+                "msdd_configuration" : { 
+                    "msdd_configuration::msdd_ip_address" : IP_ADDRESS,
+                     "msdd_configuration::msdd_port":"23"
+                },
+                "advanced":{
+                        "advanced::udp_timeout" : 0.10,
+                     },
+                "msdd_output_configuration": [{
+                     "msdd_output_configuration::tuner_number":0,
+                     "msdd_output_configuration::protocol":"UDP_SDDS",
+                     "msdd_output_configuration::ip_address":"239.1.1.1",
+                     "msdd_output_configuration::port":29000,
+                     "msdd_output_configuration::vlan":0,
+                     "msdd_output_configuration::enabled":True,
+                     "msdd_output_configuration::timestamp_offset":0,
+                     "msdd_output_configuration::endianess":1,
+                     "msdd_output_configuration::mfp_flush":63,
+                     "msdd_output_configuration::vlan_enable": False                        
+                     },
+                                      {
+                     "msdd_output_configuration::tuner_number":1,
+                     "msdd_output_configuration::protocol":"UDP_SDDS",
+                     "msdd_output_configuration::ip_address":"239.1.1.2",
+                     "msdd_output_configuration::port":29001,
+                     "msdd_output_configuration::vlan":0,
+                     "msdd_output_configuration::enabled":True,
+                     "msdd_output_configuration::timestamp_offset":0,
+                     "msdd_output_configuration::endianess":1,
+                     "msdd_output_configuration::mfp_flush":63,
+                     "msdd_output_configuration::vlan_enable": False                        
+                     }]
+                }
+    
+        self.comp = sb.launch(self.spd_file, impl=self.impl,properties=configure)
+
+    
+    def tearDown(self):
+        try:
+           if self.alloc1:
+              self.comp.deallocateCapacity(alloc1)
+	except:
+		pass
+        try:
+           if self.alloc2:
+              self.comp.deallocateCapacity(alloc2)
+	except:
+		pass
+        # Clean up all sandbox artifacts created during test
+        sb.release()
+
+
+    def testTunerStatus(self):
+
+       self.alloc1=frontend.createTunerAllocation(tuner_type="RX_DIGITIZER_CHANNELIZER", 
+                                            center_frequency=100e6, 
+                                            sample_rate=self.alloc_params['wbddc_srate'],
+                                            sample_rate_tolerance=100.0)
+       ret=self.comp.allocateCapacity(self.alloc1)
+       self.assertTrue(ret)
+       alloc1_aid =  self.alloc1["FRONTEND::tuner_allocation"]["FRONTEND::tuner_allocation::allocation_id"]
+
+       expected=True
+       actual=self.comp.frontend_tuner_status[0].enabled
+       self.assertEqual(expected,actual, "Tuner status enabled failed")
+
+       expected=True
+       actual=self.comp.frontend_tuner_status[0].output_enabled
+       self.assertEqual(expected,actual, "Tuner status output enabled failed")
+
+       sink=sb.StreamSink()
+       sdds_in=sb.launch('rh.SourceSDDS',  properties={'interface': INTERFACE})
+       sb.start()
+       self.comp.connect(sdds_in, connectionId=alloc1_aid, usesPortName='dataSDDS_out')
+       sdds_in.connect(sink, usesPortName="dataShortOut")
+
+       sink_data=None
+       try:
+               sink_data=sink.read(timeout=1.0)
+       except:
+            pass
+       self.assertNotEqual( None, sink_data, "MSDD did not produce data for allocation")
+       self.assertNotEqual( 0, len(sink_data.data), "MSDD did not produce data for allocation")
+
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--ip', default="192.168.103.250", help="ip address of msdd")
+    parser.add_argument('--ip', default="192.168.11.2", help="ip address of msdd")
     parser.add_argument('--iface', default="em3", help="local host interface for reading data from msdd")
     parser.add_argument('--debug', default='info', help="debug level, fatal, error, warn, info, debug, trace" )
-    parser.add_argument('unittest_args', nargs='*', help='remaining arguments for unittest control')
 
-    args = parser.parse_args()
-    IP_ADDRESS=args.ip
-    DEBUG_LEVEL=get_debug_level(args.debug)
-    INTERFACE=args.iface
+    try:
+        args, remaining_args = parser.parse_known_args()
+        IP_ADDRESS=args.ip
+        DEBUG_LEVEL=get_debug_level(args.debug)
+        INTERFACE=args.iface
+    except SystemExit:
+        raise SystemExit
+    except:
+        traceback.print_exc()
+        pass
 
-    sys.argv[1:] = args.unittest_args
+    sys.argv[1:] = remaining_args
     ossie.utils.testing.main() # By default tests all implementations
 

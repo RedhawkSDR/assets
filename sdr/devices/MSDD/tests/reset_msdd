@@ -2,11 +2,7 @@
 
 import sys
 import time
-try:
-    from msddcontroller import *
-except:
-    sys.path += [ '../python' ]
-    from msddcontroller import *
+from msdd_connection import *
 
 c=Connection((sys.argv[1],23))
 

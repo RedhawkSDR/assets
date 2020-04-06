@@ -290,11 +290,11 @@ class Connection(object):
             except_msg="Socket timed out receiving echo from radio for command: " + _cmd
 
             self.radioSocket.sendto(command, self.radioAddress)
-      
-        #The following lines were added to avoid a condition where the radio will reset back to turning Echo On and messing up
-        # It has to do with additional clients hitting the radio externally, which re-use connections (0-15) on the radio
-        # When the current connection is the last on the list, it gets reallocated to the new connection, and the device gets
-        # a new connection when it tries to send data, but the echo is turned back on on the new socket
+
+            #The following lines were added to avoid a condition where the radio will reset back to turning Echo On and messing up
+            # It has to do with additional clients hitting the radio externally, which re-use connections (0-15) on the radio
+            # When the current connection is the last on the list, it gets reallocated to the new connection, and the device gets
+            # a new connection when it tries to send data, but the echo is turned back on on the new socket
             _expect_output=True
             echoMsg = self.radioSocket.recv(65535)
             if self._debug:
@@ -2729,7 +2729,7 @@ class OUTModule(baseModule):
         try:
             response = self.parseResponse(resp, 2,':')
         except:
-            response = self.parseResponse(resp, 3,':')[-2:]
+            response = self.parseResponse(resp, 3,':')
         return response
     
     def getIPPString(self):
@@ -2740,7 +2740,7 @@ class OUTModule(baseModule):
     def getIPP_Interface(self):
         resp=self.getIPP()
         try:
-            ret=resp[-3]
+            ret=int(resp[-3])
         except:
             ret=0
         return ret

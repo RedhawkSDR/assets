@@ -4,12 +4,7 @@ import sys
 import time
 import traceback
 import re
-try:
-    from msddcontroller import *
-except:
-    # add relative path when executing from source directory
-    sys.path += [ '../python' ]
-    from msddcontroller import *
+from msdd_connection import *
 
 def id_msdd( ip_addr):
     # create connection to msdd device
