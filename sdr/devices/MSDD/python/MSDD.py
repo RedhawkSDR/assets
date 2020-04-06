@@ -771,7 +771,7 @@ class MSDD_i(MSDD_base):
                 host_rollover = now
             if not tod_rollover and int(tod_time) > int(tod_time_orig):
                 tod_rollover = now
-            if time.time() - host_time_orig > time_limit:
+            if now - host_time_orig > time_limit:
                 self._log.error('failure reading host and device time of day')
                 break
         # Consider a pair of rollover events to be when both the host and the tod rollover
@@ -784,9 +784,14 @@ class MSDD_i(MSDD_base):
             else:  # The tod rolls over last in the pair.
                 time.sleep(time.time() - tod_rollover)
         time.sleep(0.01)  # Wait just a little before writing.
+        # 2020-03 email from MMS:
+        #     "TOD SET <time in seconds>  must be delivered at least 150ms
+        #      prior to the next rising edge of the 1PPS at the receiver input."
+        # At this point, we should always be > 0.5s before 1PPS = tod_rollover.
         # The truncated time is set at the next whole second, so add 1 second.
         tod.time = self.get_time() + 1
-        time.sleep(1)  # wait to latch the time
+        # 2020-03 email from MMS:  "Must wait 2 seconds after transfer for valid time."
+        time.sleep(2)
 
     def msdd_time_of_day_configuration_changed(self,propid, oldval, newval):
         if self.skip_msdd_time_of_day_configuration_changed:
@@ -870,9 +875,12 @@ class MSDD_i(MSDD_base):
             return     
 
     def process(self):
-        self.check_tod_bit()
-        self.update_msdd_status_tod_host_delta()
-        self.update_msdd_status_ntp_running()
+        try:
+            self.check_tod_bit()
+            self.update_msdd_status_tod_host_delta()
+            self.update_msdd_status_ntp_running()
+        except Exception as e:
+            self._log.warn('Caught exception:\n{0}'.format(e))
         return NOOP   
 
     def range_check(self, req_cf, req_bw, req_bw_tol, req_sr, req_sr_tol , cur_cf, cur_bw, cur_sr):
