@@ -364,7 +364,7 @@ class MSDD_i(MSDD_base):
         if self.MSDD != None:
             valid_ip = False
             for nw_module in self.MSDD.network_modules:
-                if  self.msdd_configuration.msdd_ip_address == nw_module.object.ip_addr: 
+                if  self.msdd_configuration.msdd_ip_address == nw_module.object.ip_address: 
                     valid_ip = True
                     break
             if not valid_ip:
@@ -381,11 +381,16 @@ class MSDD_i(MSDD_base):
                                       enable_secondary_tuners=self.advanced.enable_secondary_tuners,
                                       enable_fft_channels=self.advanced.enable_fft_channels)
 
+                
+                rate_failure = None
                 for net_mods in self.MSDD.network_modules:
                     connected_rate = net_mods.object.bit_rate
                     if connected_rate < self.advanced.minimum_connected_nic_rate:
-                        self._log.error("MSDD connection rate of " + str(connected_rate) + " Mbps which does not meet minimum rate check, " + str(self.advanced.minimum_connected_nic_rate) + " Mbps")
-                        raise Exception("MSDD connection rate check failure")
+                        rate_failure = connected_rate
+
+                if rate_failure:
+                    self._log.warn("MSDD connection rate of " + str(rate_failure) + " Mbps which does not meet minimum rate check, " + str(self.advanced.minimum_connected_nic_rate) + " Mbps")
+                    raise Exception("MSDD connection rate check failure")
 
                 self.msdd_console = self.MSDD.console
                 self.update_msdd_status()
@@ -1577,7 +1582,8 @@ class MSDD_i(MSDD_base):
             self._log.debug("enableDigitalOutput, tuner " + str(tuner_num) + " output context: "
                             " protocol " + self.tuner_output_configuration[tuner_num].protocol +
                             " ip-addr/port/vlan " + self.tuner_output_configuration[tuner_num].ip_address + "/" +
-                            str(self.tuner_output_configuration[tuner_num].port) )
+                            str(self.tuner_output_configuration[tuner_num].port)+ "/" +
+                            str(self.tuner_output_configuration[tuner_num].vlan_tci) )
 
             outcfg_enabled=self.tuner_output_configuration[tuner_num].enabled
             if outcfg_enabled:

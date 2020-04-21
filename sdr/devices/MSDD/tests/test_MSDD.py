@@ -69,30 +69,38 @@ def getAllocationParams( ip_address ):
 
 	# wbddc and nbddc settings for fgpa loads
         if "vr1a" in msdd_id:
-            alloc_params = { 'wbddc_bw' : 20e6,
+            alloc_params = { 'wbddc_tuner' : 0,
+                             'wbddc_bw' : 20e6,
                              'wbddc_srate' : 25e6,
                              'wbddc_enable' : False,
+                             'nbddc_tuner' : 1,
                              'nbddc_bw' : 3.125e6,
                              'nbddc_srate' : 1.526e6,
             }
         elif "32n512b40" in msdd_id:
-            alloc_params = { 'wbddc_bw' : 20e6,
+            alloc_params = { 'wbddc_tuner' : 0,
+                             'wbddc_bw' : 20e6,
                              'wbddc_srate' : 24.576e6,
                              'wbddc_enable' : False,
+                             'nbddc_tuner' : 1,
                              'nbddc_bw' : 42e3,
                              'nbddc_srate' : 48e3,
             }
         elif "5n5b1300" in msdd_id:
-            alloc_params = { 'wbddc_bw' : 20e6,
+            alloc_params = { 'wbddc_tuner' : 0,
+                             'wbddc_bw' : 20e6,
                              'wbddc_srate' : 24.576e6,
                              'wbddc_enable' : False,
+                             'nbddc_tuner' : 1,
                              'nbddc_bw' : 1.5e6,
                              'nbddc_srate' : 4.9125e6,
             }
         elif "1w0n0b0" in msdd_id:
-            alloc_params = { 'wbddc_bw' : 20e6,
+            alloc_params = { 'wbddc_tuner' : 0,
+                             'wbddc_bw' : 20e6,
                              'wbddc_srate' : 24.576e6,
                              'wbddc_enable' : True,
+                             'nbddc_tuner' : None,
                              'nbddc_bw' : None,
                              'nbddc_srate' : None,
             }
@@ -154,7 +162,7 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
                         "advanced::enable_fft_channels" : True
                      },
                 "msdd_output_configuration": [{
-                     "msdd_output_configuration::tuner_number":0,
+                     "msdd_output_configuration::tuner_number": self.alloc_params['wbddc_tuner'],
                      "msdd_output_configuration::protocol":"UDP_SDDS",
                      "msdd_output_configuration::ip_address":"234.168.103.100",
                      "msdd_output_configuration::port":0,
@@ -301,7 +309,7 @@ class MsddDeviceTests(ossie.utils.testing.RHTestCase):
                 "msdd_configuration" : { "msdd_configuration::msdd_ip_address" :  IP_ADDRESS },
                 "msdd_output_configuration": [
                         {
-                             "msdd_output_configuration::tuner_number":0,
+                             "msdd_output_configuration::tuner_number": self.alloc_params['wbddc_tuner'],
                              "msdd_output_configuration::protocol":"UDP_SDDS",
                              "msdd_output_configuration::ip_address":"234.168.103.100",
                              "msdd_output_configuration::port":0,
@@ -313,7 +321,7 @@ class MsddDeviceTests(ossie.utils.testing.RHTestCase):
                              "msdd_output_configuration::vlan_enable": False                        
                              },
                         {
-                                "msdd_output_configuration::tuner_number":1,
+                                "msdd_output_configuration::tuner_number":self.alloc_params['nbddc_tuner'],
                              "msdd_output_configuration::protocol":"UDP_SDDS",
                              "msdd_output_configuration::ip_address":"234.168.103.100",
                              "msdd_output_configuration::port":1,
@@ -465,7 +473,7 @@ class RFInfoTest(ossie.utils.testing.RHTestCase):
                 "DEBUG_LEVEL": DEBUG_LEVEL, 
                 "msdd_configuration" : { "msdd_configuration::msdd_ip_address" : IP_ADDRESS },
                 "msdd_output_configuration": [{
-                     "msdd_output_configuration::tuner_number":0,
+                     "msdd_output_configuration::tuner_number": self.alloc_params['wbddc_tuner'],
                      "msdd_output_configuration::protocol":"UDP_SDDS",
                      "msdd_output_configuration::ip_address":"239.1.1.1",
                      "msdd_output_configuration::port":29000,
@@ -476,8 +484,8 @@ class RFInfoTest(ossie.utils.testing.RHTestCase):
                      "msdd_output_configuration::mfp_flush":63,
                      "msdd_output_configuration::vlan_enable": False                        
                      },
-                                      {
-                     "msdd_output_configuration::tuner_number":1,
+                   {
+                     "msdd_output_configuration::tuner_number": self.alloc_params['nbddc_tuner'],
                      "msdd_output_configuration::protocol":"UDP_SDDS",
                      "msdd_output_configuration::ip_address":"239.1.1.2",
                      "msdd_output_configuration::port":29001,
@@ -677,7 +685,13 @@ class IPPInterfaceTest(ossie.utils.testing.RHTestCase):
 	import msddcontroller
 	msdd=msddcontroller.MSDDRadio(IP_ADDRESS,23)
         omsg="Does not report"
-	if '170314' in msdd.console.filename_app:
+        dual=False
+        try:
+            dual=re.split('[_-]',msdd.console.filename_fpga)[1].startswith('d')
+        except:
+            traceback.print_exc()
+            pass
+	if '170314' in msdd.console.filename_app or dual:
                 omsg= "reports "
         msg="*** Application firmware: " + \
                 msdd.console.filename_app + \
@@ -697,7 +711,7 @@ class IPPInterfaceTest(ossie.utils.testing.RHTestCase):
                         "advanced::udp_timeout" : 0.10,
                      },
                 "msdd_output_configuration": [{
-                     "msdd_output_configuration::tuner_number":0,
+                     "msdd_output_configuration::tuner_number": self.alloc_params['wbddc_tuner'],
                      "msdd_output_configuration::protocol":"UDP_SDDS",
                      "msdd_output_configuration::ip_address":"239.1.1.1",
                      "msdd_output_configuration::port":29000,
@@ -709,7 +723,7 @@ class IPPInterfaceTest(ossie.utils.testing.RHTestCase):
                      "msdd_output_configuration::vlan_enable": False                        
                      },
                                       {
-                     "msdd_output_configuration::tuner_number":1,
+                     "msdd_output_configuration::tuner_number": self.alloc_params['nbddc_tuner'],
                      "msdd_output_configuration::protocol":"UDP_SDDS",
                      "msdd_output_configuration::ip_address":"239.1.1.2",
                      "msdd_output_configuration::port":29001,

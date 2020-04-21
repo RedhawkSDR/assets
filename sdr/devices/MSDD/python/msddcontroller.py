@@ -47,7 +47,6 @@ import pprint
 import time
 import traceback
 
-
 class CommandException(Exception):
     pass
 
@@ -654,7 +653,81 @@ class baseModule(object):
 
 #end class baseModule
 
-class ConsoleModule(baseModule):
+
+class baseIPPModule(baseModule):
+    def __init__(self, connection, channel_number=0, mapping_version=2):
+        super(baseIPPModule,self).__init__(connection, channel_number,mapping_version)
+        self._interface=None
+        try:
+            connection=self.getIPP()
+            if len(connection) == 3:
+                self._interface=int(connection[0])
+        except:
+            pass
+
+    def setAddressPort(self,ip_address, port, interface=None):
+        ipp_args = str(ip_address).strip() + ":" + str(port).strip()
+        if interface is not None or self._interface is not None:
+            inf=str(interface)
+            if interface is None: inf=str(self._interface)
+            ipp_args = str(inf).strip() + ":" + ipp_args
+        self.setIPP(ipp_args)
+        return True
+
+    def setIPP(self,ipp_args):
+        if self._debug:
+            print "baseIPPModule, setIPP args: ", ipp_args
+        self.send_set_command("IPP", ipp_args)
+	ipp_resp=self.getIPP()
+        ipp_set = ipp_args.split(":")
+        if self._debug:
+            print "baseIPPModule, IPP set: ", ipp_set, " result: ", ipp_resp
+
+        ridx_end= -len(ipp_resp)-1
+        ridx=-1;
+        # start from the end of the return and work
+        # validate return , possible return from radio ip:port, inf:ip:port
+        for ridx, rvalue in zip(range(ridx,ridx_end,ridx),ipp_resp[::ridx]):
+            if rvalue != ipp_set[ridx]:
+                raise InvalidValue("Set IPP to " + ipp_args + " failed" )
+            # if interface was returned save off
+            if ridx==-3: self._interface=int(ipp_resp[ridx])
+
+    def getIPP(self):
+        """ Gets the present IP and UDP port setting for logging module"""
+        resp = self.send_query_command("IPP")
+        try:
+            response = self.parseResponse(resp, 2,':')
+        except:
+            response = self.parseResponse(resp, 3,':')
+        return response
+    
+    def getIPPString(self):
+        """ Gets the present IP and UDP port setting """
+        resp = self.getIPP()
+        return ':'.join( resp )
+    
+    def getIPP_Interface(self):
+        resp=self.getIPP()
+        try:
+            ret=int(resp[-3])
+        except:
+            ret=0
+        return ret
+
+    def getIPP_IP(self):
+        return self.getIPP()[-2]
+
+    def getIPP_Port(self):
+        return self.getIPP()[-1]
+
+    connection_address = property(getIPPString)
+    ip_address = property(getIPP_IP)
+    ip_port = property(getIPP_Port)
+    interface = property(getIPP_Interface)
+
+
+class ConsoleModule(baseIPPModule):
     MOD_NAME_MAPPING={1:"CON",2:"CON"}
     """
     ConsoleModule supports the command set from the console module of the MSDD receivver
@@ -670,8 +743,7 @@ class ConsoleModule(baseModule):
         channel_number : channel id of the module
         mapping_version : what version of firmware mapping is used
         """
-        baseModule.__init__(self,connection, channel_number,mapping_version)
-
+        super(ConsoleModule,self).__init__(connection, channel_number, mapping_version)
 
     def cmdPing(self):
         try:
@@ -680,24 +752,14 @@ class ConsoleModule(baseModule):
             return False
         return True
 
-    def getIPP(self):
-        """Queries the radio for IP and Port response is IP:PORT or INTF:IP:PORT """
-        resp = self.send_query_command("IPP")
-        try:
-            response = self.parseResponse(resp, 2,':')
-        except:
-            response = self.parseResponse(resp, 3,':')[-2:]
-        return response   
-
     def getIPPString(self):
-        resp = self.send_query_command("IPP")
-        return str(self.parseResponse(resp, 1)[0])
+        return super(ConsoleModule,self).getIPPString()
 
-    def getIPP_IP(self):
-        return self.getIPP()[0];
+    def setAddressPort(self,ip_address, port, interface=None):
+        raise CommandException("Cannot set ip address for console")
 
-    def getIPP_Port(self):
-        return self.getIPP()[1];
+    def setIPP(self,ipp_args):
+        raise CommandException("Cannot set ip address for console")        
     
     def getID(self):
         """Queries the radio for ID info, (Model,SN?,Load) """
@@ -812,8 +874,6 @@ class ConsoleModule(baseModule):
     """Accessable properties"""    
     ID = property(getID, doc="Model/Serial/Load Number")
     address = property(getIPPString, doc="Address of console management port")
-    ip_address = property(getIPP_IP, doc="IP Address of console management port")
-    ip_port = property(getIPP_Port, doc="IP Port of console management port")
     sw_part_number = property(getSoftwarePartNumber, doc="Software Part Number ")
     echo = property(getEcho,setEcho, doc="Echo Status")
     cpu_load = property(getCpuLoad, doc="CPU Load")
@@ -845,20 +905,16 @@ class ConsoleModule(baseModule):
              
 #end class ConsoleModule
 
-class LOGModule(baseModule):
+class LOGModule(baseIPPModule):
     MOD_NAME_MAPPING={1:"LOG",2:"LOG"}
-    
-    # Logiging Module commands
-    def _setIPP(self,ipp):
-        self.send_set_command("IPP ",str(ipp))
 
-    def getIPP(self):
-        resp = self.send_query_command("IPP")
-        return self.parseResponse(resp, 1)[0]
+    def __init__(self, connection, channel_number=0, mapping_version=2):
+        super(LOGModule,self).__init__(connection, channel_number, mapping_version)
 
-    def setIPP(self,ipp):
-        return self.setter_with_validation(str(ipp), self._setIPP, self.getIPP)
-    
+    # Logging Module commands
+    def getIPPString(self):
+        return super(LOGModule,self).getIPPString()
+
     def _setMask(self, mask):
         self.send_set_command("MSK",str(mask))
 
@@ -887,10 +943,9 @@ class LOGModule(baseModule):
 
     def setEnable(self, enable):
         return self.setter_with_validation(enable, self._setEnable, self.getEnable)
-    
 
     """Accessable properties"""
-    ipp = property(getIPP, setIPP, doc="Logging module IP and UDP port")
+    ipp = property(getIPPString, doc="Logging module IP and UDP port")
     mask = property(getMask, setMask, doc="Logging Mask value")
     mask_readable = property(getMaskReadable)
     mask_list = property(getMaskList)
@@ -962,15 +1017,24 @@ class BoardModule(baseModule):
 class NetModule(baseModule):
     MOD_NAME_MAPPING={1:"NET",2:"NET"}
         
-    def _setIpAddr(self, ip_address):
+    def _setIpAddress(self, ip_address):
+        # save off enable state of network module
+        _enb=self.getEnable()
+        self.setEnable(False)
         self.send_set_command("IPP",str(ip_address))
+        self.setEnable(_enb)
 
-    def getIpAddr(self):
+    def getIpAddress(self):
         resp = self.send_query_command("IPP")
-        return self.parseResponse(resp,1)[0]
+        _ip=self.parseResponse(resp,1)[0]
+        # if IPP command run on Network module returns leading zeros in ip address tuple
+        _ip_addr=[]
+        for x in _ip.split('.'):
+            _ip_addr.append(x.lstrip('0'))
+        return ".".join(_ip_addr)
 
-    def setIpAddr(self, ip_address):
-        return self.setter_with_validation(str(ip_address), self._setIpAddr, self.getIpAddr)
+    def setIpAddress(self, ip_address):
+        return self.setter_with_validation(str(ip_address), self._setIpAddress, self.getIpAddress)
     
     def getMacAddr(self):
         resp = self.send_query_command("MAC")
@@ -985,9 +1049,8 @@ class NetModule(baseModule):
         return float(self.parseResponse(resp, 1)[0]) 
 
     # property access to set/get methods
-    ip_addr = property(getIpAddr, setIpAddr, doc="")
+    ip_address = property(getIpAddress, setIpAddress, doc="")
     mac_addr = property(getMacAddr, doc="")
-    enable = property(getEnable, doc="")
     bit_rate = property(getBitRate, doc="")
     
 
@@ -2670,7 +2733,7 @@ class IQCircularBufferModule(baseModule):
         raise NotImplementedError, "IQCircularBuffer Module is not implemented!"
     
                 
-class OUTModule(baseModule):
+class OUTModule(baseIPPModule):
     MOD_NAME_MAPPING={1:"OUT",2:"OUT"}
     
     PROTOCOL_UDP_SDDS=0
@@ -2687,69 +2750,6 @@ class OUTModule(baseModule):
         self._protocol_list=None
         self._endianess_list=None
         self._gain_limits=None
-        self._interface=None
-        try:
-            connection=self.getIPP()
-            if len(connection) == 3:
-                self._interface=int(connection[0])
-        except:
-            pass
-
-    def setAddressPort(self,ip_address, port, interface=None):
-        ipp_args = str(ip_address).strip() + ":" + str(port).strip()
-        if interface is not None or self._interface is not None:
-            inf=str(interface)
-            if interface is None: inf=str(self._interface)
-            ipp_args = str(inf).strip() + ":" + ipp_args
-        self.setIPP(ipp_args)
-        return True
-
-    def setIPP(self,ipp_args):
-        if self._debug:
-            print "OUTModule, setIPP args: ", ipp_args
-        self.send_set_command("IPP", ipp_args)
-	ipp_resp=self.getIPP()
-        ipp_set = ipp_args.split(":")
-        if self._debug:
-            print "OUTModule, IPP set: ", ipp_set, " result: ", ipp_resp
-
-        ridx_end= -len(ipp_resp)-1
-        ridx=-1;
-        # start from the end of the return and work
-        # validate return , possible return from radio ip:port, inf:ip:port
-        for ridx, rvalue in zip(range(ridx,ridx_end,ridx),ipp_resp[::ridx]):
-            if rvalue != ipp_set[ridx]:
-                raise InvalidValue("Set IPP to " + ipp_args + " failed" )
-            # if interface was returned save off
-            if ridx==-3: self._interface=int(ipp_resp[ridx])
-
-    def getIPP(self):
-        """ Gets the present IP and UDP port setting for logging module"""
-        resp = self.send_query_command("IPP")
-        try:
-            response = self.parseResponse(resp, 2,':')
-        except:
-            response = self.parseResponse(resp, 3,':')
-        return response
-    
-    def getIPPString(self):
-        """ Gets the present IP and UDP port setting """
-        resp = self.getIPP()
-        return ':'.join( resp )
-    
-    def getIPP_Interface(self):
-        resp=self.getIPP()
-        try:
-            ret=int(resp[-3])
-        except:
-            ret=0
-        return ret
-
-    def getIPP_IP(self):
-        return self.getIPP()[-2]
-
-    def getIPP_Port(self):
-        return self.getIPP()[-1]
 
     def _setEnable(self, enable, block_xfer_size=None, sync_channel=None):
         enable_arg="0"
@@ -3025,10 +3025,6 @@ class OUTModule(baseModule):
         self.in_range( int(ccr), self.getCCRLimits()[0])
         return self.setter_with_validation(int(ccr), self._setCCR, self.getCCR) 
     
-    connection_address = property(getIPPString)
-    ip_addr = property(getIPP_IP)
-    ip_port = property(getIPP_Port)
-    interface = property(getIPP_Interface)
     enable = property(getEnable,setEnable, doc="")
     enable_block_limits= property(getEnableBlockLimits, doc="")
     bit = property(getBIT)
@@ -3321,7 +3317,7 @@ class MSDDRadio:
             status=None
             if self.output_object:
                 status=self._status()
-                status.output_multicast = self.output_object.object.ip_addr
+                status.output_multicast = self.output_object.object.ip_address
                 status.output_port = int(self.output_object.object.ip_port)
                 status.output_enabled = self.output_object.object.enable
                 status.output_protocol = self.output_object.object.protocol_readable
@@ -3931,7 +3927,7 @@ class MSDDRadio:
             except:
                 None
 
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD registered module count ", mod_count
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD Registered module count ", mod_count
         self.msdd_id = self.console.ID
         if self._debug:
             print "Completed building registered module lists for ", self.msdd_id
@@ -3953,7 +3949,7 @@ class MSDDRadio:
                 try:
                     obj_mod = None
                     if self._debug:
-                        print "MSDD module type: ", str(reg_mod.installation_name),   \
+                        print "MSDD Module type: ", str(reg_mod.installation_name),   \
                         " channel ID: " +  str(reg_mod.registration_name) + ':' +str(reg_mod.channel_number)
                     if inst_name == "CON":
                         obj= ConsoleModule(self.connection,reg_mod.channel_number,mapping_version)
@@ -4035,13 +4031,13 @@ class MSDDRadio:
                 except NotImplementedError:
                     None       
 
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD creating individual modules"
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD Creating individual modules"
 
 
         start_time=time.time()
 	for mod in self.software_ddc_modules:
             if self._debug:
-                print "Found a sw_ddc module unlinke", mod.object.full_reg_name, " channel id ", mod.channel_id()
+                print "Found a sw_ddc module unlink ", mod.object.full_reg_name, " channel id ", mod.channel_id()
             self.stream_router.unlinkModule(mod.channel_id())
 
             # remove swddc from its output module
@@ -4247,7 +4243,7 @@ class MSDDRadio:
                     self.swddc_object_container.is_used(swddc)
                     rx_channel = self.secondary_channel_module( self, swddc, nbddc, output, len(self.rx_channels))
                     if self._debug:
-                        print "MSDD creating Secondary channels ", rx_channel.msdd_channel_id()
+                        print "MSDD Creating Secondary channels ", rx_channel.msdd_channel_id()
                     mod_count += 1
                     self.rx_channels.append(rx_channel)
                 except:
@@ -4256,7 +4252,7 @@ class MSDDRadio:
 
         if enable_fft_channels:
             if self._debug:
-                print "MSDD creating FFT channels ", len(self.fft_modules)
+                print "MSDD Creating FFT channels ", len(self.fft_modules)
             start_time=time.time()
             # create fft channels
             for fft_mod in self.fft_modules:
