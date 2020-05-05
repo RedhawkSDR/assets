@@ -143,7 +143,7 @@ class MSDDTest(object):
             sock.setsockopt(socket.SOL_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(self.MCAST_GRP) + socket.inet_aton(int_ip))
             sock.bind(('', self.MCAST_PORT))
 
-            # test packets are being recieved and they are the proper length 
+            # test packets are being received and they are the proper length 
             passed = True
             for ii in range(10):
                 sock.settimeout(1)
@@ -151,7 +151,7 @@ class MSDDTest(object):
                     x = sock.recv(10240)
                 except:
                     if str(sys.exc_info()[1]) == 'timed out':
-                        print 'ERROR: recieve call timed out for ' + str(localInterface.name)
+                        print 'ERROR: receive call timed out for ' + str(localInterface.name)
                         sys.exit()
                     else:
                         raise
