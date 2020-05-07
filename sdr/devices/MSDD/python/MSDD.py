@@ -313,10 +313,10 @@ class MSDD_i(MSDD_base):
                         data_width =m.data_width          # sample length in bytes
                         proto_name=m.protocol_readable    # protocol
                         proto_extra_bits=0                # default for raw
-                        pkt_rate =  (srate*data_width)/pkt_data_len
+                        pkt_rate =  srate/pkt_data_len
                         self._log.debug("checkReceiverNetworkOutput, interface %s out module %s pkt_data_len %s data_width %s pkt_rate %s netstat %s " % (inf, m.channel_id(), pkt_data_len,
                                                                                                                                                           data_width,
-                                                                                                                                                          pkt_bit_rate, netstat[inf]))
+                                                                                                                                                          pkt_rate, netstat[inf]))
                         if "SDDS" in proto_name:
                             pkt_header=56 # SDDS header length (56 bytes)
                         if "VITA49" in proto_name:
