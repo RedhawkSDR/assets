@@ -202,6 +202,28 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
             self.mychannelizer=DEVICE_INFO['capabilities'][0]['RX_DIGITIZER_CHANNELIZER']
             self.mychannelizer_type='RX_DIGITIZER_CHANNELIZER'
         return True
+
+    def attachableOutput(self, tids ):
+        data_proto=None
+        psd_proto=None
+        if  DEVICE_INFO['configure'].has_key('msdd_output_configuration'):
+            for x in DEVICE_INFO['configure']['msdd_output_configuration']:
+                if  x['msdd_output_configuration::tuner_number'] in tids and  \
+                    x['msdd_output_configuration::enabled'] :
+                    data_proto=x['msdd_output_configuration::protocol']
+                    break
+
+        if  DEVICE_INFO['configure'].has_key('msdd_psd_output_configuration'):
+            for x in DEVICE_INFO['configure']['msdd_psd_output_configuration']:
+                for tid in tids:
+                    if ( tid >= x['msdd_psd_output_configuration::fft_channel_start'] and  \
+                         tid <= x['msdd_psd_output_configuration::fft_channel_stop']) and  \
+                        x['msdd_psd_output_configuration::enabled']:
+                        psd_proto=x['msdd_psd_output_configuration::protocol']
+                        break
+
+        return data_proto, psd_proto
+
         
     def tuner_status_check(self,prop):
         self.currentTestName ="test_tuner_status_check_%s" % (re.sub('[^a-zA-Z0-9 \n\.]', '_', prop[0].lower()))
@@ -426,11 +448,10 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
             pass
 
 
-    def process_test_attributes(self, test_func):
+    def process_attributes(self, test_func):
         tm=getattr(self, test_func)
         if tm:
-            if  hasattr(tm,'enable_channels') == False and \
-                hasattr(tm,'ist_channels') == False:
+            if  hasattr(tm,'enable_channels') == False :
                 return
 
             out_cfg=self.dut_properties['msdd_output_configuration']
@@ -462,13 +483,18 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
                     self.cfg_channel_output( out_cfg, ch_list, True)
                 except:
                     pass
+            
+            self.enable_channels =tm.enable_channels[:]
 
 
 
     def setUp(self):
-
+        self.enable_channels=None
         self.dut_properties=copy.deepcopy(DEVICE_INFO['configure'])
-        self.process_test_attributes(self._testMethodName)
+        try:
+            self.process_attributes(self._testMethodName)
+        except:
+            traceback.print_exc()
 
         try:
             ipaddr=self.dut_properties['msdd_configuration']['msdd_configuration::msdd_ip_address']
@@ -484,6 +510,7 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
                               configure=self.dut_properties )
             
     def tearDown(self):
+        self.enable_channels=None
         self.getToShutdownState()
         if self.currentTestName:
             self.assertTrue(self.testsPassed[self.currentTestName], "%s Failed" %(self.currentTestName))
@@ -2419,7 +2446,6 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
         '''
         self._testFRONTEND_3_4_DataFlow(5)
     
-    @test_attributes(enable_channels=[0])
     def _testFRONTEND_3_4_DataFlow(self, port_num):
         ''' RX_DIG 4 DataFlow
         '''
@@ -2443,13 +2469,21 @@ class FrontendTunerTests(ParameterizedTestCase,unittest.TestCase):
                 if count == port_num:
                     self._testBULKIO(tuner_control,comp_port_name,comp_port_type,ttype,controller,listener1,listener2)
             elif comp_port_type == "dataSDDS":
+                # skip psd validation
+                psd_data = "_psd" in comp_port_name.lower()
+                data_proto, psd_proto = self.attachableOutput(self.enable_channels)
                 count += 1
                 if count == port_num:
-                    self._testSDDS(tuner_control,comp_port_name,comp_port_type,ttype,controller,listener1,listener2)
+                    if  not psd_data and data_proto and 'sdds' in data_proto.lower():
+                        self._testSDDS(tuner_control,comp_port_name,comp_port_type,ttype,controller,listener1,listener2)
+
             elif comp_port_type == "dataVITA49":
+                psd_data = "_psd" in comp_port_name.lower()
+                data_proto, psd_proto = self.attachableOutput(self.enable_channels)
                 count += 1
                 if count == port_num:
-                    self._testvita49(tuner_control,comp_port_name,comp_port_type,ttype,controller,listener1,listener2)
+                    if not psd_data and data_proto and 'vita' in data_proto.lower():
+                        self._testvita49(tuner_control,comp_port_name,comp_port_type,ttype,controller,listener1,listener2)
             else:
                 print 'WARNING - skipping %s port named %s, not supported BULKIO port type'%(comp_port_type,comp_port_name)
                 continue

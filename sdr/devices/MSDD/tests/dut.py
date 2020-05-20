@@ -41,8 +41,10 @@ def  get_config( msdd_id,
         'namespace'   : 'rh',
         'name'        : 'MSDD',
         'impl_id'     : 'python',
-        'num_output_configs' : 2,
-        'execparams'  : {},
+        'receiver_identifier' : 'RCV:1',   # default receiver path to test
+        'receiver_modules' : ['RCV:1' ],  # identifiers for each rcv->wbbc flows
+        'additional_tuner_output' : [1] ,  # total number of additional tuner output configs
+        'execparams'  : { },
         'configure'   : {
             'advanced' : {
                 'advanced::enable_secondary_tuners' : False,
@@ -149,7 +151,7 @@ def  get_config( msdd_id,
 
     # rh.MSDD 6000
     dut_config['MSDD|6000'] = copy.deepcopy(dut_config['MSDD'])
-    dut_config['MSDD|6000']['num_output_configs'] = 16
+    dut_config['MSDD|6000']['additional_tuner_outputs'] = [16]
 
     # rh.MSDD 6000 s100
     dut_config['MSDD|6000|s100'] = copy.deepcopy(dut_config['MSDD|6000'])
@@ -247,7 +249,7 @@ def  get_config( msdd_id,
     # rh 3000EX
     #MSDD|3000EX|ex98|1w0n0b0|1w0n0b0
     dut_config['MSDD|3000EX|ex98|1w0n0b0'] = copy.deepcopy(dut_config['MSDD|3000'])
-    dut_config['MSDD|3000EX|ex98|1w0n0b0']['num_output_configs'] = 1
+    dut_config['MSDD|3000EX|ex98|1w0n0b0']['additional_tuner_outputs'] = []
     dut_config['MSDD|3000EX|ex98|1w0n0b0']['capabilities'] = [
             {
                 'RX_DIGITIZER': {
@@ -270,7 +272,7 @@ def  get_config( msdd_id,
 
     # rh.MSDD 3000 s98
     dut_config['MSDD|3000|s98|1w5n5b1300'] = copy.deepcopy(dut_config['MSDD|3000'])
-    dut_config['MSDD|3000|s98|1w5n5b1300']['num_output_configs'] = 6
+    dut_config['MSDD|3000|s98|1w5n5b1300']['additional_tuner_outputs'] = [5]
     dut_config['MSDD|3000|s98|1w5n5b1300']['capabilities'] = [
             {
                 'RX_DIGITIZER': {
@@ -300,7 +302,7 @@ def  get_config( msdd_id,
 
     # rh.MSDD 3000 s100 vr1a fpga load
     dut_config['MSDD|3000|s100|1w1nvr1a'] = copy.deepcopy(dut_config['MSDD|3000'])
-    dut_config['MSDD|3000|s100|1w1nvr1a']['num_output_configs'] = 2
+    dut_config['MSDD|3000|s100|1w1nvr1a']['additional_tuner_outputs'] = [1]
     dut_config['MSDD|3000|s100|1w1nvr1a']['capabilities'] = [
             {
                 'RX_DIGITIZER': {
@@ -386,10 +388,14 @@ def  get_config( msdd_id,
 def configure_output_channels( dut_config, OUTPUT_ADDR, OUTPUT_PORT, OUTPUT_VLAN ):
     mcast_start_addr = OUTPUT_ADDR or '234.0.0.100'
     mcast_octets = [int(x) for x in mcast_start_addr.split('.')]
-    nconfigs=dut_config['num_output_configs']
-    for i in xrange(1,nconfigs+1):
+    if len(dut_config['receiver_modules']) > 1:
         mcast_octets[-1] += 1
-        dut_config['configure']['msdd_output_configuration'].append(
+    # create number of configs for each wbddc 
+    rcv_idx=0
+    for ncfgs in dut_config['additional_tuner_outputs']:
+        for i in xrange(1, ncfgs+1):
+            mcast_octets[-1] += 1
+            dut_config['configure']['msdd_output_configuration'].append(
                 {
                     'msdd_output_configuration::tuner_number'    : i,
                     'msdd_output_configuration::protocol'        : 'UDP_SDDS',

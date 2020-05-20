@@ -30,6 +30,7 @@ from redhawk.frontendInterfaces import FRONTEND
 from ossie.utils import uuid
 from ossie import properties
 import time
+import re
 import frontend
 import traceback
 
@@ -321,7 +322,7 @@ class MsddDeviceTests(ossie.utils.testing.RHTestCase):
                              "msdd_output_configuration::vlan_enable": False                        
                              },
                         {
-                                "msdd_output_configuration::tuner_number":self.alloc_params['nbddc_tuner'],
+                                "msdd_output_configuration::tuner_number": self.alloc_params['nbddc_tuner'],
                              "msdd_output_configuration::protocol":"UDP_SDDS",
                              "msdd_output_configuration::ip_address":"234.168.103.100",
                              "msdd_output_configuration::port":1,
