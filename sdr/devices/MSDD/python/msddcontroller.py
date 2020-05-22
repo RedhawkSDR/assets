@@ -688,7 +688,7 @@ class baseIPPModule(baseModule):
         # start from the end of the return and work
         # validate return , possible return from radio ip:port, inf:ip:port
         for ridx, rvalue in zip(range(ridx,ridx_end,ridx),ipp_resp[::ridx]):
-            if rvalue != ipp_set[ridx]:
+            if abs(ridx) <= len(ipp_set) and rvalue != ipp_set[ridx]:
                 raise InvalidValue("Set IPP to " + ipp_args + " failed" )
             # if interface was returned save off
             if ridx==-3: self._interface=int(ipp_resp[ridx])
