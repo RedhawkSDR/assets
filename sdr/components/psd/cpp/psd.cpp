@@ -389,6 +389,7 @@ void PsdProcessor::updateSRI(const bulkio::FloatDataBlock &block){
     outputSRI.yunits = BULKIO::UNITS_TIME;
     outputSRI.xunits = BULKIO::UNITS_FREQUENCY;
     outputSRI.mode = 1; //data is always complex out of the fft
+    outputSRI.blocking = block.sri().blocking;
 
     // set/update the sri for the output FFT stream
     outFFT.sri(outputSRI);

@@ -723,6 +723,19 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                                       id_="msdd_status::tod_toy",
                                       name="tod_toy",
                                       type_="string")
+
+            # If tod.mode == ONEPPS, tod_host_delta = host time - tod time.
+            # While tod.mode != ONEPPS, tod_host_delta is not updated.
+            tod_host_delta = simple_property(
+                                             id_="msdd_status::tod_host_delta",
+                                             name="tod_host_delta",
+                                             type_="double")
+
+            # While tod.mode != ONEPPS, ntp_running is not updated.
+            ntp_running = simple_property(
+                                          id_="msdd_status::ntp_running",
+                                          name="ntp_running",
+                                          type_="boolean")
         
             def __init__(self, **kw):
                 """Construct an initialized instance of this struct definition"""
@@ -770,6 +783,8 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                 d["tod_track_mode_state"] = self.tod_track_mode_state
                 d["tod_bit_state"] = self.tod_bit_state
                 d["tod_toy"] = self.tod_toy
+                d["tod_host_delta"] = self.tod_host_delta
+                d["ntp_running"] = self.ntp_running
                 return str(d)
         
             @classmethod
@@ -781,7 +796,7 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
                 return True
         
             def getMembers(self):
-                return [("connected",self.connected),("ip_address",self.ip_address),("port",self.port),("model",self.model),("serial",self.serial),("software_part_number",self.software_part_number),("rf_board_type",self.rf_board_type),("fpga_type",self.fpga_type),("dsp_type",self.dsp_type),("minimum_frequency_hz",self.minimum_frequency_hz),("maximum_frequency_hz",self.maximum_frequency_hz),("dsp_reference_frequency_hz",self.dsp_reference_frequency_hz),("adc_clock_frequency_hz",self.adc_clock_frequency_hz),("num_if_ports",self.num_if_ports),("num_eth_ports",self.num_eth_ports),("cpu_type",self.cpu_type),("cpu_rate",self.cpu_rate),("cpu_load",self.cpu_load),("pps_termination",self.pps_termination),("pps_voltage",self.pps_voltage),("number_wb_ddc_channels",self.number_wb_ddc_channels),("number_nb_ddc_channels",self.number_nb_ddc_channels),("filename_app",self.filename_app),("filename_fpga",self.filename_fpga),("filename_batch",self.filename_batch),("filename_boot",self.filename_boot),("filename_loader",self.filename_loader),("filename_config",self.filename_config),("tod_module",self.tod_module),("tod_available_module",self.tod_available_module),("tod_meter_list",self.tod_meter_list),("tod_tod_reference_adjust",self.tod_tod_reference_adjust),("tod_track_mode_state",self.tod_track_mode_state),("tod_bit_state",self.tod_bit_state),("tod_toy",self.tod_toy)]
+                return [("connected",self.connected),("ip_address",self.ip_address),("port",self.port),("model",self.model),("serial",self.serial),("software_part_number",self.software_part_number),("rf_board_type",self.rf_board_type),("fpga_type",self.fpga_type),("dsp_type",self.dsp_type),("minimum_frequency_hz",self.minimum_frequency_hz),("maximum_frequency_hz",self.maximum_frequency_hz),("dsp_reference_frequency_hz",self.dsp_reference_frequency_hz),("adc_clock_frequency_hz",self.adc_clock_frequency_hz),("num_if_ports",self.num_if_ports),("num_eth_ports",self.num_eth_ports),("cpu_type",self.cpu_type),("cpu_rate",self.cpu_rate),("cpu_load",self.cpu_load),("pps_termination",self.pps_termination),("pps_voltage",self.pps_voltage),("number_wb_ddc_channels",self.number_wb_ddc_channels),("number_nb_ddc_channels",self.number_nb_ddc_channels),("filename_app",self.filename_app),("filename_fpga",self.filename_fpga),("filename_batch",self.filename_batch),("filename_boot",self.filename_boot),("filename_loader",self.filename_loader),("filename_config",self.filename_config),("tod_module",self.tod_module),("tod_available_module",self.tod_available_module),("tod_meter_list",self.tod_meter_list),("tod_tod_reference_adjust",self.tod_tod_reference_adjust),("tod_track_mode_state",self.tod_track_mode_state),("tod_bit_state",self.tod_bit_state),("tod_toy",self.tod_toy),("tod_host_delta",self.tod_host_delta),("ntp_running",self.ntp_running)]
 
         msdd_status = struct_property(id_="msdd_status",
                                       structdef=msdd_status_struct,

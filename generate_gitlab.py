@@ -16,6 +16,7 @@ and anchor descriptions.
 import os, sys
 from datetime import datetime
 from getopt import getopt
+import pprint
 
 package_template = """package:__DIST____V__:rh__SHORT_V__:__ASSET_NAME__:
   stage: __BUILD__
@@ -88,6 +89,18 @@ deploy_template = """deploy-__DIST____V__-__SHORT_V__:__ASSET_NAME__:
 
 """
 
+create_repo_template = """create-repo:__DIST__:__SHORT_V__:
+  variables:
+    dist: __DIST__
+  before_script:
+    - echo "Building Final YUM repository rh__SHORT_V__  __DIST__"
+  <<: *create-repo
+  dependencies:
+__DEPLOYJOBS__
+
+"""
+
+
 def replace_package_template(os_version, rh_version, comp_name, base_library=False, isComponentOrDevice=False, isWaveform=False):
     retval = package_template.replace('__DIST__', platforms[os_version]['dist']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
 
@@ -145,7 +158,7 @@ def replace_test_template(os_version, rh_version, comp_name, branches=False, bas
     return retval
 
 def replace_deploy_template(os_version, rh_version, comp_name, base_library=False):
-    retval = deploy_template.replace('__DIST__', platforms[os_version]['dist']).replace('__ARCH__', platforms[os_version]['arch']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
+    retval = deploy_template.replace('__DIST__', platforms[os_version]['dist']).replace('__ARCH__', platforms[os_version]['arch']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower()).replace('__SHORT_V__', versions[rh_version]['short_version'])
 
     if base_library:
         retval = retval.replace('package', 'base_package')
@@ -154,6 +167,23 @@ def replace_deploy_template(os_version, rh_version, comp_name, base_library=Fals
     else:
         retval = retval.replace('__V__', '')
     return retval
+
+
+def replace_create_repo_template(os_version, rh_version, deploy_jobs):
+    retval = create_repo_template.replace('__DIST__', platforms[os_version]['dist']).replace('__ARCH__', platforms[os_version]['arch']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version'])
+    
+    deploy_list = ''
+    for dep in deploy_jobs:
+        deploy_list += '    - '+dep+'\n'
+
+    retval = retval.replace("__DEPLOYJOBS__\n", deploy_list)
+    if '32' in os_version:
+        retval = retval.replace('__V__', ':32')
+    else:
+        retval = retval.replace('__V__', '')
+    return retval
+
+
 
 def replace_create_template(os_version, rh_version, objects):
     comp_dep_list = ''
@@ -261,6 +291,7 @@ if __name__ == '__main__':
 
     jobs = ''
     test_jobs = ''
+    deploy_jobs= {}
 
     for _key in versions[next(iter(versions))]['platform_keys']:
         jobs += replace_create_template(_key, versions[next(iter(versions))]['short_version'], libraries)
@@ -274,7 +305,9 @@ if __name__ == '__main__':
             jobs += replace_package_template(os_version, rh_version, comp, base_package)
         if not testonly:
             for os_version in versions[next(iter(versions))]['platform_keys']:
-                jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+                deploy_job = replace_deploy_template(os_version, rh_version, comp, base_package)
+                deploy_jobs.setdefault(os_version,[]).append(deploy_job.split(':\n')[0])
+                jobs +=  deploy_job
 
     for _key in versions[next(iter(versions))]['platform_keys']:
         jobs += replace_create_libraries_template(_key, versions[next(iter(versions))]['short_version'], libraries)
@@ -298,7 +331,9 @@ if __name__ == '__main__':
 
         if not testonly:
             for os_version in versions[next(iter(versions))]['platform_keys']:
-                jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+                deploy_job = replace_deploy_template(os_version, rh_version, comp, base_package)
+                deploy_jobs.setdefault(os_version,[]).append(deploy_job.split(':\n')[0])                
+                jobs +=  deploy_job
 
     if not testonly:
         comps_devs = libraries + components
@@ -316,7 +351,14 @@ if __name__ == '__main__':
                 jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponent, isWaveform)
 
             for os_version in versions[next(iter(versions))]['platform_keys']:
-                jobs += replace_deploy_template(os_version, rh_version, comp, base_package)
+                deploy_job = replace_deploy_template(os_version, rh_version, comp, base_package)
+                deploy_jobs.setdefault(os_version,[]).append(deploy_job.split(':\n')[0])                
+                jobs += deploy_job
+
+    for os_version in versions[next(iter(versions))]['platform_keys']:
+        if os_version in deploy_jobs:
+            jobs += replace_create_repo_template(os_version, rh_version, deploy_jobs[os_version])               
+
 
     updated_contents = contents.replace('__JOBS__', jobs)
     updated_contents = updated_contents.replace('__TESTJOBS__', test_jobs)
