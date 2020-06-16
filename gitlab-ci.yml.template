@@ -226,6 +226,9 @@ deploytests:
   artifacts:
     paths:
       - results
+  only:
+    variables:
+      - $latest_version =~ /^develop.*$/
 
 .s3: &s3
   image: ${docker_registry}utils/s3cmd:el6-createrepo
@@ -238,6 +241,9 @@ deploytests:
         cp $file $arch;
       done
     - /usr/bin/s3cmd put -F -v -r $arch/ s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist/$arch/  && s3cmd setacl -v s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist --acl-public --recursive || true
+  only:
+    variables:
+      - $latest_version =~ /^develop.*$/
 
 .create-repo: &create-repo
   image: ${docker_registry}utils/s3cmd:el6-createrepo
@@ -249,5 +255,8 @@ deploytests:
     - repomanage --keep=2 --old $arch| xargs rm -f; createrepo --update $arch
     - /usr/bin/s3cmd sync -F -v --delete-removed $arch s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist/  && s3cmd setacl -v s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist --acl-public --recursive || true
 
+  only:
+    variables:
+      - $latest_version =~ /^develop.*$/
 
 __JOBS__
