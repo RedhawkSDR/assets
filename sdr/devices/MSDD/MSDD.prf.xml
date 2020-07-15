@@ -104,10 +104,6 @@ along with this program.  If not, see http://www.gnu.org/licenses/.
     </simple>
     <simple id="advanced::enable_inline_swddc" name="enable_inline_swddc" type="boolean">
       <description>Attach a SWDDC module to a NBDDC module on startup.  Allows for narrow bandwidths from the NBDDC modules.</description>
-      <value>True</value>
-    </simple>
-    <simple id="advanced::enable_secondary_tuners" name="enable_secondary_tuners" type="boolean">
-      <description>Use remaining SWDDC modules as piggyback tuners on each NBDDC module on startup.</description>
       <value>False</value>
     </simple>
     <simple id="advanced::enable_fft_channels" name="enable_fft_channels" type="boolean">
@@ -633,6 +629,8 @@ and comprise it unless you looking for the strongest signal.</description>
     <simple id="msdd_status::tod_track_mode_state" name="tod_track_mode_state" type="string"/>
     <simple id="msdd_status::tod_bit_state" name="tod_bit_state" type="string"/>
     <simple id="msdd_status::tod_toy" name="tod_toy" type="string"/>
+    <simple id="msdd_status::tod_host_delta" name="tod_host_delta" type="double"/>
+    <simple id="msdd_status::ntp_running" name="ntp_running" type="boolean"/>
     <configurationkind kindtype="property"/>
   </struct>
   <struct id="msdd_advanced_debugging_tools" mode="readwrite">

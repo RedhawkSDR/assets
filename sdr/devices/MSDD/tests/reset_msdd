@@ -1,13 +1,31 @@
 #!/usr/bin/python
 
+"""
+Send the board reset command to the MSDD and optionally wait for the radio to come on-line before exiting
+"""
+
 import sys
 import time
 from msdd_connection import *
+import traceback
 
+wait_for_reconnect=True
 c=Connection((sys.argv[1],23))
 
 try:
-    c.sendStringCommand('brd reset', expect_output=False)
-    time.sleep(1)
+    c.sendStringCommand('brd reset'+'\n', expect_output=False)
 except:
     pass
+if len(sys.argv) > 2 and sys.argv[2].lower() != 'nowait' :
+    wait_for_reconnect=False
+
+if  wait_for_reconnect:
+    not_connected=True
+    while not_connected:
+        try:
+            c=Connection((sys.argv[1],23))
+            c.sendStringCommand('con idn?'+'\n', expect_output=True)
+            not_connected=False
+        except:
+            time.sleep(1)
+            pass

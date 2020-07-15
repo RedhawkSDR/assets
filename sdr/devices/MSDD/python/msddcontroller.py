@@ -338,6 +338,7 @@ class Connection(object):
             self.__mutexLock.release()
 
 
+
 class baseModule(object):
     """Base module class for all MSDD modules
 
@@ -688,10 +689,13 @@ class baseIPPModule(baseModule):
         # start from the end of the return and work
         # validate return , possible return from radio ip:port, inf:ip:port
         for ridx, rvalue in zip(range(ridx,ridx_end,ridx),ipp_resp[::ridx]):
-            if abs(ridx) <= len(ipp_set) and rvalue != ipp_set[ridx]:
+            if  abs(ridx) <= len(ipp_set) and rvalue != ipp_set[ridx]:
                 raise InvalidValue("Set IPP to " + ipp_args + " failed" )
             # if interface was returned save off
-            if ridx==-3: self._interface=int(ipp_resp[ridx])
+            if ridx==-3: 
+                if self._debug:
+                    print "baseIPPModule, IPP interface returned ",int(ipp_resp[ridx])
+                self._interface=int(ipp_resp[ridx])
 
     def getIPP(self):
         """ Gets the present IP and UDP port setting for logging module"""
@@ -779,6 +783,7 @@ class ConsoleModule(baseIPPModule):
         try:
             self.send_set_command("ECH",arg)
         except:
+            traceback.print_exc()
             None
         return value == self.getEcho()
             
@@ -1000,6 +1005,9 @@ class BoardModule(baseModule):
 
     def setExternalRef(self, ref):
         return self.setter_with_validation(int(ref), self._setExternalRef, self.getExternalRef)
+
+    def reset(self):
+        self.send_set_command("RESET")
     
     
     """Accessable properties"""    
@@ -1148,8 +1156,10 @@ class RcvBaseModule(baseModule):
     def getBITList(self):
         resp = self.send_query_command("BITL")
         return self.parseResponse(resp)
-    def getBITStr(self):
-        return self.process_bit_mask( self.getBIT, self.getBITList )
+    def getBITStr(self,bit=None):
+        if bit is None:
+            bit=self.getBIT
+        return self.process_bit_mask( bit, self.getBITList )
     def getADM(self):
         resp = self.send_query_command("ADM")
         return self.parseResponse(resp)        
@@ -1357,11 +1367,14 @@ class TODModule(baseModule):
         resp = self.send_query_command("BITL")
         return self.parseResponse(resp)
 
-    def getBITStr(self):
-        return self.process_bit_mask( self.getBIT, self.getBITList )
+    def getBITStr(self,bit=None):
+        if bit is None:
+            bit=self.getBIT
+        return self.process_bit_mask( bit, self.getBITList )
     
     def setTime(self, seconds):
         """Set Time of Day in seconds, latches on next PPS"""
+        seconds=int(seconds)
         self.send_set_command("SET ",str(seconds))
         return True
     
@@ -1800,8 +1813,10 @@ class DDCBaseModule(baseModule):
         resp = self.send_query_command("BIT")
         return int(self.parseResponse(resp, 1)[0])        
 
-    def getBITStr(self):
-        return self.process_bit_mask( self.getBIT, self.getBITList )
+    def getBITStr(self,bit=None):
+        if bit is None:
+            bit=self.getBIT
+        return self.process_bit_mask( bit, self.getBITList )
 
     def getBITList(self):
         resp = self.send_query_command("BITL")
@@ -2141,6 +2156,8 @@ class StreamRouterModule(baseModule):
     
     def getModulesFlowListBySource(self,full_reg_name):
         resp = self.send_query_command("DSTL",str(full_reg_name))
+        if self._debug:
+            print "getModulesFlowListBySource ", full_reg_name, " result: ", resp
         return self.parseResponse(resp)    
     
     def linkModules(self,source_reg_name,destination_reg_name):
@@ -3859,7 +3876,7 @@ class MSDDRadio:
                  udp_timeout=0.25,
                  validation_polling_time=0.25,
                  validation_number_retries = 0,
-                 enable_inline_swddc=True,
+                 enable_inline_swddc=False,
                  enable_secondary_tuners=False,
                  enable_fft_channels=False):
 
@@ -4032,8 +4049,6 @@ class MSDDRadio:
                     None       
 
         print "(duration:%.4f" % (time.time()-start_time), " MSDD Creating individual modules"
-
-
         start_time=time.time()
 	for mod in self.software_ddc_modules:
             if self._debug:
@@ -4107,7 +4122,7 @@ class MSDDRadio:
             self.output_object_container.mark_as_used(rx_mod.output_object)
             self.swddc_object_container.mark_as_used(rx_mod.swddc_object)
             self.rx_channels.append(rx_mod)
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD RX channels for NBDDC->SWDDC ", len(self.nb_ddc_modules)
+        print "(duration:%.4f" % (time.time()-start_time), " MSDD RX channels for NBDDC ", len(self.nb_ddc_modules)
 
         # Assign output modules to existing channels before continuing
         start_time=time.time()
@@ -4320,7 +4335,6 @@ class MSDDRadio:
         print time.ctime(), "Finished (duration:%.4f" % (time.time()-start_time_total), ") setting up MSDD ", \
             self.msdd_id , " connection ", self.radioAddress, " RX CHANNELS ", len(self.rx_channels), " FFT CHANNELS ", len(self.fft_channels)
 
-
     def update_rx_channel_mapping(self, rx_chan_mod, position):
         if rx_chan_mod == None:
             return
@@ -4444,6 +4458,8 @@ class MSDDRadio:
         try:
             full_reg_name = object_module.object.get_full_reg_name()
             flow_list = self.stream_router.getModulesFlowListByDestination(full_reg_name)
+            if len(flow_list):
+                flow_list=flow_list[1:]
             return create_csv(flow_list)
         except:
             return ""
@@ -4459,6 +4475,12 @@ class MSDDRadio:
 
     def get_output_channel_for_module(self,full_reg_name):
         modList = self.stream_router.getModulesFlowListBySource(full_reg_name)
+        # trim off first item in list is requested item
+        if len(modList):
+            modList = modList[1:]
+        if self._debug:
+            print "get_output_channel_for_module ", full_reg_name, " modlist ", modList
+            
         for module in modList:
             m = re.search('OUT(:(\d+)|)',module)
             if m:

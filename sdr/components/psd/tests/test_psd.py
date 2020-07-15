@@ -119,7 +119,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.comp.releaseObject()
         ossie.utils.testing.ScaComponentTestCase.tearDown(self)
         
-    def validateSRIPushing(self, streamID, inputCmplx, inputRate=1.0, fftSize=1.0, rfVal = None, SRIKeywords = None):
+    def validateSRIPushing(self, streamID, inputCmplx, inputRate=1.0, fftSize=1.0, rfVal=None, SRIKeywords=None, sriBlocking=None):
 
         # Confirm that all of the keywords given are passed on
         if SRIKeywords:
@@ -151,6 +151,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
                     self.assertAlmostEqual(sri.xstart, rfVal-inputRate/4.0)
             else:
                 self.assertAlmostEqual(sri.xstart, ifStart)
+            if sriBlocking is not None:
+                self.assertEqual(sri.blocking, sriBlocking)
         
     def assert_isclose(self,a,b,precision=7,places=7):
         ''' Similar to assertAlmostEqual, but based on digits of precision rather than decimal places
@@ -918,6 +920,59 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.validateSRIPushing(ID, cxData, sample_rate, fftSize, colRfVal, SRIKeywords = keywords)
         
         print "*PASSED"
-    
+
+    def testSriBlockingToggle(self):
+        print "\n-------- TESTING SriBlockingToggle --------"
+        #---------------------------------
+        # Start component and set fftSize
+        #---------------------------------
+        sb.start()
+        ID = "SriBlockingToggle"
+        fftSize = 4096
+        self.comp.fftSize = fftSize
+
+        #------------------------------------------------
+        # Create a test signal.
+        #------------------------------------------------
+        # 4096 samples of 7000Hz real signal at 65536 kHz
+        cxData = False
+        sample_rate = 65536.
+        nsamples = 4096
+        data = [random.random() for _ in xrange(nsamples)]
+
+        #------------------------------------------------
+        # Test Component Functionality.
+        #------------------------------------------------
+        # ---------- start with sri.blocking = False
+        # Push Data
+        sri = self.src.sri()
+        sri.blocking = False
+        self.src.push(data, streamID=ID, sampleRate=sample_rate, complexData=cxData, sri=sri)
+        time.sleep(.5)
+
+        # Get Output Data
+        fftOut = self.fftsink.getData()[0] # use first frame
+        psdOut = self.psdsink.getData()[0] # use first frame
+
+        # Validate SRI Pushed Correctly
+        self.validateSRIPushing(ID, cxData, sample_rate, fftSize, sriBlocking=sri.blocking)
+
+        # ---------- change to sri.blocking = True
+        # Push Data
+        sri = self.src.sri()
+        sri.blocking = True
+        time.sleep(.5)
+        self.src.push(data, streamID=ID, sampleRate=sample_rate, complexData=cxData, sri=sri)
+        time.sleep(.5)
+
+        # Get Output Data
+        fftOut = self.fftsink.getData()[0] # use first frame
+        psdOut = self.psdsink.getData()[0] # use first frame
+
+        # Validate SRI Pushed Correctly
+        self.validateSRIPushing(ID, cxData, sample_rate, fftSize, sriBlocking=sri.blocking)
+
+        print "*PASSED"
+
 if __name__ == "__main__":
     ossie.utils.testing.main("../psd.spd.xml") # By default tests all implementations

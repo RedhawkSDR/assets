@@ -114,7 +114,7 @@ if __name__ == '__main__':
         description='''
 Runs FEI test suite against a MSDD device. Use optional arguments to setup MSDD, all other command line arguments
 are passed to nosetest
-i.e. test_MSDD_FEI.py  -h --ip=192.168.1.96 --iface=em2 --debug=ERROR  -v --nocapture test_MSDD_FEI.py:FrontendTunerTests -m  testFRONTEND_1
+i.e. test_MSDD_FEI.py  -h --ip=192.168.1.96 --debug=ERROR  -v --nocapture test_MSDD_FEI.py:FrontendTunerTests -m  testFRONTEND_1
 ''')
     parser.add_argument('--ip', default="192.168.1.2", help="ip address of msdd")
     parser.add_argument('--port', default='23', help="port number for msdd")

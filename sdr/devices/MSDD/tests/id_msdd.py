@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+"""
+Find the MSDD identification string an print out the results. The resulting string is used to index into the test configurations for test_MSDD.py and dut.py
+"""
 import sys
 import time
 import traceback

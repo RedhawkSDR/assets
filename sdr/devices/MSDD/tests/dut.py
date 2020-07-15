@@ -20,18 +20,18 @@
 
 import os, sys, copy
 
-#                     DUT_IFACE = None,
-#                     OUTPUT_IFACE = None,
-
 def  get_config( msdd_id,
-                     spd_path='../MSDD.spd.xml',
-                     DUT_IP_ADDR='192.168.1.2',
-                     DUT_PORT='23',
-                     OUTPUT_ADDR = "234.0.0.100",
-                     OUTPUT_PORT = None,
-                     OUTPUT_VLAN = None,
-                     PSD_ADDR="233.0.0.100"
-                 ) :
+                 spd_path='../MSDD.spd.xml',
+                 DUT_IP_ADDR='192.168.1.2',
+                 DUT_PORT='23',
+                 OUTPUT_ADDR = "234.0.0.100",
+                 OUTPUT_PORT = None,
+                 OUTPUT_VLAN = None,
+                 PSD_ADDR="233.0.0.100" ) :
+    """
+    Given a msdd_id string from id_msdd.py. Return a configuration structure that will be used to connect and
+    configure the MSDD for testing.
+    """
 
     dut_config = {}
 
@@ -42,12 +42,11 @@ def  get_config( msdd_id,
         'name'        : 'MSDD',
         'impl_id'     : 'python',
         'receiver_identifier' : 'RCV:1',   # default receiver path to test
-        'receiver_modules' : ['RCV:1' ],  # identifiers for each rcv->wbbc flows
+        'receiver_modules' : ['RCV:1' ],   # identifiers for each rcv->wbbc flows
         'additional_tuner_output' : [1] ,  # total number of additional tuner output configs
         'execparams'  : { },
         'configure'   : {
             'advanced' : {
-                'advanced::enable_secondary_tuners' : False,
                 'advanced::enable_fft_channels' : False
             },
 
@@ -121,7 +120,7 @@ def  get_config( msdd_id,
     }
 
     #
-    # For tests of Channelizers/DDC pairs, the  output for WBDDC will be disabled
+    # For tests of Channelizers/DDC pairs, the output for WBDDC will be disabled
     # for those specific tests because of network utilization issues. ( See
     # fei_base/frontend_tuner_unit_test_base.py test decorators)
     # You can disable the output here but this will cause failures with
@@ -132,7 +131,6 @@ def  get_config( msdd_id,
     # to change a specific dictionary key
     # dut_config['MSDD|3000']['configure'].update({
     #         'advanced' : {
-    #             'advanced::enable_secondary_tuners' : False,
     #             'advanced::enable_fft_channels' : False
     #         }
     #        } )
@@ -321,8 +319,8 @@ def  get_config( msdd_id,
                 'DDC': {
                     'COMPLEX' : True,
                     'CF'      : [30e6, 3e9],
-                    'BW'      : [.781250e6, .781250e6],                  # fix these to single instance so secondary DDC can be allocated
-                    'SR'      :  [.781250e6,.781250e6],                 # fix these to single instance so secondary DDC can be allocated
+                    'BW'      : [ 1.25e6, 1.25e6 ],
+                    'SR'      : [ 1.5625e6, 1.5625e6 ],
                     'GAIN'    : [-48.0, 12.0],
                     'NUMDDCs' : 1,
                     'RESTRICT' : True
@@ -332,8 +330,8 @@ def  get_config( msdd_id,
                 'DDC': {
                     'COMPLEX' : True,
                     'CF'      : [30e6, 3e9],
-                    'BW'      : [1250000.0, 781250.0, 390625.0, 195312.5, 97656.25, 48828.125],
-                    'SR'      : [1250000.0, 781250.0, 390625.0, 195312.5, 97656.25, 48828.125],
+                    'BW'      : [5e6, 2.5e6, 1.25e6, 320.0e3],
+                    'SR'      : [6.25e6, 3.125e6, 1.5625e6, 390.625e3 ],
                     'GAIN'    : [-48.0, 12.0],
                     'NUMDDCs' : 16,
                     'RESTRICT' : True
