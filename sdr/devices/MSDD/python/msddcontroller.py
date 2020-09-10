@@ -35,6 +35,7 @@ __version__= '2.0'
 
 
 import sys
+import copy
 import socket
 import string
 import unittest
@@ -46,8 +47,19 @@ import re
 import pprint
 import time
 import traceback
+import threading
+import datetime
+
+class ConnectionFailure(Exception):
+    pass
 
 class CommandException(Exception):
+    pass
+
+class TransmitFailure(Exception):
+    pass
+
+class EchoFailure(Exception):
     pass
 
 class InvalidValue(Exception):
@@ -56,6 +68,13 @@ class InvalidValue(Exception):
 #
 # Helpers
 #
+
+def timestamp_msg(msg):
+    """
+    time stamp a debug message
+    """
+    ts=datetime.datetime.now()
+    return "{}:{}:{}.{} {}".format(ts.hour,ts.minute,ts.second,ts.microsecond,msg)
 
 def create_csv(val_list):
     """
@@ -138,27 +157,15 @@ def check_value_from_values( value, _get_values_list):
         raise InvalidValue("Item not found in list, item <" + str(value) + "> list " + ",".join([ str(x) for x in vlist]) )
     return True
 
-
-#
-# search for a value in a list of expected values
-# throw exception if match was not found, else return the index in the list
-#
-# def get_index_from_value( value, _get_values_list):
-#     if callable(_get_values_list):
-#         vlist=_get_values_list()
-#     else:
-#         vlist=_get_values_list
-#     for i, v in zip(range(len(vlist)),vlist):
-#         if str(value) == str(v):
-#             return i
-#     raise InvalidValue("Item not found in list, item <" + str(value) + "> list " + ",".join(vlist) )
-
-
-
 class Connection(object):
     """Class to actually communicate with the radio, NB there should only be one of these per radio"""
 
-    def __init__(self, address, timeout=0.25):
+    Success=0
+    TimeOut=-1
+    Error=-2
+    MsgEnd='\n'
+
+    def __init__(self, address, timeout=0.25,enable_trace=False):
         """
         Attributes:
         ----------
@@ -173,10 +180,15 @@ class Connection(object):
         timeout: default time in seconds to wait when receiving a message
         """
 	self._debug=False
-        self.__mutexLock = thread.allocate_lock()
+        self.__mutexLock = threading.Lock()
         self.radioAddress = address
         self.radioSocket=None
+        self.trace_on_comm_failure=enable_trace
+        self.pause=False
         self.connect(timeout)
+
+    def set_trace_failure(self, onoff):
+        self.trace_on_comm_failure=onoff
 
     def connect(self, timeout):
         """
@@ -196,8 +208,11 @@ class Connection(object):
         #generate socket for sending/receiving UDP packets to/from radio
         try:
             self.__mutexLock.acquire()
+            if self._debug:
+                self.log_msg("Opening connection to {}".format(self.radioAddress))
             self.radioSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         except:
+            traceback.print_exc()
             self.radioSocket=None
         finally:
             self.__mutexLock.release()
@@ -254,15 +269,105 @@ class Connection(object):
             return
 
     def _flush(self, retries=None):
+        ret=False
         if retries is None: retries=1
         self.radioSocket.sendto("\n", self.radioAddress)
         while retries != 0:
-            self.radioSocket.settimeout(self.timeout/4.0)
-            self.radioSocket.recv(65535)
+            self.radioSocket.settimeout(self.timeout/10.0)
+            rmsg=self.radioSocket.recv(65535)
+            if len(rmsg) > 0 : ret=True
             retries-=1
+        return ret
+
+    def log_msg(self,msg):
+        print timestamp_msg(msg)
+
+    def sendStringCommand(self, command, check_for_output=True, expect_output=True):
+        """
+        Sends command to the radio and return response
+
+        Parameters:
+        -----------
+        command : command string to send to radio
+        check_for_output : check for output after command echo is processed
+        expect_output : when checking for output that we expected reply message
+                        if not, then raise CommandException
+
+        Returns:
+        --------
+        resp : response string from radio
+        """
+        self.__mutexLock.acquire()            # synchronize access to the radio
+
+        _timeout=self.timeout                 # configured timeout
+        _echo_timeout=_timeout/5.0            # partial wait for echo response
+        _debug=self._debug                    # turn on debug messages
+
+        _cmd=command.replace('\n',' ').strip()   # remove newlines for debug messaging
+        retries=3                                # retries controls send/echo sequence if timeout occurs
+        returnMsg=None
+        try:
+            #
+            # performing retry method for badly behaving radios
+            #
+            while retries > 0:
+                try:  
+                    
+                    if self._debug:
+                        self.log_msg("--SEND-- cmd <{}> radio ({}) timeout({}) echo({}) check({}) expect({}) retries({}) orig debug({}) ".format(_cmd,self.radioAddress,_timeout,_echo_timeout,check_for_output, expect_output,retries,_debug))                        
+                    returnMsg = self._sendStringCommand(command, _timeout, _echo_timeout, check_for_output, expect_output)
+                    return returnMsg
+                except (TransmitFailure, EchoFailure) as e :
+                    
+                    #
+                    # Radio is not responding to commands increase timeout and try again
+                    #
+                    
+                    #
+                    # turn on debug messages for diagnostic purposes
+                    #
+                    self._debug=True
+
+                    #
+                    # double the default timeouts for send/recv sequence of a command
+                    #
+                    _timeout=_timeout*2
+                    _echo_timeout=_timeout/2.0
+                    retries-=1 
+
+                    _e_msg="Echo"
+                    if type(e) == TransmitFailure : _e_msg = "Transmit"
+                    
+                    if self._debug:
+                       self.log_msg("--WARN-- {} Error, Radio not responsive, cmd <{}> radio ({}) timeout ({}) echo({}) check({}) expect({}) retries({}) ".format(_e_msg, _cmd,self.radioAddress,_timeout,_echo_timeout,check_for_output, expect_output,retries))
+                    time.sleep(0.09)
+                    try:
+                        self._flush()
+                    except socket.timeout:
+                        pass
+                    if retries == 0:
+                        self.log_msg("--WARN-- {} Error, Radio not responsive, (cmd failure <{}> radio ({}) check({}) expect({}) ex({}))".format(_e_msg,_cmd,self.radioAddress,check_for_output, expect_output,type(e)))
+                        raise ConnectionFailure("Command IO ({}) failure, cmd <{}> radio ({})".format(_e_msg,_cmd,self.radioAddress))
+            
+        except socket.timeout as e :
+            if expect_output:
+                if self._debug:
+                    self.log_msg("Socket timed out, processing cmd <{}> radio ({}) may not be responsive. (check:{} expect:{})".format(_cmd,self.radioAddress,check_for_output,expect_output))
+                raise ConnectionFailure(self._except_msg)
+        except socket.error as e :
+            self.log_msg("Socket error, cmd {} radio({}) may not be responsive, reconnect".format(_cmd,self.radioAddress))
+            self._reconnect()
+            raise e
+        finally:
+            # reset initial values for timeout and debug
+            self._debug=_debug
+            self.__mutexLock.release()
+            
+        return returnMsg
+
 
     
-    def sendStringCommand(self, command, check_for_output=True, expect_output=True):
+    def _sendStringCommand(self, command, timeout, echo_timeout, check_for_output=True, expect_output=True):
         """Sends command to the radio and process response
 
         Parameters:
@@ -276,67 +381,66 @@ class Connection(object):
         --------
         resp : response string from radio
         """
+        self._except_msg=""
+        _cmd=command.replace('\n',' ').strip()
+        _timeout=timeout
 
+        if self._debug:
+            self.log_msg("--DEBUG-- Sending to radio:{0} command <{1}> timeout:{2} check:{3} expect:{4}".format(self.radioAddress,_cmd,timeout,check_for_output,expect_output))
+
+        # set exception message
+        self._except_msg="Socket timed out receiving echo for command <{}> radio ({})".format( _cmd,self.radioAddress)
+        self.radioSocket.settimeout(_timeout)
         try:
-            self.__mutexLock.acquire()
-
-            self.radioSocket.settimeout(self.timeout)
-            _cmd=command.replace('\n',' ')
-            if self._debug:
-                print "Sending to radio:", self.radioAddress, " command <"+ _cmd +">"
-
-            # set exception message
-            except_msg="Socket timed out receiving echo from radio for command: " + _cmd
-
             self.radioSocket.sendto(command, self.radioAddress)
-
-            #The following lines were added to avoid a condition where the radio will reset back to turning Echo On and messing up
-            # It has to do with additional clients hitting the radio externally, which re-use connections (0-15) on the radio
-            # When the current connection is the last on the list, it gets reallocated to the new connection, and the device gets
-            # a new connection when it tries to send data, but the echo is turned back on on the new socket
-            _expect_output=True
-            echoMsg = self.radioSocket.recv(65535)
-            if self._debug:
-                resp = re.sub(r'[^\x00-\x7F]+',' ', str(echoMsg))
-                resp = resp.replace('\n',' ')
-                print "Echo from radio <", resp, "> (check for output=", check_for_output, ")"
-
-            # early return, do not look for error conditions or response messages
-            if not check_for_output:
-                return ""
-
-            # setup for exceptions when processing response messages
-            _expect_output = expect_output
-            except_msg = "Socket timed out when reading results from command: " + _cmd
-            # if we don't expect anything then no need to wait the entire time..
-            if not expect_output: self.radioSocket.settimeout(self.timeout/4.0)
-            returnMsg = self.radioSocket.recv(65535)
-
-            # clean up return message
-            returnMsg = re.sub(r'[^\x00-\x7F]+',' ', str(returnMsg))
-            returnMsg = returnMsg.replace('\n',' ').rstrip()
-            if self._debug:
-                print "Response from command : " + returnMsg, " (check for output:", check_for_output, ")"
-            
-            # check for unexpected output
-            if not expect_output and len(returnMsg) > 0:
-                err_str =  "Unexpected output received \"" + returnMsg + "\" from command: " + _cmd
-                if self._debug:
-                    print err_str
-                self._flush()
-                raise CommandException(err_str)
-
-            return returnMsg
-
         except socket.timeout:
-            if _expect_output:
-                if self._debug:
-                    print "Socket timed out when expecting a return message, radio may not be responsive"
-                self._reconnect()
-                raise Exception(except_msg)
-        finally:
-            self.__mutexLock.release()
+            raise TransmitFailure
 
+        # process echo of command, should happen right away
+        _expect_output=True
+        self.radioSocket.settimeout(echo_timeout)
+        try:
+            echoMsg = self.radioSocket.recv(65535)
+        except socket.timeout:
+                raise EchoFailure
+
+        # setup for exceptions when processing response messages
+        _expect_output = expect_output
+        self._except_msg = "Socket timed out({}) when reading results for command <{}> radio ({})".format(timeout,_cmd,self.radioAddress)
+
+        if self._debug:
+            resp = re.sub(r'[^\x00-\x7F]+',' ', str(echoMsg))
+            resp = resp.replace('\n',' ')
+            self.log_msg("--DEBUG-- Echo from radio <{0}> (check for output={1})".format(resp,check_for_output))
+
+        # early return, do not look for error conditions or response messages
+        if not check_for_output:
+            return ""
+
+        # if we don't expect anything then no need to wait the entire time..
+        _timeout=timeout
+        if not expect_output: 
+            _timeout=echo_timeout
+        self.radioSocket.settimeout(_timeout)
+        returnMsg = self.radioSocket.recv(65535)
+                
+        self._except_msg=""
+        # clean up return message
+        returnMsg = re.sub(r'[^\x00-\x7F]+',' ', str(returnMsg))
+        returnMsg = returnMsg.replace('\n',' ').rstrip()
+        if self._debug:
+            self.log_msg("--DEBUG-- Response from command : {} (check for output:{}) radio {})".format(returnMsg,check_for_output,self.radioAddress))
+
+        # check for unexpected output
+        if not expect_output and len(returnMsg) > 0:
+            err_str =  "Unexpected output received \"{}\" from command:{} radio {}".format(returnMsg,_cmd,self.radioAddress)
+            if self._debug:
+                print err_str
+            # send newlines to reset command processing
+            self._flush()
+            raise CommandException(err_str)
+
+        return returnMsg
 
 
 class baseModule(object):
@@ -402,8 +506,10 @@ class baseModule(object):
         query_str=""
         if query: query_str="?"
         command_str = command.strip()
-        args_str = args.strip();
-        return str(self.module_name) + ":" + str(self.channel_number) + " " + str(command_str) + str(query_str)   + " " + str(args_str)+ "\n"
+        args_str=""
+        if len(args.strip()) > 0:
+            args_str = " {}".format(args.strip());
+        return "{}:{} {}{}{}\n".format(self.module_name,self.channel_number,command_str,query_str,args_str)
 
     def send_query_command(self,command_str,arg1_str="", check_for_output=True):
         command=self.make_command(command_str,arg1_str,True)
@@ -411,23 +517,24 @@ class baseModule(object):
                                           check_for_output=check_for_output)
         if self._debug:
             print "send_query_command (completed) command ", command.replace('\n',' '), " response ", res
+
+        if self.connection.pause:
+            time.sleep(.008)
         return res
 
     def send_set_command(self,command_str, arg1_str="", check_for_output=True, expect_output=False):
         command=self.make_command(command_str,arg1_str)
-	try:
-            res = self.connection.sendStringCommand(command,
-                                              check_for_output=check_for_output,
-                                              expect_output=expect_output)
+        res=None
+        res = self.connection.sendStringCommand(command,
+                                                check_for_output=check_for_output,
+                                                expect_output=expect_output)
 
-            if self._debug:
-                print "send_set_command (completed) command ", command.replace('\n',' '), " response ", res
-        except Exception, e:
-	    if not expect_output:
-                if self._debug:
-                    traceback.print_exc()
-                    pass
-            raise e
+        if self._debug:
+            print "send_set_command (completed) command ", command.replace('\n',' '), " response ", res
+
+        if self.connection.pause:
+            time.sleep(.008)
+
         return res
 
     def parseResponse(self, resp, items = -1, sep=','):
@@ -558,9 +665,6 @@ class baseModule(object):
         
         return val
 
-    # def get_index_from_value(self,value, _get_values_list):
-    #     return get_index_from_value(value, _get_values_list)
-
     def get_indexed_value(self, _get_index, _get_values_list, rtype=None):
         if callable(_get_index) :
             i = _get_index()
@@ -570,6 +674,7 @@ class baseModule(object):
         if i < len(vlist) :
             ret=vlist[i]
             if rtype: return rtype(ret)
+            return ret
         else:
             return None
 
@@ -615,11 +720,9 @@ class baseModule(object):
                 return True
             except InvalidValue, e:
                 raise e
-            except CommandException:
-                self.connection.flush()
-                return False
+            except CommandException as e:
+                raise e
             except Exception:
-                self.connection.flush()
                 return False
             
             if tolerance_range != None:
@@ -656,38 +759,57 @@ class baseModule(object):
 
 
 class baseIPPModule(baseModule):
-    def __init__(self, connection, channel_number=0, mapping_version=2):
+    def __init__(self, connection, channel_number=0, mapping_version=2, multi_interface=False):
         super(baseIPPModule,self).__init__(connection, channel_number,mapping_version)
         self._interface=None
+        self._multi_interface=multi_interface
         try:
             connection=self.getIPP()
-            if len(connection) == 3:
+            if self._multi_interface:    # provide default interface to 0 it we have more than one
+                self._interface=0
+            if len(connection) == 3:     # check current IPP state to see if we are already assigned interface
                 self._interface=int(connection[0])
+                
         except:
             pass
 
-    def setAddressPort(self,ip_address, port, interface=None):
+    def _formatIPPargs(self,ip_address, port, interface):
         ipp_args = str(ip_address).strip() + ":" + str(port).strip()
-        if interface is not None or self._interface is not None:
-            inf=str(interface)
-            if interface is None: inf=str(self._interface)
-            ipp_args = str(inf).strip() + ":" + ipp_args
+        inf_arg=""
+        if interface is None:
+            # if the interface was determined from response or it supports interface addressing
+            if self._interface is not None or self._multi_interface:
+                _inf=self._interface
+                # use interface from original query or default 0
+                if _inf is None: _inf=0
+                inf_arg="{}:".format(_inf)
+        else:
+            # used supplied interface to format ipp arguments
+            inf_arg="{}:".format(interface)
+            # radio does not require interface
+            if self._interface is None:
+                inf_arg=""
+
+        ipp_args = "{}{}".format(inf_arg,ipp_args)
+        return ipp_args
+
+    def setAddressPort(self,ip_address, port, interface=None):
+	ipp_args=self._formatIPPargs(ip_address,port,interface)
         self.setIPP(ipp_args)
+        # validate return..and check for interface
+        self.validateIPP(ipp_args)
         return True
 
-    def setIPP(self,ipp_args):
-        if self._debug:
-            print "baseIPPModule, setIPP args: ", ipp_args
-        self.send_set_command("IPP", ipp_args)
+    def validateIPP(self,ipp_args):
 	ipp_resp=self.getIPP()
         ipp_set = ipp_args.split(":")
         if self._debug:
-            print "baseIPPModule, IPP set: ", ipp_set, " result: ", ipp_resp
+            print "baseIPPModule, validateIPP ipp_args: ", ipp_args, " result: ", ipp_resp
 
         ridx_end= -len(ipp_resp)-1
         ridx=-1;
-        # start from the end of the return and work
-        # validate return , possible return from radio ip:port, inf:ip:port
+        # start from the end of the response and validate return
+        # possible return values from radio: ip:port, inf:ip:port
         for ridx, rvalue in zip(range(ridx,ridx_end,ridx),ipp_resp[::ridx]):
             if  abs(ridx) <= len(ipp_set) and rvalue != ipp_set[ridx]:
                 raise InvalidValue("Set IPP to " + ipp_args + " failed" )
@@ -697,13 +819,20 @@ class baseIPPModule(baseModule):
                     print "baseIPPModule, IPP interface returned ",int(ipp_resp[ridx])
                 self._interface=int(ipp_resp[ridx])
 
+
+    def setIPP(self,ipp_args):
+        if self._debug:
+            print "baseIPPModule, setIPP args: ", ipp_args
+        self.send_set_command("IPP", ipp_args)
+
     def getIPP(self):
-        """ Gets the present IP and UDP port setting for logging module"""
+        """ Gets the  IP and UDP port setting for the module"""
         resp = self.send_query_command("IPP")
+	response=[]
         try:
-            response = self.parseResponse(resp, 2,':')
-        except:
             response = self.parseResponse(resp, 3,':')
+        except:
+            response = self.parseResponse(resp, 2,':')
         return response
     
     def getIPPString(self):
@@ -711,12 +840,18 @@ class baseIPPModule(baseModule):
         resp = self.getIPP()
         return ':'.join( resp )
     
-    def getIPP_Interface(self):
+    def ___getIPP_Interface(self):
         resp=self.getIPP()
         try:
             ret=int(resp[-3])
         except:
             ret=0
+        return ret
+
+    def getIPP_Interface(self):
+        ret=0
+        if self._interface:
+            ret=self._interface
         return ret
 
     def getIPP_IP(self):
@@ -737,7 +872,7 @@ class ConsoleModule(baseIPPModule):
     ConsoleModule supports the command set from the console module of the MSDD receivver
 
     """
-    def __init__(self, connection, channel_number=0, mapping_version=2):
+    def __init__(self, connection, channel_number=0, mapping_version=2, multi_interface=False):
         """
         Create an instance of the ConsoleModule class
 
@@ -747,7 +882,7 @@ class ConsoleModule(baseIPPModule):
         channel_number : channel id of the module
         mapping_version : what version of firmware mapping is used
         """
-        super(ConsoleModule,self).__init__(connection, channel_number, mapping_version)
+        super(ConsoleModule,self).__init__(connection, channel_number, mapping_version, multi_interface)
 
     def cmdPing(self):
         try:
@@ -784,7 +919,7 @@ class ConsoleModule(baseIPPModule):
             self.send_set_command("ECH",arg)
         except:
             traceback.print_exc()
-            None
+            pass
         return value == self.getEcho()
             
     def getEcho(self):
@@ -913,8 +1048,8 @@ class ConsoleModule(baseIPPModule):
 class LOGModule(baseIPPModule):
     MOD_NAME_MAPPING={1:"LOG",2:"LOG"}
 
-    def __init__(self, connection, channel_number=0, mapping_version=2):
-        super(LOGModule,self).__init__(connection, channel_number, mapping_version)
+    def __init__(self, connection, channel_number=0, mapping_version=2, multi_interface=False):
+        super(LOGModule,self).__init__(connection, channel_number, mapping_version, multi_interface)
 
     # Logging Module commands
     def getIPPString(self):
@@ -992,7 +1127,7 @@ class BoardModule(baseModule):
         self.send_set_command("EXR",str(ref))
 
     def getExternalRef(self):
-        resp = self.send_query_command("EXR\n")
+        resp = self.send_query_command("EXR")
         return int(self.parseResponse(resp, 1)[0]) 
 
     def getExternalRefList(self):
@@ -1025,6 +1160,10 @@ class BoardModule(baseModule):
 class NetModule(baseModule):
     MOD_NAME_MAPPING={1:"NET",2:"NET"}
         
+    def __init__(self, connection, channel_number=1, mapping_version=2):
+        baseModule.__init__(self, connection, channel_number, mapping_version)
+        self._bit_rate=None
+
     def _setIpAddress(self, ip_address):
         # save off enable state of network module
         _enb=self.getEnable()
@@ -1053,8 +1192,10 @@ class NetModule(baseModule):
         return (int(self.parseResponse(resp, -1,':')[0]) == 1)   
 
     def getBitRate(self):
-        resp = self.send_query_command("BRT")
-        return float(self.parseResponse(resp, 1)[0]) 
+        if not self._bit_rate:
+            resp = self.send_query_command("BRT")
+            self._bit_rate = float(self.parseResponse(resp, 1)[0]) 
+        return self._bit_rate
 
     # property access to set/get methods
     ip_address = property(getIpAddress, setIpAddress, doc="")
@@ -2059,7 +2200,7 @@ class SWDDCModule(DDCBaseModule):
     def getStepGain(self):
         return 0
     
-    def getBIT(self):
+    def getBIT(self,bit=None):
         return 0     
     def getBITStr(self):
         return ""
@@ -2474,7 +2615,7 @@ class SpectralScanModule(baseModule):
     def getMaxEnableSetsSize(self):
         return int(self.getEnableSetsLimits()[1])
     def getIntEnableSetsSize(self):
-        return int(self.getEnableSetsLimts()[2])
+        return int(self.getEnableSetsLimits()[2])
     def setEnable(self, enable):
         return self.setter_with_validation(enable, self._setEnable, self.getEnable)
     
@@ -2712,7 +2853,7 @@ class SpectralScanModule(baseModule):
         if loss_report: 
             loss = 1
 
-        self.setTippingModeNums(mode, loss)
+        self.setTippingModeNum(mode, loss)
         return str([mode, loss]) == str(self.getTippingMode()[0:1])
 
     def setTippingModeNum(self, mode, loss):
@@ -2751,6 +2892,23 @@ class IQCircularBufferModule(baseModule):
     
                 
 class OUTModule(baseIPPModule):
+    class Info:
+        def __init__(self):
+            self.ip_address=""
+            self.port=0
+            self.vlan_enabled=False
+            self.vlan =0
+            self.flow=""
+            self.timestamp_offset=0
+            self.endianess=0
+            self.mpf_flush=0
+            self.samples_per_frame=512
+            self.packet_data_len=1024
+            self.data_width=16
+            self.protocol=""
+            self.channel_number=None
+            self.input_sample_rate=0
+
     MOD_NAME_MAPPING={1:"OUT",2:"OUT"}
     
     PROTOCOL_UDP_SDDS=0
@@ -2759,14 +2917,93 @@ class OUTModule(baseIPPModule):
     PROTOCOL_UDP_RAW=3
     PROTOCOL_UDP_SDDSA=4
 
-    def __init__(self, connection, channel_number=0, mapping_version=2):
-        super(OUTModule,self).__init__(connection, channel_number, mapping_version)
+    def __init__(self, connection, channel_number=0, mapping_version=2, multi_interface=False):
+        super(OUTModule,self).__init__(connection, channel_number, mapping_version, multi_interface)
         self._enable_block_limits=None
         self._packet_rate_limits=None
         self._packet_length_limits=None
         self._protocol_list=None
         self._endianess_list=None
         self._gain_limits=None
+        self._protocol_name=''
+        self._info=OUTModule.Info()
+
+
+    def _configureModule(self, enable, ipp, pol,
+                        vlan, vlan_enable,
+                        endianess, time_offset, flush_opt,
+                        proto_opts="" ):
+
+        # concatenate commands for quicker processing
+        _enable_arg="0"
+        if enable: _enable_arg="1"
+        _ipp="IPP {};".format(ipp)
+        _pol="POL {};".format(pol)
+        _vlan_enable=0
+        if vlan_enable: _vlan_enable=1
+        _vlan="VLANEN {}; VLANTCI {};".format(_vlan_enable,vlan)
+
+        if type(endianess) == str:
+            endianess=self.getOutputEndianessIndex(endianess)
+            
+        cmd="ENB {}; {} {} {} {} END {}; TSOFS {}; MFP {};".format(
+            _enable_arg, _ipp, _pol, _vlan, proto_opts, endianess, time_offset, flush_opt)
+        self.send_set_command(cmd)
+
+        
+        
+    def configureVita49(self, enable, interface, ip_address, port,
+                         vlan, vlan_enable,
+                         endianess, time_offset, flush_opt, context_interval):
+        ipp=self._formatIPPargs(ip_address,port,interface)
+        proto_opts="CDR {}; CCR 1;".format(context_interval)
+        self._protocol_name='UDP_VITA49'
+        pol=self.getOutputProtocolNumberFromString("UDP_VITA49")        
+        self._configureModule(enable, ipp, pol,
+                            vlan, vlan_enable,
+                            endianess, time_offset, flush_opt,
+                            proto_opts)
+        self.validateIPP(ipp)
+        
+        self._info.ip_address=ip_address
+        self._info.port=port
+        self._info.protocol=self._protocol_name
+        self._info.vlan=vlan
+        self._info.vlan_enabled=vlan_enable
+        self._info.endianess=endianess
+        self._info.channel_number = self.channel_id()
+        self._info.timestamp_offsest=time_offset
+        self._info.samples_per_frame=self.samples_per_frame
+        self._info.data_width=self.data_width
+        self._info.input_sample_rate=self.input_sample_rate
+
+    def configureSDDS(self, enable, interface, ip_address, port, 
+                       protocol, vlan, vlan_enable,
+                       endianess, time_offset, flush_opt):
+
+        ipp=self._formatIPPargs(ip_address,port,interface)
+        if type(protocol)==str:
+            self._protocol_name=protocol
+            protocol=self.getOutputProtocolNumberFromString(protocol)
+        self._configureModule(enable, ipp, protocol,
+                            vlan, vlan_enable,
+                            endianess, time_offset, flush_opt)
+        self.validateIPP(ipp)
+
+        self._info.ip_address=ip_address
+        self._info.port=port
+        self._info.protocol=self._protocol_name
+        self._info.vlan=vlan
+        self._info.vlan_enabled=vlan_enable
+        self._info.endianess=endianess
+        self._info.channel_number = self.channel_id()
+        self._info.timestamp_offsest=time_offset
+        self._info.samples_per_frame=self.samples_per_frame
+        self._info.data_width=self.data_width
+        self._info.input_sample_rate=self.input_sample_rate
+
+    def getInfo(self):
+        return self._info
 
     def _setEnable(self, enable, block_xfer_size=None, sync_channel=None):
         enable_arg="0"
@@ -2787,8 +3024,8 @@ class OUTModule(baseIPPModule):
                 print "OUTModule,  getEnable resp ", resp
             return (int(self.parseResponse(resp, -1,':')[0]) == 1)
         except Exception, e:
-	   traceback.print_exc()
-	   raise e
+            print e
+            raise e
 
     def setEnable(self, enable):
         return self.setter_with_validation(enable, self._setEnable, self.getEnable)
@@ -2843,9 +3080,12 @@ class OUTModule(baseIPPModule):
     
     def _setOutputDataWidth(self, dwt):
         self.send_set_command("DWT",str(dwt))
-    def getOutputDataWidth(self):
+    def _getOutputDataWidth(self):
         resp = self.send_query_command("DWT")
         return int(self.parseResponse(resp, 1)[0])    
+    def getOutputDataWidth(self):
+        return self.get_indexed_value(self._getOutputDataWidth, self.getOutputDataWidthList, rtype=int)
+
     def getOutputDataWidthList(self):
         resp = self.send_query_command("DWTL")
         return self.parseResponse(resp)
@@ -3096,11 +3336,10 @@ class object_container(object):
         if obj == None:
             return False
         try:
-            idx=self.used_object.index(obj)
+            idx=self.used_objects.index(obj)
             return True
         except:
             return False
-
         
     def mark_as_used(self, obj):
         if obj == None:
@@ -3109,6 +3348,9 @@ class object_container(object):
             return 
         self.free_objects.remove(obj)
         self.used_objects.append(obj)
+
+    def get_used_objects(self):
+        return self.used_objects[:]
           
     def get_object(self, obj=None):
         #ensure that free array is not empty
@@ -3168,8 +3410,8 @@ class MSDDRadio:
         """
         Exposed receiver channels that are created from the following receiver paths:
          rcv -> wbddc -> out
-         rcv -> wbddc -> nbddc -> swddc -> out
-         rcv -> wbddc -> nbddc -> swddc (piggyback) -> out
+         rcv -> wbddc -> nbddc -> out
+         rcv -> wbddc -> nbddc -> swddc (inline) -> out  (finer bw tuning)
         """
         def __init__(self, msdd_radio, reg_mod, rx_channel_num,coherent=False, msdd_rx_type="UNKNOWN"):
             self._msdd = msdd_radio
@@ -3193,6 +3435,13 @@ class MSDDRadio:
             self._srates={}
             self._bw_rates={}
             self.fft_channel=None
+            
+            # cache for status info for quicker response and less radio IO
+            self._analog_status=None
+            self._analog_digital_status=None
+            self._digital_status=None
+            self._output_status=None
+            self._fft_status=None
 
         def msdd_channel_id(self):
             return self.registration_name + ":" + str(self.channel_number)
@@ -3269,56 +3518,78 @@ class MSDDRadio:
             pass
 
         def _get_analog_status(self):
-            status=self._status()
-            status.center_frequency = self.getFrequeny_Hz()
-            status.available_frequency = self.analog_rx_object.object.available_frequency_hz
-            status.gain = self.analog_rx_object.object.gain
-            status.available_gain = self.analog_rx_object.object.available_gain
-            status.attenuation = self.analog_rx_object.object.attenuation
-            status.available_attenuation = self.analog_rx_object.object.available_attenuation
-            status.adc_meter_values = self.analog_rx_object.object.adc_meter_readable
-            status.bandwidth = self.getBandwidth_Hz()
-            status.available_bandwidth = self.analog_rx_object.object.available_bandwidth_hz
-            status.rcvr_gain = self.digital_rx_object.object.gain
-            return status
+            if not self._analog_status:
+                status=status=self._status()
+                status.center_frequency = self.getFrequeny_Hz()
+                status.available_frequency = self.analog_rx_object.object.available_frequency_hz
+                status.gain = self.analog_rx_object.object.gain
+                status.available_gain = self.analog_rx_object.object.available_gain
+                status.attenuation = self.analog_rx_object.object.attenuation
+                status.available_attenuation = self.analog_rx_object.object.available_attenuation
+                status.adc_meter_values = self.analog_rx_object.object.adc_meter_readable
+                status.bandwidth = self.getBandwidth_Hz()
+                status.available_bandwidth = self.analog_rx_object.object.available_bandwidth_hz
+                status.rcvr_gain = self.digital_rx_object.object.gain
+                self._analog_status=copy.copy(status)
+            else:
+                self._analog_status=self.getFrequeny_Hz()
 
+            return self._analog_status
 
         def _get_analog_digital_status(self):
-            status=self._status()
-            status.enabled = self.getEnable()
-            status.decimation = self.digital_rx_object.object.decimation
-            status.available_decimation = self.digital_rx_object.object.available_decimation
-            status.attenuation = self.analog_rx_object.object.attenuation
-            status.available_attenuation = self.analog_rx_object.object.available_attenuation
-            status.gain = self.analog_rx_object.object.gain
-            status.available_gain = self.analog_rx_object.object.available_gain
-            status.input_sample_rate = self.digital_rx_object.object.input_sample_rate
-            status.sample_rate = self.getSampleRate()
-            status.available_sample_rate = create_csv(self.getSampleRateLimits())
-            status.bandwidth = self.getBandwidth_Hz()
-            status.available_bandwidth = create_csv(self.getBandwidthLimits())
-            status.center_frequency = self.getFrequency_Hz()
-            status.available_frequency = self.analog_rx_object.object.available_frequency_hz
-            status.ddc_gain = self.digital_rx_object.object.gain
-            return status
+            if not self._analog_digital_status:
+                status=self._status()
+                status.enabled = self.getEnable()
+                status.decimation = self.digital_rx_object.object.decimation
+                status.available_decimation = self.digital_rx_object.object.available_decimation
+                status.attenuation = self.analog_rx_object.object.attenuation
+                status.available_attenuation = self.analog_rx_object.object.available_attenuation
+                status.gain = self.analog_rx_object.object.gain
+                status.available_gain = self.analog_rx_object.object.available_gain
+                status.input_sample_rate = self.digital_rx_object.object.input_sample_rate
+                status.sample_rate = self.getSampleRate()
+                status.available_sample_rate = create_csv(self.getSampleRateLimits())
+                status.bandwidth = self.getBandwidth_Hz()
+                status.available_bandwidth = create_csv(self.getBandwidthLimits())
+                status.center_frequency = self.getFrequency_Hz()
+                status.available_frequency = self.analog_rx_object.object.available_frequency_hz
+                status.ddc_gain = self.digital_rx_object.object.gain
+                self._analog_digital_status=copy.copy(status)
+            else:
+                self._analog_digital_status.enabled=self.getEnable()
+                self._analog_digital_status.center_frequency = self.getFrequency_Hz()
+                self._analog_digital_status.sample_rate = self.getSampleRate()
+                self._analog_digital_status.bandwidth = self.getBandwidth_Hz()
+
+            return self._analog_digital_status
 
         def _get_digital_status(self):
-            status=self._status()
-            status.enabled = self.getEnable()
-            status.decimation = self.digital_rx_object.object.decimation
-            status.available_decimation = self.digital_rx_object.object.available_decimation
-            status.attenuation = self.digital_rx_object.object.attenuation
-            status.available_attenuation = self.digital_rx_object.object.available_attenuation
-            status.gain = self.digital_rx_object.object.gain
-            status.available_gain = self.digital_rx_object.object.available_gain
-            status.input_sample_rate = self.digital_rx_object.object.input_sample_rate
-            status.sample_rate = self.getSampleRate()
-            status.available_sample_rate = create_csv(self.getSampleRateLimits())
-            status.bandwidth = self.getBandwidth_Hz()
-            status.available_bandwidth = create_csv(self.getBandwidthLimits())
-            status.center_frequency = self.getFrequency_Hz()
-            status.available_frequency = self.digital_rx_object.object.available_frequency_hz
-            status.ddc_gain = self.digital_rx_object.object.gain
+            if not self._digital_status:
+                status=self._status()
+                status.enabled = self.getEnable()
+                status.decimation = self.digital_rx_object.object.decimation
+                status.available_decimation = self.digital_rx_object.object.available_decimation
+                status.attenuation = self.digital_rx_object.object.attenuation
+                status.available_attenuation = self.digital_rx_object.object.available_attenuation
+                status.gain = self.digital_rx_object.object.gain
+                status.available_gain = self.digital_rx_object.object.available_gain
+                status.input_sample_rate = self.digital_rx_object.object.input_sample_rate
+                status.sample_rate = self.getSampleRate()
+                status.available_sample_rate = create_csv(self.getSampleRateLimits())
+                status.bandwidth = self.getBandwidth_Hz()
+                status.available_bandwidth = create_csv(self.getBandwidthLimits())
+                status.center_frequency = self.getFrequency_Hz()
+                status.available_frequency = self.digital_rx_object.object.available_frequency_hz
+                status.ddc_gain = self.digital_rx_object.object.gain
+                self._digital_status=copy.copy(status)
+            else:
+                self._digital_status.enabled=self.getEnable()
+                self._digital_status.center_frequency = self.getFrequency_Hz()
+                self._digital_status.sample_rate = self.getSampleRate()
+                self._digital_status.bandwidth = self.getBandwidth_Hz()
+
+            return self._digital_status
+
             return status
 
         def getStatus(self):
@@ -3331,33 +3602,47 @@ class MSDDRadio:
             return None
 
         def getOutputStatus(self):
-            status=None
             if self.output_object:
-                status=self._status()
-                status.output_multicast = self.output_object.object.ip_address
-                status.output_port = int(self.output_object.object.ip_port)
-                status.output_enabled = self.output_object.object.enable
-                status.output_protocol = self.output_object.object.protocol_readable
-                status.output_vlan_enabled = int(self.output_object.object.vlan_tagging_enable) == 1
-                status.output_vlan_tci = str(self.output_object.object.vlan_tci)
-                status.output_vlan = int(self.output_object.object.vlan_tci) & 0xFFF
-                status.output_flow = self._msdd.get_stream_flow(self.output_object)
-                status.output_timestamp_offset = str(self.output_object.object.timestamp_offset)
-                status.output_channel = str(self.output_object.object.channel_number)
-                status.output_endianess = self.output_object.object.endianess
-                status.output_mfp_flush = str(self.output_object.object.mfp)
-            return status
+                try:
+                    # get caches settings from output port since these change
+                    # during startup.
+                    info=self.output_object.object.getInfo()
+                    if not self._output_status:
+                        status=self._status()
+                        self._output_status=copy.copy(status)
+                        self._output_status.output_flow = self._msdd.get_stream_flow(self.output_object)
+
+
+                    self._output_status.output_multicast = info.ip_address
+                    self._output_status.output_port = int(info.port)
+                    self._output_status.output_enabled = self.output_object.object.enable
+                    self._output_status.output_protocol = info.protocol
+                    self._output_status.output_vlan_enabled = info.vlan_enabled
+                    self._output_status.output_vlan = info.vlan
+                    self._output_status.output_timestamp_offset = info.timestamp_offset
+                    self._output_status.output_channel = str(info.channel_number)
+                    self._output_status.output_endianess = info.endianess
+                    self._output_status.output_mfp_flush = str(self.output_object.object.mfp)
+                except:
+                    traceback.print_exc()
+                    
+            return self._output_status
 
         def getFFTStatus(self):
             status=None
             if self.output_object:
-                status=self._status()
-                status.psd_fft_size = self.fft_channel.object.fftSize
-                status.psd_averages = self.fft_channel.object.num_averages
-                status.psd_time_between_ffts = self.fft_channel.object.time_between_fft_ms
-                status.psd_output_bin_size = self.fft_channel.object.outputBins
-                status.psd_window_type = self.fft_channel.object.window_type_str
-                status.psd_peak_mode = self.fft_channel.object.peak_mode_str
+                if not self._fft_status:
+                    status=self._status()
+                    status.psd_fft_size = self.fft_channel.object.fftSize
+                    status.psd_averages = self.fft_channel.object.num_averages
+                    status.psd_time_between_ffts = self.fft_channel.object.time_between_fft_ms
+                    status.psd_output_bin_size = self.fft_channel.object.outputBins
+                    status.psd_window_type = self.fft_channel.object.window_type_str
+                    status.psd_peak_mode = self.fft_channel.object.peak_mode_str
+                    self._fft_status=copy.copy(status)
+                    
+            return self._fft_status
+
             return status
 
         def get_digital_signal_path(self):
@@ -3680,6 +3965,12 @@ class MSDDRadio:
             return None
 
     class secondary_channel_module(rx_channel):
+        """
+        Exposed receiver channels that are created from SWDDC modules that require a 
+        primary rx_channel.
+         rcv -> wbddc -> nbddc ->  out (primary)
+                              `->swddc (secondary) -> out
+        """
         def __init__(self, msdd_radio, digital_mod, primary_mod, output_mod, rx_channel_num ):
             super(MSDDRadio.secondary_channel_module,self).__init__( msdd_radio,
                                                                      digital_mod,
@@ -3863,32 +4154,30 @@ class MSDDRadio:
             return mod
 
 
-    """Class to manage a single MSDD-X000 radio instance"""
-    """Note that this class is just a container for the individual modules"""
-    """The module instances should be accessed directly for command and control"""
-    """ params:
+    """MSDDRadio: Manages a single MSDD-X000 single channel or MSDD-0600 dual channel radio
+       Note that this class is just a container for the individual modules
+       The module instances should be accessed directly for command and control
 
 
     """
     def __init__(self,
                  address,
                  port,
-                 udp_timeout=0.25,
-                 validation_polling_time=0.25,
-                 validation_number_retries = 0,
-                 enable_inline_swddc=False,
-                 enable_secondary_tuners=False,
-                 enable_fft_channels=False):
+                 udp_timeout=0.5,
+                 enable_fft_channels=False,
+                 connection_debug=False,
+                 radio_debug=False
+    ):
 
         start_time_total = time.time()
 
         #Set up sockets
         self.radioAddress = (address, int(port))
-        self.connection = Connection(self.radioAddress,udp_timeout)
-        self.connection._debug=False
-        
-        self.validation_polling_time = validation_polling_time
-        self.validation_number_retries = validation_number_retries
+        # for initial setup we want IO requests to process fast so choose smaller value 
+        _timeout=min(udp_timeout,0.5)
+        self.connection = Connection(self.radioAddress,_timeout)
+        self.connection._debug=connection_debug
+        self.enable_fft_channels=enable_fft_channels
         
         #Available Module lists (sorted by installation name)
         self.console_modules = []                           #CON
@@ -3908,7 +4197,7 @@ class MSDDRadio:
         self.msdr_rs422_modules = []                        #MSDR_RS422
         self.tfn_modules = []                               #TFN
         self.gps_modules = []                               #GPS
-	self._debug=False
+	self._debug=radio_debug
         
         #setup the basic modules    
         self.console = ConsoleModule(self.connection)       #CON
@@ -3942,9 +4231,9 @@ class MSDDRadio:
                     inst_name = self.stream_router.getInstallName(reg_full)
                     self.registered_modules.setdefault(module,[]).append(self.registered_module(reg_name,inst_name,channel))
             except:
-                None
+               pass
 
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD Registered module count ", mod_count
+        print "(duration:{:.4f} MSDD Registered module count {} {}".format((time.time()-start_time), mod_count, self.radioAddress)
         self.msdd_id = self.console.ID
         if self._debug:
             print "Completed building registered module lists for ", self.msdd_id
@@ -3958,9 +4247,19 @@ class MSDDRadio:
         self.fft_channels_container = object_container()
         self.fft_channels = []
         self.rx_channels = []
+        self.active_output_modules=[]
         self.fullRegName_to_RxChanNum = {}
         self.msdd_channel_to_rx_channel = {}
         self.module_dict = {}
+
+        #
+        # check number of network interfaces for multi interface devices
+        # addresses
+        for reg_mod in self.registered_modules['NETWORK']:
+            obj= NetModule(self.connection,reg_mod.channel_number,mapping_version)
+            obj_mod = self.object_module(reg_mod,obj)
+            self.network_modules.append(obj_mod)
+
         for inst_name,reg_mod_list in self.registered_modules.items():
             for reg_mod in reg_mod_list:
                 try:
@@ -3982,9 +4281,7 @@ class MSDDRadio:
                         obj_mod = self.object_module(reg_mod,obj)
                         self.board_modules.append(obj_mod)
                     elif inst_name == "NETWORK":
-                        obj= NetModule(self.connection,reg_mod.channel_number,mapping_version)
-                        obj_mod = self.object_module(reg_mod,obj)
-                        self.network_modules.append(obj_mod)
+                        continue
                     elif inst_name == "SWDDCDEC2":
                         obj= SWDDCModule(self.connection,reg_mod.channel_number,mapping_version)
                         obj_mod = self.object_module(reg_mod,obj)
@@ -3995,7 +4292,7 @@ class MSDDRadio:
                         obj_mod = self.object_module(reg_mod,obj)
                         self.iq_circular_buffer_modules.append(obj_mod)
                     elif inst_name == "OUT":
-                        obj= OUTModule(self.connection,reg_mod.channel_number,mapping_version)
+                        obj= OUTModule(self.connection,reg_mod.channel_number,mapping_version,self.isMultiInterface())
                         obj_mod = self.object_module(reg_mod,obj)
                         self.out_modules.append(obj_mod)
                         self.output_object_container.put_object(obj_mod)
@@ -4046,48 +4343,32 @@ class MSDDRadio:
                         full_reg_name = obj_mod.object.get_full_reg_name()
                         self.module_dict[full_reg_name] = obj_mod
                 except NotImplementedError:
-                    None       
+                    pass
 
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD Creating individual modules"
-        start_time=time.time()
-	for mod in self.software_ddc_modules:
-            if self._debug:
-                print "Found a sw_ddc module unlink ", mod.object.full_reg_name, " channel id ", mod.channel_id()
-            self.stream_router.unlinkModule(mod.channel_id())
-
-            # remove swddc from its output module
-            output = self.get_corresponding_output_module_object(mod)
-            if output:
-                if self._debug:
-                    print "found output for swddc ", mod.channel_id(), " output ", output.channel_id()
-                self.stream_router.unlinkModule(output.channel_id())
-
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD Cleaning up SWDDC modules"
+        print "(duration:{:.4f} MSDD Created individual modules for radio {}".format((time.time()-start_time),self.radioAddress)
 
         start_time=time.time()
-        # mark all existing used output modules if they are already defined as output for a flow
-	for mod in self.out_modules:
-            if mod.object.enable:
-                mod.object.enable=False
-            src_mods = self.stream_router.getModulesFlowListByDestination(mod.object.full_reg_name)
-            if len(src_mods)>1:
-                if self._debug:
-                    print "Found a used output module: ", mod.object.full_reg_name, " sources : ",  src_mods,  " enable ", mod.object.enable
-                self.output_object_container.mark_as_used(mod)
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD Finding used OUT modules"
+        for mod in self.spectral_scan_modules:
+            mod.object._setEnable(False)
+            self.stream_router.unlinkModule(mod.channel_id())            
+        print "(duration:{:.4f} MSDD Unlinked SPC modules for radio {}".format((time.time()-start_time),self.radioAddress)
+
 
         #
-        # Create RX Channels for external use
+        # Create RX Channels 
         #
-
+        
+        #
         # generate channels for RCV modules and find its associated WBDDC module
+        #
         start_time=time.time()
         for mod in self.msdrx000_modules + self.msdr_rs422_modules:
             rx_mod = self.rx_channel(self,mod,len(self.rx_channels),True,self.MSDDRXTYPE_ANALOG_RX)
             rx_mod.analog_rx_object = mod
+            rx_mod.output_object=None
             current_position=len(self.rx_channels)
             if self._debug:
-                print " rx_channel adding ", rx_mod, rx_mod.analog_rx_object, current_position, len(self.wb_ddc_modules)
+                print " Analog RCV {}  for rx_channel {} ".format(mod.object.channel_id(),current_position)
             if current_position < len(self.wb_ddc_modules):
                 rx_mod.msdd_rx_type = self.MSDDRXTYPE_DIGITAL_RX
                 rx_mod.digital_rx_object = self.wb_ddc_modules[current_position]
@@ -4096,12 +4377,15 @@ class MSDDRadio:
                 oreg_name =""
                 if rx_mod.output_object:
                     oreg_name = rx_mod.output_object.object.full_reg_name
-                print " wb_ddc analog-rx:", mod.object.channel_id(),  "digital-rx:", rx_mod.digital_rx_object.object.channel_id(),  "output:",oreg_name
+                print " rx_channel {} RCV->WBDDC->OUT {} -> {} -> {}".format(current_position, mod.object.channel_id(), rx_mod.digital_rx_object.object.channel_id(),  oreg_name)
             self.output_object_container.mark_as_used(rx_mod.output_object)
+            self.save_active_output_modules(rx_mod.output_object)
             self.rx_channels.append(rx_mod)
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD Finished RX channels RCV->WBDDC ", len(self.rx_channels)
+        print "(duration:{:.4f} MSDD Finished RCV-WBDDC channels, added {} RX channels for radio {}".format((time.time()-start_time), len(self.rx_channels), self.radioAddress)
 
+        #
         # generate channels for NBDDC modules and check for swddc module and output modules
+        #
         start_time=time.time()
         for mod in self.nb_ddc_modules:
             rx_mod = self.rx_channel(self,mod,len(self.rx_channels), True, self.MSDDRXTYPE_HW_DDC)
@@ -4118,162 +4402,24 @@ class MSDDRadio:
                     oreg_name = rx_mod.output_object.object.full_reg_name
                 if rx_mod.swddc_object:
                     swddc_name = rx_mod.swddc_object.object.full_reg_name
-                print " nb_ddc  digital-ddc:", mod.channel_id(), "swddc", swddc_name, "output:", oreg_name
+                print "rx_channel {} NBDDC-> (SWDDC) -> OUT {} -> {} -> {}".format( len(self.rx_channels), mod.object.channel_id(), swddc_name, oreg_name)
             self.output_object_container.mark_as_used(rx_mod.output_object)
+            self.save_active_output_modules(rx_mod.output_object)
             self.swddc_object_container.mark_as_used(rx_mod.swddc_object)
             self.rx_channels.append(rx_mod)
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD RX channels for NBDDC ", len(self.nb_ddc_modules)
+        print "(duration:{:.4f} MSDD Finished NBDDC channels, added {}  RX channels for radio {}".format((time.time()-start_time), len(self.nb_ddc_modules), self.radioAddress)
 
-        # Assign output modules to existing channels before continuing
-        start_time=time.time()
-        mod_count=0
-        for rx_mod in self.rx_channels:
-            if rx_mod.output_object != None:
-                continue
-            src_mod=None
-            src_mod_name=""
-            mod_type=""
-            if rx_mod.msdd_rx_type ==  self.MSDDRXTYPE_DIGITAL_RX:
-                src_mod_name=rx_mod.digital_rx_object.object.full_reg_name
-                src_mod=rx_mod.digital_rx_object
-                mod_type="wb_ddc"
-
-            if rx_mod.msdd_rx_type ==  self.MSDDRXTYPE_HW_DDC:
-                src_mod=rx_mod.digital_rx_object
-                if rx_mod.swddc_object:
-                    src_mod=rx_mod.swddc_object
-                src_mod_name=src_mod.object.full_reg_name
-                mod_type="nb_ddc"
-
-            out_mod = self.output_object_container.get_object()
-            if out_mod == None:
-                print "ERROR: CAN NOT GET FREE OUTPUT OBJECT FOR RX_CHANNEL ", rx_mod.channel_id()
-                continue
-
-            if self._debug:
-                print "  link for output, modules ", mod_type, " " , src_mod_name, " --> " , out_mod.object.full_reg_name
-            if src_mod :
-                mod_count += 1
-                self.stream_router.linkModules(src_mod_name, out_mod.object.full_reg_name)
-                self.output_object_container.mark_as_used(out_mod)
-                rx_mod.output_object = self.get_corresponding_output_module_object(src_mod)
-
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD Assign missing output modules for RX channels  ", mod_count
-
-        if enable_inline_swddc:
-            start_time=time.time()
-            mod_count=0
-
-            if self._debug:
-                print " For NBDDC modules, ensure a SWDDC module is placed in-line before output modules"
-            # place an inline swddc module for each nbddc modules
-            for rx_mod in self.rx_channels:
-                try:
-                    src_mod=None
-                    src_mod_name=""
-                    mod_type=""
-                    if rx_mod.msdd_rx_type ==  self.MSDDRXTYPE_HW_DDC:
-                        swddc_object=rx_mod.swddc_object
-                        src_mod=rx_mod.digital_rx_object
-                        src_mod_name=src_mod.object.full_reg_name
-                        # add a sw_ddc to the nb_ddc path
-                        if swddc_object is None:
-                            swddc_object=self.swddc_object_container.get_object()
-                            if swddc_object:
-                                if self._debug:
-                                    print "  linking swddc to nbddc, ", src_mod_name, swddc_object.object.full_reg_name
-                                self.stream_router.linkModules(src_mod_name, swddc_object.object.full_reg_name)
-                                src_mod=swddc_object
-
-                        if swddc_object:
-                            src_mod=swddc_object
-
-                        src_mod_name=src_mod.object.full_reg_name
-                        out_mod = rx_mod.output_object
-                        if out_mod is None:
-                            out_mod = self.output_object_container.get_object()
-                        self.swddc_object_container.mark_as_used(swddc_object)
-                        mod_type="nb_ddc"
-
-                        link_op=src_mod_name + " --> " + out_mod.object.full_reg_name
-                        if self._debug:
-                            print "  link for output, modules ", mod_type, " " , link_op
-                        if src_mod:
-                            if self.stream_router.linkModules(src_mod_name, out_mod.object.full_reg_name):
-                                self.output_object_container.mark_as_used(out_mod)
-                                rx_mod.output_object = out_mod
-                            else:
-                                print "Error performing link operation:", link_op
-                            mod_count +=1
-                            self.swddc_object_container.mark_as_used(swddc_object)
-                            rx_mod.swddc_object = swddc_object
-                except:
-                    traceback.print_exc()
-            print "(duration:%.4f" % (time.time()-start_time), " MSDD Assign inline SWDDC to NBDDC  ", mod_count
-
-        num_nbddc=len(self.nb_ddc_modules)
-        if enable_secondary_tuners and num_nbddc > 0:
-            if self._debug:
-                print "MSDD Adding remaining SWDDCs as secondary (piggyback) tuners "
-
-            # Add in remaining SWDDCs as secondary (piggyback) tuners
-            start_time=time.time()
-            mod_count=0
-            nidx=0
-            for swddc_mod in self.software_ddc_modules:
-                try:
-                    if self.swddc_object_container.is_used(swddc_mod):
-                        if self._debug:
-                            print "swddc ", swddc_mod.channel_id(), " already in use..."
-                        continue
-
-                    swddc=self.swddc_object_container.get_object()
-                    if swddc is None :
-                        break
-
-                    if self._debug:
-                        print "swddc create secondary ", swddc.channel_id()
-                    self.stream_router.unlinkModule(swddc.channel_id())
-
-                    output = self.get_corresponding_output_module_object(swddc)
-                    if output is None:
-                        output=self.output_object_container.get_object()
-
-                    if output is None:
-                        self.swddc_object_container.put_object(swddc)
-                        break
-
-                    nbddc = self.nb_ddc_modules[nidx]
-                    nidx = (nidx+1)%num_nbddc
-                    #link nbddc to swddc
-                    if self._debug:
-                        print "secondary link " , nbddc.channel_id(), " --> ", swddc.channel_id()
-                    self.stream_router.linkModules(nbddc.channel_id(),swddc.channel_id())
-                    #link swddc  to output
-                    if self._debug:
-                        print "secondary link " , swddc.channel_id(), " --> ", output.channel_id()
-                    self.stream_router.linkModules(swddc.channel_id(), output.channel_id())
-
-                    self.output_object_container.mark_as_used(output)
-                    self.swddc_object_container.is_used(swddc)
-                    rx_channel = self.secondary_channel_module( self, swddc, nbddc, output, len(self.rx_channels))
-                    if self._debug:
-                        print "MSDD Creating Secondary channels ", rx_channel.msdd_channel_id()
-                    mod_count += 1
-                    self.rx_channels.append(rx_channel)
-                except:
-                    traceback.print_exc()
-            print "(duration:%.4f" % (time.time()-start_time), " MSDD Assigning Secondary (piggyback) SWDDC tuners  ", mod_count
-
+        #
+        # Enable FFT (Spectral output) for RX Channels
+        #
         if enable_fft_channels:
             if self._debug:
                 print "MSDD Creating FFT channels ", len(self.fft_modules)
             start_time=time.time()
             # create fft channels
             for fft_mod in self.fft_modules:
-                self.stream_router.unlinkModule(fft_mod.channel_id())
                 fft_mod.object._setEnable(False)
-
+                self.stream_router.unlinkModule(mod.channel_id())            
                 link_output=False
                 output = self.get_corresponding_output_module_object(fft_mod)
                 if output is None:
@@ -4285,7 +4431,7 @@ class MSDDRadio:
                 fft=self.fft_object_container.get_object()
                 if fft is None:
                     if output:
-                        output_object_containter.put_object(output)
+                        self.output_object_container.put_object(output)
                         break
 
                 if self._debug:
@@ -4293,15 +4439,18 @@ class MSDDRadio:
                 fft_ch=self.fft_channel( fft, output, self.stream_router, link_output )
                 self.fft_channels.append(fft_ch)
                 self.fft_channels_container.put_object(fft_ch)
-            print "(duration:%.4f" % (time.time()-start_time), " MSDD FFT Channels ", len(self.fft_channels)
+            print "(duration:{:.4f} Created {} FFT Channels for radio {}".format((time.time()-start_time), len(self.fft_channels), self.radioAddress)
 
         start_time=time.time()
-        # create reverse lookup tables based on msdd channel id values to rx_channel numbers
+
+        #
+        # Create reverse lookup tables based on msdd channel id values to rx_channel numbers
+        #
         for rx_pos, rx_channel in zip(range(len(self.rx_channels)), self.rx_channels):
             if self._debug:
                 print "update Channel ", rx_channel.msdd_channel_id()
             self.update_rx_channel_mapping( rx_channel, rx_pos)
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD Build reverse lookup, msdd mod->rx_channel ", len(self.msdd_channel_to_rx_channel)
+        print "(duration:{:.4f} MSDD Build reverse lookup, msdd mod->rx_channel {} {}".format((time.time()-start_time), len(self.msdd_channel_to_rx_channel), self.radioAddress)
 
         start_time=time.time()
         # CREATE PARENT CHILD MAPPING FOR TUNERS
@@ -4331,14 +4480,54 @@ class MSDDRadio:
                         # skip over modules that are not part of our lookup index
                         pass
 
-        print "(duration:%.4f" % (time.time()-start_time), " MSDD Find tuner parent/child relationships "
-        print time.ctime(), "Finished (duration:%.4f" % (time.time()-start_time_total), ") setting up MSDD ", \
-            self.msdd_id , " connection ", self.radioAddress, " RX CHANNELS ", len(self.rx_channels), " FFT CHANNELS ", len(self.fft_channels)
+        print "(duration:{:.4f} MSDD Find tuner parent/child relationships for radio {}".format((time.time()-start_time),self.radioAddress)
+        print time.ctime(), "Finished (duration:{:.4f} setting up MSDD {} connection {} RX CHANNELS {} FFT CHANNELS {}".format((time.time()-start_time_total), 
+                                                                                                                               self.msdd_id , 
+                                                                                                                               self.radioAddress, 
+                                                                                                                               len(self.rx_channels), 
+                                                                                                                               len(self.fft_channels))
+
+        # we are all done now set the timeout to what the caller requested
+        self.connection.set_timeout(udp_timeout)
+
+
+    def isMultiInterface(self):
+        return len(self.network_modules) > 1
+
+
+    #
+    # Perform unlinking of SWDDCS to removed load from DSP chip
+    #
+    def unlink_swddc_modules(self):
+        time.sleep(.5)
+        start_time=time.time()
+        for mod in self.software_ddc_modules:
+            if self._debug:
+                print "Found a sw_ddc module unlink ", mod.object.full_reg_name, " channel id ", mod.channel_id()
+            self.stream_router.unlinkModule(mod.channel_id())
+
+            # remove swddc from its output module
+            output = self.get_corresponding_output_module_object(mod)
+            if output:
+                if self._debug:
+                    print "found output for swddc ", mod.channel_id(), " output ", output.channel_id()
+                self.stream_router.unlinkModule(output.channel_id())
+        print "(duration:{:.4f} MSDD Cleaning up SWDDC Modules (post) {}".format((time.time()-start_time),self.radioAddress)
+
+
+    #
+    # Save list of output modules that will be used to determine network utilization
+    #
+    def save_active_output_modules(self,output_module):
+        if output_module == None: return
+        # only save active instances
+        for x in self.active_output_modules:
+            if x == output_module : return
+        self.active_output_modules.append(output_module)
 
     def update_rx_channel_mapping(self, rx_chan_mod, position):
         if rx_chan_mod == None:
             return
-        channel_id=None
         if rx_chan_mod.analog_rx_object != None:
             self.fullRegName_to_RxChanNum[rx_chan_mod.analog_rx_object.object.full_reg_name] = position
             self.msdd_channel_to_rx_channel[rx_chan_mod.analog_rx_object.object.full_reg_name] = rx_chan_mod
@@ -4381,6 +4570,17 @@ class MSDDRadio:
                 return last_parent
             last_parent = parent
         return last_parent
+
+    def get_root_parent(self, rx_chan_mod):
+        last_parent=rx_chan_mod
+        parent = rx_chan_mod.rx_parent_object
+        while parent != None:
+            parent = last_parent.rx_parent_object
+            if parent == None:
+                return last_parent
+            last_parent = parent
+        return last_parent
+
     
     def get_parent_tuner_num(self, rx_chan_mod):
         if rx_chan_mod == None or rx_chan_mod.rx_parent_object == None:
@@ -4400,7 +4600,7 @@ class MSDDRadio:
             return self.fullRegName_to_RxChanNum[full_reg_name]
         return None
 
-    def get_rx_channel_from_msdd_channel(self, channel_id):
+    def get_rx_channel_from_msdd_channel(self, full_reg_name):
         if self.msdd_channel_to_rx_channel.has_key(full_reg_name):
             return self.fullRegName_to_RxChanNum[full_reg_name]
         return None
@@ -4468,10 +4668,13 @@ class MSDDRadio:
     def get_timeofday_module(self, idx=0 ):
         ret=None
         try:
-            ret=tod_modules[idx].object
+            ret=self.tod_modules[idx].object
         except:
             pass
         return ret
+
+    def get_active_output_modules(self):
+        return self.active_output_modules[:]
 
     def get_output_channel_for_module(self,full_reg_name):
         modList = self.stream_router.getModulesFlowListBySource(full_reg_name)
@@ -4498,17 +4701,27 @@ class MSDDRadio:
         return None
 
     def get_swddc_channel_for_module(self,full_reg_name):
-        modList = self.stream_router.getModulesFlowListBySource(full_reg_name)
-        for module in modList:
-            if"SWDDCDEC2" == module or "SDC" == module:
-                return 0
-            else:
-                m = re.search('SWDDCDEC2:(\d+)',module)
-                if m:
-                    return int(m.group(1))
-                m = re.search('SDC:(\d+)',module)
-                if m:
-                    return int(m.group(1))
+        try:
+            modList = self.stream_router.getModulesFlowListBySource(full_reg_name)
+
+            # only return a swddc if there are no output modules listed
+            outmods=[ omod for omod in modList if omod.startswith('OUT') ]
+            if len(outmods) > 0 : 
+                return None
+
+            for module in modList:
+                if"SWDDCDEC2" == module or "SDC" == module:
+                    return 0
+                else:
+                    m = re.search('SWDDCDEC2:(\d+)',module)
+                    if m:
+                        return int(m.group(1))
+                    m = re.search('SDC:(\d+)',module)
+                    if m:
+                        return int(m.group(1))
+            return None
+        except:
+            traceback.print_exc()
         return None
 
     def get_fft_channel_for_module(self,full_reg_name):
@@ -4521,7 +4734,6 @@ class MSDDRadio:
                 if m:
                     return int(m.group(1))
         return None
-
 
     def save_fft_channel(self, fft ):
         self.fft_channels_container.put_object(fft)
