@@ -97,6 +97,7 @@ class fastfilter_i : public fastfilter_base
 
         FirFilterDesigner filterdesigner_;
         bool manualTaps_;
+	bool bypassMode_;//special logic to skip filtering and send input as output with no changes id impulse response is [1]
 
         RealFFTWVector realTaps_;
         ComplexFFTWVector complexTaps_;

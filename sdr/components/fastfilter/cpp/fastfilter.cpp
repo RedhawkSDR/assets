@@ -31,7 +31,8 @@ PREPARE_LOGGING(fastfilter_i)
 
 fastfilter_i::fastfilter_i(const char *uuid, const char *label) :
     fastfilter_base(uuid, label),
-    manualTaps_(false)
+    manualTaps_(false),
+    	bypassMode_(false)
 {
 	addPropertyChangeListener("complexFilterCoefficients", this, &fastfilter_i::complexFilterCoefficientsChanged);
 	addPropertyChangeListener("correlationMode", this, &fastfilter_i::correlationModeChanged);
@@ -195,7 +196,7 @@ int fastfilter_i::serviceFunction()
 	{
 		boost::mutex::scoped_lock lock(filterLock_);
 		map_type::iterator i = filters_.find(tmp->streamID);
-		firfilter* filter;
+		firfilter* filter=NULL;
 		if (i==filters_.end())
 		{
 			//this is a new stream - need to create a new filter & wrapper
@@ -205,20 +206,23 @@ int fastfilter_i::serviceFunction()
 				LOG_DEBUG(fastfilter_i, "using manual taps ");
 				bool real, complex;
 				getManualTaps(real,complex);
-				if (real)
-					filter = new firfilter(fftSize, realOut, complexOut, realTaps_);
-				else if(complex)
-					filter = new firfilter(fftSize, realOut, complexOut, complexTaps_);
-				else
-				{
-					LOG_WARN(fastfilter_i, "state error - using manual taps with no filter provided.  This shouldn't really happen");
-					if (updateSRI)
-						dataFloat_out->pushSRI(tmp->SRI);
-					dataFloat_out->pushPacket(tmp->dataBuffer, tmp->T, tmp->EOS, tmp->streamID);
-					delete tmp;
-					return NORMAL;
+				
+				if(!bypassMode_){
+					if (real)
+						filter = new firfilter(fftSize, realOut, complexOut, realTaps_);
+					else if(complex)
+						filter = new firfilter(fftSize, realOut, complexOut, complexTaps_);
+					else
+					{
+						LOG_WARN(fastfilter_i, "state error - using manual taps with no filter provided.  This shouldn't really happen");
+						if (updateSRI)
+							dataFloat_out->pushSRI(tmp->SRI);
+						dataFloat_out->pushPacket(tmp->dataBuffer, tmp->T, tmp->EOS, tmp->streamID);
+						delete tmp;
+						return NORMAL;
+					}
+					updateSRI = true;
 				}
-				updateSRI = true;
 			}
 			else
 			{
@@ -235,13 +239,28 @@ int fastfilter_i::serviceFunction()
 					filter = new firfilter(fftSize, realOut, complexOut, realTaps_);
 				}
 			}
-			map_type::value_type filterWrapperMap(tmp->streamID, FilterWrapper());
-			i = filters_.insert(filters_.end(),filterWrapperMap);
-			i->second.setParams(fs,filter);
+			if(!bypassMode_){
+				map_type::value_type filterWrapperMap(tmp->streamID, FilterWrapper());
+				i = filters_.insert(filters_.end(),filterWrapperMap);
+				i->second.setParams(fs,filter);
+			}
 		}
-		else
-			//get the filter we have used before
-			filter = i->second.filter;
+		else{
+			if(bypassMode_)
+				filters_.erase(i);
+			else
+				//get the filter we have used before
+				filter = i->second.filter;
+		}
+		//bypass filtering - just put the output out
+		if(bypassMode_){
+			LOG_TRACE(fastfilter_i, "BYPASS MODE PUSHING INPUT AS OUTPUT");
+		if(updateSRI)
+			dataFloat_out->pushSRI(tmp->SRI);
+			dataFloat_out->pushPacket(tmp->dataBuffer, tmp->T, tmp->EOS, tmp->streamID);
+			delete tmp;
+			return NORMAL;
+		}
 
 		//if we are in design mode and the sample rate has changed - redesign and apply our filter
 		if (!manualTaps_ && i->second.hasSampleRateChanged(fs))
@@ -257,7 +276,7 @@ int fastfilter_i::serviceFunction()
 				filter->setTaps(realTaps_);
 			}
 		}
-
+		//long samplesDiff=0;
 		//now process the data
 		if (tmp->SRI.mode==1)
 		{
@@ -265,12 +284,14 @@ int fastfilter_i::serviceFunction()
 			//run the filter
 			std::vector<std::complex<float> >* cxData = (std::vector<std::complex<float> >*) &(tmp->dataBuffer);
 			filter->newComplexData(*cxData);
+			//samplesDiff=cxData->size();
 		}
 		else
 		{
 			//data is real
 			//run the filter
 			filter->newRealData(tmp->dataBuffer);
+			//samplesDiff=tmp->dataBuffer.size();
 			//we might have a single complex frame if the previous data was complex and there were
 			//complex data still in the filter taps
 			if (!complexOut.empty())
@@ -361,6 +382,8 @@ void fastfilter_i::complexFilterCoefficientsChanged(const std::vector<std::compl
               if ( !filters_.empty())
               {
                   getManualTapsTemplate(complexFilterCoefficients, complexTaps_);
+		  if(bypassMode_)
+		  	return;
                   for (map_type::iterator i = filters_.begin(); i!=filters_.end(); i++)
                       i->second.filter->setTaps(complexTaps_);
               }
@@ -457,6 +480,8 @@ void fastfilter_i::realFilterCoefficientsChanged(const std::vector<float> *oldVa
 			if (!filters_.empty())
 			{
 				getManualTapsTemplate(realFilterCoefficients, realTaps_);
+				if(bypassMode_)
+					return;
 				for (map_type::iterator i = filters_.begin(); i!=filters_.end(); i++)
 				{
 					i->second.filter->setTaps(realTaps_);
@@ -493,9 +518,16 @@ void fastfilter_i::getManualTaps(bool& doReal, bool& doComplex)
 	}
 }
 
+//in.size is number of complex/real filter coeficients entered
 template<typename T, typename U>
 void fastfilter_i::getManualTapsTemplate(T& in, U& out)
 {
+	//If only 1 coefficient and it is value is 1.0
+	bypassMode_ = (in.size()==1 && in[0]==typename T::value_type(1));
+
+	LOG_DEBUG(fastfilter_i, "bypassMode_= "<<bypassMode_);
+	if(bypassMode_)
+		return;
 	validateFftSize(in.size());
 	if (correlationMode)
 	{
