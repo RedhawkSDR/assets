@@ -104,9 +104,7 @@ __DEPLOYJOBS__
 def replace_package_template(os_version, rh_version, comp_name, base_library=False, isComponentOrDevice=False, isWaveform=False):
     retval = package_template.replace('__DIST__', platforms[os_version]['dist']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
 
-    if "el6" in os_version:
-        retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch')
-    elif "el7" in os_version:
+    if "el7" in os_version:
         retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch')
     if base_library:
         retval = retval.replace('package', 'base_package')
@@ -140,9 +138,7 @@ def replace_test_job_name_template(os_version, rh_version, comp_name, branches=F
 def replace_test_template(os_version, rh_version, comp_name, branches=False, base_library=False, isComponent=True):
     retval = test_template.replace('__DIST__', platforms[os_version]['dist']).replace('__ARCH__', platforms[os_version]['arch']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
 
-    if "el6" in os_version:
-        retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch')
-    elif "el7" in os_version:
+    if "el7" in os_version:
         retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch')
     if isComponent:
         retval = retval.replace('__COMP_TYPE__', 'components')
@@ -262,11 +258,8 @@ if __name__ == '__main__':
     platforms = {}
     versions = {}
 
-    platforms['el6']={'dist':'el6', 'arch':'x86_64'}
-    platforms['el6:32']={'dist':'el6', 'arch':'i686'}
     platforms['el7']={'dist':'el7', 'arch':'x86_64'}
-    #versions['2.0']={'latest_version':'develop-2-0', 'release_version':'$rh_20_release', 'short_version':'2.0', 'platform_keys':['el6', 'el6:32', 'el7']}
-    versions['2.2']={'latest_version':'develop-2-2', 'release_version':'$rh_22_release', 'short_version':'2.2', 'platform_keys':['el6', 'el7']}
+    versions['develop']={'latest_version':'develop', 'release_version':'$rh_develop_release', 'short_version':'2.3', 'platform_keys':['el7']}
 
     base_component_dir = 'sdr/libraries'
     candidate_components = os.listdir(base_component_dir)
