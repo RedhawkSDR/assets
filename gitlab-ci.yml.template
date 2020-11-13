@@ -231,7 +231,7 @@ deploytests:
       - $latest_version =~ /^develop.*$/
 
 .s3: &s3
-  image: ${docker_registry}utils/s3cmd:el6-createrepo
+  image: ${docker_registry}utils/s3cmd:el7-createrepo
   stage: deploy
   tags:
     - s3
@@ -246,7 +246,7 @@ deploytests:
       - $latest_version =~ /^develop.*$/
 
 .create-repo: &create-repo
-  image: ${docker_registry}utils/s3cmd:el6-createrepo
+  image: ${docker_registry}utils/s3cmd:el7-createrepo
   stage: build-yum-repo
   tags:
     - s3

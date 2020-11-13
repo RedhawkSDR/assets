@@ -18,452 +18,24 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 
-import os, sys, copy
+import os, sys, copy, traceback
 script_dir = os.path.dirname(os.path.abspath(__file__))
 lib_dir = os.path.join(script_dir, 'fei_base')
 sys.path.append(lib_dir)
 import frontend_tuner_unit_test_base as fe
 sdr_devices = os.path.join(os.environ.get('SDRROOT','/var/redhawk/sdr'),'dev/devices')
-dut_config = {}
 
-''' TODO:
-  1)  set DUT to the key of one of the device configurations defined in the
-      device_config dictionary below.
-  2)  override spd, parent_dir, namespace, name, execparams, configure,
-      or properties if necessary.
-  3)  If 'custom', modify configuration to have accurate capabilities for the
-      device under test.
-  4)  Set DEBUG_LEVEL, DUT_*, or MCAST_* if desired and applicable.
-  5)  Advanced: Override functions with device specific behavior.
-'''
-
-#******* MODIFY CONFIG BELOW **********#
-DUT = 'MSDD|3000|s100|vr1a'
-
-# Optional:
 DEBUG_LEVEL = 3    # typical values include 0, 1, 2, 3, 4 and 5
-DUT_INDEX = None
-DUT_IP_ADDR = "192.168.11.97"
-DUT_PORT = None
-DUT_IFACE = None
-MCAST_GROUP = "234.168.103.100"
-MCAST_PORT = None
-MCAST_VLAN = None
-MCAST_IFACE = None
 
-# Your custom device
-dut_config['custom'] = {
-    # parent_dir/namespace/name are only used when spd = None
-    'spd'         : None,       # path to SPD file for asset.
-    'parent_dir'  : None,       # path to parent directory
-    'namespace'   : None,       # leave as None if asset is not namespaced
-    'name'        : 'myDevice', # exact project name, without namespace
-    'impl_id'     : None,       # None for all (or only), 'cpp', 'python', 'java', etc.
-    'execparams'  : {},         # {'prop_name': value}
-    'configure'   : {},         # {'prop_name': value}
-    'properties'  : {},         # {'prop_name': value}
-    'capabilities': [           # entry for each tuner; single entry if all tuners are the same
-        {                       # include entry for each tuner type (i.e. RX, TX, RX_DIGITIZER, etc.)
-            'RX_DIGITIZER': {   # include ranges for CF, BW, SR, and GAIN
-                'COMPLEX' : True,
-                # To specify a range from 0 to 10 with a gap from 3 to 5: [0, 3, 5, 10]
-                'CF'      : [100e6, 500e6], # enter center frequency range in Hz
-                'BW'      : [0.0, 1e3],     # enter bandwidth range in Hz
-                'SR'      : [0.0, 1e3],     # enter sample rate range in Hz or sps
-                'GAIN'    : [-5.0, 10.0]    # enter gain range in dB
-            }
-        }
-    ]
-}
+def get_debug_level( debug ):
+    _rlookup = { 'FATAL' :  0,
+                 'ERROR' : 1,
+                 'WARN' : 2,
+                 'INFO' : 3,
+                 'DEBUG' : 4,
+                 'TRACE' : 5 }
+    return _rlookup[debug.upper()]
 
-#******* MODIFY CONFIG ABOVE **********#
-
-########################################
-# Available Pre-defined Configurations #
-########################################
-
-# rh.FmRdsSimulator
-dut_config['FmRdsSim'] = {
-    'spd'         : None,
-    'parent_dir'  : None,
-    'namespace'   : 'rh',
-    'name'        : 'FmRdsSimulator',
-    'impl_id'     : 'cpp',
-    'execparams'  : {},
-    'configure'   : {},
-    'properties'  : {},
-    'capabilities': [
-        {
-            'RX_DIGITIZER': {
-                'COMPLEX' : True,
-                'CF'      : [88e6, 108e6],
-                'BW'      : [2.28e6, 2.28e6],
-                'SR'      : [2.28e3, 2.28e6],
-                'GAIN'    : [-100.0, 100.0]
-            }
-        }
-    ]
-}
-
-# rh.USRP_UHD by IP w/o SDDS
-dut_config['USRP'] = {
-    'spd'         : None,
-    'parent_dir'  : None,
-    'namespace'   : 'rh',
-    'name'        : 'USRP_UHD',
-    'impl_id'     : 'cpp',
-    'execparams'  : {},
-    'configure'   : {
-        'target_device': {
-            'target::name'      : '',
-            'target::serial'    : '',
-            'target::ip_address': DUT_IP_ADDR or '',
-            'target::type'      : ''
-        },
-        'device_group_id_global':'FEI_UNIT_TESTING'
-    },
-    'properties'  : {},
-    'capabilities': [],  # populate using query of device props
-    'sr_limit'    : 25e6 # prevent network saturation on GigE link
-}
-
-# rh.USRP_UHD by IP w/ SDDS
-dut_config['USRP|SDDS'] = copy.deepcopy(dut_config['USRP'])
-dut_config['USRP|SDDS']['configure']['sdds_network_settings'] = [
-    {
-        'sdds_network_settings::interface' : MCAST_IFACE or 'lo',
-        'sdds_network_settings::ip_address': MCAST_GROUP or '127.0.0.1',
-        'sdds_network_settings::port'      : MCAST_PORT or 29495,
-        'sdds_network_settings::vlan'      : MCAST_VLAN or 0
-    }
-]
-
-# rh.USRP_UHD for USRP N2xx w/o SDDS
-dut_config['USRP|usrp2'] = copy.deepcopy(dut_config['USRP'])
-dut_config['USRP|usrp2']['configure']['target_device']['target::type'] = 'usrp2'
-
-# rh.USRP_UHD for USRP N2xx w/ SDDS
-dut_config['USRP|usrp2|SDDS'] = copy.deepcopy(dut_config['USRP|SDDS'])
-dut_config['USRP|usrp2|SDDS']['configure']['target_device']['target::type'] = 'usrp2'
-
-# rh.USRP_UHD for USRP X3xx w/o SDDS
-dut_config['USRP|x300'] = copy.deepcopy(dut_config['USRP'])
-dut_config['USRP|x300']['configure']['target_device']['target::type'] = 'x300'
-
-# rh.USRP_UHD for USRP X3xx w/ SDDS
-dut_config['USRP|x300|SDDS'] = copy.deepcopy(dut_config['USRP|SDDS'])
-dut_config['USRP|x300|SDDS']['configure']['target_device']['target::type'] = 'x300'
-
-# rh.USRP_UHD for USRP B2xx w/o SDDS
-dut_config['USRP|b200'] = copy.deepcopy(dut_config['USRP'])
-dut_config['USRP|b200']['configure']['target_device']['target::type'] = 'b200'
-dut_config['USRP|b200']['configure']['target_device']['target::ip_address'] = ''
-
-# rh.USRP_UHD for USRP B2xx w/ SDDS
-dut_config['USRP|b200|SDDS'] = copy.deepcopy(dut_config['USRP|SDDS'])
-dut_config['USRP|b200|SDDS']['configure']['target_device']['target::type'] = 'b200'
-dut_config['USRP|b200|SDDS']['configure']['target_device']['target::ip_address'] = ''
-
-# rh.RTL2832U with Rafael Micro R820T or R828D tuner chip
-dut_config['RTL'] = {
-    'spd'         : None,
-    'parent_dir'  : None,
-    'namespace'   : 'rh',
-    'name'        : 'RTL2832U',
-    'impl_id'     : 'cpp',
-    'execparams'  : {},
-    'configure'   : {
-        'group_id': 'FEI_UNIT_TESTING',
-        'target_device': {
-            'target::name'      : '',
-            'target::serial'    : '',
-            'target::index'     : DUT_INDEX or '',
-            'target::vendor'    : '',
-            'target::product'   : ''
-        },
-    },
-    'properties'  : {},
-    'capabilities': [
-        {
-            'RX_DIGITIZER': {
-                'COMPLEX' : True,
-                'CF'      : [24e3, 1.766e9],
-                'BW'      : [28.126e3, 2.56e3],
-                'SR'      : [28.126e3, 2.56e3],
-                'GAIN'    : [0.0, 49.6]
-            }
-        }
-    ]
-}
-
-# rh.RTL2832U with Elonics E4000 tuner chip
-dut_config['RTL|E4000'] = copy.deepcopy(dut_config['RTL'])
-dut_config['RTL|E4000']['capabilities'][0]['RX_DIGITIZER']['CF'] = [52e6, 1.1e9, 1.25e9, 2.2e9] # gap from 1100 to 1250 MHz
-dut_config['RTL|E4000']['capabilities'][0]['RX_DIGITIZER']['GAIN'] = [-1.0, 49.0]
-
-# rh.RTL2832U with FC0013 tuner chip
-dut_config['RTL|FC13'] = copy.deepcopy(dut_config['RTL'])
-dut_config['RTL|FC13']['capabilities'][0]['RX_DIGITIZER']['CF'] = [22e6, 1.1e9]
-dut_config['RTL|FC13']['capabilities'][0]['RX_DIGITIZER']['GAIN'] = [-9.9, 19.7]
-
-# rh.RTL2832U with FC0012 tuner chip
-dut_config['RTL|FC13']['capabilities'][0]['RX_DIGITIZER']['CF'] = [22e6, 948.6e6]
-
-# rh.RTL2832U with FC2580 tuner chip
-dut_config['RTL|FC2580'] = copy.deepcopy(dut_config['RTL|FC13'])
-dut_config['RTL|FC2580']['capabilities'][0]['RX_DIGITIZER']['CF'] = [146e6, 308e6, 438e6, 924e6] # gap from 308 to 438 MHz
-
-# rh.MSDD
-NUM_OUTPUT_CONFIGS = 7 # it is ok if this is more than needed, but increase if more are needed for FPGA load/DDCs
-dut_config['MSDD'] = {
-    'spd'         : '../MSDD.spd.xml',
-    'parent_dir'  : None,
-    'namespace'   : 'rh',
-    'name'        : 'MSDD',
-    'impl_id'     : 'python',
-    'execparams'  : {},
-    'configure'   : {
-        'msdd_configuration': {
-            'msdd_configuration::msdd_ip_address': DUT_IP_ADDR or '192.168.100.250',
-            'msdd_configuration::msdd_port':       '%s'%(DUT_PORT) if DUT_PORT else '23'
-        },
-        'msdd_output_configuration': [
-            {
-                'msdd_output_configuration::tuner_number'    : 0,
-                'msdd_output_configuration::protocol'        : 'UDP_SDDS',
-                'msdd_output_configuration::ip_address'      : MCAST_GROUP or '234.0.0.100',
-                'msdd_output_configuration::port'            : MCAST_PORT or 0,
-                'msdd_output_configuration::vlan'            : MCAST_VLAN or 0,
-                'msdd_output_configuration::enabled'         : True,
-                'msdd_output_configuration::timestamp_offset': 0,
-                'msdd_output_configuration::endianess'       : 1,
-                'msdd_output_configuration::mfp_flush'       : 63,
-                'msdd_output_configuration::vlan_enable'     : False                        
-            } # more added below
-        ]
-    },
-    'properties'  : {},
-    
-    # The below capabilities are based on an MSDD-6000 with a freq range from 30 - 6000 MHz. It also
-    # assumes a 100 MSPS ADC clock which creates a max SR of 25 MSPS. For MSDD 3000 models the max
-    # frequency would need to be adjusted to 3000 MHz. For models that have the 98 MSPS clock
-    # (s98 FPGA loads) the max sample rate should be set to 24.576e6. 
-    'capabilities': [
-        {
-            'RX_DIGITIZER': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 6e9],
-                'BW'      : [20e6, 20e6],
-                'SR'      : [25e6, 25e6],
-                'GAIN'    : [-48.0, 12.0]
-            },
-            'RX_DIGITIZER_CHANNELIZER': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 6e9],
-                'BW'      : [20e6, 20e6],
-                'SR'      : [25e6, 25e6],
-            },
-            'DDC': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 6e9],
-                'BW'      : [80e3, 80e3],
-                'SR'      : [100e3, 100e3],
-                'GAIN'    : [-48.0, 12.0],
-                'NUMDDCs' : 16,
-            }
-        }
-    ]
-}
-mcast_start_addr = MCAST_GROUP or '234.0.0.100'
-mcast_octets = [int(x) for x in mcast_start_addr.split('.')]
-for i in xrange(1,NUM_OUTPUT_CONFIGS):
-    mcast_octets[-1] += 1
-    dut_config['MSDD']['configure']['msdd_output_configuration'].append(
-            {
-                'msdd_output_configuration::tuner_number'    : i,
-                'msdd_output_configuration::protocol'        : 'UDP_SDDS',
-                'msdd_output_configuration::ip_address'      : '.'.join(str(x) for x in mcast_octets),
-                'msdd_output_configuration::port'            : MCAST_PORT or 0,
-                'msdd_output_configuration::vlan'            : MCAST_VLAN or 0,
-                'msdd_output_configuration::enabled'         : True,
-                'msdd_output_configuration::timestamp_offset': 0,
-                'msdd_output_configuration::endianess'       : 1,
-                'msdd_output_configuration::mfp_flush'       : 63,
-                'msdd_output_configuration::vlan_enable'     : False                        
-            }
-    )
-
-# rh.MSDD 6000
-dut_config['MSDD|6000'] = dut_config['MSDD']
-
-# rh.MSDD 6000 s100
-dut_config['MSDD|6000|s100'] = dut_config['MSDD']
-
-# rh.MSDD 6000 s98
-dut_config['MSDD|6000|s98'] = copy.deepcopy(dut_config['MSDD|6000'])
-dut_config['MSDD|6000|s98']['capabilities'] = [
-        {
-            'RX_DIGITIZER': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 6e9],
-                'BW'      : [20e6, 20e6],
-                'SR'      : [24.576e6, 24.576e6],
-                'GAIN'    : [-48.0, 12.0]
-            },
-            'RX_DIGITIZER_CHANNELIZER': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 6e9],
-                'BW'      : [20e6, 20e6],
-                'SR'      : [24.576e6, 24.576e6],
-            },
-            'DDC': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 6e9],
-                'BW'      : [80e3, 80e3],
-                'SR'      : [100e3, 100e3],
-                'GAIN'    : [-48.0, 12.0],
-                'NUMDDCs' : 16,
-            }
-        }
-    ]
-
-# rh.MSDD 3000
-dut_config['MSDD|3000'] = copy.deepcopy(dut_config['MSDD'])
-dut_config['MSDD|3000']['capabilities'] = [
-        {
-            'RX_DIGITIZER': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 3e9],
-                'BW'      : [20e6, 20e6],
-                'SR'      : [25e6, 25e6],
-                'GAIN'    : [-48.0, 12.0]
-            },
-            'RX_DIGITIZER_CHANNELIZER': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 3e9],
-                'BW'      : [20e6, 20e6],
-                'SR'      : [25e6, 25e6],
-            },
-            'DDC': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 3e9],
-                'BW'      : [80e3, 80e3],
-                'SR'      : [100e3, 100e3],
-                'GAIN'    : [-48.0, 12.0],
-                'NUMDDCs' : 16,
-            }
-        }
-    ]
-
-# rh.MSDD 3000 s100
-dut_config['MSDD|3000|s100'] = dut_config['MSDD|3000']
-
-# rh.MSDD 3000 s98
-dut_config['MSDD|3000|s98'] = copy.deepcopy(dut_config['MSDD|3000'])
-dut_config['MSDD|3000|s98']['capabilities'] = [
-        {
-            'RX_DIGITIZER': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 3e9],
-                'BW'      : [20e6, 20e6],
-                'SR'      : [24.576e6, 24.576e6],
-                'GAIN'    : [-48.0, 12.0]
-            },
-            'RX_DIGITIZER_CHANNELIZER': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 3e9],
-                'BW'      : [20e6, 20e6],
-                'SR'      : [24.576e6, 24.576e6],
-            },
-            'DDC': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 3e9],
-                'BW'      : [1.3e6,1.3e6],
-                'SR'      : [4.9152e6, 4.9152e6],
-                'GAIN'    : [-48.0, 12.0],
-                'NUMDDCs' : 16,
-            }
-        }
-    ]
-
-
-# rh.MSDD 3000 s98
-dut_config['MSDD|3000|s100|vr1a'] = copy.deepcopy(dut_config['MSDD|3000'])
-dut_config['MSDD|3000|s100|vr1a']['capabilities'] = [
-        {
-            'RX_DIGITIZER': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 3e9],
-                'BW'      : [20e6, 20e6],
-                'SR'      : [25e6,25e6],
-                'GAIN'    : [-48.0, 12.0]
-            },
-            'RX_DIGITIZER_CHANNELIZER': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 3e9],
-                'BW'      : [20e6, 20e6],
-                'SR'      : [25e6,25e6],
-            },
-            'DDC': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 3e9],
-                'BW'      : [0.320e6, 1.25e6, 2.5e6, 5e6],
-                'SR'      : [0.390625e6, 1.5625e6, 3.125e6, 6.25e6],
-                'GAIN'    : [-48.0, 12.0],
-                'NUMDDCs' : 1,
-                'RESTRICT' : True
-            }
-        },
-        {
-            'DDC': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 3e9],
-                'BW'      : [781250.0, 1562500.0, 3125000.0, 6250000.0, 12500000.0, 25000000.0 ],
-                'SR'      : [781250.0, 1562500.0, 3125000.0, 6250000.0, 12500000.0, 25000000.0 ],
-                'GAIN'    : [-48.0, 12.0],
-                'NUMDDCs' : 16,
-                'RESTRICT' : True
-            }
-        }
-    ]
-
-
-# rh.MSDD_RX_Device
-dut_config['MSDD|Dreamin'] = {
-    'spd'         : None,
-    'parent_dir'  : None,
-    'namespace'   : 'rh',
-    'name'        : 'MSDD_RX_Device_v2',
-    'impl_id'     : 'DCE:3f0ac7cb-1601-456d-97fa-2dcc5be684ee',
-    'execparams'  : {},
-    'configure'   : {
-        'NetworkConfiguration': {
-             'status_destination_address'               : MCAST_GROUP or '234.0.0.100',
-             'master_destination_address'               : MCAST_GROUP or '234.0.0.100',
-             'DCE:d91f918d-5cdf-44d4-a2e1-6f4e5f3128bf' : MCAST_PORT or 8887,
-             'master_destination_vlan'                  : MCAST_VLAN or 0,
-             'msdd_address'                             : DUT_IP_ADDR or '192.168.100.250',
-             'msdd_interface'                           : DUT_IFACE or 'em2',
-             'msdd_port'                                : DUT_PORT or 8267
-         }
-    },
-    'properties'  : {},
-    'capabilities': [
-        {
-            'RX_DIGITIZER': {
-                'COMPLEX' : True,
-                'CF'      : [30e6, 3e9],
-                'BW'      : [20e6, 20e6],
-                'SR'      : [25e6, 25e6],
-                'GAIN'    : [-60.0, 0.0]
-            }
-        }
-    ]
-}
-
-########################################
-#    END Pre-defined Configurations    #
-########################################
 
 ########################################
 # BEGIN Custom Override Functions      #
@@ -516,54 +88,16 @@ def customGenerateTunerRequest(idx=0):
 #   END Custom Override Functions      #
 ########################################
 
-# Find SPD if not specified
-if not dut_config[DUT]['spd']:
-    if dut_config[DUT]['parent_dir']:
-        ns = ''
-        if dut_config[DUT]['namespace']:
-            ns = dut_config[DUT]['namespace']+'.'
-        dut_config[DUT]['spd'] = os.path.join(dut_config[DUT]['parent_dir'], ns+dut_config[DUT]['name'], dut_config[DUT]['name']+'.spd.xml')
-    else: # Assume it must be in SDR
-        dut_config[DUT]['spd'] = os.path.join(sdr_devices, dut_config[DUT]['namespace'] or '', dut_config[DUT]['name'], dut_config[DUT]['name']+'.spd.xml')
-
-# TODO - update to use `properties` instead of `configure` and `execparam`
-
 class FrontendTunerTests(fe.FrontendTunerTests):
     
     def __init__(self,*args,**kwargs):
         import ossie.utils.testing
         super(FrontendTunerTests,self).__init__(*args,**kwargs)
-        fe.set_debug_level(DEBUG_LEVEL)
-        fe.set_device_info(dut_config[DUT])
 
     # Use functions below to add pre-/post-launch commands if your device has special startup requirements
     @classmethod
     def devicePreLaunch(cls):
         pass
-
-    @classmethod
-    def devicePostLaunch(cls):
-        if 'USRP' == DUT[:4] and len(dut_config[DUT]['capabilities'])==0:
-            device_channels = cls._query( ('device_channels',) )['device_channels']
-            if DEBUG_LEVEL >= 4:
-                from pprint import pprint as pp
-                print 'device channel: '
-                pp(device_channels)
-
-            for chan in device_channels:
-                if chan['device_channels::tuner_type'] != 'RX_DIGITIZER':
-                    continue
-                chan_capabilities = {
-                    chan['device_channels::tuner_type']: {
-                        'COMPLEX' : True,
-                        'CF'      : [chan['device_channels::freq_min'], chan['device_channels::freq_max']],
-                        'BW'      : [chan['device_channels::bandwidth_min'], chan['device_channels::bandwidth_max']],
-                        'SR'      : [chan['device_channels::rate_min'], chan['device_channels::rate_max']],
-                        'GAIN'    : [chan['device_channels::gain_min'], chan['device_channels::gain_max']]
-                    }
-                }
-                dut_config[DUT]['capabilities'].append(chan_capabilities)
-
     # Use functions below to add pre-/post-release commands if your device has special shutdown requirements
     @classmethod
     def devicePreRelease(self):
@@ -572,10 +106,55 @@ class FrontendTunerTests(fe.FrontendTunerTests):
     def devicePostRelease(self):
         pass
 
+
 if __name__ == '__main__':
-    fe.set_debug_level(DEBUG_LEVEL)
-    fe.set_device_info(dut_config[DUT])
+    import argparse
+    print sys.argv
+    parser = argparse.ArgumentParser(
+        description='''
+Runs FEI test suite against a MSDD device. Use optional arguments to setup MSDD, all other command line arguments
+are passed to nosetest
+i.e. test_MSDD_FEI.py  -h --ip=192.168.1.96 --debug=ERROR  -v --nocapture test_MSDD_FEI.py:FrontendTunerTests -m  testFRONTEND_1
+''')
+    parser.add_argument('--ip', default="192.168.1.2", help="ip address of msdd")
+    parser.add_argument('--port', default='23', help="port number for msdd")
+    parser.add_argument('--device', default=None, help="provide msdd device string when running tests, default is to run id_msdd")
+    parser.add_argument('--output_ip', default=None, help="ip/multicast starting address for output channels")
+    parser.add_argument('--output_port', default=None, help="starting port number for output channels, default starts at 0")
+    parser.add_argument('--output_vlan', default=None, help="vlan id to assign to output channels, default is 0")
+    parser.add_argument('--psd_ip', default=None, help="ip/multicast address for psd output, if enabled in msdd configuration")
+    parser.add_argument('--debug', default='info', help="debug level, fatal, error, warn, info, debug, trace" )
+
+    args, remaining_args = parser.parse_known_args()
+    DEBUG_LEVEL=get_debug_level(args.debug)
+
+
+    msdd_id=None
+    if args.device is not None:
+        msdd_id = args.device
+    else:
+        try:
+            from id_msdd import id_msdd
+            msdd_id = id_msdd(args.ip)
+        except:
+            raise Exception("Unable to contact ip: " + args.ip)
+
+    import dut
+    dut_config=dut.get_config( msdd_id,
+                                  DUT_IP_ADDR=args.ip,
+                                  DUT_PORT=args.port,
+                                  OUTPUT_ADDR=args.output_ip,
+                                  OUTPUT_PORT=args.output_port,
+                                  OUTPUT_VLAN=args.output_vlan,
+                                  PSD_ADDR=args.psd_ip)
+    if dut_config is None:
+        raise Exception("No configuration for msdd id: " + str(msdd_id))
     
+    print "Running FEI test suite against:  msdd_id:", msdd_id, " ip ", args.ip
+    sys.argv[1:]=remaining_args
+    fe.set_debug_level(DEBUG_LEVEL)
+    fe.set_device_info(dut_config)
+
     # run using nose
     import nose
     nose.main(defaultTest=__name__)
