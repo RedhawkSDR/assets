@@ -18,25 +18,39 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-import os
+
 import subprocess
 import sys
-import time
-
-import frontend
-from ossie import properties
-from ossie.utils import sb, uuid
+import os
 import ossie.utils.testing
-
-cwd = os.getcwd()
-dpath_python = os.path.join(os.path.dirname(cwd), 'python')
-sys.path.append(dpath_python)
-import MSDD
-import msddcontroller
+from ossie.utils import sb, uuid
+from ossie.cf import CF
+from omniORB import any
+from omniORB import CORBA
+from ossie.utils.bulkio.bulkio_data_helpers import SDDSSink
+from redhawk.frontendInterfaces import FRONTEND
+from ossie.utils import uuid
+from ossie import properties
+import time
+import re
+import frontend
+import traceback
+from tod_assist import *
 
 DEBUG_LEVEL = 3
-IP_ADDRESS='192.168.11.97'
+IP_ADDRESS='192.168.11.2'
 INTERFACE='em3'
+TOD_MODE="ONEPPS"
+
+def get_debug_level( debug ):
+    _rlookup = { 'FATAL' :  0,
+                 'ERROR' : 1,
+                 'WARN' : 2,
+                 'INFO' : 3,
+                 'DEBUG' : 4,
+                 'TRACE' : 5 }
+    return _rlookup[debug.upper()]
+
 
 def _generateRFInfoPkt(rf_freq=1e9,rf_bw=1e9,if_freq=0,spec_inverted=False,rf_flow_id="testflowID"):
         antenna_info = frontend.FRONTEND.AntennaInfo("antenna_name","antenna_type","antenna.size","description")
@@ -49,6 +63,67 @@ def _generateRFInfoPkt(rf_freq=1e9,rf_bw=1e9,if_freq=0,spec_inverted=False,rf_fl
         rf_info_pkt = frontend.FRONTEND.RFInfoPkt(rf_flow_id,rf_freq, rf_bw, if_freq, spec_inverted, sensor_info, delays, cap, add_props)
 
         return rf_info_pkt
+
+def getAllocationParams( ip_address ):
+        msdd_id=None
+        try:
+                from id_msdd import id_msdd
+                msdd_id = id_msdd(ip_address)
+        except:
+                raise Exception("Unable to contact ip: " + ip_address)
+
+	# wbddc and nbddc settings for fgpa loads
+        if "vr1a" in msdd_id:
+            alloc_params = { 'wbddc_tuner' : 0,
+                             'wbddc_bw' : 20e6,
+                             'wbddc_srate' : 25e6,
+                             'wbddc_enable' : False,
+                             'nbddc_tuner' : 1,
+                             'nbddc_bw' : 2.5e6,
+                             'nbddc_srate' : 3.125e6,
+            }
+        elif "32n512b40" in msdd_id:
+            alloc_params = { 'wbddc_tuner' : 0,
+                             'wbddc_bw' : 20e6,
+                             'wbddc_srate' : 24.576e6,
+                             'wbddc_enable' : False,
+                             'nbddc_tuner' : 1,
+                             'nbddc_bw' : 42e3,
+                             'nbddc_srate' : 48e3,
+            }
+        elif "5n5b1300" in msdd_id:
+            alloc_params = { 'wbddc_tuner' : 0,
+                             'wbddc_bw' : 20e6,
+                             'wbddc_srate' : 24.576e6,
+                             'wbddc_enable' : False,
+                             'nbddc_tuner' : 1,
+                             'nbddc_bw' : 1.5e6,
+                             'nbddc_srate' : 4.9125e6,
+            }
+        elif "1w0n0b0" in msdd_id:
+            alloc_params = { 'wbddc_tuner' : 0,
+                             'wbddc_bw' : 20e6,
+                             'wbddc_srate' : 24.576e6,
+                             'wbddc_enable' : True,
+                             'nbddc_tuner' : None,
+                             'nbddc_bw' : None,
+                             'nbddc_srate' : None,
+            }
+        elif "2w8n64b320" in msdd_id:
+            alloc_params = { 'wbddc_tuner' : 0,
+                             'wbddc_bw' : 20e6,
+                             'wbddc_srate' : 25e6,
+                             'wbddc_enable' : True,
+                             'nbddc_tuner' : 2,
+                             'nbddc_bw' : 320e3,
+                             'nbddc_srate' : 390.625e3,
+            }
+        else:
+                raise Exception("Unknown FPGA load MSDD id: " + msdd_id)
+
+        return alloc_params, msdd_id
+
+
 
 class DeviceTests(ossie.utils.testing.RHTestCase):
     # Path to the SPD file, relative to this file. This must be set in order to
@@ -77,15 +152,31 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
 
 
     def setUp(self):
+        # reset device
+        subprocess.call(['./reset_msdd', IP_ADDRESS])
+
+        try:
+                self.alloc_params, self.msdd_id = getAllocationParams(IP_ADDRESS)
+        except Exception, e:
+                self.fail("Unable to identify MSDD, " + str(IP_ADDRESS) + " reason:" + str(e))
+
         # Launch the device, using the selected implementation
         configure = {
+                'DEBUG_LEVEL': DEBUG_LEVEL,
                  "msdd_configuration" : {
                      "msdd_configuration::msdd_ip_address": IP_ADDRESS,
                      "msdd_configuration::msdd_port":"23"
                       }
-                 ,
+                ,
+                "advanced":{
+                        "advanced::udp_timeout" : 0.10,
+                        "advanced::enable_fft_channels" : True
+                     },
+                "msdd_time_of_day_configuration": {
+                    "msdd_time_of_day_configuration::mode": TOD_MODE,
+                    },
                 "msdd_output_configuration": [{
-                     "msdd_output_configuration::tuner_number":0,
+                     "msdd_output_configuration::tuner_number": self.alloc_params['wbddc_tuner'],
                      "msdd_output_configuration::protocol":"UDP_SDDS",
                      "msdd_output_configuration::ip_address":"234.168.103.100",
                      "msdd_output_configuration::port":0,
@@ -100,8 +191,8 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
                  }
         
         
-        self.comp = sb.launch(self.spd_file, impl=self.impl,configure=configure,execparams={'DEBUG_LEVEL': DEBUG_LEVEL})
-    
+        self.comp = sb.launch(self.spd_file, impl=self.impl,properties=configure)
+
     def tearDown(self):
         # Clean up all sandbox artifacts created during test
         sb.release()
@@ -149,7 +240,9 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
     def testReportedBandwidth(self):
         self.comp.start()
 
-        alloc = self._generateAlloc(cf=110e6,sr=24.576e6,bw=20e6)
+        alloc = self._generateAlloc(cf=110e6,
+                                    sr=self.alloc_params['wbddc_srate'],
+                                    bw=self.alloc_params['wbddc_bw'])
         allocationID = properties.props_to_dict(alloc)['FRONTEND::tuner_allocation']['FRONTEND::tuner_allocation::allocation_id']
 
         try:
@@ -164,11 +257,17 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
         tuner_status = self.comp.frontend_tuner_status[0]
 
         bw=tuner_status.bandwidth.queryValue()
-        avail_bw=float(tuner_status.available_bandwidth.queryValue())
         srate=tuner_status.sample_rate.queryValue()
-
-        self.assertAlmostEqual(bw,avail_bw, msg="Checking for correct available bandwidth")
-        self.assertNotAlmostEquals(srate, avail_bw, msg="Checking sample rate not equal to available bandwidth")
+        _avail_bw=tuner_status.available_bandwidth.queryValue()
+        if "," in _avail_bw:
+                avail_bw = [ float(x) for x in _avail_bw.split(',')]
+                self.assertEqual( (bw in avail_bw), True, msg="Checking for correct available bandwidth")
+                print srate, avail_bw, (srate in avail_bw)
+                self.assertEquals( (srate not in avail_bw), True, msg="Checking sample rate not equal to available bandwidth")
+        else:
+                avail_bw=float(_avail_bw)
+                self.assertAlmostEqual(bw,avail_bw, msg="Checking for correct available bandwidth")
+                self.assertNotAlmostEquals(srate, avail_bw, msg="Checking sample rate not equal to available bandwidth")
 
         self.comp.deallocateCapacity(alloc)
 
@@ -208,45 +307,52 @@ class MsddDeviceTests(ossie.utils.testing.RHTestCase):
     SPD_FILE = '../MSDD.spd.xml'
 
     def setUp(self):
+        # reset device
+        subprocess.call(['./reset_msdd', IP_ADDRESS])
+
+        try:
+                self.alloc_params, self.msdd_id = getAllocationParams(IP_ADDRESS)
+        except Exception, e:
+                self.fail("Unable to identify MSDD, " + str(IP_ADDRESS) + " reason:" + str(e))
+
 
         self.comp=sb.launch(self.spd_file,
-                      properties={ 
-                "DEBUG_LEVEL": DEBUG_LEVEL, 
+                      properties={
+                "DEBUG_LEVEL": DEBUG_LEVEL,
                 "msdd_configuration" : { "msdd_configuration::msdd_ip_address" :  IP_ADDRESS },
-                "advanced":{
-                                  "advanced::allow_internal_allocations" : False 
-                             },
-                "msdd_output_configuration": [{
-                             "msdd_output_configuration::tuner_number":0,
+                "msdd_time_of_day_configuration": {
+                    "msdd_time_of_day_configuration::mode": TOD_MODE,
+                    },
+                "msdd_output_configuration": [
+                        {
+                             "msdd_output_configuration::tuner_number": self.alloc_params['wbddc_tuner'],
                              "msdd_output_configuration::protocol":"UDP_SDDS",
                              "msdd_output_configuration::ip_address":"234.168.103.100",
                              "msdd_output_configuration::port":0,
+                             "msdd_output_configuration::vlan":0,
+                             "msdd_output_configuration::enabled": self.alloc_params['wbddc_enable'],
+                             "msdd_output_configuration::timestamp_offset":0,
+                             "msdd_output_configuration::endianess":1,
+                             "msdd_output_configuration::mfp_flush":63,
+                             "msdd_output_configuration::vlan_enable": False                        
+                             },
+                        {
+                             "msdd_output_configuration::tuner_number": self.alloc_params['nbddc_tuner'],
+                             "msdd_output_configuration::protocol":"UDP_SDDS",
+                             "msdd_output_configuration::ip_address":"234.168.103.100",
+                             "msdd_output_configuration::port":1,
                              "msdd_output_configuration::vlan":0,
                              "msdd_output_configuration::enabled":True,
                              "msdd_output_configuration::timestamp_offset":0,
                              "msdd_output_configuration::endianess":1,
                              "msdd_output_configuration::mfp_flush":63,
-                             "msdd_output_configuration::vlan_enable": False                        
+                             "msdd_output_configuration::vlan_enable": False
                              }]
                 }
 
                       )
 
 
-        alloc_params = {}
-        if "vr1a" in self.comp.msdd_status.filename_fpga:
-            self.alloc_params = { 'wbddc_bw' : 20e6,
-                             'wbddc_srate' : 25e6,
-                             'nbddc_bw' : 3.125e6,
-                             'nbddc_srate' : 1.526e6,
-            }
-        else:
-            self.alloc_params = { 'wbddc_bw' : 20e6,
-                             'wbddc_srate' : 24.576e6,
-                             'nbddc_bw' : 1.5e6,
-                             'nbddc_srate' : 4.9125e6,
-            }
-    
     def tearDown(self):
         # Clean up all sandbox artifacts created during test
         sb.release()
@@ -271,6 +377,9 @@ class MsddDeviceTests(ossie.utils.testing.RHTestCase):
        self.comp.deallocateCapacity( alloc)
 
     def testNarrowBandDDC_BandwidthAllocation(self):
+
+       if self.alloc_params['nbddc_srate'] is None : return
+
        wb_alloc=frontend.createTunerAllocation(tuner_type="RX_DIGITIZER_CHANNELIZER", 
                                             center_frequency=100e6)
        ret=self.comp.allocateCapacity( wb_alloc)
@@ -287,6 +396,9 @@ class MsddDeviceTests(ossie.utils.testing.RHTestCase):
        self.comp.deallocateCapacity(wb_alloc)
 
     def testNarrowBandDDC_SampleRateAllocation(self):
+
+       if self.alloc_params['nbddc_srate'] is None : return
+
        wb_alloc=frontend.createTunerAllocation(tuner_type="RX_DIGITIZER_CHANNELIZER", 
                                             center_frequency=100e6)
        ret=self.comp.allocateCapacity( wb_alloc)
@@ -304,6 +416,8 @@ class MsddDeviceTests(ossie.utils.testing.RHTestCase):
 
 
     def testNarrowBandDDC_BadAllocation(self):
+       if self.alloc_params['nbddc_srate'] is None : return
+
        wb_alloc=frontend.createTunerAllocation(tuner_type="RX_DIGITIZER_CHANNELIZER", 
                                             center_frequency=100e6)
        ret=self.comp.allocateCapacity( wb_alloc)
@@ -319,6 +433,8 @@ class MsddDeviceTests(ossie.utils.testing.RHTestCase):
        self.comp.deallocateCapacity(wb_alloc)
 
     def testNarrowBandDDC_BadAllocation2(self):
+       if self.alloc_params['nbddc_srate'] is None : return
+
        wb_alloc=frontend.createTunerAllocation(tuner_type="RX_DIGITIZER_CHANNELIZER", 
                                             center_frequency=100e6)
        ret=self.comp.allocateCapacity( wb_alloc)
@@ -336,6 +452,8 @@ class MsddDeviceTests(ossie.utils.testing.RHTestCase):
 
 
     def testNarrowBandDDC_DontCareAllocation(self):
+       if self.alloc_params['nbddc_srate'] is None : return
+
        wb_alloc=frontend.createTunerAllocation(tuner_type="RX_DIGITIZER_CHANNELIZER", 
                                             center_frequency=100e6)
        ret=self.comp.allocateCapacity( wb_alloc)
@@ -356,29 +474,34 @@ class RFInfoTest(ossie.utils.testing.RHTestCase):
     SPD_FILE = '../MSDD.spd.xml'
 
     def setUp(self):
+        # reset device
+        subprocess.call(['./reset_msdd', IP_ADDRESS])
+
+        try:
+                self.alloc_params, self.msdd_id = getAllocationParams(IP_ADDRESS)
+        except Exception, e:
+                self.fail("Unable to identify MSDD, " + str(IP_ADDRESS) + " reason:" + str(e))
+
         self.alloc1=None
         self.alloc2=None
         self.comp=sb.launch(self.spd_file,
                             properties={ 
                 "DEBUG_LEVEL": DEBUG_LEVEL, 
                 "msdd_configuration" : { "msdd_configuration::msdd_ip_address" : IP_ADDRESS },
-                "advanced":{
-                    "advanced::allow_internal_allocations" : False 
-                     },
                 "msdd_output_configuration": [{
-                     "msdd_output_configuration::tuner_number":0,
+                     "msdd_output_configuration::tuner_number": self.alloc_params['wbddc_tuner'],
                      "msdd_output_configuration::protocol":"UDP_SDDS",
                      "msdd_output_configuration::ip_address":"239.1.1.1",
                      "msdd_output_configuration::port":29000,
                      "msdd_output_configuration::vlan":0,
-                     "msdd_output_configuration::enabled":True,
+                     "msdd_output_configuration::enabled": self.alloc_params['wbddc_enable'],
                      "msdd_output_configuration::timestamp_offset":0,
                      "msdd_output_configuration::endianess":1,
                      "msdd_output_configuration::mfp_flush":63,
                      "msdd_output_configuration::vlan_enable": False                        
                      },
-                                      {
-                     "msdd_output_configuration::tuner_number":1,
+                   {
+                     "msdd_output_configuration::tuner_number": self.alloc_params['nbddc_tuner'],
                      "msdd_output_configuration::protocol":"UDP_SDDS",
                      "msdd_output_configuration::ip_address":"239.1.1.2",
                      "msdd_output_configuration::port":29001,
@@ -415,8 +538,8 @@ class RFInfoTest(ossie.utils.testing.RHTestCase):
         out_rf_info_port.connectPort(in_rf_info_port,"test_rf_flow")
 
 	# get params for allocations
-	bw=float(self.comp.frontend_tuner_status[0]["FRONTEND::tuner_status::available_bandwidth"])
-	sr=float(self.comp.frontend_tuner_status[0]["FRONTEND::tuner_status::available_sample_rate"])
+	bw=self.alloc_params['wbddc_bw']
+	sr=self.alloc_params['wbddc_srate']
 
         # allocation params
         flow_id = "ca-710-flow"
@@ -437,15 +560,33 @@ class RFInfoTest(ossie.utils.testing.RHTestCase):
         alloc1_aid =  alloc1["FRONTEND::tuner_allocation"]["FRONTEND::tuner_allocation::allocation_id"]
         self.assertEqual(True,ret, "Allocation failed using rf_flow_id")
 
-        # allocation for center freq and rf_flow_id
-        alloc2=frontend.createTunerAllocation(center_frequency=cf,  rf_flow_id=flow_id)
-        ret=self.comp.allocateCapacity( alloc2)
-        alloc2_aid =  alloc2["FRONTEND::tuner_allocation"]["FRONTEND::tuner_allocation::allocation_id"]
-        self.assertEqual(True,ret, "Allocation failed using rf_flow_id again ")
+        alloc2_aid = alloc1_aid
+        if self.alloc_params['nbddc_srate'] is not None :
+            # dual channel we need to provide specific rate so the correct DDC is selected that matches the same rf_flow_id
+            if '2w' in self.msdd_id:
+                # allocation for center freq and rf_flow_id
+               alloc2=frontend.createTunerAllocation(center_frequency=cf,  
+                                                     sample_rate=self.alloc_params['nbddc_srate'],
+                                                     sample_rate_tolerance=1.0,
+                                                     rf_flow_id=flow_id)
+            else:
+               # allocation for center freq and rf_flow_id
+               alloc2=frontend.createTunerAllocation(center_frequency=cf,  rf_flow_id=flow_id)
+            ret=self.comp.allocateCapacity( alloc2)
+            alloc2_aid =  alloc2["FRONTEND::tuner_allocation"]["FRONTEND::tuner_allocation::allocation_id"]
+            self.assertEqual(True,ret, "Allocation failed using rf_flow_id again ")
 
         # valid rf_flow_id was probagated downstream
         sink=sb.StreamSink()
-        sdds_in=sb.launch('rh.SourceSDDS',  properties={'interface': INTERFACE})
+        sdds_in=sb.launch('rh.SourceSDDS',  properties={'interface': INTERFACE,
+                                                        'advanced_optimizations': {
+                                                         'advanced_optimizations::sdds_pkts_per_bulkio_push' : 5
+                                                        },
+                                                        'attachment_override' : {
+                                                         'attachment_override:endianness': "1234"
+                                                         }
+
+                                                })
         sb.start()
         self.comp.connect(sdds_in, connectionId=alloc2_aid, usesPortName='dataSDDS_out')
         sdds_in.connect(sink, usesPortName="dataShortOut")
@@ -467,8 +608,8 @@ class RFInfoTest(ossie.utils.testing.RHTestCase):
         out_rf_info_port.connectPort(in_rf_info_port,"test_rf_flow")
 
 	# get params for allocations
-	bw=float(self.comp.frontend_tuner_status[0]["FRONTEND::tuner_status::available_bandwidth"])
-	sr=float(self.comp.frontend_tuner_status[0]["FRONTEND::tuner_status::available_sample_rate"])
+	bw=self.alloc_params['wbddc_bw']
+	sr=self.alloc_params['wbddc_srate']
 
         # allocation params
         flow_id = "ca-710-flow"
@@ -489,10 +630,11 @@ class RFInfoTest(ossie.utils.testing.RHTestCase):
         alloc1_aid =  alloc1["FRONTEND::tuner_allocation"]["FRONTEND::tuner_allocation::allocation_id"]
         self.assertEqual(True,ret, "Allocation failed using rf_flow_id")
 
-        # allocation for center freq and rf_flow_id
-        alloc2=frontend.createTunerAllocation(center_frequency=cf,  rf_flow_id="noworkie")
-        ret=self.comp.allocateCapacity( alloc2)
-        self.assertEqual(False,ret, "Allocation should have failed for unknown rf_flow_id ")
+        if len(self.comp.frontend_tuner_status) > 1:
+                # allocation for center freq and rf_flow_id
+                alloc2=frontend.createTunerAllocation(center_frequency=cf,  rf_flow_id="noworkie")
+                ret=self.comp.allocateCapacity( alloc2)
+                self.assertEqual(False,ret, "Allocation should have failed for unknown rf_flow_id ")
 
     def testRFInfoPkt(self):
 
@@ -501,8 +643,8 @@ class RFInfoTest(ossie.utils.testing.RHTestCase):
         in_rf_info_port=self.comp.getPort("RFInfo_in")
         out_rf_info_port.connectPort(in_rf_info_port,"test_rf_flow")
 
-	bw=float(self.comp.frontend_tuner_status[0]["FRONTEND::tuner_status::available_bandwidth"])
-	sr=float(self.comp.frontend_tuner_status[0]["FRONTEND::tuner_status::available_sample_rate"])
+	bw=self.alloc_params['wbddc_bw']
+	sr=self.alloc_params['wbddc_srate']
         # allocation params
         flow_id = "ca-710-flow-2"
         cf=100e6
@@ -523,11 +665,21 @@ class RFInfoTest(ossie.utils.testing.RHTestCase):
         alloc1_aid =  alloc1["FRONTEND::tuner_allocation"]["FRONTEND::tuner_allocation::allocation_id"]
         self.assertEqual(True,ret, "Allocation failed using rf_flow_id")
 
-        # allocation for center freq and rf_flow_id
-        alloc2=frontend.createTunerAllocation(center_frequency=cf,  rf_flow_id=flow_id)
-        ret=self.comp.allocateCapacity( alloc2)
-        alloc2_aid =  alloc2["FRONTEND::tuner_allocation"]["FRONTEND::tuner_allocation::allocation_id"]
-        self.assertEqual(True,ret, "Allocation failed using rf_flow_id again ")
+        alloc2_aid = alloc1_aid
+        if self.alloc_params['nbddc_srate'] is not None :
+            # dual channel we need to provide specific rate so the correct DDC is selected that matches the same rf_flow_id
+            if '2w' in self.msdd_id:
+                # allocation for center freq and rf_flow_id
+               alloc2=frontend.createTunerAllocation(center_frequency=cf,  
+                                                     sample_rate=self.alloc_params['nbddc_srate'],
+                                                     sample_rate_tolerance=1.0,
+                                                     rf_flow_id=flow_id)
+            else:
+                # allocation for center freq and rf_flow_id
+                alloc2=frontend.createTunerAllocation(center_frequency=cf,  rf_flow_id=flow_id)
+            ret=self.comp.allocateCapacity( alloc2)
+            alloc2_aid =  alloc2["FRONTEND::tuner_allocation"]["FRONTEND::tuner_allocation::allocation_id"]
+            self.assertEqual(True,ret, "Allocation failed using rf_flow_id again ")
 
         # valid rf_flow_id was probagated downstream
         sink=sb.StreamSink()
@@ -549,6 +701,9 @@ class OnePpsTests(ossie.utils.testing.RHTestCase):
     SPD_FILE = '../MSDD.spd.xml'
 
     def setUp(self):
+        # reset device
+        subprocess.call(['./reset_msdd', IP_ADDRESS ])
+
         self.temp_files = []
 
         properties = {
@@ -557,7 +712,7 @@ class OnePpsTests(ossie.utils.testing.RHTestCase):
                      "msdd_configuration::msdd_port":"23"
                       },
                 "msdd_time_of_day_configuration": {
-                    "msdd_time_of_day_configuration::mode": "ONEPPS",
+                    "msdd_time_of_day_configuration::mode": TOD_MODE,
                     },
                 "msdd_output_configuration": [{
                      "msdd_output_configuration::tuner_number":0,
@@ -626,15 +781,12 @@ class OnePpsTests(ossie.utils.testing.RHTestCase):
         mode = msdd_time_of_day_configuration['msdd_time_of_day_configuration::mode']
         self.assertEqual(mode, 'ONEPPS', msg='tod_module.mode must be ONEPPS for this test.')
 
-        # Create a 2nd instance of MSDDRadio to read `tod_module.time`.
-        msdd_radio = msddcontroller.MSDDRadio(IP_ADDRESS, 23)
-        tod_module = msdd_radio.tod_modules[0].object
-
         deltas = []
         num_reads = 30
         for _ in xrange(num_reads):
-            host_time = MSDD.get_seconds_from_start_of_year()
-            tod_time = tod_module.time
+            host_time = get_seconds_from_start_of_year()
+            tod_time = get_tod(IP_ADDRESS)
+            if not tod_time: continue
             deltas.append(host_time - tod_time)
             time.sleep(1)
         delta_avg = sum(deltas) / len(deltas)
@@ -712,19 +864,147 @@ class OnePpsTests(ossie.utils.testing.RHTestCase):
         return accuracy
 
 
+class IPPInterfaceTest(ossie.utils.testing.RHTestCase):
+    # Path to the SPD file, relative to this file. This must be set in order to
+    # launch the device.
+    SPD_FILE = '../MSDD.spd.xml'
+
+    def setUp(self):
+
+        # reset device
+        subprocess.call(['./reset_msdd', IP_ADDRESS])
+
+        try:
+            self.alloc_params, self.msdd_id = getAllocationParams(IP_ADDRESS)
+        except Exception, e:
+                self.fail("Unable to identify MSDD, " + str(IP_ADDRESS) + " reason:" + str(e))
+
+	import sys
+	sys.path.append('../python')
+	import msddcontroller
+	msdd=msddcontroller.MSDDRadio(IP_ADDRESS,23)
+        omsg="Does not report"
+        dual=False
+        try:
+            dual=re.split('[_-]',msdd.console.filename_fpga)[1].startswith('d')
+        except:
+            traceback.print_exc()
+            pass
+	if '170314' in msdd.console.filename_app or dual:
+                omsg= "reports "
+        msg="*** Application firmware: " + \
+                msdd.console.filename_app + \
+                " Output Module: "+omsg+ " interface numbers ***"
+        print>>sys.stderr, "\n",msg
+
+
+        self.alloc1=None
+        self.alloc2=None
+        configure = {
+                "DEBUG_LEVEL": DEBUG_LEVEL, 
+                "msdd_configuration" : { 
+                    "msdd_configuration::msdd_ip_address" : IP_ADDRESS,
+                     "msdd_configuration::msdd_port":"23"
+                },
+                "advanced":{
+                        "advanced::udp_timeout" : 0.10,
+                     },
+                "msdd_output_configuration": [{
+                     "msdd_output_configuration::tuner_number": self.alloc_params['wbddc_tuner'],
+                     "msdd_output_configuration::protocol":"UDP_SDDS",
+                     "msdd_output_configuration::ip_address":"239.1.1.1",
+                     "msdd_output_configuration::port":29000,
+                     "msdd_output_configuration::vlan":0,
+                     "msdd_output_configuration::enabled":True,
+                     "msdd_output_configuration::timestamp_offset":0,
+                     "msdd_output_configuration::endianess":1,
+                     "msdd_output_configuration::mfp_flush":63,
+                     "msdd_output_configuration::vlan_enable": False                        
+                     },
+                                      {
+                     "msdd_output_configuration::tuner_number": self.alloc_params['nbddc_tuner'],
+                     "msdd_output_configuration::protocol":"UDP_SDDS",
+                     "msdd_output_configuration::ip_address":"239.1.1.2",
+                     "msdd_output_configuration::port":29001,
+                     "msdd_output_configuration::vlan":0,
+                     "msdd_output_configuration::enabled":True,
+                     "msdd_output_configuration::timestamp_offset":0,
+                     "msdd_output_configuration::endianess":1,
+                     "msdd_output_configuration::mfp_flush":63,
+                     "msdd_output_configuration::vlan_enable": False                        
+                     }]
+                }
+    
+        self.comp = sb.launch(self.spd_file, impl=self.impl,properties=configure)
+
+    
+    def tearDown(self):
+        try:
+           if self.alloc1:
+              self.comp.deallocateCapacity(alloc1)
+	except:
+		pass
+        try:
+           if self.alloc2:
+              self.comp.deallocateCapacity(alloc2)
+	except:
+		pass
+        # Clean up all sandbox artifacts created during test
+        sb.release()
+
+
+    def testTunerStatus(self):
+
+       self.alloc1=frontend.createTunerAllocation(tuner_type="RX_DIGITIZER_CHANNELIZER", 
+                                            center_frequency=100e6, 
+                                            sample_rate=self.alloc_params['wbddc_srate'],
+                                            sample_rate_tolerance=100.0)
+       ret=self.comp.allocateCapacity(self.alloc1)
+       self.assertTrue(ret)
+       alloc1_aid =  self.alloc1["FRONTEND::tuner_allocation"]["FRONTEND::tuner_allocation::allocation_id"]
+
+       expected=True
+       actual=self.comp.frontend_tuner_status[0].enabled
+       self.assertEqual(expected,actual, "Tuner status enabled failed")
+
+       expected=True
+       actual=self.comp.frontend_tuner_status[0].output_enabled
+       self.assertEqual(expected,actual, "Tuner status output enabled failed")
+
+       sink=sb.StreamSink()
+       sdds_in=sb.launch('rh.SourceSDDS',  properties={'interface': INTERFACE})
+       sb.start()
+       self.comp.connect(sdds_in, connectionId=alloc1_aid, usesPortName='dataSDDS_out')
+       sdds_in.connect(sink, usesPortName="dataShortOut")
+
+       sink_data=None
+       try:
+               sink_data=sink.read(timeout=1.0)
+       except:
+            pass
+       self.assertNotEqual( None, sink_data, "MSDD did not produce data for allocation")
+       self.assertNotEqual( 0, len(sink_data.data), "MSDD did not produce data for allocation")
+
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--ip', default="192.168.103.250")
-    parser.add_argument('--inf', default="em3")
-    parser.add_argument('--debug', default=3)
-    parser.add_argument('unittest_args', nargs='*')
+    parser.add_argument('--ip', default="192.168.11.2", help="ip address of msdd")
+    parser.add_argument('--iface', default="em3", help="local host interface for reading data from msdd")
+    parser.add_argument('--tod', default="ONEPPS", help="set TOD mode: ONEPPS, SIM")
+    parser.add_argument('--debug', default='info', help="debug level, fatal, error, warn, info, debug, trace" )
 
     try:
-        args = parser.parse_args()
+        args, remaining_args = parser.parse_known_args()
         IP_ADDRESS=args.ip
-        DEBUG_LEVEL=args.debug
+        DEBUG_LEVEL=get_debug_level(args.debug)
+        INTERFACE=args.iface
+        TOD_MODE=args.tod
+    except SystemExit:
+        raise SystemExit
     except:
+        traceback.print_exc()
         pass
-    sys.argv[1:] = args.unittest_args
+
+    sys.argv[1:] = remaining_args
     ossie.utils.testing.main() # By default tests all implementations

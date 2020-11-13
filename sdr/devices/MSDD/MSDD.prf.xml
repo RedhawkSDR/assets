@@ -3,20 +3,21 @@
 This file is protected by Copyright. Please refer to the COPYRIGHT file
 distributed with this source distribution.
 
-This file is part of REDHAWK rh.MSDD.
+This file is part of REDHAWK.
 
-REDHAWK rh.MSDD is free software: you can redistribute it and/or modify it under
-the terms of the GNU Lesser General Public License as published by the Free
-Software Foundation, either version 3 of the License, or (at your option) any
-later version.
+REDHAWK is free software: you can redistribute it and/or modify it
+under the terms of the GNU Lesser General Public License as published by the
+Free Software Foundation, either version 3 of the License, or (at your
+option) any later version.
 
-REDHAWK rh.MSDD is distributed in the hope that it will be useful, but WITHOUT ANY
-WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
-details.
+REDHAWK is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
+for more details.
 
-You should have received a copy of the GNU Lesser General Public License along
-with this program.  If not, see http://www.gnu.org/licenses/.
+You should have received a copy of the GNU Lesser General Public License
+along with this program.  If not, see http://www.gnu.org/licenses/.
+
 -->
 <!DOCTYPE properties PUBLIC "-//JTRS//DTD SCA V2.2.2 PRF//EN" "properties.dtd">
 <properties>
@@ -50,17 +51,9 @@ with this program.  If not, see http://www.gnu.org/licenses/.
     <action type="external"/>
   </simple>
   <struct id="advanced" mode="readwrite">
-    <simple id="advanced::enable_msdd_advanced_debugging_tools" name="enable_msdd_advanced_debugging_tools" type="boolean">
-      <description>WARNING: ENABLING THIS AND RUNNING COMMANDS OUTSIDE THE DEVICE DRIVER COULD RENDER THIS UNIT UNOPERABLE. USE CAUTION</description>
-      <value>False</value>
-    </simple>
-    <simple id="advanced::allow_internal_allocations" name="allow_internal_allocations" type="boolean">
-      <description>This can automatically allocate sub-tuners for use with other sub-tuners. May be needed to acquire lower sample rates</description>
-      <value>False</value>
-    </simple>
     <simple id="advanced::udp_timeout" name="udp_timeout" type="double">
       <description>Timeout to receive data after a command is sent</description>
-      <value>1.0</value>
+      <value>0.2</value>
       <units>seconds</units>
     </simple>
     <simple id="advanced::rcvr_mode" name="rcvr_mode" type="short">
@@ -109,19 +102,21 @@ with this program.  If not, see http://www.gnu.org/licenses/.
         <enumeration label="RX_DIGITIZER or RX_DIGITIZER_CHANNELIZER or DDC" value="7"/>
       </enumerations>
     </simple>
-    <simple id="advanced::psd_mode" name="psd_mode" type="short">
-      <value>0</value>
-      <enumerations>
-        <enumeration label="Not allocatable" value="0"/>
-        <enumeration label="PSD Only (NOT ENABLED - 16)" value="0"/>
-      </enumerations>
+    <simple id="advanced::enable_inline_swddc" name="enable_inline_swddc" type="boolean">
+      <description>Attach a SWDDC module to a NBDDC module on startup.  Allows for narrow bandwidths from the NBDDC modules.</description>
+      <value>False</value>
     </simple>
-    <simple id="advanced::spc_mode" name="spc_mode" type="short">
-      <value>0</value>
-      <enumerations>
-        <enumeration label="Not allocatable" value="0"/>
-        <enumeration label="Enable SPC Mode" value="32"/>
-      </enumerations>
+    <simple id="advanced::enable_fft_channels" name="enable_fft_channels" type="boolean">
+      <description>Enable FFT modules to be dynamically assigned to controlling allocations.</description>
+      <value>False</value>
+    </simple>
+    <simple id="advanced::max_cpu_load" name="max_cpu_load" type="float">
+      <description>Maximum value to determine device BUSY state for MSDD DSP load..</description>
+      <value>95.0</value>
+    </simple>
+    <simple id="advanced::max_nic_percentage" name="max_nic_percentage" type="float">
+      <description>Maximum utilization of nic rate determine device BUSY state for MSDD.</description>
+      <value>90</value>
     </simple>
     <simple id="minimum_connected_nic_rate" mode="readwrite" type="float">
       <description>If the MSDD is connected at a lower rate, then error the connection</description>
@@ -181,7 +176,7 @@ with this program.  If not, see http://www.gnu.org/licenses/.
     </simple>
     <configurationkind kindtype="property"/>
   </struct>
-  <structsequence id="msdd_output_configuration" mode="readwrite">
+  <structsequence id="msdd_output_configuration" mode="readonly">
     <struct id="msdd_output_configuration_struct">
       <simple id="msdd_output_configuration::tuner_number" name="tuner_number" type="short">
         <description>Tuner number from the frontend_tuner_status property</description>
@@ -242,7 +237,7 @@ Bit 7: RF Gain
     </struct>
     <configurationkind kindtype="property"/>
   </structsequence>
-  <structsequence id="msdd_block_output_configuration" mode="readwrite">
+  <structsequence id="msdd_block_output_configuration" mode="readonly">
     <struct id="msdd_block_output_configuration_struct">
       <simple id="msdd_block_output_configuration::tuner_number_start" name="tuner_number_start" type="short">
         <value>0</value>
@@ -292,7 +287,7 @@ Bit 7: RF Gain
           <enumeration label="LITTLE ENDIAN" value="1"/>
         </enumerations>
       </simple>
-      <simple id="msdd_block_output_configuration:mfp_flush" name="mfp_flush" type="long">
+      <simple id="msdd_block_output_configuration::mfp_flush" name="mfp_flush" type="long">
         <description>Determine what paramters will initiate a packet flush.
 
 Bit 0: IF Frequency Offset
@@ -314,8 +309,81 @@ Bit 7: RF Gain
     </struct>
     <configurationkind kindtype="property"/>
   </structsequence>
+  <structsequence id="msdd_psd_output_configuration" mode="readonly">
+    <description>Define the output configuration for each FFT channel.</description>
+    <struct id="msdd_psd_output_configuration_struct">
+      <simple id="msdd_psd_output_configuration::fft_channel_start" name="fft_channel_start" type="short">
+        <value>0</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::fft_channel_stop" name="fft_channel_stop" type="short">
+        <value>0</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::protocol" name="protocol" type="string">
+        <value>UDP_SDDS</value>
+        <enumerations>
+          <enumeration label="SDDS" value="UDP_SDDS"/>
+          <enumeration label="SDDSX" value="UDP_SDDSX"/>
+          <enumeration label="SDDSA" value="UDP_SDDSA"/>
+          <enumeration label="RAW" value="UDP_RAW"/>
+          <enumeration label="VITA49" value="UDP_VITA49"/>
+        </enumerations>
+      </simple>
+      <simple id="msdd_psd_output_configuration::ip_address" name="ip_address" type="string">
+        <value></value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::increment_ip_address" name="increment_ip_address" type="boolean">
+        <value>False</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::port" name="port" type="short">
+        <value>8800</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::increment_port" name="increment_port" type="boolean">
+        <value>True</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::vlan" name="vlan" type="short">
+        <description>vlan &lt;= 0 disables vlan tagging</description>
+        <value>-1</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::increment_vlan" name="increment_vlan" type="boolean">
+        <value>False</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::enabled" name="enabled" type="boolean">
+        <value>False</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::timestamp_offset" name="timestamp_offset" type="short">
+        <value>0</value>
+      </simple>
+      <simple id="msdd_psd_output_configuration::endianess" name="endianess" type="short">
+        <value>1</value>
+        <enumerations>
+          <enumeration label="BIG ENDIAN" value="0"/>
+          <enumeration label="LITTLE ENDIAN" value="1"/>
+        </enumerations>
+      </simple>
+      <simple id="msdd_psd_output_configuration::mfp_flush" name="mfp_flush" type="long">
+        <description>Determine what paramters will initiate a packet flush.
+
+Bit 0: IF Frequency Offset
+Bit 1: RF Tuned Frequency
+Bit 2: Scan Stop Frequency
+Bit 3: Number of spectral Bins
+Bit 4: Digital Decimation
+Bit 5: Digital Interpolation
+Bit 6: Digital Gain
+Bit 7: RF Gain
+</description>
+        <value>63</value>
+        <range max="255" min="0"/>
+      </simple>
+      <simple id="msdd_psd_output_configuration::vlan_enable" name="vlan_enable" type="boolean">
+        <description>This property will enable vlan tagging on the msdd if set to True. When set to false, the sdds output port will still pass the vlan tag on a push.  Set this value as false if you want the vlan tagging to occur elsewhere, such as an access mode port on a switch.</description>
+        <value>True</value>
+      </simple>
+    </struct>
+    <configurationkind kindtype="property"/>
+  </structsequence>
   <struct id="msdd_psd_configuration" mode="readwrite">
-    <description>This is global across all fft modules.</description>
+    <description>This is global across all FFT channels. Changes to this property are applied to the next time a FFT channel is used.</description>
     <simple id="msdd_psd_configuration::fft_size" name="fft_size" type="double">
       <description>fft_size</description>
       <value>32768</value>
@@ -357,61 +425,6 @@ and comprise it unless you looking for the strongest signal.</description>
         <enumeration label="PEAK" value="PEAK"/>
         <enumeration label="BOTH" value="BOTH"/>
       </enumerations>
-    </simple>
-    <configurationkind kindtype="property"/>
-  </struct>
-  <struct id="msdd_spc_configuration" mode="readwrite">
-    <description>This is for configuration of the spectral scanning.</description>
-    <simple id="msdd_spc_configuration::fft_size" name="fft_size" type="short">
-      <description>fft_size</description>
-      <value>8192</value>
-    </simple>
-    <simple id="msdd_spc_configuration::num_fft_averages" name="num_fft_averages" type="short">
-      <description>Represents how many FFT averages will be computed per FFT set.  Value &lt;= 0 means no averaging will take place</description>
-      <value>0</value>
-    </simple>
-    <simple id="msdd_spc_configuration::time_between_ffts" name="time_between_ffts" type="double">
-      <description>Time between fft sets</description>
-      <value>200.0</value>
-      <units>ms</units>
-    </simple>
-    <simple id="msdd_spc_configuration::output_bin_size" name="output_bin_size" type="short">
-      <description>Sets the number of bins that will be output for a set. A setting of 0 will output the
-native FFT bin size. The number of native fft bins may be expanded or
-compressed. Linear interpolation is performed on the log date when the native
-bins are expanded. When the data is compressed the receiver will take the
-highest bin (there more elegant ways to compress bins but why do a larger FFT
-and comprise it unless you looking for the strongest signal.</description>
-      <value>4096</value>
-    </simple>
-    <simple id="msdd_spc_configuration::window_type" name="window_type" type="string">
-      <description>HANNING,HAMMING,BLACKMAN,RECT</description>
-      <value>HAMMING</value>
-      <enumerations>
-        <enumeration label="HANNING" value="HANNING"/>
-        <enumeration label="HAMMING" value="HAMMING"/>
-        <enumeration label="BLACKMAN" value="BLACKMAN"/>
-        <enumeration label="RECT" value="RECT"/>
-      </enumerations>
-    </simple>
-    <simple id="msdd_spc_configuration::peak_mode" name="peak_mode" type="string">
-      <description>INST,PEAK,BOTH</description>
-      <value>INST</value>
-      <enumerations>
-        <enumeration label="INST" value="INST"/>
-        <enumeration label="PEAK" value="PEAK"/>
-        <enumeration label="BOTH" value="BOTH"/>
-      </enumerations>
-    </simple>
-    <simple id="msdd_spc_configuration::start_frequency" name="start_frequency" type="double">
-      <description>Start Frequency for scanning</description>
-      <value>100000000.0</value>
-      <units>Hz</units>
-    </simple>
-    <simple id="msdd_spc_configuration::stop_frequency" name="stop_frequency" type="double">
-      <description>Stop Frequency for scanning</description>
-      <value>1000000000.0</value>
-      <units>Hz</units>
     </simple>
     <configurationkind kindtype="property"/>
   </struct>
@@ -571,20 +584,11 @@ and comprise it unless you looking for the strongest signal.</description>
       <simple id="FRONTEND::tuner_status::psd_output_bin_size" name="psd_output_bin_size" type="double"/>
       <simple id="FRONTEND::tuner_status::psd_window_type" name="psd_window_type" type="string"/>
       <simple id="FRONTEND::tuner_status::psd_peak_mode" name="psd_peak_mode" type="string"/>
-      <simple id="FRONTEND::tuner_status::spc_fft_size" name="spc_fft_size" type="short"/>
-      <simple id="FRONTEND::tuner_status::spc_averages" name="spc_averages" type="short"/>
-      <simple id="FRONTEND::tuner_status::spc_time_between_ffts" name="spc_time_between_ffts" type="double">
-        <units>ms</units>
-      </simple>
-      <simple id="FRONTEND::tuner_status::spc_output_bin_size" name="spc_output_bin_size" type="short"/>
-      <simple id="FRONTEND::tuner_status::spc_window_type" name="spc_window_type" type="string"/>
-      <simple id="FRONTEND::tuner_status::spc_peak_mode" name="spc_peak_mode" type="string"/>
-      <simple id="FRONTEND::tuner_status::spc_start_frequency" name="spc_start_frequency" type="double"/>
       <simple id="FRONTEND::tuner_status::available_tuner_type" mode="readwrite" name="available_tuner_type" type="string">
+        <value></value>
         <kind kindtype="property"/>
         <action type="external"/>
       </simple>
-      <simple id="FRONTEND::tuner_status::spc_stop_frequency" name="spc_stop_frequency" type="double"/>
       <configurationkind kindtype="configure"/>
     </struct>
     <configurationkind kindtype="property"/>
@@ -630,11 +634,17 @@ and comprise it unless you looking for the strongest signal.</description>
     <configurationkind kindtype="property"/>
   </struct>
   <struct id="msdd_advanced_debugging_tools" mode="readwrite">
-    <simple id="msdd_advanced_debugging_tools::command" name="command" type="string"/>
-    <simple id="msdd_advanced_debugging_tools::response" name="response" type="string"/>
+    <description>Send a command to the MSDD radio and process the response message. </description>
+    <simple id="msdd_advanced_debugging_tools::command" name="command" type="string">
+      <value></value>
+    </simple>
+    <simple id="msdd_advanced_debugging_tools::response" name="response" type="string">
+      <value></value>
+    </simple>
     <configurationkind kindtype="property"/>
   </struct>
   <struct id="msdd_gain_configuration" mode="readwrite">
+    <description>Applies the gain settings to the appropriate module.  Changes to these setting will affect the next time tuner channel is allocated.</description>
     <simple id="msdd_gain_configuration::rcvr_gain" name="rcvr_gain" type="float">
       <value>0</value>
       <units>dB</units>
