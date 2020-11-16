@@ -9,8 +9,8 @@ variables:
   namespace: rh.
   asset_name: none
   lowercase_asset_name: None
-  latest_version: develop-2.3
-  release_version: $rh_develop_release
+  latest_version: develop-2-3
+  release_version: $rh_23_release
   short_version: '2.3'
   arch: x86_64
   results_dir: results/${asset_name}-${dist}-${arch}
