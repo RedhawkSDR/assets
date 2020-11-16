@@ -10,7 +10,7 @@ variables:
   namespace: rh.
   asset_name: none
   lowercase_asset_name: None
-  latest_version: develop-2.3
+  latest_version: develop
   release_version: $rh_develop_release
   short_version: '3.0'
   arch: x86_64
