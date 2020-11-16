@@ -259,7 +259,7 @@ if __name__ == '__main__':
     versions = {}
 
     platforms['el7']={'dist':'el7', 'arch':'x86_64'}
-    versions['develop']={'latest_version':'develop', 'release_version':'$rh_develop_release', 'short_version':'2.3', 'platform_keys':['el7']}
+    versions['develop']={'latest_version':'develop-2.3', 'release_version':'$rh_develop_release', 'short_version':'2.3', 'platform_keys':['el7']}
 
     base_component_dir = 'sdr/libraries'
     candidate_components = os.listdir(base_component_dir)
