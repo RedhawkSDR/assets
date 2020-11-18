@@ -446,6 +446,7 @@ void fastfilter_i::filterPropsChanged(const filterProps_struct *oldValue, const 
         complexFilterCoefficients.clear();
         correlationMode=false;
         manualTaps_=false;
+	bypassMode_=false;
         if (!filters_.empty())
         {
             if (filterProps.filterComplex)
