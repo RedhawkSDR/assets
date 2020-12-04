@@ -64,6 +64,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         self.src.releaseObject()
         self.sink.releaseObject()  
         ossie.utils.testing.ScaComponentTestCase.tearDown(self)
+	sb.stop()
         
 
     def setupComponent(self):
@@ -183,7 +184,20 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         self.src.push([],complexData=False, sampleRate=1.0, EOS=True,streamID="someSRI")
         time.sleep(.1)
         self.assertTrue(self.sink.eos())
-  
+ 
+
+    def testBypassMode(self):
+    	""" Set filterCoefficients to 1 to test if BypassMode is working
+	"""
+    	self.comp.log_level(0)
+	self.comp.realFilterCoefficients=[1]
+	self.src.push([0]*100)
+
+	time.sleep(.1)
+
+	self.testLowpass()
+	#input()
+
     def testReal(self):
         """ Real Filter real data
         """
@@ -198,7 +212,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         self.validateSRIPushing()
         
         outDataSS = self.output[(len(filter)-1)/2:]
-        
         self.assertTrue(all([abs(x-y)<.1 for x,y in zip(outDataSS,inData[0])]))
 
     def testCxFilt(self):
@@ -351,6 +364,58 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         diffSR = abs(calcSR-sampleRate)
         tolerance = 1
         self.assertTrue(diffSR < tolerance, "Component not pushing samplerate properly")
+
+	#Activate bypassmode and check if output is the same as input
+    def testBypassMode(self):
+    	ff=sb.launch('rh.fastfilter')
+	sg=sb.launch('rh.SigGen')
+
+	sg.shape='square'
+	ff.realFilterCoefficients=[1]
+
+	ffOut=sb.DataSink()
+	sgOut=sb.DataSink()
+
+	ff.connect(ffOut)
+	sg.connect(sgOut,usesPortName='dataFloat_out')
+	sg.connect(ff,usesPortName='dataFloat_out')
+
+	sb.start()
+	ff_data=ffOut.getData(1000)
+	sg_data=sgOut.getData(1000)
+	ut=unittest.TestCase('run')
+	ut.assertEqual(ff_data,sg_data,'Data was not equal')
+
+	ffOut.reset()
+	sgOut.reset()
+	time.sleep(1)
+	sb.stop()
+	
+	#Turn off bypassmode and check if filtering occurred
+    def testDeactivateBypassMode(self):
+    	ff=sb.launch('rh.fastfilter')
+	sg=sb.launch('rh.SigGen')
+
+	sg.shape='square'
+	ff.realFilterCoefficients = []
+
+	ffOut=sb.DataSink()
+	sgOut=sb.DataSink()
+
+	ff.connect(ffOut)
+	sg.connect(sgOut,usesPortName='dataFloat_out')
+	sg.connect(ff,usesPortName='dataFloat_out')
+
+	sb.start()
+	ff_data=ffOut.getData(1000)
+	sg_data=sgOut.getData(1000)
+	ut=unittest.TestCase('run')
+	ut.assertNotEqual(ff_data,sg_data,'Data was equal')
+
+	ffOut.reset()
+	sgOut.reset()
+	time.sleep(1)
+	sb.stop()
 
     def main(self, inData, dataCx=False, sampleRate=1.0, eos=False,streamID='test_stream'):    
         count=0
