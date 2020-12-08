@@ -133,6 +133,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         """Set with multiple filterProp settings simultaniously and verify we get an error
         """
         prop1 =  self.makeCxCoefProps()
+	print(self.output)
         prop2 = self.makeRealCoefProps()
         try:
             self.comp.configure([prop1,prop2])
@@ -187,9 +188,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
  
 
     def testBypassMode(self):
-    	""" Set filterCoefficients to 1 to test if BypassMode is working
+        """ Set filterCoefficients to 1 to test if BypassMode is working
 	"""
-    	self.comp.log_level(0)
+        self.comp.log_level(0)
 	self.comp.realFilterCoefficients=[1]
 	self.src.push([0]*100)
 
@@ -367,8 +368,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
 
 	#Activate bypassmode and check if output is the same as input
     def testBypassMode(self):
-    	ff=sb.launch('rh.fastfilter')
-	sg=sb.launch('rh.SigGen')
+        ff=sb.launch('../fastfilter.spd.xml')
+	sg=sb.launch('../../SigGen/SigGen.spd.xml')
 
 	sg.shape='square'
 	ff.realFilterCoefficients=[1]
@@ -385,7 +386,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
 	sg_data=sgOut.getData(1000)
 	ut=unittest.TestCase('run')
 	ut.assertEqual(ff_data,sg_data,'Data was not equal')
-
 	ffOut.reset()
 	sgOut.reset()
 	time.sleep(1)
@@ -393,8 +393,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
 	
 	#Turn off bypassmode and check if filtering occurred
     def testDeactivateBypassMode(self):
-    	ff=sb.launch('rh.fastfilter')
-	sg=sb.launch('rh.SigGen')
+        ff=sb.launch('../fastfilter.spd.xml')
+	sg=sb.launch('../../SigGen/SigGen.spd.xml')
 
 	sg.shape='square'
 	ff.realFilterCoefficients = []
@@ -411,7 +411,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
 	sg_data=sgOut.getData(1000)
 	ut=unittest.TestCase('run')
 	ut.assertNotEqual(ff_data,sg_data,'Data was equal')
-
 	ffOut.reset()
 	sgOut.reset()
 	time.sleep(1)
