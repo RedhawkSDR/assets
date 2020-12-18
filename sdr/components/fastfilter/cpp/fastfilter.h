@@ -87,6 +87,7 @@ class fastfilter_i : public fastfilter_base
         void filterPropsChanged(const filterProps_struct *oldValue, const filterProps_struct *newValue);
         void fftSizeChanged(const CORBA::ULong *oldValue, const CORBA::ULong *newValue);
         void realFilterCoefficientsChanged(const std::vector<float> *oldValue, const std::vector<float> *newValue);
+        void bypassModeChanged(const bool *oldValue, const bool *newValue);
 
         void getManualTaps(bool& doReal, bool& doComplex);
         template<typename T, typename U>

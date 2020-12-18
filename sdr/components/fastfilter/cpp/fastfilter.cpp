@@ -31,14 +31,14 @@ PREPARE_LOGGING(fastfilter_i)
 
 fastfilter_i::fastfilter_i(const char *uuid, const char *label) :
     fastfilter_base(uuid, label),
-    manualTaps_(false),
-    	bypassMode_(false)
+    manualTaps_(false)
 {
 	addPropertyChangeListener("complexFilterCoefficients", this, &fastfilter_i::complexFilterCoefficientsChanged);
 	addPropertyChangeListener("correlationMode", this, &fastfilter_i::correlationModeChanged);
 	addPropertyChangeListener("fftSize", this, &fastfilter_i::fftSizeChanged);
 	addPropertyChangeListener("filterProps", this, &fastfilter_i::filterPropsChanged);
 	addPropertyChangeListener("realFilterCoefficients", this, &fastfilter_i::realFilterCoefficientsChanged);
+	addPropertyChangeListener("bypassMode", this, &fastfilter_i::bypassModeChanged);
 }
 
 fastfilter_i::~fastfilter_i()
@@ -206,8 +206,8 @@ int fastfilter_i::serviceFunction()
 				LOG_DEBUG(fastfilter_i, "using manual taps ");
 				bool real, complex;
 				getManualTaps(real,complex);
-				
-				if(!bypassMode_){
+
+				if(!bypassMode){
 					if (real)
 						filter = new firfilter(fftSize, realOut, complexOut, realTaps_);
 					else if(complex)
@@ -239,21 +239,21 @@ int fastfilter_i::serviceFunction()
 					filter = new firfilter(fftSize, realOut, complexOut, realTaps_);
 				}
 			}
-			if(!bypassMode_){
+			if(!bypassMode){
 				map_type::value_type filterWrapperMap(tmp->streamID, FilterWrapper());
 				i = filters_.insert(filters_.end(),filterWrapperMap);
 				i->second.setParams(fs,filter);
 			}
 		}
 		else{
-			if(bypassMode_)
+			if(bypassMode)
 				filters_.erase(i);
 			else
 				//get the filter we have used before
 				filter = i->second.filter;
 		}
 		//bypass filtering - just put the output out
-		if(bypassMode_){
+		if(bypassMode){
 			LOG_TRACE(fastfilter_i, "BYPASS MODE PUSHING INPUT AS OUTPUT");
 		if(updateSRI)
 			dataFloat_out->pushSRI(tmp->SRI);
@@ -303,32 +303,33 @@ int fastfilter_i::serviceFunction()
 		}
 	    if (tmp->EOS)
 	    {
-	    	//if we have an eos - remove the wrapper from the container
-	    	filters_.erase(i);
+	        //if we have an eos - remove the wrapper from the container
+	        filters_.erase(i);
 	    }
 	}
 
 	//to do -- adjust time stamps appropriately on all these output pushes
     // NOTE: You must make at least one valid pushSRI call
     if (updateSRI) {
-    	dataFloat_out->pushSRI(tmp->SRI);
+        dataFloat_out->pushSRI(tmp->SRI);
     }
     if (!complexOut.empty())
     {
-    	std::vector<float>* tmpRealOut = (std::vector<float>*) &(complexOut);
-    	dataFloat_out->pushPacket(*tmpRealOut, tmp->T, tmp->EOS, tmp->streamID);
+
+        std::vector<float>* tmpRealOut = (std::vector<float>*) &(complexOut);
+        dataFloat_out->pushPacket(*tmpRealOut, tmp->T, tmp->EOS, tmp->streamID);
     }
     if (!realOut.empty())
     {
-    	//case we we forced a push on real data from previous complex data
-    	//need to force our sri back to real and push another sri
-    	if (updateSRI && tmp->SRI.mode==1)
-    	{
-    		//change mode back to 0 and send another sri with our real output
-    		tmp->SRI.mode=0;
-    		dataFloat_out->pushSRI(tmp->SRI);
-    	}
-    	dataFloat_out->pushPacket(realOut, tmp->T, tmp->EOS, tmp->streamID);
+        //case we we forced a push on real data from previous complex data
+        //need to force our sri back to real and push another sri
+        if (updateSRI && tmp->SRI.mode==1)
+        {
+                //change mode back to 0 and send another sri with our real output
+                tmp->SRI.mode=0;
+                dataFloat_out->pushSRI(tmp->SRI);
+        }
+        dataFloat_out->pushPacket(realOut, tmp->T, tmp->EOS, tmp->streamID);
     }
 
     // If no Data but EOS is True then push and empty packet with EOS True
@@ -382,8 +383,8 @@ void fastfilter_i::complexFilterCoefficientsChanged(const std::vector<std::compl
               if ( !filters_.empty())
               {
                   getManualTapsTemplate(complexFilterCoefficients, complexTaps_);
-		  if(bypassMode_)
-		  	return;
+		  if(bypassMode)
+		        return;
                   for (map_type::iterator i = filters_.begin(); i!=filters_.end(); i++)
                       i->second.filter->setTaps(complexTaps_);
               }
@@ -392,7 +393,7 @@ void fastfilter_i::complexFilterCoefficientsChanged(const std::vector<std::compl
            LOG_ERROR(fastfilter_i, "Unable to update complexFilterCoefficients!");
            complexFilterCoefficients=*oldValue;
         }
-	}
+        }
 }
 
 void fastfilter_i::correlationModeChanged(const bool *oldValue, const bool *newValue)
@@ -417,6 +418,13 @@ void fastfilter_i::correlationModeChanged(const bool *oldValue, const bool *newV
 			}
 		}
 	}
+}
+
+void fastfilter_i::bypassModeChanged(const bool *oldValue, const bool *newValue)
+{
+        if (*oldValue != *newValue) {
+                boost::mutex::scoped_lock lock(filterLock_);
+        }
 }
 
 void fastfilter_i::fftSizeChanged(const CORBA::ULong *oldValue, const CORBA::ULong *newValue)
@@ -446,7 +454,7 @@ void fastfilter_i::filterPropsChanged(const filterProps_struct *oldValue, const 
         complexFilterCoefficients.clear();
         correlationMode=false;
         manualTaps_=false;
-	bypassMode_=false;
+	bypassMode =false;
         if (!filters_.empty())
         {
             if (filterProps.filterComplex)
@@ -481,7 +489,7 @@ void fastfilter_i::realFilterCoefficientsChanged(const std::vector<float> *oldVa
 			if (!filters_.empty())
 			{
 				getManualTapsTemplate(realFilterCoefficients, realTaps_);
-				if(bypassMode_)
+				if(bypassMode)
 					return;
 				for (map_type::iterator i = filters_.begin(); i!=filters_.end(); i++)
 				{
@@ -519,15 +527,11 @@ void fastfilter_i::getManualTaps(bool& doReal, bool& doComplex)
 	}
 }
 
-//in.size is number of complex/real filter coeficients entered
 template<typename T, typename U>
 void fastfilter_i::getManualTapsTemplate(T& in, U& out)
 {
-	//If only 1 coefficient and it is value is 1.0
-	bypassMode_ = (in.size()==1 && in[0]==typename T::value_type(1));
 
-	LOG_DEBUG(fastfilter_i, "bypassMode_= "<<bypassMode_);
-	if(bypassMode_)
+	if(bypassMode)
 		return;
 	validateFftSize(in.size());
 	if (correlationMode)

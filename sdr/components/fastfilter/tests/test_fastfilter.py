@@ -133,7 +133,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         """Set with multiple filterProp settings simultaniously and verify we get an error
         """
         prop1 =  self.makeCxCoefProps()
-	print(self.output)
         prop2 = self.makeRealCoefProps()
         try:
             self.comp.configure([prop1,prop2])
@@ -367,13 +366,15 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         self.assertTrue(diffSR < tolerance, "Component not pushing samplerate properly")
 
 	#Activate bypassmode and check if output is the same as input
+    
     def testBypassMode(self):
         ff=sb.launch('../fastfilter.spd.xml')
 	sg=sb.launch('../../SigGen/SigGen.spd.xml')
-
+	
+	#ff=sb.launch('rh.fastfilter')
+	#sg=sb.launch('rh.SigGen')
 	sg.shape='square'
-	ff.realFilterCoefficients=[1]
-
+	ff.bypassMode = True
 	ffOut=sb.DataSink()
 	sgOut=sb.DataSink()
 
@@ -397,8 +398,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
 	sg=sb.launch('../../SigGen/SigGen.spd.xml')
 
 	sg.shape='square'
-	ff.realFilterCoefficients = []
-
+	ff.bypassMode = False
 	ffOut=sb.DataSink()
 	sgOut=sb.DataSink()
 
@@ -415,7 +415,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
 	sgOut.reset()
 	time.sleep(1)
 	sb.stop()
-
+    
     def main(self, inData, dataCx=False, sampleRate=1.0, eos=False,streamID='test_stream'):    
         count=0
         lastPktIndex = len(inData)-1

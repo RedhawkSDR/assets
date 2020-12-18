@@ -114,6 +114,15 @@ void fastfilter_base::loadProperties()
                 "external",
                 "configure");
 
+    addProperty(bypassMode,
+                false,
+                "bypassMode",
+                "",
+                "readwrite",
+                "",
+                "external",
+                "configure");
+
     addProperty(filterProps,
                 filterProps_struct(),
                 "filterProps",
