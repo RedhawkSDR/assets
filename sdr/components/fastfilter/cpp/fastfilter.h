@@ -27,39 +27,39 @@ class fastfilter_i;
 
 class FilterWrapper
 {
-	public:
-		FilterWrapper() :
-			filter(NULL),
-			fs_(1.0)
-		{
-		}
-		~FilterWrapper()
-		{
-			if (filter!=NULL)
-				delete filter;
-		}
-		void setParams(float sampleRate, firfilter* filter)
-		{
-			this->filter =filter;
-			fs_ = sampleRate;
-		}
-		bool hasSampleRateChanged(float sampleRate)
-		{
-			bool ret(false);
-			if (fs_ != sampleRate)
-			{
-				ret=true;
-				fs_=sampleRate;
-			}
-			return ret;
-		}
-		float getSampleRate()
-		{
-			return fs_;
-		}
-		firfilter* filter;
-	private:
-		float fs_;
+        public:
+                FilterWrapper() :
+                        filter(NULL),
+                        fs_(1.0)
+                {
+                }
+                ~FilterWrapper()
+                {
+                        if (filter!=NULL)
+                                delete filter;
+                }
+                void setParams(float sampleRate, firfilter* filter)
+                {
+                        this->filter =filter;
+                        fs_ = sampleRate;
+                }
+                bool hasSampleRateChanged(float sampleRate)
+                {
+                        bool ret(false);
+                        if (fs_ != sampleRate)
+                        {
+                                ret=true;
+                                fs_=sampleRate;
+                        }
+                        return ret;
+                }
+                float getSampleRate()
+                {
+                        return fs_;
+                }
+                firfilter* filter;private:
+        private:
+                float fs_;
 };
 
 class fastfilter_i : public fastfilter_base
@@ -77,7 +77,7 @@ class fastfilter_i : public fastfilter_base
     private:
 
         typedef std::map<std::string, FilterWrapper> map_type;
-   		map_type filters_;
+                map_type filters_;
 
         firfilter::realVector realOut;
         firfilter::complexVector complexOut;
@@ -87,7 +87,6 @@ class fastfilter_i : public fastfilter_base
         void filterPropsChanged(const filterProps_struct *oldValue, const filterProps_struct *newValue);
         void fftSizeChanged(const CORBA::ULong *oldValue, const CORBA::ULong *newValue);
         void realFilterCoefficientsChanged(const std::vector<float> *oldValue, const std::vector<float> *newValue);
-        void bypassModeChanged(const bool *oldValue, const bool *newValue);
 
         void getManualTaps(bool& doReal, bool& doComplex);
         template<typename T, typename U>
@@ -98,7 +97,6 @@ class fastfilter_i : public fastfilter_base
 
         FirFilterDesigner filterdesigner_;
         bool manualTaps_;
-	bool bypassMode_;//special logic to skip filtering and send input as output with no changes id impulse response is [1]
 
         RealFFTWVector realTaps_;
         ComplexFFTWVector complexTaps_;
