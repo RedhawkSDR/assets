@@ -192,12 +192,15 @@ int fastfilter_i::serviceFunction()
         }
         bool updateSRI = tmp->sriChanged;
         if(bypassMode){
-             LOG_TRACE(fastfilter_i, "BYPASS MODE PUSHING INPUT AS OUTPUT");
-             if(updateSRI)
-                     dataFloat_out->pushSRI(tmp->SRI);
-             dataFloat_out->pushPacket(tmp->dataBuffer, tmp->T, tmp->EOS, tmp->streamID);
-             delete tmp;
-             return NORMAL;
+                LOG_TRACE(fastfilter_i, "BYPASS MODE PUSHING INPUT AS OUTPUT");
+                if(updateSRI)
+                        dataFloat_out->pushSRI(tmp->SRI);
+                dataFloat_out->pushPacket(tmp->dataBuffer, tmp->T, tmp->EOS, tmp->streamID);
+	        if(!filters_.empty())
+                        for (map_type::iterator i = filters_.begin();i!=filters_.end();i++)
+			        filters_.erase(i);
+                delete tmp;
+                return NORMAL;
         }
     float fs = 1.0/tmp->SRI.xdelta;
         {
