@@ -4,7 +4,7 @@
 
 variables:
   rh_20_release: '2-0-8'
-  rh_22_release: '2-2-0'
+  rh_22_release: '2.2-latest-release'
   namespace: rh.
   asset_name: none
   lowercase_asset_name: None
@@ -32,17 +32,24 @@ before_script:
     - safe_version=$(echo ${short_version} | tr -d -)
     - safe_ref=$(echo ${CI_COMMIT_REF_NAME} | tr -d /| tr '[:upper:]' '[:lower:]')
     - |
+      redhawk_repo_proj="redhawk/cf-and-deps"
       if [ -z "$CI_COMMIT_TAG" ];
       then
         redhawk_version=${latest_version}
         rpm_release="0.$CI_PIPELINE_ID.rh${safe_version}";
       else
-        redhawk_version=${release_version}
+        if [[ $CI_COMMIT_TAG =~ /^[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?$/ ]];
+        then
+             redhawk_version=${CI_COMMIT_REF_SLUG}
+        else
+             redhawk_repo_proj="redhawk-all"
+             redhawk_version=${release_version}
+        fi
         cd $(find -maxdepth 3 -name ${asset_name})        
         rpm_release="`rpm --query --queryformat "%{release}\n" --specfile $namespace$asset_name.spec | head -n 1 | awk -F"." "{print $1}"`.rh${safe_version}"
         cd - ;
       fi
-    - redhawk_repo=$s3_repo_url/redhawk/cf-and-deps/yum/$redhawk_version/$dist/$arch
+    - redhawk_repo=$s3_repo_url/$redhawk_repo_proj/yum/$redhawk_version/$dist/$arch
     - rtl_repo=$s3_repo_url/redhawk-dependencies/librtlsdr/yum/0.5.2/$dist/$arch
     - librf_repo=$s3_repo_url/redhawk-dependencies/libRfSimulators/yum/develop/$dist/$arch
     #- uhd_repo=$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch # el6
@@ -63,6 +70,9 @@ before_script:
     paths:
       - output/*
     expire_in: 2 days
+  except:
+    - /^(\d+\.)?(\d+)?(\.\d+)$/    
+    
 
 .base_package: &base_package
   image: ${docker_registry}${docker_rpm_repository}docker:latest-rpm
@@ -175,6 +185,8 @@ before_script:
     paths:
       - results/${asset_name}-${dist}-${arch}/*.xml
     expire_in: 2 days
+  except:
+      - /^(\d+\.)?(\d+)?(\.\d+)$/      
 
 assembletests:
   image: ${docker_registry}centos:7
@@ -213,7 +225,9 @@ assembletests:
     - test:el7:rh2.2:USRP_UHD
   artifacts:
     paths:
-      - results
+      - results 
+  except:
+      - /^(\d+\.)?(\d+)?(\.\d+)$/           
 
 deploy:html:
   image: ${docker_registry}utils/xunit-viewer:latest
@@ -239,6 +253,8 @@ deploy:html:
   #except:
   #  variables:
   #    - $triggering_ref_name =~ /^develop.*$/
+  except:
+      - /^(\d+\.)?(\d+)?(\.\d+)$/
 
 deploytests:
   image: ${docker_registry}centos:7
@@ -261,6 +277,8 @@ deploytests:
   only:
     variables:
       - $latest_version =~ /^develop.*$/
+  except:
+      - /^(\d+\.)?(\d+)?(\.\d+)$/      
 
 .s3: &s3
   image: ${docker_registry}utils/s3cmd:el7-createrepo
@@ -276,6 +294,8 @@ deploytests:
   only:
     variables:
       - $latest_version =~ /^develop.*$/
+  except:
+      - /^(\d+\.)?(\d+)?(\.\d+)$/            
 
 .create-repo: &create-repo
   image: ${docker_registry}utils/s3cmd:el7-createrepo
@@ -290,6 +310,8 @@ deploytests:
   only:
     variables:
       - $latest_version =~ /^develop.*$/
+  except:
+      - /^(\d+\.)?(\d+)?(\.\d+)$/            
 
 create-el7:local:repos:
   stage: create_library_repo
