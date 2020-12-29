@@ -178,6 +178,7 @@ fastfilter_i::~fastfilter_i()
 int fastfilter_i::serviceFunction()
 {
     bulkio::InFloatPort::dataTransfer *tmp = dataFloat_in->getPacket(bulkio::Const::BLOCKING);
+
         if (not tmp) { // No data is available
                 return NOOP;
         }
@@ -191,14 +192,17 @@ int fastfilter_i::serviceFunction()
                         i->second.filter->flush();
         }
         bool updateSRI = tmp->sriChanged;
-        if(bypassMode){
+        if(bypassMode){	        
+                LOG_WARN(fastfilter_i, "Stream ID: "<<tmp->streamID);
                 LOG_TRACE(fastfilter_i, "BYPASS MODE PUSHING INPUT AS OUTPUT");
                 if(updateSRI)
                         dataFloat_out->pushSRI(tmp->SRI);
                 dataFloat_out->pushPacket(tmp->dataBuffer, tmp->T, tmp->EOS, tmp->streamID);
-	        if(!filters_.empty())
-                        for (map_type::iterator i = filters_.begin();i!=filters_.end();i++)
-			        filters_.erase(i);
+                if(!filters_.empty()){
+                      map_type::iterator i = filters_.find(tmp->streamID);
+                      filters_.erase(i);
+                      LOG_WARN(fastfilter_i, "Deleted filters for "<<tmp->streamID);
+                }
                 delete tmp;
                 return NORMAL;
         }
