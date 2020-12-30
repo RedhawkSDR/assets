@@ -193,7 +193,6 @@ int fastfilter_i::serviceFunction()
         }
         bool updateSRI = tmp->sriChanged;
         if(bypassMode){	        
-                LOG_WARN(fastfilter_i, "Stream ID: "<<tmp->streamID);
                 LOG_TRACE(fastfilter_i, "BYPASS MODE PUSHING INPUT AS OUTPUT");
                 if(updateSRI)
                         dataFloat_out->pushSRI(tmp->SRI);
@@ -201,7 +200,7 @@ int fastfilter_i::serviceFunction()
                 if(!filters_.empty()){
                       map_type::iterator i = filters_.find(tmp->streamID);
                       filters_.erase(i);
-                      LOG_WARN(fastfilter_i, "Deleted filters for "<<tmp->streamID);
+                      LOG_WARN(fastfilter_i, "Removed filters for "<<tmp->streamID);
                 }
                 delete tmp;
                 return NORMAL;
