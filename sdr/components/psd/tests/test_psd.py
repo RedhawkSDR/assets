@@ -825,6 +825,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sb.start()
         ID = "eosEmpty"
         fftSize = 4096
+        #----------------
         self.comp.fftSize = fftSize
         self.comp.rfFreqUnits =  False
         
@@ -973,6 +974,130 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.validateSRIPushing(ID, cxData, sample_rate, fftSize, sriBlocking=sri.blocking)
 
         print "*PASSED"
+
+    def testHighChanRf(self):
+        print "\n-------- TESTING HighChanRf --------"
+        #---------------------------------
+        # Start component and set fftSize
+        #---------------------------------
+        sb.start()
+        ID = "HighChanRf"
+        fftSize = 4096
+        self.comp.fftSize = fftSize
+        self.comp.rfFreqUnits =  True
+        
+        #------------------------------------------------
+        # Create a test signal.
+        #------------------------------------------------
+        # 4096 samples of 7000Hz real signal at 65536 kHz
+        sample_rate = 65536.
+        nsamples = 4096
+
+        data = [random.random() for _ in xrange(nsamples)]
+        
+        #------------------------------------------------
+        # Test Component Functionality.
+        #------------------------------------------------
+        # Push Data
+        cxData = False
+        chanRfVal = 5e9
+        keywords = [sb.io_helpers.SRIKeyword('CHAN_RF',chanRfVal, 'double')]
+        self.src.push(data, streamID=ID, sampleRate=sample_rate, complexData=cxData, SRIKeywords = keywords)
+        time.sleep(.5)
+
+        # Get Output Data
+        fftOut = self.fftsink.getData()[0] # use first frame
+        psdOut = self.psdsink.getData()[0] # use first frame
+        #pyFFT = abs(scipy.fft(tmpData, fftSize))
+
+        #Validate SRI Pushed Correctly
+        self.validateSRIPushing(ID, cxData, sample_rate, fftSize, chanRfVal, SRIKeywords = keywords)
+
+
+        print "*PASSED"
+
+    def testHighColRf(self):
+        print "\n-------- TESTING HighCoRf --------"
+        #---------------------------------
+        # Start component and set fftSize
+        #---------------------------------
+        sb.start()
+        ID = "HighColRf"
+        fftSize = 4096
+        self.comp.fftSize = fftSize
+        self.comp.rfFreqUnits =  True
+        
+        #------------------------------------------------
+        # Create a test signal.
+        #------------------------------------------------
+        # 4096 samples of 7000Hz real signal at 65536 kHz
+        sample_rate = 65536.
+        nsamples = 4096
+
+        data = [random.random() for _ in xrange(nsamples)]
+        
+        #------------------------------------------------
+        # Test Component Functionality.
+        #------------------------------------------------
+        # Push Data
+        cxData = False
+        colRfVal = 5e9
+        keywords = [sb.io_helpers.SRIKeyword('COL_RF',colRfVal, 'double')]
+        self.src.push(data, streamID=ID, sampleRate=sample_rate, complexData=cxData, SRIKeywords = keywords)
+        time.sleep(.5)
+
+        # Get Output Data
+        fftOut = self.fftsink.getData()[0] # use first frame
+        psdOut = self.psdsink.getData()[0] # use first frame
+        #pyFFT = abs(scipy.fft(tmpData, fftSize))
+
+        #Validate SRI Pushed Correctly
+        self.validateSRIPushing(ID, cxData, sample_rate, fftSize, colRfVal, SRIKeywords = keywords)
+        
+
+        print "*PASSED"
+
+    def testHighRfFreqUnits(self):
+        print "\n-------- TESTING HighRfFreqUnits  --------"
+        #---------------------------------
+        # Start component and set fftSize
+        #---------------------------------
+        sb.start()
+        ID = "HighRfFreqUnits"
+        fftSize = 4096
+        self.comp.fftSize = fftSize
+        self.comp.rfFreqUnits =  True
+        
+        #------------------------------------------------
+        # Create a test signal.
+        #------------------------------------------------
+        # 4096 samples of 7000Hz real signal at 65536 kHz
+        sample_rate = 65536.
+        nsamples = 4096
+
+        data = [random.random() for _ in xrange(nsamples)]
+        
+        #------------------------------------------------
+        # Test Component Functionality.
+        #------------------------------------------------
+        # Push Data
+        cxData = False
+        colRfVal = 5e9
+        chanRfVal = 5e9
+        keywords = [sb.io_helpers.SRIKeyword('COL_RF',colRfVal, 'double'),sb.io_helpers.SRIKeyword('CHAN_RF',chanRfVal, 'double')]
+        self.src.push(data, streamID=ID, sampleRate=sample_rate, complexData=cxData, SRIKeywords = keywords)
+        time.sleep(.5)
+
+        # Get Output Data
+        fftOut = self.fftsink.getData()[0] # use first frame
+        psdOut = self.psdsink.getData()[0] # use first frame
+        #pyFFT = abs(scipy.fft(tmpData, fftSize))
+
+        #Validate SRI Pushed Correctly. Using chanRfVal because psd.cpp will ignore COL_RF if CHAN_RF is set.
+        self.validateSRIPushing(ID, cxData, sample_rate, fftSize, chanRfVal, SRIKeywords = keywords)
+
+        
+        print "*Passed"
 
 if __name__ == "__main__":
     ossie.utils.testing.main("../psd.spd.xml") # By default tests all implementations
