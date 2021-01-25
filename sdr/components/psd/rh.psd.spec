@@ -28,7 +28,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.psd
-Version:        2.0.3
+Version:        2.0.4
 Release:        6%{?dist}
 Summary:        Component %{name}
 
