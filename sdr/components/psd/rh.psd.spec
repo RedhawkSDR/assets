@@ -29,7 +29,7 @@ Prefix:         %{_prefix}
 
 Name:           rh.psd
 Version:        2.0.4
-Release:        6%{?dist}
+Release:        1%{?dist}
 Summary:        Component %{name}
 
 Group:          REDHAWK/Components
