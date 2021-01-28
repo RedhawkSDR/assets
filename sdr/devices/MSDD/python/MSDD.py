@@ -1275,7 +1275,7 @@ class MSDD_i(MSDD_base):
         if len(self.frontend_tuner_status[tuner_num].allocation_id_control) > 0:
             ctl.append(self.frontend_tuner_status[tuner_num].allocation_id_control)
         return self.frontend_tuner_status[tuner_num].allocation_id_listeners + ctl
-    
+
     def SRIchanged(self, tunerNum, data_port = True, fft_port = False):
         """
         Perform any SRI changes for any tuner changes or allocations.  By default the data_port is enabled
@@ -1320,11 +1320,12 @@ class MSDD_i(MSDD_base):
                                         toff=0,
                                         twsec=ts[0],
                                         tfsec=ts[1])
-            for alloc_id in self.getTunerAllocations(tunerNum):
+            alloc_id=self.getControlAllocationId(tunerNum)
+            if alloc_id:
                 H.streamID = alloc_id
                 self.port_dataSDDS_out.pushSRI(H, T)
                 self.port_dataVITA49_out.pushSRI(H, T)
-                self.debug_msg("Pushing DATA SRI on alloc_id: {0} with contents: {1}",
+                self.info_msg("Pushing SRI on alloc_id: {0} with contents: {1}",
                                alloc_id,str(H))
         
         if fft_port:
@@ -1380,10 +1381,14 @@ class MSDD_i(MSDD_base):
         load to the radio's DSP chip.
         """
         self.debug_msg("Sending Attach() for Allocation ID: {0}", alloc_id)
+        
+        port_enabled=self.frontend_tuner_status[tuner_num].output_enabled
+        if protocol == None:
+            protocol=self.frontend_tuner_status[tuner_num].output_protocol
+            if protocol == "": protocol = None
     
         if data_port:
-            if self.frontend_tuner_status[tuner_num].output_enabled:
-                
+            if port_enabled:
                 if protocol is None or 'sdds' in protocol.lower():
                     sdef = BULKIO.SDDSStreamDefinition(id = alloc_id,
                                                        dataFormat = BULKIO.SDDS_CI,
@@ -1394,8 +1399,8 @@ class MSDD_i(MSDD_base):
                                                        timeTagValid = True,
                                                        privateInfo = "MSDD Physical Tuner #"+str(tuner_num) )
                     
-                    self.debug_msg("Calling attach on dataSDDS_out, Allocation ID: {0}", alloc_id)
-                    self.port_dataSDDS_out.attach(sdef, alloc_id)
+                    self.info_msg("Adding stream for port dataSDDS_out, Allocation ID: {0}", alloc_id)
+                    self.port_dataSDDS_out.addStream(sdef)
 
                 if protocol is None or 'vita' in protocol.lower():
 
@@ -1427,8 +1432,8 @@ class MSDD_i(MSDD_base):
                                                          valid_data_format = True, 
                                                          data_format = vita_data_payload_format)
 
-                    self.debug_msg("Calling attach on dataVITA49_out, Allocation ID: {0}", alloc_id)
-                    self.port_dataVITA49_out.attach(vdef, alloc_id)
+                    self.info_msg("Calling attach on dataVITA49_out, Allocation ID: {0}", alloc_id)
+                    self.port_dataVITA49_out.addStream(vdef)
                         
         if fft_port:
             if self.frontend_tuner_status[tuner_num].output_enabled:
@@ -1447,7 +1452,7 @@ class MSDD_i(MSDD_base):
                                                            sampleRate = int(binFreq),
                                                            timeTagValid = True,
                                                            privateInfo = "MSDD FFT Tuner #"+str(tuner_num) )
-                        self.debug_msg("Calling attach on dataSDDS_out_PSD, Allocation ID:{0}",alloc_id)
+                        self.info_msg("Adding stream for port dataSDDS_out_PSD, Allocation ID:{0}",alloc_id)
                         self.port_dataSDDS_out_PSD.attach(sdef, alloc_id)
 
 
@@ -1480,15 +1485,15 @@ class MSDD_i(MSDD_base):
                                                              valid_data_format = True,
                                                              data_format = vita_data_payload_format)
 
-                        self.debug_msg("Calling attach on dataVITA49_out_PSD, Allocation ID: {0}",alloc_id)
-                        self.port_dataVITA49_out_PSD.attach(vdef, alloc_id)
+                        self.info_msg("Adding stream for port dataVITA49_out_PSD, Allocation ID: {0}",alloc_id)
+                        self.port_dataVITA49_out_PSD.addStream(alloc_id)
 
         #update and send SRI
         self.SRIchanged(tuner_num, data_port, fft_port)
         
     
     def sendDetach(self, alloc_id, data_port = True, fft_port = True):
-        self.debug_msg("Sending Detach() on Allocation ID: {0}",alloc_id)
+        self.info_msg("Removing streams for Allocation ID: {0}",alloc_id)
  
         if data_port:
             self.port_dataSDDS_out.removeStream(alloc_id)
@@ -1607,12 +1612,14 @@ class MSDD_i(MSDD_base):
             # recheck cpu and network state since the radio could have failed to provide status
             # during an allocation
             #
+            self.trace_msg("Acquiring lock for tuner allocation: {0} ", str(frontend_tuner_allocation))
             self.allocation_id_mapping_lock.acquire()
             try:
                 self._usageState = self.updateUsageState()
                 if self._usageState == CF.Device.BUSY:
                     raise CF.Device.InvalidState(self.format_msg_with_radio("Cannot perform allocation, device is busy"))
             finally:
+                self.trace_msg("Releasing lock for tuner allocation: {0} ", str(frontend_tuner_allocation))
                 self.allocation_id_mapping_lock.release()
 
         # Check allocation_id
@@ -1648,7 +1655,8 @@ class MSDD_i(MSDD_base):
         # Try out the allocation against each tuner. If the allocation passes then enable output and update
         # status structures. If allocation fails because of radio comms issue then failout of this allocation
         # If the allocation failes because of frequency, bandwidth or sample rate constraints then continue to 
-        # the next tuner until all tuners are exhusted
+        # the next tuner until all tuners are exhausted
+        self.trace_msg("Acquiring lock for tuner allocation: {0} ", str(frontend_tuner_allocation))
         self.allocation_id_mapping_lock.acquire()
         emsg=None
         try:
@@ -1745,11 +1753,13 @@ class MSDD_i(MSDD_base):
                     listenerallocation.listener_allocation_id = frontend_tuner_allocation.allocation_id
                     retval=False
                     try:
+                        self.trace_msg("Releasing lock for tuner allocation: {0} ", str(frontend_tuner_allocation))
                         self.allocation_id_mapping_lock.release()
                         retval =  self._allocate_frontend_listener_allocation(listenerallocation)
                     except:
                         self.exception_msg("Could not allocate listener with allocation {0}", frontend_tuner_allocation)
                     finally:
+                        self.trace_msg("Acquiring lock for tuner allocation: {0} ", str(frontend_tuner_allocation))                        
                         self.allocation_id_mapping_lock.acquire()                        
 
                     return retval
@@ -1764,12 +1774,13 @@ class MSDD_i(MSDD_base):
                 ### MAKE SURE PARENT IS ALLCOATED
                 parent_tuner = self.MSDD.get_parent_tuner_num(self.frontend_tuner_status[tuner_num].rx_object)
                 if parent_tuner != None:
+                    self.trace_msg("Checking Parent/Child relationship Tuner {}  Parent {} allocated {} ",tuner_num, parent_tuner, self.frontend_tuner_status[parent_tuner].allocated)
                     if not self.frontend_tuner_status[parent_tuner].allocated:
-                        emsg="Missing required allocation dependency on parent tuner"
+                        emsg="Missing required parent tuner ({}) allocation".format(parent_tuner)
                         if frontend_tuner_allocation.tuner_type=='DDC':
-                            emsg="Missing allocation for CHANNELIZER"
-                        self.debug_msg("Control allocation failed on tuner {0} because tuner's parent was not allocated",
-                                       tuner_num)
+                            emsg="DDC control allocation failed for tuner {}, missing required parent tuner ({}) allocation".format(tuner_num,parent_tuner)
+                        self.debug_msg("Control allocation failed on tuner {} because tuner's parent {} was not allocated",
+                                       tuner_num, parent_tuner)
                         continue
 
                 # Check if piggybacked channels are not allocated
@@ -2001,6 +2012,7 @@ class MSDD_i(MSDD_base):
             if logging.NOTSET < self._baseLog.level < logging.INFO:
                 traceback.print_exc()
         finally:
+            self.trace_msg("Releasing lock for tuner allocation: {0} ", str(frontend_tuner_allocation))                                    
             self.allocation_id_mapping_lock.release()
 
 
@@ -2107,7 +2119,7 @@ class MSDD_i(MSDD_base):
             if outcfg_enabled:
                 # if tuner is just a channelizer then don't enable output module...
                 if "CHANNELIZER" in self.frontend_tuner_status[tuner_num].tuner_types:
-                    self.info_msg("enableDigitalOutput, Disabling output for CHANNELIZER tuner {0}",tuner_num)
+                    self.info_msg("Disabling digital output for CHANNELIZER only request, tuner {0}",tuner_num)
                     outcfg_enabled=False
 
             success&= _rx_object.set_output_enable(outcfg_enabled)
@@ -2231,7 +2243,7 @@ class MSDD_i(MSDD_base):
                            control_aid)
 
         if control_aid and control_aid != "":
-            self.sendDetach(control_aid, fft_port=False)
+            self.sendDetach(control_aid)
 
         self.frontend_tuner_status[tuner_id].allocation_id_control = ""
         self.frontend_tuner_status[tuner_id].allocated = False
