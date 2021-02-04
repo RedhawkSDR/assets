@@ -204,6 +204,10 @@ class MSDD_i(MSDD_base):
         s.rx_object = None
         s.allocation_id_control = ""
         s.allocation_id_listeners = []
+        s.digital_output_info=None
+        s.digital_output=False
+        s.fft_output_info=None        
+        s.fft_output=False        
         return s
     
     def create_allocation_id_csv(self, control_str, listener_list):
@@ -216,6 +220,7 @@ class MSDD_i(MSDD_base):
         return aid_csv    
 
     def constructor(self):
+        _stime_ctor=time.time()
         self.msdd_lock=threading.Lock()
         self.MSDD = None
         self.msdd_console = None
@@ -250,36 +255,35 @@ class MSDD_i(MSDD_base):
             raise CF.LifeCycle.InitializeError( self.format_msg_with_radio("Failure to process clock reference value {0} ", 
                                                                 self.msdd.clock_ref))
         # update msdd status properties
+        _stime=time.time()        
         self.update_msdd_status()
-                                              
+        _etime=time.time()-_stime
+        self.debug_msg("Initialized MSDD status properties, {:.7f}",_etime )
+        
         # create tuner status struct using MSDDRadio's rx_channels
+        _stime=time.time()        
         self.update_tuner_status()
+        _etime=time.time()-_stime
+        self.debug_msg("Created tuner status entries, {:.7f}",_etime )  
 
-        self.info_msg("Determine output configuration for tuners and fft channels")
+        _stime=time.time()        
         self.create_output_configuration()
+        _etime=time.time()-_stime
+        self.debug_msg("Determined output configuration for tuners and fft channels, {:.7f}",_etime )  
 
-        self.debug_msg("Update tuner status")
+        # assigns output configurations to status structure
         self.update_tuner_status()
+        self.debug_msg("Assigned output configuration to tuner status structure")                
 
-        self.info_msg("Disable all tuner hardware and output")
+        _stime=time.time()                
         for tuner_num in range(0,len(self.frontend_tuner_status)):
             try:
                 self.frontend_tuner_status[tuner_num].rx_object.setEnable(False)
             except:
-                self.warn_msg("Disable tuner failed Tuner {0}", tuner_num)
-
-        # The device creates the tuner status structure dynamically based on the device it is controlling so we are not using the setNumChannels
-        # dump output configuration to make sure we don't have recursive loop
-        if self._baseLog.level < logging.INFO:
-            if self.MSDD:
-                for mod in self.MSDD.out_modules:
-                    src_mods = self.MSDD.stream_router.getModulesFlowListByDestination(mod.object.full_reg_name)
-                    if len(src_mods) : src_mods=src_mods[1:]
-                    dest_mods = self.MSDD.stream_router.getModulesFlowListBySource(mod.object.full_reg_name)
-                    if len(dest_mods) : dest_mods=dest_mods[1:]
-                    self.debug_msg("output module: {0} src: {1}", mod.object.full_reg_name, src_mods, id_prepend=True)
-                    self.debug_msg("output module: {0} dest: {1}", mod.object.full_reg_name, dest_mods, id_prepend=True)
-
+                self.warn_msg("Disabling tuner failed Tuner {0}", tuner_num)
+        _etime=time.time()-_stime
+        self.info_msg("Disabled all tuner hardware and output, {:.7f}",_etime )
+        
         self.addPropertyChangeListener("advanced",self.advanced_changed)
 
         # initialize time of day module with TimeOfDay class
@@ -290,10 +294,12 @@ class MSDD_i(MSDD_base):
                                   self.ntp_status_cb)
         self._time_of_day.initialize(self.time_of_day, self.output_protocol, enable_thread=True)
 
-        # Add pause to command processing so radios do not get overrun with commands
+        # Set connection timeout
         if self.MSDD:
             self.MSDD.connection.set_timeout(self.msdd.timeout)
-            self.MSDD.connection.pause=True
+            
+        _etime=time.time()-_stime_ctor
+        self.info_msg("Completed MSDD initialization {:.7f}",_etime )            
 
     def identifyModel(self):
         return "{0} ({1})".format(self.device_address,self.device_model)
@@ -353,7 +359,37 @@ class MSDD_i(MSDD_base):
             self.msdd_lock.release()
             pass
 
-    def checkReceiverNetworkOutput(self, additional_rate=None, out_module=None ):
+    def calcModuleBitRate(self, module_info,srate=None):
+        pkt_bit_rate=0
+        inf=0
+        if module_info:
+            inf = module_info.interface
+            if not srate:
+                srate=module_info.input_sample_rate # get input rate into the output module
+            spf=module_info.samples_per_frame                # radio report scalars
+            pkt_data_len = module_info.packet_data_len       # total length of packet in bytes
+            data_width =module_info.data_width               # sample length in bits of scalar
+            proto_name=module_info.protocol                  # output protocol 
+            proto_extra_bits=0                            # default for raw
+            pkt_rate =  srate/spf
+            if "SDDS" in proto_name:
+                pkt_header=56 # SDDS header length (56 bytes)
+            if "VITA49" in proto_name:
+                pkt_header = 28  # IF data packet header in bits (7 words (32bits) )
+                # resolve, need to add in context packets, initial testing shows no context packets..                    
+            pkt_bit_rate = pkt_rate*pkt_data_len*(data_width) + pkt_rate*pkt_header*8
+            self.debug_msg("out module bitrate interface {} module id {} "\
+                          "srate {} sample-per-frame {} data_width {} pkt_rate (srate/spf) {}",
+                          inf,
+                          module_info.channel_number,
+                          srate, 
+                          spf, 
+                          data_width,
+                          pkt_rate)
+        return pkt_bit_rate, inf
+
+
+    def checkNetworkOutput(self, additional_rate=None, out_module=None ):
         """
         check all enabled output modules if they are within the recommend rate for the radio's network interface.
         if the out_module parameter is specified then include that module's expected bit rate
@@ -387,70 +423,39 @@ class MSDD_i(MSDD_base):
                     self.debug_msg('checkReceiverNetworkOutput receiver interfaces {0}', netstat)
 
                     #
-                    # We only check active output modules, i.e. assigned to a wbddc or nbdcc flow
-                    #   ** checking all modules causes to may issue with trying to determine current rate
-                    # 
-                    for mod in self.MSDD.get_active_output_modules():
+                    # Determine network output rate based on tuners with
+                    # digitial output.
+                    #
+                    for tuner in self.frontend_tuner_status:
                         pkt_bit_rate=0
-                        m=mod.object    # actual MSDD output module
-                        mod_enable=False
-                        try:
-                            mod_enable=m.enable
-                        except:
-                            netstat_fail=True
-                            continue                # continue if radio hiccups on enable 
-
-                        if mod_enable == False and mod != out_module: 
-                            # pause before checking next module, to help reduce rate of commands
-                            time.sleep(0.09)
-                            continue
-
-                        if mod_enable or mod == out_module:
-                            # count enabled modules
+                        inf=0
+                        if tuner.rx_object.output_object and \
+                            tuner.rx_object.output_object == out_module:
+                            pkt_bit_rate, inf = self.calcModuleBitRate(tuner.digitial_output_info,additional_rate)
                             enabled_modules+=1
 
-                            # get interface associated with output module
-                            inf=m.interface
-                            if inf < 0: inf=0
-
-                            # get packet info state from module
-                            pkt_info=m.getInfo()
-                            srate=pkt_info.input_sample_rate # get input rate into the output module
-
-                            # check if we are estimating for a new output module
-                            if m == out_module:
-                                srate=additional_rate  # add in additional rate from an allocation request
-
-                            spf=pkt_info.samples_per_frame                # radio report scalars
-                            pkt_data_len = pkt_info.packet_data_len       # total length of packet in bytes
-                            data_width =pkt_info.data_width               # sample length in bits of scalar
-                            proto_name=pkt_info.protocol                  # output protocol 
-                            proto_extra_bits=0                            # default for raw
-                            pkt_rate =  srate/spf
-                            self.debug_msg("checkReceiverNetworkOutput interface {} module id {} "\
-                                           "srate {} sample-per-frame {} data_width {} pkt_rate (srate/spf) {} netstat {}/{}", 
-                                           inf,
-                                           m.channel_id(),
-                                           srate, 
-                                           spf, 
-                                           data_width,
-                                           pkt_rate,
-                                           inf,netstat[inf])
+                        if tuner.digital_output:
+                            pkt_bit_rate, inf = self.calcModuleBitRate(tuner.digitial_output_info)
+                            enabled_modules+=1
                             
-                            if "SDDS" in proto_name:
-                                pkt_header=56 # SDDS header length (56 bytes)
-                            if "VITA49" in proto_name:
-                                pkt_header = 28  # IF data packet header in bits (7 words (32bits) )
-                                # resolve, need to add in context packets, initial testing shows no context packets..
-                            pkt_bit_rate = pkt_rate*pkt_data_len*(data_width) + pkt_rate*pkt_header*8
-                            self.debug_msg("Check network output: " \
-                                           "interface {} out module {} pkt_bit_rate {} total netstat {} ",
-                                           inf, 
-                                           m.channel_id(), 
-                                           pkt_bit_rate, 
-                                           netstat[inf])
+                        cid="--missing--"
+                        if tuner.digitial_output_info:
+                            cid=tuner.digitial_output_info.channel_number
+                        
+                        self.debug_msg("Check network output: " \
+                                       "interface {} out module {} pkt_bit_rate {} total netstat {} ",
+                                       inf,
+                                       cid,
+                                       pkt_bit_rate, 
+                                       netstat[inf])
+                        
+                        netstat[inf]['total'] += pkt_bit_rate
 
+                        # Add in FFT output for channel if enabled
+                        if tuner.fft_output and tuner.fft_output_info:
+                            pkt_bit_rate, inf = self.calcModuleBitRate(tuner.fft_output_info)
                             netstat[inf]['total'] += pkt_bit_rate
+
 
                     # check all netstats
                     for n in netstat:
@@ -485,6 +490,7 @@ class MSDD_i(MSDD_base):
             self.msdd_lock.release()
 
         return True
+    
 
     def disconnect_from_msdd(self):
         if self.MSDD != None:
@@ -821,14 +827,18 @@ class MSDD_i(MSDD_base):
         # Make sure status structure is initialized
         #
         if len(self.frontend_tuner_status) <= 0:
-            self._initialize_tuners()                
+            _stime=time.time()
+            self._initialize_tuners()
+            _etime=time.time()-_stime
+            self.debug_msg("Initialized tuner status structure {:.7f}",_etime)
 
         # Update list base on provide set of tuner or all of them
         if len(tuner_range) <= 0:
             tuner_range = range(0,len(self.frontend_tuner_status))
             self.trace_msg("No tuner range provided, updating all {0} tuners",len(tuner_range))
 
-        for tuner_num in tuner_range:            
+        for tuner_num in tuner_range:
+            _stime=time.time()
             try:
                 data_port = True
                 fft_port = False
@@ -919,6 +929,8 @@ class MSDD_i(MSDD_base):
                                tuner_num)
             except Exception, e:
                 self.error_msg("Error updating Tuner status {0}, exception {1}", tuner_num,e)
+            _etime=time.time()-_stime
+            self.trace_msg("Updated tuner {} status, {:.7f}",tuner_num, _etime)            
 
 
     def create_output_configuration(self):
@@ -1055,9 +1067,13 @@ class MSDD_i(MSDD_base):
                                               self.tuner_output_configuration[tuner_num].timestamp_offset,
                                               self.tuner_output_configuration[tuner_num].mfp_flush)
 
+                # prefetch module info
+                self.frontend_tuner_status[tuner_num].digitial_output_info=_output_mod.getInfo()
+                self.frontend_tuner_status[tuner_num].digital_output=False
+
                 success=True
                 enable = self.tuner_output_configuration[tuner_num].enabled
-                self.info_msg("Tuner {0} Output Configuration: "\
+                self.debug_msg("Tuner {0} Output Configuration: "\
                               "enabled {1} protocol {2} iface(radio) {3} ip-addr/port/vlan {4}/{5}/{6}",
                               tuner_num,
                               enable,
@@ -1132,21 +1148,31 @@ class MSDD_i(MSDD_base):
                 fft_channel.setEnable(False)
                 if not self.psd_output_configuration.has_key(fft_chan_num): continue
 
+                _output_mod=fft_channel.output.object
                 output_cfg=self.psd_output_configuration[fft_chan_num]
-
-                success = fft_channel.output.object.setAddressPort( output_cfg.ip_address,
-                                                                    str(output_cfg.port),
-                                                                    output_cfg.interface )
-                proto = fft_channel.output.object.getOutputProtocolNumberFromString(output_cfg.protocol)
-                success &= fft_channel.output.object.setOutputProtocol(proto)
-                if output_cfg.protocol=="UDP_VITA49":
-                    success &= fft_channel.output.object.setCDR(self.VITA49CONTEXTPACKETINTERVAL)
-                    success &= fft_channel.output.object.setCCR(1)
-                success &= fft_channel.output.object.setTimestampOff(output_cfg.timestamp_offset)
-                success &= fft_channel.output.object.setEnableVlanTagging(output_cfg.vlan_enabled)
-                success &= fft_channel.output.object.setOutputEndianess(output_cfg.endianess)
-                success &= fft_channel.output.object.setVlanTci(max(0,output_cfg.vlan))
-                fft_channel.output.object.setMFP(output_cfg.mfp_flush)
+                
+                if output_cfg.protocol=="UDP_VITA49":                
+                    _output_mod.configureVita49(False,
+                                                output_cfg.interface,
+                                                output_cfg.ip_address,
+                                                output_cfg.port,
+                                                output_cfg.vlan,
+                                                output_cfg.vlan_enabled,
+                                                output_cfg.endianess,
+                                                output_cfg.timestamp_offset,
+                                                output_cfg.mfp_flush,
+                                                self.VITA49CONTEXTPACKETINTERVAL)
+                else:
+                    _output_mod.configureSDDS(False,
+                                              output_cfg.interface,
+                                              output_cfg.ip_address,
+                                              output_cfg.port,
+                                              output_cfg.protocol,
+                                              output_cfg.vlan,
+                                              output_cfg.vlan_enabled,
+                                              output_cfg.endianess,
+                                              output_cfg.timestamp_offset,
+                                              output_cfg.mfp_flush)
 
                 self.debug_msg("FFT Output Channel {0} " \
                                " protocol {1}" \
@@ -1567,6 +1593,9 @@ class MSDD_i(MSDD_base):
             # link fft to tuner
             fft_channel.link(self.frontend_tuner_status[tuner_num].rx_object.digital_rx_object)
             self.frontend_tuner_status[tuner_num].rx_object.addFFTChannel(fft_channel)
+            if fft_channel.output.object:
+                self.frontend_tuner_status[tuner_num].fft_output_info = fft_channel.output.object.getInfo()
+                self.frontend_tuner_status[tuner_num].fft_output = True
 
             self.debug_msg("Enabling FFT Channel {0} to Tuner {1} ",
                            fft_channel.channel_id(),
@@ -1588,6 +1617,8 @@ class MSDD_i(MSDD_base):
         fft_channel=None
         try:
             fft_channel=self.frontend_tuner_status[tuner_num].rx_object.removeFFTChannel()
+            self.frontend_tuner_status[tuner_num].fft_output_info = None
+            self.frontend_tuner_status[tuner_num].fft_output = False
             if fft_channel:
                 fft_channel.unlink()
             self.debug_msg("Disable FFT Channel {0} for Tuner {1}",
@@ -1606,6 +1637,7 @@ class MSDD_i(MSDD_base):
         Handle FRONTEND tuner allocations
         """
         self.trace_msg("Received a tuner allocation: {0} ", str(frontend_tuner_allocation))
+        _stime_alloc=time.time()
 
         if self._usageState == CF.Device.BUSY:
             #
@@ -1804,13 +1836,15 @@ class MSDD_i(MSDD_base):
                         valid_cf = self.frontend_tuner_status[tuner_num].rx_object.get_valid_frequency(if_freq)
                         success &= self.frontend_tuner_status[tuner_num].rx_object.setFrequency_Hz(valid_cf)
 
-                        self.trace_msg("allocate candidate tuner {0} (before sr/bw check) "\
-                                    ", cf success {1} "\
-                                    ", if freq {2} "\
-                                    ", freq {3} "\
-                                    ", sample rate {4}"\
-                                    ", bandwidth {5}",
+                        _etime=time.time()-_stime_alloc
+                        self.debug_msg("allocate candidate tuner {} duration:{:.7f} (before sr/bw check) "\
+                                    ", cf success {} "\
+                                    ", if freq {} "\
+                                    ", freq {} "\
+                                    ", sample rate {}"\
+                                    ", bandwidth {}",
                                        tuner_num,
+                                       _etime,
                                        success,
                                        if_freq,
                                        valid_cf,
@@ -1863,12 +1897,14 @@ class MSDD_i(MSDD_base):
                                             tuner_num)
                             success = False
 
-                        self.debug_msg("allocate results, tuner {0} success {1}"\
-                                        ", if freq {2}"\
-                                        ", freq {3}"\
-                                        ", sample rate {4}"\
-                                        ", bandwidth {5}",
+                        _etime=time.time()-_stime_alloc
+                        self.debug_msg("allocate results, tuner {} duration:{:.7f} success {}"\
+                                        ", if freq {}"\
+                                        ", freq {}"\
+                                        ", sample rate {}"\
+                                        ", bandwidth {}",
                                        tuner_num,
+                                       _etime,
                                        success,
                                        if_freq,
                                        valid_cf,
@@ -1914,7 +1950,7 @@ class MSDD_i(MSDD_base):
                                        protocol)
                     if self.tuner_output_configuration.has_key(tuner_num) and \
                        self.tuner_output_configuration[tuner_num].enabled:
-                        if not self.checkReceiverNetworkOutput(additional_rate=srate,
+                        if not self.checkNetworkOutput(additional_rate=srate,
                                                                out_module=self.frontend_tuner_status[tuner_num].rx_object.output_object):
                             raise BusyException(self.format_msg_with_radio("Network output rate would exceed network interface, tuner: {0} adding sample rate {1}",
                                                             tuner_num,
@@ -1959,13 +1995,15 @@ class MSDD_i(MSDD_base):
                             self.sendAttach(self.frontend_tuner_status[tuner_num].allocation_id_control, tuner_num, protocol=protocol)
                         except:
                             self.warn_msg("Error sending attach message to consumers for allocation {0}", frontend_tuner_allocation)
-                        
-                        self.info_msg("Allocation {0} SUCCESS,"\
-                                      " Tuner: {1} "\
-                                      " Type: {2} "\
-                                      " requested {3} "\
-                                      " allocated {4}",
+
+                        _etime=time.time()-_stime_alloc
+                        self.info_msg("Allocation {} duration:{:.7f} SUCCESS,"\
+                                      " Tuner: {} "\
+                                      " Type: {} "\
+                                      " requested {} "\
+                                      " allocated {}",
                                       frontend_tuner_allocation.allocation_id,
+                                      _etime,
                                       tuner_num,
                                       self.frontend_tuner_status[tuner_num].tuner_type,
                                       cfg_values,
@@ -1985,6 +2023,10 @@ class MSDD_i(MSDD_base):
                     # update usage state
                     self._usageState = self.updateUsageState()
 
+
+                    _etime=time.time()-_stime_alloc
+                    self.info_msg("Allocation time {:.7f} for allocation {}", _etime,frontend_tuner_allocation.allocation_id)
+                    
                     # Successfull allocation return
                     return True
 
@@ -2078,6 +2120,10 @@ class MSDD_i(MSDD_base):
                                                   self.tuner_output_configuration[tuner_num].timestamp_offset,
                                                   self.tuner_output_configuration[tuner_num].mfp_flush)
 
+
+                    # prefetch bitrate for each module
+                    self.frontend_tuner_status[tuner_num].digitial_output_info=_output_mod.getInfo()
+
                     # relink output module to source if it was lost
                     if self.MSDD.get_corresponding_output_module_object(_rx_object.digital_rx_object) == None:
                         self.MSDD.stream_router.linkModules(
@@ -2116,6 +2162,7 @@ class MSDD_i(MSDD_base):
                            self.tuner_output_configuration[tuner_num].vlan)
 
             outcfg_enabled=self.tuner_output_configuration[tuner_num].enabled
+            self.frontend_tuner_status[tuner_num].digital_output=outcfg_enabled
             if outcfg_enabled:
                 # if tuner is just a channelizer then don't enable output module...
                 if "CHANNELIZER" in self.frontend_tuner_status[tuner_num].tuner_types:
@@ -2228,6 +2275,7 @@ class MSDD_i(MSDD_base):
             self.exception_msg("Exception trying to diable tuner {0} ",tuner_id)
 
         fts.enabled=False
+        fts.digital_output=False
         self._update_tuner_status(restatus_tuners)
 
     def deviceDeleteTuning(self,fts,tuner_id):

@@ -37,6 +37,7 @@ __version__= '2.0'
 import sys
 import copy
 import socket
+import select
 import string
 import unittest
 import random
@@ -398,9 +399,20 @@ class Connection(object):
 
         # process echo of command, should happen right away
         _expect_output=True
-        self.radioSocket.settimeout(echo_timeout)
         try:
+            _stime=time.time()
+            _iready,_oready,_eready = select.select([self.radioSocket],[],[],echo_timeout)
+            _etime=time.time()
+            if self._debug:
+                self.log_msg("--DEBUG--  ECHO select wait {:.7f} timeout:{} msg:{})".format(_etime-_stime,echo_timeout,_cmd))
+            if _iready == None or len(_iready) == 0:
+                raise socket.timeout
+
+            _stime=time.time()
             echoMsg = self.radioSocket.recv(65535)
+            _etime=time.time()
+            if self._debug:            
+                self.log_msg("--DEBUG--  ECHO recv time {:.7f}  msg:{})".format(_etime-_stime,_cmd))
         except socket.timeout:
                 raise EchoFailure
 
@@ -420,9 +432,23 @@ class Connection(object):
         # if we don't expect anything then no need to wait the entire time..
         _timeout=timeout
         if not expect_output: 
-            _timeout=echo_timeout
-        self.radioSocket.settimeout(_timeout)
+            _timeout=echo_timeout/4.0
+        
+        _stime=time.time()
+        _iready,_oready,_eready = select.select([self.radioSocket],[],[],_timeout)
+        _etime=time.time()
+        if self._debug:
+            self.log_msg("--DEBUG-- RESP select wait {:.7f} timeout:{} msg:{})".format(_etime-_stime,
+                                                                                       _timeout,
+                                                                                       _cmd))
+        if _iready == None or len(_iready) == 0:
+                raise socket.timeout
+
+        _stime=time.time()
         returnMsg = self.radioSocket.recv(65535)
+        _etime=time.time()
+        if self._debug:        
+            self.log_msg("--DEBUG-- RESP recv time {:.7f} msg:{})".format(_etime-_stime,_cmd))
                 
         self._except_msg=""
         # clean up return message
@@ -474,6 +500,9 @@ class baseModule(object):
         self.update_mapping_version(self.mapping_version)
         self.full_reg_name = str(self.module_name) + ":" + str(self.channel_number)
         self._debug=False
+
+    def log_msg(self,msg):
+        print timestamp_msg(msg)
         
     def get_full_reg_name(self):
         """
@@ -516,7 +545,8 @@ class baseModule(object):
         res = self.connection.sendStringCommand(command,
                                           check_for_output=check_for_output)
         if self._debug:
-            print "send_query_command (completed) command ", command.replace('\n',' '), " response ", res
+            self.log_msg( "send_query_command (completed) command {} response {}".format(command.replace('\n',' '),
+                                                                                         res))
 
         if self.connection.pause:
             time.sleep(.008)
@@ -530,7 +560,8 @@ class baseModule(object):
                                                 expect_output=expect_output)
 
         if self._debug:
-            print "send_set_command (completed) command ", command.replace('\n',' '), " response ", res
+            self.log_msg("send_set_command (completed) command {} response {} ".format(command.replace('\n',' '),
+                                                                                       res))
 
         if self.connection.pause:
             time.sleep(.008)
@@ -711,11 +742,11 @@ class baseModule(object):
         while successful_validation == False:
             try:
                 if self._debug:
-                    print "setter_with_validation calling set >>>> ", value
+                    self.log_msg("setter_with_validation calling set >>>> {} ".format(value))
                 _set_(value)
                 ret = _get_()
                 if self._debug:
-                    print "setter_with_validation calling get ", ret , " <<<<< "
+                    self.log_msg("setter_with_validation calling get {} <<<<< ".format(ret))
             except NotImplementedError:
                 return True
             except InvalidValue, e:
@@ -733,12 +764,14 @@ class baseModule(object):
             counter += 1
             if successful_validation  or retries==None or counter > retries:
                 if self._debug:
-                    print "setter_with_validation return ", successful_validation, " value ", value, "  get value ", ret
+                    self.log_msg("setter_with_validation return {} value {} get value {}".format(
+                        successful_validation, value, ret))
                 return successful_validation
             time.sleep(retry_interval)
 
         if self._debug:
-            print "setter_with_validation valid: ", successful_validation, " value ", value, "  get value ", ret
+            self.log_msg("setter_with_validation valid {} value {} get value {}".format(
+                        successful_validation, value, ret))            
         return successful_validation
 
     def _setEnable(self, enable):
@@ -2908,6 +2941,7 @@ class OUTModule(baseIPPModule):
             self.protocol=""
             self.channel_number=None
             self.input_sample_rate=0
+            self.interface=0
 
     MOD_NAME_MAPPING={1:"OUT",2:"OUT"}
     
@@ -2976,6 +3010,7 @@ class OUTModule(baseIPPModule):
         self._info.samples_per_frame=self.samples_per_frame
         self._info.data_width=self.data_width
         self._info.input_sample_rate=self.input_sample_rate
+        self._info.interface=self.getIPP_Interface()
 
     def configureSDDS(self, enable, interface, ip_address, port, 
                        protocol, vlan, vlan_enable,
@@ -3001,6 +3036,7 @@ class OUTModule(baseIPPModule):
         self._info.samples_per_frame=self.samples_per_frame
         self._info.data_width=self.data_width
         self._info.input_sample_rate=self.input_sample_rate
+        self._info.interface=self.getIPP_Interface()
 
     def getInfo(self):
         return self._info
