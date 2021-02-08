@@ -163,8 +163,11 @@ except RuntimeError:
 
                 self.radioSocket.sendto(command, self.radioAddress)
 
+                #The following lines were added to avoid a condition where the radio will reset back to turning Echo On and messing up
+                # It has to do with additional clients hitting the radio externally, which re-use connections (0-15) on the radio
+                # When the current connection is the last on the list, it gets reallocated to the new connection, and the device gets
+                # a new connection when it tries to send data, but the echo is turned back on on the new socket
                 _expect_output=True
-                self.radioSocket.settimeout(self.timeout)
                 echoMsg = self.radioSocket.recv(65535)
                 if self._debug:
                     resp = re.sub(r'[^\x00-\x7F]+',' ', str(echoMsg))

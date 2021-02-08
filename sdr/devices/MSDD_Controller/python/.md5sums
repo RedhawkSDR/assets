@@ -1,0 +1,6 @@
+8bfcd22353c3a57fee561ad86ee2a56b  reconf
+cd66b62d86a7edbd67197bc53253bd72  MSDD_Controller.py
+f2bd7d37e9868478dd277c1955454edb  MSDD_Controller_base.py
+c7e3b71c15a75ff588723037cc9e55d6  configure.ac
+efca033e256ca3609be2e2bb87ad2fec  Makefile.am
+0e0454a1248eb21a510a6cc1936e7a0e  Makefile.am.ide

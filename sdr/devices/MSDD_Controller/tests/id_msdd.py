@@ -12,7 +12,6 @@ from msdd_connection import *
 def id_msdd( ip_addr):
     # create connection to msdd device
     c=Connection((ip_addr,23))
-    c._debug=True
     try:
         # query IDN of receiver
         cmd='con idn?'
