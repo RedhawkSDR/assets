@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
+<softpkg id="DCE:2cc604df-c4df-47e0-8458-ad99b41baa41" name="rh.MSDD_Controller" type="2.2.6" version="1.0.0">
+  <title></title>
+  <author>
+    <name>null</name>
+  </author>
+  <propertyfile type="PRF">
+    <localfile name="MSDD_Controller.prf.xml"/>
+  </propertyfile>
+  <descriptor>
+    <localfile name="MSDD_Controller.scd.xml"/>
+  </descriptor>
+  <implementation id="python">
+    <description>The implementation contains descriptive information about the template for a software resource.</description>
+    <code type="Executable">
+      <localfile name="python"/>
+      <entrypoint>python/MSDD_Controller.py</entrypoint>
+    </code>
+    <programminglanguage name="Python"/>
+    <humanlanguage name="EN"/>
+    <runtime name="python" version="2.6.6"/>
+    <os name="Linux"/>
+  </implementation>
+</softpkg>

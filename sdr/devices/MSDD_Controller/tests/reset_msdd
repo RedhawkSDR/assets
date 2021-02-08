@@ -11,9 +11,9 @@ import traceback
 
 wait_for_reconnect=True
 c=Connection((sys.argv[1],23))
-resp=None
+
 try:
-    resp=c.sendStringCommand('brd reset'+'\n', expect_output=False)
+    c.sendStringCommand('brd reset'+'\n', expect_output=False)
 except:
     pass
 if len(sys.argv) > 2 and sys.argv[2].lower() != 'nowait' :
@@ -24,7 +24,7 @@ if  wait_for_reconnect:
     while not_connected:
         try:
             c=Connection((sys.argv[1],23))
-            resp=c.sendStringCommand('con idn?'+'\n', expect_output=True)
+            c.sendStringCommand('con idn?'+'\n', expect_output=True)
             not_connected=False
         except:
             time.sleep(1)

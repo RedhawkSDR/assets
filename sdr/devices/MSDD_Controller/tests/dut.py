@@ -21,13 +21,11 @@
 import os, sys, copy
 import pprint
 
-#                     DUT_IFACE = None,
-#                     OUTPUT_IFACE = None,
-
 def  get_config( msdd_id,
-                     spd_path='../MSDD.spd.xml',
+                     spd_path='../MSDD_Controller.spd.xml',
                      DUT_IP_ADDR='192.168.1.2',
                      DUT_PORT='23',
+                     DUT_RCV_ID='RCV:1',
                      OUTPUT_ADDR = "234.0.0.100",
                      OUTPUT_PORT = None,
                      OUTPUT_VLAN = None,
@@ -35,21 +33,49 @@ def  get_config( msdd_id,
                      PSD_ADDR="233.0.0.100"
                  ) :
 
+    """
+     dut_config is a dictionary that contains device configurations
+     contexts when running all the tests in fei_base/frontend_tuner_unit_test_base.py
+     
+     The first key in the dictionary is based on the model of the MSDD
+     to test against. You can run id_msdd.py <ip addres> that will
+     generate a model key for you that you can use in the dut_config.
+    
+     The get_config parameters are generated from the command line options when
+     running the test script test_XXXX_FEI.py
+    
+     There are 5 important keys for each model that you can tailor for each MSDD receiver:
+       'receiver_identifier' : 'RCV:1'   for single channel MSDD receivers is the receiver that feeds all the down stream
+                                         modules. This sets the context for the receiver that is used when 
+                                         allocations are made. For dual channel receivers, this could be 'RCV:2' for the
+                                         signal path to test.
+      'receiver_modules' : [ 'RCV:1' ] or  [ 'RCV:1', 'RCV:2' ]    for single or dual channel
+      'additional_tuner_output' : [ n1 ] or [ n1, n2 ] where is n1 is the number of tuner outputs assigned 
+                                                       to the first receiver module, etc.
+      'configure' : configuration properties to set when launching the device. You need to have atleast 
+                    1 tuner_output configuration for each WBDDC modules. NBDDC tuner configuration 
+                    will be created based on the 'additional_tuner_output' value.
+      'capablities' : Provide the basis for create allocations requests and invalid allocation requests to 
+                    the MSDD hardware resource. The dictionary is indexed by the recevier module name
+                    e.g. RCV:1 when looking up the context for the allocations.  The second dictionary
+                    is based on the FrontEnd device type being used for the allocation.
+      """
+
     dut_config = {}
 
-    # rh.MSDD
+    # MSDD Radio Configurations 'MSDD' is the base for all the different radio configuration
     dut_config['MSDD'] = {
         'spd'         :  spd_path,
         'namespace'   : 'rh',
         'name'        : 'MSDD',
         'impl_id'     : 'python',
-        'receiver_identifier' : 'RCV:1',   # default receiver path to test
-        'receiver_modules' : ['RCV:1' ],   # identifiers for each rcv->wbbc flows
-        'additional_tuner_output' : [1] ,  # total number of additional tuner output configs
+        'receiver_identifier' : DUT_RCV_ID,   # default receiver path to test
+        'receiver_modules' : ['RCV:1' ],  # identifiers for each rcv->wbbc flows
+        'additional_tuner_output' : [2] ,  # total number of additional tuner output configs
         'execparams'  : { },
         'configure'   : {
             'advanced' : {
-                'advanced::enable_fft_channels' : False
+                'advanced::enable_fft_channels' : False,
             },
 
             'msdd': {
@@ -59,6 +85,7 @@ def  get_config( msdd_id,
             },
             'tuner_output': [
                 {   # initial wbddc config for all radio configurations
+                    'tuner_output::receiver_identifier'    : 'RCV:1',
                     'tuner_output::tuner_number'    : 0,
                     'tuner_output::protocol'        : 'UDP_SDDS',
                     'tuner_output::ip_address'      : OUTPUT_ADDR or '234.0.0.100',
@@ -75,6 +102,7 @@ def  get_config( msdd_id,
 
             'block_psd_output': [
                 {
+                    'block_psd_output::receiver_identifier'    : 'RCV:1',
                     'block_psd_output::fft_channel_start'    : 0,
                     'block_psd_output::fft_channel_stop'    : 0,
                     'block_psd_output::protocol'        : 'UDP_SDDS',
@@ -132,19 +160,23 @@ def  get_config( msdd_id,
     # for those specific tests because of network utilization issues. ( See
     # fei_base/frontend_tuner_unit_test_base.py test decorators)
     # You can disable the output here but this will cause failures with
-    # some frontend unit tests.
-    #dut_config['MSDD|3000']['configure']['tuner_output'][0].update(
+    # other frontend unit tests.
+    #
+    # To change a specific dictionary key use the update() method
+    #
+    # Change the output enable attribute for tuner number 0
+    # dut_config['MSDD|3000']['configure']['tuner_output'][0].update(
     #    { 'tuner_output::enabled': False }
     #)
-    # to change a specific dictionary key
+    # To change a specific dictionary key, enable FFT Channels when allocations are made
     # dut_config['MSDD|3000']['configure'].update({
     #         'advanced' : {
     #             'advanced::enable_fft_channels' : False
     #         }
     #        } )
-
-    # to over write dictionary key
-    # dut_config['MSDD|3000']['capabilties'] = [
+    #
+    # To over write a dictionary assign an entire new dictionary
+    # dut_config['MSDD|3000']['capabilties']['RCV:1'] = [
     # {
     #     'RX_DIGITIZER': {
     #         'COMPLEX' : True,
@@ -348,37 +380,6 @@ def  get_config( msdd_id,
         ]
 
 
-    # rh.MSDD 3000 s100 1w8n64b320
-    dut_config['MSDD|3000|s100|1w8n64b320'] = copy.deepcopy(dut_config['MSDD|3000'])
-    dut_config['MSDD|3000|s100|1w8n64b320']['additional_tuner_outputs'] = [8]
-    dut_config['MSDD|3000|s100|1w8n64b320']['capabilities']['RCV:1'] = [
-            {
-                'RX_DIGITIZER': {
-                    'COMPLEX' : True,
-                    'CF'      : [30e6, 3e9],
-                    'BW'      : [20e6, 20e6],
-                    'SR'      : [24.576e6, 24.576e6],
-                    'GAIN'    : [-48.0, 12.0]
-                },
-                'RX_DIGITIZER_CHANNELIZER': {
-                    'COMPLEX' : True,
-                    'CF'      : [30e6, 3e9],
-                    'BW'      : [20e6, 20e6],
-                    'SR'      : [24.576e6, 24.576e6],
-                },
-                'DDC': {
-                    'COMPLEX' : True,
-                    'CF'      : [30e6, 3e9],
-                    'BW'      : [320e3,320e3],
-                    'SR'      : [390.625e3,390.625e3],
-                    'GAIN'    : [-48.0, 12.0],
-                    'NUMDDCs' : 5,
-                }
-            }
-        ]
-
-
-
     # rh.MSDD 660
     dut_config['MSDD|0660D'] = copy.deepcopy(dut_config['MSDD'])
     dut_config['MSDD|0660D']['execparams']  = {'receiver_identifier': 'RCV:1' }
@@ -386,6 +387,7 @@ def  get_config( msdd_id,
     dut_config['MSDD|0660D']['additional_tuner_outputs'] = [ 1, 1]
     dut_config['MSDD|0660D']['configure']['tuner_output']=[
                 {
+                    'tuner_output::receiver_identifier'  : 'RCV:1',
                     'tuner_output::tuner_number'    : 0,
                     'tuner_output::protocol'        : 'UDP_SDDS',
                     'tuner_output::ip_address'      : OUTPUT_ADDR or '234.0.0.100',
@@ -399,6 +401,7 @@ def  get_config( msdd_id,
                     'tuner_output::vlan_enable'     : False
                 },
                 {
+                    'tuner_output::receiver_identifier'  : 'RCV:2',
                     'tuner_output::tuner_number'    : 0,
                     'tuner_output::protocol'        : 'UDP_SDDS',
                     'tuner_output::ip_address'      : OUTPUT_ADDR or '234.0.0.101',
@@ -502,41 +505,21 @@ def  get_config( msdd_id,
             }
     ]
 
-
-
-
-    # # rh.MSDD_RX_Device
-    # dut_config['MSDD|Dreamin'] = {
-    #     'spd'         : None,
-    #     'parent_dir'  : None,
-    #     'namespace'   : 'rh',
-    #     'name'        : 'MSDD_RX_Device_v2',
-    #     'impl_id'     : 'DCE:3f0ac7cb-1601-456d-97fa-2dcc5be684ee',
-    #     'execparams'  : {},
-    #     'configure'   : {
-    #         'NetworkConfiguration': {
-    #              'status_destination_address'               : OUTPUT_ADDR or '234.0.0.100',
-    #              'master_destination_address'               : OUTPUT_ADDR or '234.0.0.100',
-    #              'DCE:d91f918d-5cdf-44d4-a2e1-6f4e5f3128bf' : OUTPUT_PORT or 8887,
-    #              'master_destination_vlan'                  : OUTPUT_VLAN or 0,
-    #              'msdd_address'                             : DUT_IP_ADDR or '192.168.100.250',
-    #              'msdd_interface'                           : DUT_IFACE or 'em2',
-    #              'msdd_port'                                : DUT_PORT or 8267
-    #          }
-    #     },
-    #     'properties'  : {},
-    #     'capabilities': [
-    #         {
-    #             'RX_DIGITIZER': {
-    #                 'COMPLEX' : True,
-    #                 'CF'      : [30e6, 3e9],
-    #                 'BW'      : [20e6, 20e6],
-    #                 'SR'      : [25e6, 25e6],
-    #                 'GAIN'    : [-60.0, 0.0]
-    #             }
-    #         }
-    #     ]
-    # }
+    """
+    # rh.MSDD
+    dut_config['MSDD|Dreamin'] =  copy.deepcopy(dut_config['MSDD'])
+    dut_config['MSDD|Dreamin']['capabilities']['RCV:1'] = [
+           {
+              'RX_DIGITIZER': {
+                  'COMPLEX' : True,
+                  'CF'      : [30e6, 3e9],
+                  'BW'      : [20e6, 20e6],
+                  'SR'      : [25e6, 25e6],
+                  'GAIN'    : [-60.0, 0.0]
+              }
+           }
+    ]
+    """
 
     if msdd_id in dut_config.keys():
         dut_cfg = copy.deepcopy(dut_config[msdd_id])
@@ -559,6 +542,7 @@ def configure_output_channels( dut_config, OUTPUT_ADDR, OUTPUT_PORT, OUTPUT_VLAN
             mcast_octets[-1] += 1
             dut_config['configure']['tuner_output'].append(
                 {
+                    'tuner_output::receiver_identifier' : dut_config['receiver_modules'][rcv_idx],
                     'tuner_output::tuner_number'    : i,
                     'tuner_output::protocol'        : 'UDP_SDDS',
                     'tuner_output::ip_address'      : '.'.join(str(x) for x in mcast_octets),

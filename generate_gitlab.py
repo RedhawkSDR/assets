@@ -30,6 +30,19 @@ __DEP__
 
 """
 
+package_template_msddc = """package:__DIST____V__:rh__SHORT_V__:__ASSET_NAME__:
+  stage: __BUILD__
+  variables:
+    dist: __DIST__
+    uhd_repo: __UHDREPO__
+    asset_name: __ASSET_NAME__
+    lowercase_asset_name: __ASSET_LC_NAME__
+__DEP__
+  <<: *package-msddc
+
+"""
+
+
 create_template = """create-__DIST____V__:local:repos:
   stage: create_library_repo
   variables:
@@ -130,6 +143,28 @@ def replace_package_template(os_version, rh_version, comp_name, base_library=Fal
     else:
         retval = retval.replace('__V__', '')
     return retval
+
+
+
+def replace_package_template_msddc(os_version, rh_version, comp_name, base_library=False, isComponentOrDevice=False, isWaveform=False):
+    retval = package_template_msddc.replace('__DIST__', platforms[os_version]['dist']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
+
+    if "el6" in os_version:
+        retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch')
+    elif "el7" in os_version:
+        retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch')
+    
+    if isComponentOrDevice:
+        retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+"__V__:local:libraries:repos\n")
+    if isComponentOrDevice:
+        retval = retval.replace("__BUILD__", "build_components")
+
+    if '32' in os_version:
+        retval = retval.replace('__V__', ':32')
+    else:
+        retval = retval.replace('__V__', '')
+    return retval
+
 
 def replace_test_job_name_template(os_version, rh_version, comp_name, branches=False, base_library=False, isComponent=True):
     retval = test_template_endpoint.replace('__DIST__', platforms[os_version]['dist']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name)
@@ -322,9 +357,12 @@ if __name__ == '__main__':
         rh_version = next(iter(versions))
         if not testonly:
             for os_version in versions[next(iter(versions))]['platform_keys']:
-                jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
+                if comp == 'MSDD_Controller':
+                    jobs += replace_package_template_msddc(os_version, rh_version, comp, base_package, isComponentOrDevice)
+                else:
+                    jobs += replace_package_template(os_version, rh_version, comp, base_package, isComponentOrDevice)
 
-        if (comp != 'MSDD'):
+        if (comp not in [ 'MSDD', 'MSDD_Controller'] ):
             for os_version in versions[next(iter(versions))]['platform_keys']:
                 test_jobs += replace_test_job_name_template(os_version, rh_version, comp, False, base_package, isComponent)
                 jobs += replace_test_template(os_version, rh_version, comp, False, base_package, isComponent)
