@@ -10,7 +10,7 @@
 
 ## Description
 
-The REDHAWK `rh.MSDD` device is a FRONTEND 2.0 Interfaces (FEI) compliant device for the Midwest Microwave MSDD-3000/6000/0660 series receiver. The `rh.MSDD` device is written in the Python programming language and communicates with receiver using the host's network interface.  Setting the `rh.MSDD` properties described below will command and control of the MSDD radio. The command formats and descriptions are documented in the MSDD API document from Midwest Microwave Systems.  
+The REDHAWK `rh.MSDD` device is a FRONTEND 2.0 Interfaces (FEI) compliant device for the Midwest Microwave MSDD-3000/6000/0660 series receiver. The `rh.MSDD` device is written in the Python programming language and communicates with receiver using the host's network interface.  The `rh.MSDD` properties described below determine the connection and tuner output configuration the MSDD radio. The command formats and descriptions are documented in the MSDD API document from Midwest Microwave Systems.  
 
 The `rh.MSDD` device is meant to be configured a single RF flow. This is controlled using the 'msdd::receiver_id' property at device startup.  This property will be referenced to filter out the MSDD tuner modules from the specified RCV module instance.  For single channel MSDD radios this value will be the default to `RCV:1`. All WBDDC and NBDDC tuner modules from this RCV module instance will configured as Frontend tuner devices.  For dual Channel MSDD radios, you can use the `rh.MSDD` device to process a single RF flow (i.e. 'RCV:1') on the radio.  If you want to process both RCV modules on a dual channel radio you will need to use the `rh.MSDD_Controller` device.
 
@@ -46,7 +46,7 @@ The following run time properties describe the state of the MSDD radio and the f
 | [time_of_day](#time_of_day) |structure | readwrite | MSDD Time of Day (TOD) module configuration |
 | [advanced](#advanced) | structure | readwrite | Advanced controls to configure MSDD tuner types, and threshold states to control device usage state |
 | [tuner_output](#tuner_output) | structureseq | readonly | Output stream configuration from MSDD digital tuners. |
-| [ block_tuner_output](#block_tuner_output) | structureseq | readonly | Output stream configuration for blocks of MSDD digital tuners |
+| [block_tuner_output](#block_tuner_output) | structureseq | readonly | Output stream configuration for blocks of MSDD digital tuners |
 | [block_psd_output](#block_psd_output) | structureseq | readonly | Output stream configuration for blocks FFT channels assigned to tuners. |
 | [psd_configuration](#psd_configuration) | structure | readwrite | FFT module (FFT) parameters used to configure a FFT channel for controlling allocations. |
 | [gain_configuration](#gain_configuration) | structure | readwrite | Gain settings (GAI) for each MSDD tuner type (RCV,WBDDC,NBDDC)|
@@ -166,7 +166,6 @@ The *gain_configuration* structure controls the gain setting for each MSDD tuner
 | gain_configuration::rcvr_gain | float | Gain setting in db for MSDD RCV modules |
 | gain_configuration::wb_ddc_gain | float | Gain setting in db for MSDD WBDDC modules |
 | gain_configuration::hw_ddc_gain | float | Gain setting in db for MSDD NBDDC modules |
-| gain_configuration::sw_ddc_gain | float | Gain setting in db for MSDD SWDDC modules |
 
 ### msdd_status
 The *msdd_status* structure defines the set of readonly properties that define the state of the MSDD receiver. This structure is updated after initialization, allocation requests and deallocation requests.
@@ -236,7 +235,6 @@ The *FRONTEND::tuner_status* structure defines the `FRONTEND` tuner status prope
 | FRONTEND::tuner_status::output_channel | string | MSDD output module assigned to this tuner |
 | FRONTEND::tuner_status::output_enabled | boolean | True if output is enabled, False otherwise |
 | FRONTEND::tuner_status::output_vlan_enabled | boolean | True if vlan tagging is enabled, OUT VLANEN? |
-| FRONTEND::tuner_status::output_vlane_tci | string | VLAN number if tagging is enabled, OUT VLANTCI? |
 | FRONTEND::tuner_status::output_flow | string | MSDD module chain feeding this output module |
 | FRONTEND::tuner_status::output_timestamp_offset | string | Value from OUT TSOFS?)
 | FRONTEND::tuner_status::endianess | short | Value from OUT END? |
@@ -270,3 +268,21 @@ $ ./build.sh install
 ## Troubleshooting
 
 The [msdd property](#msdd) is used to setup the network connectivity between the MSDD hardware and host computer running the REDHAWK rh.MSDD device.  Set the `msdd::ip_address` and `msdd::port` properties for the MSDD receiver you are connecting.
+
+Besides the number of available tuners, the `rh.MSDD` device will monitor the radio's `CPU percent load` metrics to determine if the device's usage state. The If the value from the CPL command exceeds the `advanced::max_cpu_load` the device will be put into a `BUSY` state. This state is evaluated before and after each tuner allocation/deallocation request.
+
+The `rh.MSDD` device will track the output bit rate from the MSDD's radios network interface.  Before each tuner allocation request, the expected output rate will be determine from the current allocations and the new request. If the new requests exceeds the 'advanced::max_nic_percentage` for the interface the allocation will fail.
+
+It has been observed from testing with various FPGA loads on different MSDD hardware, that allocations of WBDDC and NBDDC modules will cause a delay in processing commands.  When this occurrs, the `rh.MSDD` device will perform a limited retry sequence when processing commands. These events will generate detailed `stdout` logging messages that are not controllable through normal logging configuration. The net affect would be failed tuner allocation requests and enabled `BUSY` states, due to invalid response messaging.  When these events are observed, there are two methods to diagnose messaging to and from the radio. You can enable the logging port traffic on the radio with the following command:
+
+```
+nc -u <ip addres of radio> 24
+```
+
+This will trigger the LOG module on the radio to report the sequence of messages the radio receives and transmits.  Along with this information you can use the linux `tcpdump` utility to track the same actvity on the host:
+
+```
+sudo tcpdump -i <host nic connected to radio>  port <port number observed from LOG output>
+```
+
+This should allow you to determine if the radio is responding with the proper messages to the host computer.
