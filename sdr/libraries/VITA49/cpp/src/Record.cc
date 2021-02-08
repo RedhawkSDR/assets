@@ -65,8 +65,7 @@ bool Record::equals (const VRTObject &o) const {
     if (buf.size() != r.buf.size()) return false;
     return (memcmp(&buf[0], &r.buf[0], buf.size()) == 0);
   }
-  catch (bad_cast &e) {
-    UNUSED_VARIABLE(e);
+  catch (const bad_cast&) {
     return false;
   }
 }

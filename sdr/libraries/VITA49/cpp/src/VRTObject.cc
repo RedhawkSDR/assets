@@ -89,7 +89,7 @@ static vector<string> getBacktrace () {
 
     return trace;
   }
-  catch (exception e) {
+  catch (const exception&) {
     return vector<string>();
   }
 }

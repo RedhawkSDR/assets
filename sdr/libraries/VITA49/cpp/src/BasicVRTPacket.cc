@@ -334,7 +334,7 @@ string BasicVRTPacket::toString () const {
     toStringStream(str);
     return str.str();
   }
-  catch (VRTException e) {
+  catch (const VRTException& e) {
     return getClassName()+": <Invalid VRTPacket: "+e.toString()+">";
   }
 }

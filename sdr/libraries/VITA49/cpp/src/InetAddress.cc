@@ -159,8 +159,7 @@ bool InetAddress::equals (const VRTObject &o) const {
   try {
     return equals(*checked_dynamic_cast<const InetAddress*>(&o));
   }
-  catch (bad_cast &e) {
-    UNUSED_VARIABLE(e);
+  catch (const bad_cast&) {
     return false;
   }
 }
