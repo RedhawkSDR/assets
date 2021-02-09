@@ -279,8 +279,8 @@ void Psd<TimeType>::run(void)
     vpsd_.resize(FwdFft<TimeType>::vFreq_.size());
     for (unsigned int i=0; i!=FwdFft<TimeType>::vFreq_.size(); i++)
     {
-        float& re = FwdFft<TimeType>::vFreq_[i].real();
-        float& im = FwdFft<TimeType>::vFreq_[i].imag();
+        const float re = FwdFft<TimeType>::vFreq_[i].real();
+        const float im = FwdFft<TimeType>::vFreq_[i].imag();
         vpsd_[i]=re*re+im*im;
     }
 }
