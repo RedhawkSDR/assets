@@ -27,39 +27,39 @@ class fastfilter_i;
 
 class FilterWrapper
 {
-	public:
-		FilterWrapper() :
-			filter(NULL),
-			fs_(1.0)
-		{
-		}
-		~FilterWrapper()
-		{
-			if (filter!=NULL)
-				delete filter;
-		}
-		void setParams(float sampleRate, firfilter* filter)
-		{
-			this->filter =filter;
-			fs_ = sampleRate;
-		}
-		bool hasSampleRateChanged(float sampleRate)
-		{
-			bool ret(false);
-			if (fs_ != sampleRate)
-			{
-				ret=true;
-				fs_=sampleRate;
-			}
-			return ret;
-		}
-		float getSampleRate()
-		{
-			return fs_;
-		}
-		firfilter* filter;
-	private:
-		float fs_;
+        public:
+                FilterWrapper() :
+                        filter(NULL),
+                        fs_(1.0)
+                {
+                }
+                ~FilterWrapper()
+                {
+                        if (filter!=NULL)
+                                delete filter;
+                }
+                void setParams(float sampleRate, firfilter* filter)
+                {
+                        this->filter =filter;
+                        fs_ = sampleRate;
+                }
+                bool hasSampleRateChanged(float sampleRate)
+                {
+                        bool ret(false);
+                        if (fs_ != sampleRate)
+                        {
+                                ret=true;
+                                fs_=sampleRate;
+                        }
+                        return ret;
+                }
+                float getSampleRate()
+                {
+                        return fs_;
+                }
+                firfilter* filter;private:
+        private:
+                float fs_;
 };
 
 class fastfilter_i : public fastfilter_base
@@ -77,7 +77,7 @@ class fastfilter_i : public fastfilter_base
     private:
 
         typedef std::map<std::string, FilterWrapper> map_type;
-   		map_type filters_;
+                map_type filters_;
 
         firfilter::realVector realOut;
         firfilter::complexVector complexOut;
