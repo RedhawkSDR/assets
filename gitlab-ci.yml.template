@@ -1,6 +1,8 @@
 variables:
   rh_20_release: '2-0-8'
   rh_22_release: '2.2-latest-release'
+  rh_23_release: '2.3-latest-release'
+  rh_30_release: '3.0-latest-release'
   namespace: rh.
   asset_name: none
   lowercase_asset_name: None
@@ -45,8 +47,6 @@ before_script:
     - redhawk_repo=$s3_repo_url/$redhawk_repo_proj/yum/__REDHAWK_VERSION__/$dist/$arch
     - rtl_repo=$s3_repo_url/redhawk-dependencies/librtlsdr/yum/0.5.2/$dist/$arch
     - librf_repo=$s3_repo_url/redhawk-dependencies/libRfSimulators/yum/develop/$dist/$arch
-    #- uhd_repo=$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch # el6
-    #- uhd_repo=$s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch # el7
     - asset_repo=$s3_repo_url/redhawk/assets/yum/$redhawk_version/$dist/$arch
 
 .create_local_repo: &create_local_repo
@@ -314,7 +314,7 @@ deploytests:
     - s3
   script:
     - /usr/bin/s3cmd sync s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist/$arch .
-    - repomanage --keep=2 --old $arch| xargs rm -f; createrepo --update $arch
+    - repomanage --old $arch| xargs rm -f; createrepo --update $arch
     - /usr/bin/s3cmd sync -F -v --delete-removed $arch s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist/  && s3cmd setacl -v s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist --acl-public --recursive || true
 
   only:
