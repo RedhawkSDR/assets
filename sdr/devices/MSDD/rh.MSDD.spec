@@ -21,6 +21,8 @@
 # You can override this at install time using --prefix /new/sdr/root when invoking rpm (preferred method, if you must)
 %{!?_sdrroot: %global _sdrroot /var/redhawk/sdr}
 %define _prefix %{_sdrroot}
+ %global __python %{__python3}
+
 Prefix:         %{_prefix}
 
 # Point install paths to locations within our target SDR root
@@ -39,13 +41,13 @@ License:        None
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.2
-Requires:       redhawk >= 2.2
+BuildRequires:  redhawk-devel >= 3.0
+Requires:       redhawk >= 3.0
 
 
 # Interface requirements
-BuildRequires:  frontendInterfaces >= 2.4 bulkioInterfaces >= 2.2
-Requires:       frontendInterfaces >= 2.4 bulkioInterfaces >= 2.2
+BuildRequires:  frontendInterfaces >= 3.0 bulkioInterfaces >= 3.0
+Requires:       frontendInterfaces >= 3.0 bulkioInterfaces >= 3.0
 
 BuildArch: noarch
 
