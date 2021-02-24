@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -440,7 +440,7 @@ class FrontendTunerTests(fe.FrontendTunerTests):
             device_channels = cls._query( ('device_channels',) )['device_channels']
             if DEBUG_LEVEL >= 4:
                 from pprint import pprint as pp
-                print 'device channel: '
+                print('device channel: ')
                 pp(device_channels)
 
             for chan in device_channels:

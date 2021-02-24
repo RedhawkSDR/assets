@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -76,10 +76,10 @@ class SddsAttachDetachCB():
         self.detaches = []
         
     def attach_cb(self, streamDef, user_id):
-        print '********* Received attach from: %s ********' % user_id
+        print('********* Received attach from: %s ********' % user_id)
         self.attaches.append(streamDef)
     def detach_cb(self, attachId):
-        print 'Received detach of: %s' % attachId
+        print('Received detach of: %s' % attachId)
         self.detaches.append(attachId)
     def get_attach(self):
         return self.attaches
@@ -561,8 +561,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             sb.release()
         except:
             e = sys.exc_info()[0]
-            print(type(e.message))
-            print("Unexpected error: %s", e)
+            print((type(e.message)))
+            print(("Unexpected error: %s", e))
             problem=True
         
         self.assertTrue(not problem, "exception was raised while releasing the component")
@@ -722,7 +722,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         try:
              received_data = self.uclient.receive(socket_read_size, timeout = 5)
         except socket.error as e:
-            print "Socket read error: ", e
+            print("Socket read error: ", e)
         
         return received_data
     
@@ -751,7 +751,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.comp.stop()
 
     def setUp(self):
-        print "\nRunning test:", self.id()
+        print("\nRunning test:", self.id())
         ossie.utils.testing.ScaComponentTestCase.setUp(self)
 
         #Launch the component with the default execparams.

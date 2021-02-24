@@ -295,7 +295,7 @@ class VITA49():
     
     def printData(self, pkt):
         for i in range(0, len(pkt), 4):
-            print "{0:4} {1}".format(i, binascii.hexlify(pkt[i:i+4]))
+            print("{0:4} {1}".format(i, binascii.hexlify(pkt[i:i+4])))
     
     
 if __name__ == "__main__":
@@ -312,7 +312,7 @@ if __name__ == "__main__":
 
     frame = v49.generateVRLFrame(None, force_send_context=True)
     v49.printData(frame)
-    frame = v49.generateVRLFrame(xrange(0,256))
+    frame = v49.generateVRLFrame(range(0,256))
     v49.printData(frame)
     
     

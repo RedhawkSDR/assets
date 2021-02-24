@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 """
 Send the board reset command to the MSDD and optionally wait for the radio to come on-line before exiting

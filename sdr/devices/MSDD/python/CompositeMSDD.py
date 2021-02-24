@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -36,7 +36,7 @@ from ossie.device import start_device
 from frontend.fe_types import *
 from ossie import properties
 
-from MSDD import * 
+from .MSDD import * 
 
 class CompositeMSDD_i(MSDD_i):
     """

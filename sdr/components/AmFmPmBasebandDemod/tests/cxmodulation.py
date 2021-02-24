@@ -24,7 +24,7 @@ def getHilbertWin(nTap,window=False):
     #quick method to generate a hilbert transform
     positive = []
     c = 2/math.pi
-    for i in xrange(1,(nTap+1)/2,2):
+    for i in range(1,(nTap+1)/2,2):
         val = c/i
         positive.append(val)
         positive.append(0)
@@ -38,7 +38,7 @@ def getHilbertWin(nTap,window=False):
     out.extend(positive)
     if window:
         w = numpy.hanning(len(out))
-        for i in xrange(len(out)):
+        for i in range(len(out)):
             out[i]=out[i]*w[i]
 
     return out
@@ -147,7 +147,7 @@ def makeChirpSig(numPts, mean, amplitude, lowFreq, HiFreq, freqDelta):
     phase = 0.0
     up=True
     out=[]
-    for _ in xrange(numPts):
+    for _ in range(numPts):
         val = amplitude * math.cos(phase) + mean
         out.append(val)
         if up:

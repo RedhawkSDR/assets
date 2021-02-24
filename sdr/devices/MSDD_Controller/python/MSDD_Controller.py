@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 #
 # AUTO-GENERATED
@@ -232,8 +232,7 @@ class MSDD_Controller_i(MSDD_Controller_base,DynamicComponent):
     def get_output_configuration(self, receiver_id ):
 
         # filter out tuner output configuration information for child receiver
-        cfgs=list(filter(lambda x: (x.receiver_identifier == receiver_id), 
-                                         self.tuner_output))
+        cfgs=list([x for x in self.tuner_output if (x.receiver_identifier == receiver_id)])
 
         tuner_output_config=[]
         if len(cfgs) > 0:
@@ -246,8 +245,7 @@ class MSDD_Controller_i(MSDD_Controller_base,DynamicComponent):
                         traceback.print_exc()
                 tuner_output_config.append(c)
 
-        cfgs=list(filter(lambda x: (x.receiver_identifier == receiver_id), 
-                                         self.block_tuner_output))
+        cfgs=list([x for x in self.block_tuner_output if (x.receiver_identifier == receiver_id)])
                                      
         # filter out block tuner output configuration information for child receiver
         block_output_config=[]
@@ -261,8 +259,7 @@ class MSDD_Controller_i(MSDD_Controller_base,DynamicComponent):
                         traceback.print_exc()
                 block_output_config.append(c)
 
-        cfgs=list(filter(lambda x: (x.receiver_identifier == receiver_id), 
-                                         self.block_psd_output))
+        cfgs=list([x for x in self.block_psd_output if (x.receiver_identifier == receiver_id)])
 
         # filter out block psd  output configuration information for child receiver
         block_psd_config=[]

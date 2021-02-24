@@ -28,7 +28,7 @@ class Waveforms(object):
     B1G  = 1073741824.
 
     def generate_sine(self, amp, n, p=0, dp=0, spa=1):
-        outbuff = range(n*spa)
+        outbuff = list(range(n*spa))
         cxr = amp*math.cos(p*TWOPI)
         cxi = amp*math.sin(p*TWOPI)
         dxr = math.cos(dp*TWOPI)
@@ -42,7 +42,7 @@ class Waveforms(object):
         return outbuff
     
     def generate_lrs(self, magnitude, n, spa=1, lrs=1):
-        outbuff = range(n*spa)
+        outbuff = list(range(n*spa))
         factor = (magnitude/2.0/self.B1G)
         for i in range(0, n*spa, spa):
             data = (factor * (lrs))
@@ -61,7 +61,7 @@ class Waveforms(object):
         return outbuff
     
     def generate_square(self, amp, n, p=0, dp=0, spa=1):
-        outbuff = range(n*spa)
+        outbuff = list(range(n*spa))
         value = 0.0
         famp = float(amp)
         famp2 = -famp
@@ -80,7 +80,7 @@ class Waveforms(object):
         return outbuff
     
     def generate_triangle(self, amp, n, p=0, dp=0, spa=1):
-        outbuff = range(n*spa)
+        outbuff = list(range(n*spa))
         value = 0.0
         famp = float(amp)
         famp2 = 4*famp
@@ -101,7 +101,7 @@ class Waveforms(object):
         return outbuff
             
     def generate_sawtooth(self, amp, n, p=0, dp=0, spa=1):
-        outbuff = range(n*spa)
+        outbuff = list(range(n*spa))
         value = 0.0
         famp = float(amp)
         famp2 = 2*famp

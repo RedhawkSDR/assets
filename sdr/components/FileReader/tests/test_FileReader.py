@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -68,7 +68,7 @@ def toStr(data, dataType):
 def fromStr(dataStr, dataType):
     """unpack data from a string
     """
-    return struct.unpack("%s%s" % (long(len(dataStr)/BYTE_MAP[dataType]), STRING_MAP[dataType]), dataStr)
+    return struct.unpack("%s%s" % (int(len(dataStr)/BYTE_MAP[dataType]), STRING_MAP[dataType]), dataStr)
 
 def flip(dataStr, dataType):
     """given data packed into a string - reverse bytes for a given word length and returned the byte-flipped 
@@ -76,7 +76,7 @@ def flip(dataStr, dataType):
     """
     numBytes = BYTE_MAP[dataType]
     out = ""
-    for i in xrange(len(dataStr) / numBytes):
+    for i in range(len(dataStr) / numBytes):
         l = list(dataStr[numBytes * i:numBytes * (i + 1)])
         l.reverse()
         out += ''.join(l)
@@ -183,7 +183,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         props = dict((x.id, any.from_any(x.value)) for x in props)
         # Query may return more than expected, but not less
         for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
+            self.assertEqual(expectedProp.id in props, True)
 
         #######################################################################
         # Verify that all expected ports are available
@@ -247,7 +247,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         if (dataFileIn): os.remove(dataFileIn)
 
     def setupBasicSriTest(self, dataFileIn, portName, fileFormat, configureFunc=None):
-        print "\n**" + self._testMethodName
+        print("\n**" + self._testMethodName)
         
         #Define test files
         data = self.setupWithDataFile(dataFileIn)
@@ -277,7 +277,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     # ##############
     
     def testCharPort(self):
-        print "\n**" + self._testMethodName
+        print("\n**" + self._testMethodName)
         
         #Define test files
         dataFileIn = './data.in'
@@ -298,7 +298,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Release the components and remove the generated files
         self.tearDownFlow(dataFileIn)
         
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testCharPortSriScalar(self):
@@ -306,19 +306,19 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.setupBasicSriTest(dataFileIn, 'dataChar_out', 'CHAR')
         self.assertSRIOutputMode(0)
         self.tearDownFlow(dataFileIn)
-        print "........ PASSED\n"
+        print("........ PASSED\n")
     
     def testCharPortSriComplex(self):
         dataFileIn = './data.in'
         self.setupBasicSriTest(dataFileIn, 'dataChar_out', 'COMPLEX_CHAR')
         self.assertSRIOutputMode(1)
         self.tearDownFlow(dataFileIn)
-        print "........ PASSED\n"
+        print("........ PASSED\n")
     
     def testOctetPort(self):
         #######################################################################
         # Test OCTET Functionality
-        print "\n**TESTING OCTET PORT"
+        print("\n**TESTING OCTET PORT")
         
         #Define test files
         dataFileIn = './data.in'
@@ -362,7 +362,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sink.releaseObject()
         os.remove(dataFileIn)
         
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
     
     def testOctetPortSriScalar(self):
@@ -370,14 +370,14 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.setupBasicSriTest(dataFileIn, 'dataOctet_out', 'OCTET')
         self.assertSRIOutputMode(0)
         self.tearDownFlow(dataFileIn)
-        print "........ PASSED\n"
+        print("........ PASSED\n")
     
     def testOctetPortSriComplex(self):
         dataFileIn = './data.in'
         self.setupBasicSriTest(dataFileIn, 'dataOctet_out', 'COMPLEX_OCTET')
         self.assertSRIOutputMode(1)
         self.tearDownFlow(dataFileIn)
-        print "........ PASSED\n"
+        print("........ PASSED\n")
     
     def testBlueShortPort(self):
         self.blueShortPortTests()
@@ -391,7 +391,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def blueShortPortTests(self, outputOrder="host_order"):
         #######################################################################
         # Test Bluefile SHORT Functionality
-        print "\n**TESTING BLUEFILE + SHORT PORT + input(host)=%s_endian + output=%s"%(sys.byteorder,outputOrder)
+        print("\n**TESTING BLUEFILE + SHORT PORT + input(host)=%s_endian + output=%s"%(sys.byteorder,outputOrder))
         inputEndian = sys.byteorder+'_endian'
         
         #Define test files
@@ -405,7 +405,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             tmpSri.keywords = props_from_dict({'TEST_KW':1234})
             tmpSink.pushSRI(tmpSri)
             tmpTs = createTs()
-            tmpSink.pushPacket(range(1024), tmpTs, True, 'bluefileShort')
+            tmpSink.pushPacket(list(range(1024)), tmpTs, True, 'bluefileShort')
             
         #Read in Data from Test File
         hdr, d = bluefile.read(dataFileIn, dict)
@@ -459,7 +459,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sink.releaseObject()
         os.remove(dataFileIn)
         
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
     
     def testBlueShortPortSwapped(self):
@@ -475,7 +475,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #######################################################################
         # Test Bluefile Swapped SHORT Functionality
         inputOrder = 'big' if sys.byteorder=='little' else 'little'
-        print "\n**TESTING BLUEFILE Swapped + SHORT PORT + input(reversed host)=%s_endian + output=%s"%(inputOrder,outputOrder)
+        print("\n**TESTING BLUEFILE Swapped + SHORT PORT + input(reversed host)=%s_endian + output=%s"%(inputOrder,outputOrder))
         inputEndian = inputOrder+'_endian'
         
         #Define test files
@@ -494,7 +494,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             tmpSink.pushSRI(tmpSri)
             tmpTs = createTs()
             #tmpSink.pushPacket(swap(range(1024),'short'), tmpTs, True, 'bluefileShortSwapped')
-            tmpSink.pushPacket(range(1024), tmpTs, True, 'bluefileShortSwapped')
+            tmpSink.pushPacket(list(range(1024)), tmpTs, True, 'bluefileShortSwapped')
             
         #Read in Data from Test File, modify header, and rewrite
         hdr, d = bluefile.read(dataFileIn, dict)
@@ -564,7 +564,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         os.remove(dataFileIn)
         os.remove(dataFileInSwap)
         
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
     
     def testShortPort(self):
@@ -600,7 +600,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def ShortPort(self,inputFileEndian="little_endian", outputOrder= "host_order"):
         #######################################################################
         # Test SHORT Functionality
-        print "\n**TESTING SHORT PORT"
+        print("\n**TESTING SHORT PORT")
         
         #Define test files
         dataFileIn = './data.in'
@@ -608,7 +608,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Create Test Data File if it doesn't exist
         if not os.path.isfile(dataFileIn):
             with open(dataFileIn, 'wb') as dataIn:
-                myData = random.sample(range(2000),1000)
+                myData = random.sample(list(range(2000)),1000)
                 if inputFileEndian=="little_endian":
                     dataIn.write(struct.pack('<'+'h'*(1000), *myData))
                 elif inputFileEndian=="big_endian":
@@ -662,7 +662,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sink.releaseObject()
         os.remove(dataFileIn)
         
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
     
     def testShortPortSriScalar(self):
@@ -670,19 +670,19 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.setupBasicSriTest(dataFileIn, 'dataShort_out', 'SHORT_LITTLE_ENDIAN')
         self.assertSRIOutputMode(0)
         self.tearDownFlow(dataFileIn)
-        print "........ PASSED\n"
+        print("........ PASSED\n")
     
     def testShortPortSriComplex(self):
         dataFileIn = './data.in'
         self.setupBasicSriTest(dataFileIn, 'dataShort_out', 'COMPLEX_SHORT_LITTLE_ENDIAN')
         self.assertSRIOutputMode(1)
         self.tearDownFlow(dataFileIn)
-        print "........ PASSED\n"
+        print("........ PASSED\n")
     
     def ntestUShortPort(self):
         #######################################################################
         # Test USHORT Functionality
-        print "\n**TESTING USHORT PORT"
+        print("\n**TESTING USHORT PORT")
         
         #Define test files
         dataFileIn = './data.in'
@@ -726,7 +726,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sink.releaseObject()
         os.remove(dataFileIn)
         
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testMetadataContiguous(self):
@@ -766,7 +766,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Create Components and Connections
         release = False
         if comp is None:
-            print "Launched Component"
+            print("Launched Component")
             comp = sb.launch('../FileReader.spd.xml')
             release = True
         #comp.log_level(CF.LogLevels.TRACE)
@@ -897,7 +897,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Release the components and remove the generated files
         if release:
             comp.releaseObject()
-            print "........ PASSED\n"
+            print("........ PASSED\n")
         return
 
     def testNewSampleRate(self):
@@ -905,7 +905,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Create Components and Connections
         comp = sb.launch('../FileReader.spd.xml')
         #comp.log_level(CF.LogLevels.TRACE)
-        print "Launched Component"
+        print("Launched Component")
 
         comp.sample_rate = "1000 sps"
         sr1 = '%s'%comp.sample_rate
@@ -927,7 +927,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
 
         comp.releaseObject()
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testMetadataReuseWithoutRelaunch(self):
@@ -935,7 +935,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Create Components and Connections
         comp = sb.launch('../FileReader.spd.xml')
         #comp.log_level(CF.LogLevels.TRACE)
-        print "Launched Component"
+        print("Launched Component")
 
         comp.advanced_properties.throttle_rate = "0"
         comp.advanced_properties.use_metadata_file = True
@@ -954,7 +954,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Release the components and remove the generated files
         comp.releaseObject()
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testMetadataTimeFilterPreserveSRI(self):
@@ -967,7 +967,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             data = list(struct.unpack('h'*(size/2), dataIn.read(size)))
 
         #Create Components and Connections
-        print "Launched Component"
+        print("Launched Component")
         comp = sb.launch('../FileReader.spd.xml')
         #comp.log_level(CF.LogLevels.TRACE)
 
@@ -1021,7 +1021,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Release the components and remove the generated files
         comp.releaseObject()
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testwithMetadataTimeFilteringStart(self):
@@ -1035,7 +1035,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             data = list(struct.unpack('h'*(size/2), dataIn.read(size)))
 
         #Create Components and Connections
-        print "Launched Component"
+        print("Launched Component")
         comp = sb.launch('../FileReader.spd.xml')
         #comp.log_level(CF.LogLevels.TRACE)
 
@@ -1117,7 +1117,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Release the components and remove the generated files
         comp.releaseObject()
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testwithMetadataTimeFilteringEnd(self):
@@ -1131,7 +1131,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             data = list(struct.unpack('h'*(size/2), dataIn.read(size)))
 
         #Create Components and Connections
-        print "Launched Component"
+        print("Launched Component")
         comp = sb.launch('../FileReader.spd.xml')
         #comp.log_level(CF.LogLevels.TRACE)
 
@@ -1213,7 +1213,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Release the components and remove the generated files
         comp.releaseObject()
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testwithMetadataTimeFilteringAll(self):
@@ -1227,7 +1227,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             data = list(struct.unpack('h'*(size/2), dataIn.read(size)))
 
         #Create Components and Connections
-        print "Launched Component"
+        print("Launched Component")
         comp = sb.launch('../FileReader.spd.xml')
         #comp.log_level(CF.LogLevels.TRACE)
 
@@ -1322,7 +1322,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Release the components and remove the generated files
         comp.releaseObject()
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testwithMetadataSriBlocking(self):
@@ -1331,7 +1331,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         dataFileIn = './metadata_multiple_files/testdata.out'
 
         #Create Components and Connections
-        print "Launched Component"
+        print("Launched Component")
         comp = sb.launch('../FileReader.spd.xml')
         #comp.log_level(CF.LogLevels.TRACE)
 
@@ -1426,7 +1426,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Release the components and remove the generated files
         comp.releaseObject()
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testwithMetadataMultipleStreams(self, comp=None, sink=None):
@@ -1442,7 +1442,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Create Components and Connections
         release = False
         if comp is None:
-            print "Launched Component"
+            print("Launched Component")
             comp = sb.launch('../FileReader.spd.xml')
             release = True
         #comp.log_level(CF.LogLevels.TRACE)
@@ -1513,7 +1513,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Release the components and remove the generated files
         if release:
             comp.releaseObject()
-            print "........ PASSED\n"
+            print("........ PASSED\n")
         return
 
     def testwithBadMetadataFile(self):
@@ -1534,7 +1534,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             data = list(struct.unpack('h'*(size/2), dataIn.read(size)))
 
         #Create Components and Connections
-        print "Launched Component"
+        print("Launched Component")
         comp = sb.launch('../FileReader.spd.xml')
 
         #comp.advanced_properties.packet_size="10000"
@@ -1552,7 +1552,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         time.sleep(1)
 
         #Confirm Error in File Status
-        print "File Status"
+        print("File Status")
         fileStatus = comp.file_status
         self.assertTrue(len(fileStatus)==1)
         self.assertTrue("ERROR" in fileStatus[0]['DCE:ebc0a4de-958f-4785-bbe4-03693c34f879'])
@@ -1579,7 +1579,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                 data.append(list(struct.unpack('h'*(size/2), dataIn.read(size))))
 
         #Create Components and Connections
-        print "Launched Component"
+        print("Launched Component")
         comp = sb.launch('../FileReader.spd.xml')
         #comp.log_level(CF.LogLevels.TRACE)
 
@@ -1620,14 +1620,14 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #    print(fstat['DCE:4baa9718-1f21-4f46-865c-aec82b00df91'])
         #Should have five packets
         self.assertEqual(len(fileData),len(data))
-        for idx in xrange(len(data)):
+        for idx in range(len(data)):
             self.assertEqual(len(fileData[idx]),len(data[idx]))
             self.assertEqual(fileData[idx],data[idx])
 
         #Release the components and remove the generated files
         comp.releaseObject()
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testUshortPortSriScalar(self):
@@ -1635,14 +1635,14 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.setupBasicSriTest(dataFileIn, 'dataUshort_out', 'USHORT_LITTLE_ENDIAN')
         self.assertSRIOutputMode(0)
         self.tearDownFlow(dataFileIn)
-        print "........ PASSED\n"
+        print("........ PASSED\n")
     
     def testShortPortSriComplex(self):
         dataFileIn = './data.in'
         self.setupBasicSriTest(dataFileIn, 'dataUshort_out', 'COMPLEX_USHORT_LITTLE_ENDIAN')
         self.assertSRIOutputMode(1)
         self.tearDownFlow(dataFileIn)
-        print "........ PASSED\n"
+        print("........ PASSED\n")
 
     def testFloatPort(self):
         return self.FloatPort()
@@ -1665,7 +1665,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def FloatPort(self,inputFileEndian="little_endian", outputOrder= "host_order"):
         #######################################################################
         # Test FLOAT Functionality
-        print "\n**TESTING FLOAT PORT"
+        print("\n**TESTING FLOAT PORT")
         
         #Define test files
         dataFileIn = './data.in'
@@ -1734,7 +1734,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sink.releaseObject()
         os.remove(dataFileIn)
         
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
     
     def testFloatPortSriScalar(self):
@@ -1742,19 +1742,19 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.setupBasicSriTest(dataFileIn, 'dataFloat_out', 'FLOAT_LITTLE_ENDIAN')
         self.assertSRIOutputMode(0)
         self.tearDownFlow(dataFileIn)
-        print "........ PASSED\n"
+        print("........ PASSED\n")
     
     def testFloatPortSriComplex(self):
         dataFileIn = './data.in'
         self.setupBasicSriTest(dataFileIn, 'dataFloat_out', 'COMPLEX_FLOAT_LITTLE_ENDIAN')
         self.assertSRIOutputMode(1)
         self.tearDownFlow(dataFileIn)
-        print "........ PASSED\n"
+        print("........ PASSED\n")
 
     def testDoublePort(self):
         #######################################################################
         # Test DOUBLE Functionality
-        print "\n**TESTING DOUBLE PORT"
+        print("\n**TESTING DOUBLE PORT")
         
         #Define test files
         dataFileIn = './data.in'
@@ -1805,7 +1805,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sink.releaseObject()
         os.remove(dataFileIn)
         
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
     
     def testDoublePortSriScalar(self):
@@ -1813,19 +1813,19 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.setupBasicSriTest(dataFileIn, 'dataDouble_out', 'DOUBLE_LITTLE_ENDIAN')
         self.assertSRIOutputMode(0)
         self.tearDownFlow(dataFileIn)
-        print "........ PASSED\n"
+        print("........ PASSED\n")
     
     def testDoublePortSriComplex(self):
         dataFileIn = './data.in'
         self.setupBasicSriTest(dataFileIn, 'dataDouble_out', 'COMPLEX_DOUBLE_LITTLE_ENDIAN')
         self.assertSRIOutputMode(1)
         self.tearDownFlow(dataFileIn)
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         
     def testXmlPort(self):
         #######################################################################
         # Test XML Functionality
-        print "\n**TESTING XML PORT"
+        print("\n**TESTING XML PORT")
         
         dataFileIn = './data.xml'
 
@@ -1862,13 +1862,13 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         comp.releaseObject()
         sink.releaseObject()
         
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
     
     def testBlueTimestampPrecision(self):
         #######################################################################
         # Test BLUE file high precision timecode using TC_PREC keyword
-        print "\n**TESTING BLUE file with TC_PREC"
+        print("\n**TESTING BLUE file with TC_PREC")
         
         #Define test files
         dataFileIn = './bluefile.in'
@@ -1881,7 +1881,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             tmpSri.keywords = props_from_dict({'TEST_KW':1234})
             tmpSink.pushSRI(tmpSri)
             tmpTs = createTs()
-            tmpSink.pushPacket(range(1024), tmpTs, True, 'bluefileShort')
+            tmpSink.pushPacket(list(range(1024)), tmpTs, True, 'bluefileShort')
             hdr, d = bluefile.read(dataFileIn, dict)
             hdr['xstart'] = 5.5
             hdr['timecode'] = 1234567890.0987654
@@ -1914,22 +1914,22 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Check that timestamps are the same
         # Source: hdr['xstart'], hdr['timecode']-long(631152000), and float(hdr['keywords']['TC_PREC'])
         # Output: readTsamps, and sink.sri().xstart
-        src_twsec = float(long(hdr['timecode'])-long(631152000))
-        src_twsec += long(hdr['xstart'])
-        src_tfsec = hdr['timecode']-long(hdr['timecode'])
-        src_tfsec += (hdr['xstart']-long(hdr['xstart']))
+        src_twsec = float(int(hdr['timecode'])-int(631152000))
+        src_twsec += int(hdr['xstart'])
+        src_tfsec = hdr['timecode']-int(hdr['timecode'])
+        src_tfsec += (hdr['xstart']-int(hdr['xstart']))
         src_tfsec += float(hdr['keywords']['TC_PREC'])
-        out_twsec = readTstamps[0][1].twsec + long(readXstart)
-        out_tfsec = readTstamps[0][1].tfsec + (readXstart-long(readXstart))
+        out_twsec = readTstamps[0][1].twsec + int(readXstart)
+        out_tfsec = readTstamps[0][1].tfsec + (readXstart-int(readXstart))
 
         try:
             self.assertEqual(src_twsec, out_twsec, "Whole seconds do not match.")
             self.assertAlmostEqual(src_tfsec, out_tfsec, places=12, msg="Fractional seconds do not match.")
         except self.failureException as e:
-            print 'Source time info: timecode=%s  xstart=%s  TC_PREC=%s'%(repr(hdr['timecode']), repr(hdr['xstart']), hdr['keywords']['TC_PREC'])
-            print 'Source time info: twsec=%s  tfsec=%s'%(repr(src_twsec), repr(src_tfsec))
-            print 'Output time info: readTstamps0.twsec=%s  readTstamps0.tfsec=%s  readXstart=%s'%(repr(readTstamps[0][1].twsec), repr(readTstamps[0][1].tfsec), repr(readXstart))
-            print 'Output time info: twsec=%s  tfsec=%s'%(repr(out_twsec), repr(out_tfsec))
+            print('Source time info: timecode=%s  xstart=%s  TC_PREC=%s'%(repr(hdr['timecode']), repr(hdr['xstart']), hdr['keywords']['TC_PREC']))
+            print('Source time info: twsec=%s  tfsec=%s'%(repr(src_twsec), repr(src_tfsec)))
+            print('Output time info: readTstamps0.twsec=%s  readTstamps0.tfsec=%s  readXstart=%s'%(repr(readTstamps[0][1].twsec), repr(readTstamps[0][1].tfsec), repr(readXstart)))
+            print('Output time info: twsec=%s  tfsec=%s'%(repr(out_twsec), repr(out_tfsec)))
             comp.releaseObject()
             sink.releaseObject()
             os.remove(dataFileIn)
@@ -1958,13 +1958,13 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sink.releaseObject()
         os.remove(dataFileIn)
         
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testHostByteOrderProp(self):
         #######################################################################
         # Test the host_byte_order property indicates correct host endianness
-        print "\n**TESTING HOST BYTE ORDER PROP VALUE"
+        print("\n**TESTING HOST BYTE ORDER PROP VALUE")
 
         # Create Component
         comp = sb.launch('../FileReader.spd.xml')
@@ -1979,12 +1979,12 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         # Release the components and remove the generated files
         comp.releaseObject()
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
 
     def testIdleCpuUtilization(self):
         #######################################################################
         # Test the CPU utilization when playback state is STOP and throttle 0
-        print "\n**TESTING IDLE CPU UTILIZATION"
+        print("\n**TESTING IDLE CPU UTILIZATION")
         import psutil
 
         # Create Component
@@ -2001,7 +2001,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             assert get_cpu_percent is not None, "Test Environment Error: Unable to find method for measuring CPU percent"
             cpu_usage = 0.0
             iterations = 8
-            for _ in xrange(iterations):
+            for _ in range(iterations):
                 cpu_usage += get_cpu_percent()
                 time.sleep(0.25)
             cpu_usage = cpu_usage / iterations
@@ -2014,7 +2014,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         comp.stop()
         comp.releaseObject()
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
 
     # TODO Add additional tests here
     #

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -109,7 +109,7 @@ class FrontendTunerTests(fe.FrontendTunerTests):
 
 if __name__ == '__main__':
     import argparse
-    print sys.argv
+    print(sys.argv)
     parser = argparse.ArgumentParser(
         description='''
 Runs FEI test suite against a MSDD device. Use optional arguments to setup MSDD, all other command line arguments
@@ -150,7 +150,7 @@ i.e. test_MSDD_FEI.py  -h --ip=192.168.1.96 --debug=ERROR  -v --nocapture test_M
     if dut_config is None:
         raise Exception("No configuration for msdd id: " + str(msdd_id))
     
-    print "Running FEI test suite against:  msdd_id:", msdd_id, " ip ", args.ip
+    print("Running FEI test suite against:  msdd_id:", msdd_id, " ip ", args.ip)
     sys.argv[1:]=remaining_args
     fe.set_debug_level(DEBUG_LEVEL)
     fe.set_device_info(dut_config)

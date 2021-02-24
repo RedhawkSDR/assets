@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -26,7 +26,7 @@ except:
 import ossie.utils.bulkio.bulkio_data_helpers as _bulkio_data_helpers
 import logging as _logging
 
-import Queue as _Queue
+import queue as _Queue
 import socket
 import struct
 import threading as _threading
@@ -89,7 +89,7 @@ class NetworkSink(io_helpers._SinkBase):
         """
         out = ""
     
-        for i in xrange(len(dataStr)/numBytes):
+        for i in range(len(dataStr)/numBytes):
             l = list(dataStr[numBytes*i:numBytes*(i+1)])
             l.reverse()
             out += (''.join(l))
@@ -117,7 +117,7 @@ class NetworkSink(io_helpers._SinkBase):
 
     def getPort(self, portName):
         if _domainless._DEBUG == True:
-            print self.className + ":getPort() portName " + str(portName) + "================================="
+            print(self.className + ":getPort() portName " + str(portName) + "=================================")
 
         try:
             self._sinkPortType = self.getPortType(portName)
@@ -134,7 +134,7 @@ class NetworkSink(io_helpers._SinkBase):
             else:
                 return None
 
-        except Exception, e:
+        except Exception as e:
             log.error(self.className + ":getPort(): failed " + str(e))
 
         return None
@@ -194,7 +194,7 @@ class NetworkSink(io_helpers._SinkBase):
 
             try:
                 self._serverSocket.bind(("localhost", self.port))
-            except Exception, e:
+            except Exception as e:
                 log.error("Unable to bind socket: " + str(e))
                 return
 
@@ -378,4 +378,4 @@ class NetworkSink(io_helpers._SinkBase):
                 timeout_count -= 1
 
                 if timeout_count < 0:
-                    raise AssertionError, self.className + ":stop() failed to exit thread"
+                    raise AssertionError(self.className + ":stop() failed to exit thread")

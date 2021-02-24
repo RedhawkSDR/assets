@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -26,7 +26,7 @@ It is not maintained and is known to contain errors.
 '''
 
 import sys
-print msg
+print(msg)
 sys.exit(0)
 
 import unittest
@@ -58,15 +58,15 @@ try:
     ifaddress = netifaces.ifaddresses(NIC_INTERFACE)
     IP_ADDRESS = ifaddress[2][0]['addr']
 except:
-    print "Unable to determine IP address for '" + NIC_INTERFACE + "'"
+    print("Unable to determine IP address for '" + NIC_INTERFACE + "'")
 
 # Status of testing parameters
-print "   #######################################"
-print "   # TESTING SETTINGS "
-print "   #######################################"
-print "   #      NIC INTRFC: " + NIC_INTERFACE
-print "   #      IP ADDRESS: " + IP_ADDRESS
-print "   #######################################"
+print("   #######################################")
+print("   # TESTING SETTINGS ")
+print("   #######################################")
+print("   #      NIC INTRFC: " + NIC_INTERFACE)
+print("   #      IP ADDRESS: " + IP_ADDRESS)
+print("   #######################################")
 
 # Create a VALGRIND debugger for more detail
 myDebugger = debugger.Valgrind()
@@ -88,7 +88,7 @@ CHAR_DATA=[1,2,3,4,5] * 100000
 
 # This unit test relies on rhSourceVITA49 component for end-to-end testing
 if "rh.SourceVITA49" not in sb.catalog():
-    print "ERROR - cannot run tests without rh.SourceVITA49. Install in $SDRROOT and try again."
+    print("ERROR - cannot run tests without rh.SourceVITA49. Install in $SDRROOT and try again.")
     sys.exit(1)
 
 class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
@@ -179,7 +179,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.sink.start()
 
         # Transfer size is too large for our testing
-        self.source.advanced_configuration.corba_transfersize = 128000L
+        self.source.advanced_configuration.corba_transfersize = 128000
         
         # Valid SRI required before stream setup - Trigger SRI push
         self.dataSource.push([],EOS=False,streamID=streamId, sampleRate=8000)
@@ -284,7 +284,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.connectVitaPorts()
         
         # Transfer size is too large for our testing
-        self.source.advanced_configuration.corba_transfersize = 128000L
+        self.source.advanced_configuration.corba_transfersize = 128000
         self.source.interface = NIC_INTERFACE
 
         # Push data and give time to process
@@ -319,7 +319,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.connectVitaPorts()
 
         # Transfer size is too large for our testing
-        self.source.advanced_configuration.corba_transfersize = 128000L
+        self.source.advanced_configuration.corba_transfersize = 128000
         self.source.interface = NIC_INTERFACE
 
         # Push data and give time to process
@@ -344,7 +344,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.source.start()
 
         # Transfer size is too large for our testing
-        self.source.advanced_configuration.corba_transfersize = 128000L
+        self.source.advanced_configuration.corba_transfersize = 128000
 
         # Push data
         data = dataSample
@@ -368,7 +368,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.connectVitaPorts()
 
         # Transfer size is too large for our testing
-        self.source.advanced_configuration.corba_transfersize = 128000L
+        self.source.advanced_configuration.corba_transfersize = 128000
 
         # Push data and give time to process
         data = dataSample
@@ -428,7 +428,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.setupStream(streamId, portType)
 
         # Change port
-        self.sink.network_settings.port = 12346L
+        self.sink.network_settings.port = 12346
 
         # Wait for context packet to be sent/processed
         self.waitForClientSetup(5)
@@ -477,7 +477,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.connectDataFlowPorts(portType)
 
         # Transfer size is too large for our testing
-        self.source.advanced_configuration.corba_transfersize = 128000L
+        self.source.advanced_configuration.corba_transfersize = 128000
         
         # Valid SRI required before stream setup - Trigger SRI push
         self.dataSource.push([],EOS=False,streamID=streamId, sampleRate=8000)
@@ -485,7 +485,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         # Setup forced transmit 
         self.sink.advanced_configuration.force_transmit = True
         self.source.attachment_override.ip_address = IP_ADDRESS
-        self.source.attachment_override.port = 12344L
+        self.source.attachment_override.port = 12344
         self.source.attachment_override.enabled = True
         
         # unicast client doesn't work unless we give sink enough time to do ???
@@ -526,7 +526,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.connectAllPorts(portType)
 
         # Transfer size is too large for our testing
-        self.source.advanced_configuration.corba_transfersize = 128000L
+        self.source.advanced_configuration.corba_transfersize = 128000
         
         # Valid SRI required before stream setup - Trigger SRI push
         self.dataSource.push([],EOS=False,streamID=streamId, sampleRate=8000)
@@ -534,7 +534,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         # Setup forced transmit 
         self.sink.advanced_configuration.force_transmit = True
         self.source.attachment_override.ip_address = IP_ADDRESS
-        self.source.attachment_override.port = 12349L
+        self.source.attachment_override.port = 12349
         self.source.attachment_override.enabled = True
         
         # Start source AFTER attach so that stream port is active

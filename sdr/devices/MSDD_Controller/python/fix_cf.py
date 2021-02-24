@@ -46,7 +46,7 @@ def localDeviceReleaseObject(self):
 
         self._unregister()
 
-    except Exception, e:
+    except Exception as e:
         raise CF.LifeCycle.ReleaseError(str(e))
 
     self._adminState = CF.Device.LOCKED

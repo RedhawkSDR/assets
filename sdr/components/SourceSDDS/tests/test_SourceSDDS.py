@@ -93,7 +93,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         try:
             self.attachId = compDataSddsIn.attach(streamDef, 'test') 
         except:
-            print "ATTACH FAILED"
+            print("ATTACH FAILED")
             attachId = ''
         
         self.assertTrue(self.attachId != '', "Failed to attach to SourceSDDS component")
@@ -118,7 +118,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         props = dict((x.id, any.from_any(x.value)) for x in props)
         # Query may return more than expected, but not less
         for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
+            self.assertEqual(expectedProp.id in props, True)
 
         #######################################################################
         # Verify that all expected ports are available
@@ -410,7 +410,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         try:
             self.attachId = compDataSddsIn.attach(streamDef, 'test') 
         except:
-            print "ATTACH FAILED"
+            print("ATTACH FAILED")
             attachId = ''
         
         self.assertTrue(self.attachId != '', "Failed to attach to SourceSDDS component")
@@ -1256,7 +1256,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
         
     def testSpeed(self):
-        print "------------ This test is informational only and should never fail ----------------------"
+        print("------------ This test is informational only and should never fail ----------------------")
         
         self.setupComponent(endianness=LITTLE_ENDIAN)
 
@@ -1276,7 +1276,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             max_speed_acheived = float(p.stdout.readline())
             
             if (max_speed_acheived / target_speed < target_threshold):
-                print "Sdds Shooter could not achieve the target speed of %s Mbps, max it could shoot was %s Mbps" % (str(8*target_speed/1024/1024), str(8*max_speed_acheived/1024/1024))
+                print("Sdds Shooter could not achieve the target speed of %s Mbps, max it could shoot was %s Mbps" % (str(8*target_speed/1024/1024), str(8*max_speed_acheived/1024/1024)))
                 run = False
                 continue
             
@@ -1287,7 +1287,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
                 last_num_dropped = self.comp.status.dropped_packets
                 target_speed = target_speed / speed_bump # Resets us back to our previous speed. 
                 speed_bump = speed_bump / 2
-                print 'dropped packets'
+                print('dropped packets')
                 run = False
                 
             if speed_bump < 1.1:
@@ -1295,7 +1295,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             
             self.comp.stop()
             
-        print "Final successful speed hit: %s Mbps" % str(8*top_speed/1024/1024)
+        print("Final successful speed hit: %s Mbps" % str(8*top_speed/1024/1024))
             
         
 # TODO: Socket Reader Thread affinity
@@ -1388,7 +1388,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             return out,stream
 
     def setUp(self):
-        print "\nRunning test:", self.id()
+        print("\nRunning test:", self.id())
         ossie.utils.testing.ScaComponentTestCase.setUp(self)
         
         execparams = {"DEBUG_LEVEL" : DEBUG_LEVEL}

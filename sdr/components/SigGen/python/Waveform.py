@@ -56,7 +56,7 @@ class Waveform:
     # @param spa  Scalars per atom, 2 for Complex
     # @return the new data buffer
     def whitenoise(self, sdev, n, spa=1):
-        outbuff = range(n*spa)
+        outbuff = list(range(n*spa))
         v1 = 0.0; v2 = 0.0; sum1 = 0.0
         fdev = float(sdev)
         factor = -2.0 / math.log(10.0)
@@ -102,7 +102,7 @@ class Waveform:
     # fast algorithm based on:  sin(x+dp) = sin(x)*cos(dp) + cos(x)*sin(dp)
     #                           cos(x+dp) = cos(x)*cos(dp) - sin(x)*sin(dp)
     def sincos(self, amp, p, dp, n, spa):
-        outbuff = range(n*spa)
+        outbuff = list(range(n*spa))
         cxr = amp*math.cos(p*self.TWOPI)
         cxi = amp*math.sin(p*self.TWOPI)
         dxr = math.cos(dp*self.TWOPI)
@@ -143,7 +143,7 @@ class Waveform:
     # @param spa  Scalars per atom, 2 for Complex
     # @return the new data buffer
     def square(self, amp, p, dp, n, spa):
-        outbuff = range(n*spa)
+        outbuff = list(range(n*spa))
         value = 0.0
         famp = float(amp)
         famp2 = -famp
@@ -170,7 +170,7 @@ class Waveform:
     # @param spa  Scalars per atom, 2 for Complex
     # @return the new data buffer
     def triangle(self, amp, p, dp, n, spa):
-        outbuff = range(n*spa)
+        outbuff = list(range(n*spa))
         value = 0.0
         famp = float(amp)
         famp2 = 4*famp
@@ -199,7 +199,7 @@ class Waveform:
     # @param spa  Scalars per atom, 2 for Complex
     # @return the new data buffer
     def sawtooth(self, amp, p, dp, n, spa):
-        outbuff = range(n*spa)
+        outbuff = list(range(n*spa))
         value = 0.0
         famp = float(amp)
         famp2 = 2*famp
@@ -225,7 +225,7 @@ class Waveform:
     # @param spa  Scalars per atom, 2 for Complex
     # @return the new data buffer
     def pulse(self, amp, p, dp, n, spa):
-        outbuff = range(n*spa)
+        outbuff = list(range(n*spa))
         value = 0.0
         famp = float(amp)
         
@@ -249,7 +249,7 @@ class Waveform:
     # @param spa  Scalars per atom, 2 for Complex
     # @return the new data buffer
     def constant(self, amp, n, spa):
-        outbuff = range(n*spa)
+        outbuff = list(range(n*spa))
         
         for i in range(n*spa):
             outbuff[i] = float(np.float32(amp))
@@ -264,7 +264,7 @@ class Waveform:
     # @param lrs  LRS seed from previous call
     # @return the new data buffer and the LRS at end of array
     def lrs(self, amp, n, spa, lrs):
-        outbuff = range(n*spa)
+        outbuff = list(range(n*spa))
         factor = (amp/2.0/self.B1G)
         
         for i in range(0, n*spa, spa):
@@ -292,7 +292,7 @@ class Waveform:
     # @param data RAMP seed from previous call
     # @return the new data buffer and the RAMP value at end of array
     def ramp(self, amp, n, spa, data):
-        outbuff = range(n*spa)
+        outbuff = list(range(n*spa))
         for i in range(0, n*spa, spa):
             outbuff[i] = float(np.float32(data))
             if spa == 2:

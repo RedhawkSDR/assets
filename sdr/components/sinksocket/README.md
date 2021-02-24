@@ -93,7 +93,7 @@ All of the examples configure the component to use two ports.  One port does not
 
 1. Save the following python code to a file named `demo.py`.
 ```python
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from pprint import pprint
 

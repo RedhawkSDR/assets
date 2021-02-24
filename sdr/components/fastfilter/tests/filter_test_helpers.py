@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -356,7 +356,7 @@ def toClipboard(data):
 
 def toCx(input):
     cx=[]
-    for i in xrange(len(input)/2):
+    for i in range(len(input)/2):
         cx.append(complex(input[2*i],input[2*i+1]))
     return cx
 
@@ -381,7 +381,7 @@ def demux(input):
             re.append(x.real)
             im.append(x.imag)
     else:
-        for i in xrange(len(input)/2):
+        for i in range(len(input)/2):
             re.append(input[2*i])
             im.append(input[2*i+1])
     return re, im 
@@ -389,7 +389,7 @@ def demux(input):
 def getSink(bw, numPts):
     out = []
     fc = math.pi*2*bw
-    for n in xrange(numPts):
+    for n in range(numPts):
         if 2*n==numPts-1:
             out.append(2*bw)
         else:
@@ -403,17 +403,17 @@ def getSin(fc,numPts, cx=False, phase0=0):
     fcRad = fc*math.pi*2
     if cx:
         out = []
-        for n in xrange(numPts):
+        for n in range(numPts):
             rad = fcRad*n+phase0
             out.append(math.cos(rad))
             out.append(math.sin(rad))
     else:
-        out = [math.sin(fcRad*n) for n in xrange(numPts)]
+        out = [math.sin(fcRad*n) for n in range(numPts)]
     return out
 
 def getFiltLen(impulseResponse):
     last=None
-    for i in xrange(len(impulseResponse)):
+    for i in range(len(impulseResponse)):
         if abs(impulseResponse[i])>.01:
             out=last
         else:

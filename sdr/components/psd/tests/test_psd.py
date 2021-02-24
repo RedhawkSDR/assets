@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
 # 
@@ -25,7 +25,7 @@ from ossie.utils import sb
 try:
     from pylab import figure, plot, grid, show, title
 except (ImportError, RuntimeError) as e:
-    print "Cannot import pylab due to exception:", e
+    print("Cannot import pylab due to exception:", e)
     figure=None
 from numpy import cos, sin, arange, pi, correlate, linspace
 import scipy.fftpack
@@ -56,7 +56,7 @@ def isclose(a, b, rel_tol=1e-09, abs_tol=0.0,debug=False):
         _abs=abs(a-b)
         _tol=max(rel_tol * max(abs(a), abs(b)), abs_tol)
         _rel=rel_tol * max(abs(a), abs(b))
-        print '.' if retval else 'F', repr(a), repr(b), repr(_abs), repr(_tol), repr(_rel), repr(abs_tol)
+        print('.' if retval else 'F', repr(a), repr(b), repr(_abs), repr(_tol), repr(_rel), repr(abs_tol))
 
     return retval
     #return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
@@ -130,7 +130,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             found_match = False
             for given_keyword in SRIKeywords:
               if given_keyword._name == psd_keyword.id and given_keyword._value == psd_keyword.value.value():
-                print "Found match"
+                print("Found match")
                 found_match = True
             self.assertTrue(found_match, "Not all keywords in source matched output of PSD port")
 
@@ -166,7 +166,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         isclose(a,b,rel_tol,abs_tol) or self.assertAlmostEqual(a,b,places)
 
     def testScaBasicBehavior(self):
-        print "\n-------- TESTING Basic Behavior --------"
+        print("\n-------- TESTING Basic Behavior --------")
         #######################################################################
         # Launch the resource with the default execparams
         execparams = self.getPropertySet(kinds=("execparam",), modes=("readwrite", "writeonly"), includeNil=False)
@@ -190,7 +190,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         props = dict((x.id, any.from_any(x.value)) for x in props)
         # Query may return more than expected, but not less
         for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
+            self.assertEqual(expectedProp.id in props, True)
 
         #######################################################################
         # Verify that all expected ports are available
@@ -215,10 +215,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         # Simulate regular resource shutdown
         self.comp.releaseObject()
         
-        print "*PASSED"
+        print("*PASSED")
         
     def testRealData1(self):
-        print "\n-------- TESTING w/REAL DATA1 --------"
+        print("\n-------- TESTING w/REAL DATA1 --------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -287,10 +287,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.assertFalse(abs(pyFFTIndex-fftIndex) >= 1.0)
         self.assertFalse(abs(pyFFTIndex-psdIndex) >= 1.0)
         
-        print "*PASSED"
+        print("*PASSED")
         
     def testRealData2(self):
-        print "\n-------- TESTING w/REAL DATA2 --------"
+        print("\n-------- TESTING w/REAL DATA2 --------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -362,10 +362,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.assertFalse(abs(pyFFTIndex-fftIndex) >= 1.0)
         self.assertFalse(abs(pyFFTIndex-psdIndex) >= 1.0)
 
-        print "*PASSED"
+        print("*PASSED")
 
     def testComplexData1(self):
-        print "\n-------- TESTING w/COMPLEX DATA1 --------"
+        print("\n-------- TESTING w/COMPLEX DATA1 --------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -437,10 +437,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.assertFalse(abs(pyFFTIndex-fftIndex) >= 1.0)
         self.assertFalse(abs(pyFFTIndex-psdIndex) >= 1.0)
         
-        print "*PASSED"
+        print("*PASSED")
 
     def testComplexData2(self):
-        print "\n-------- TESTING w/COMPLEX DATA2 --------"
+        print("\n-------- TESTING w/COMPLEX DATA2 --------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -520,10 +520,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.assertEqual(pyFFTIndex,fftIndex)
         self.assertEqual(pyFFTIndex,psdIndex)
         
-        print "*PASSED"
+        print("*PASSED")
 
     def testColRfReal(self):
-        print "\n-------- TESTING w/REAL ColRf --------"
+        print("\n-------- TESTING w/REAL ColRf --------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -540,7 +540,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sample_rate = 65536.
         nsamples = 4096
 
-        data = [random.random() for _ in xrange(nsamples)]
+        data = [random.random() for _ in range(nsamples)]
         
         #------------------------------------------------
         # Test Component Functionality.
@@ -561,10 +561,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.validateSRIPushing(ID, cxData, sample_rate, fftSize, colRfVal, SRIKeywords = keywords)
 
 
-        print "*PASSED"
+        print("*PASSED")
 
     def testColRfCx(self):
-        print "\n-------- TESTING w/COMPLEX ColRf --------"
+        print("\n-------- TESTING w/COMPLEX ColRf --------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -581,7 +581,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sample_rate = 65536.
         nsamples = 4096
 
-        data = [random.random() for _ in xrange(2*nsamples)]
+        data = [random.random() for _ in range(2*nsamples)]
         
         #------------------------------------------------
         # Test Component Functionality.
@@ -602,10 +602,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.validateSRIPushing(ID, cxData, sample_rate, fftSize, colRfVal, SRIKeywords = keywords)
 
 
-        print "*PASSED"
+        print("*PASSED")
         
     def testColRfCxToggle(self):
-        print "\n-------- TESTING w/COMPLEX rfFreqUnitsToggle COL_RF --------"
+        print("\n-------- TESTING w/COMPLEX rfFreqUnitsToggle COL_RF --------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -622,7 +622,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sample_rate = 65536.
         nsamples = 4096
 
-        data = [random.random() for _ in xrange(2*nsamples)]
+        data = [random.random() for _ in range(2*nsamples)]
         
         #------------------------------------------------
         # Test Component Functionality.
@@ -654,10 +654,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         psdOut = self.psdsink.getData()[0] # use first frame
         self.validateSRIPushing(ID, cxData, sample_rate, fftSize, colRfVal, SRIKeywords = keywords)
         
-        print "*PASSED"
+        print("*PASSED")
         
     def testChanRfCxToggle(self):
-        print "\n-------- TESTING w/COMPLEX rfFreqUnitsToggle CHAN_RF--------"
+        print("\n-------- TESTING w/COMPLEX rfFreqUnitsToggle CHAN_RF--------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -674,7 +674,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sample_rate = 65536.
         nsamples = 4096
 
-        data = [random.random() for _ in xrange(2*nsamples)]
+        data = [random.random() for _ in range(2*nsamples)]
         
         #------------------------------------------------
         # Test Component Functionality.
@@ -706,10 +706,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         psdOut = self.psdsink.getData()[0] # use first frame
         self.validateSRIPushing(ID, cxData, sample_rate, fftSize, chanRfVal, SRIKeywords = keywords)
         
-        print "*PASSED"
+        print("*PASSED")
         
     def testChanRfCxTogglePartial(self):
-        print "\n-------- TESTING w/COMPLEX rfFreqUnitsTogglePartial CHAN_RF--------"
+        print("\n-------- TESTING w/COMPLEX rfFreqUnitsTogglePartial CHAN_RF--------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -726,7 +726,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sample_rate = 65536.
         nsamples = 4096
 
-        data = [random.random() for _ in xrange(2*nsamples)]
+        data = [random.random() for _ in range(2*nsamples)]
         
         #------------------------------------------------
         # Test Component Functionality.
@@ -764,10 +764,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         psdOut = self.psdsink.getData()[0] # use first frame
         self.validateSRIPushing(ID, cxData, sample_rate, fftSize, chanRfVal, SRIKeywords = keywords)
         
-        print "*PASSED"
+        print("*PASSED")
         
     def testEosFull(self):
-        print "\n-------- TESTING EOS w/COMPLEX DATA FULL --------"
+        print("\n-------- TESTING EOS w/COMPLEX DATA FULL --------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -784,7 +784,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sample_rate = 65536.
         nsamples = 4096
 
-        data = [random.random() for _ in xrange(2*nsamples)]
+        data = [random.random() for _ in range(2*nsamples)]
         
         #------------------------------------------------
         # Test Component Functionality.
@@ -815,10 +815,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         psdOut = self.psdsink.getData()[0] # use first frame
         self.validateSRIPushing(ID, cxData, sample_rate, fftSize, colRfVal, SRIKeywords = keywords)
         
-        print "*PASSED"
+        print("*PASSED")
         
     def testEosEmpty(self):
-        print "\n-------- TESTING EOS w/COMPLEX DATA EMPTY --------"
+        print("\n-------- TESTING EOS w/COMPLEX DATA EMPTY --------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -835,7 +835,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sample_rate = 65536.
         nsamples = 4096
 
-        data = [random.random() for _ in xrange(2*nsamples)]
+        data = [random.random() for _ in range(2*nsamples)]
         
         #------------------------------------------------
         # Test Component Functionality.
@@ -857,7 +857,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
 
         time.sleep(.5)
         self.src.push([], EOS=True, streamID=ID, sampleRate=sample_rate, complexData=cxData, SRIKeywords = keywords)
-        print 'pushed %s samples w/ EOS=true, fftSize=%s'%(0,fftSize)
+        print('pushed %s samples w/ EOS=true, fftSize=%s'%(0,fftSize))
         time.sleep(.5)
 
         # Get Output Data
@@ -867,10 +867,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         psdOut = self.psdsink.getData() # should be empty
         self.validateSRIPushing(ID, cxData, sample_rate, fftSize, colRfVal, SRIKeywords = keywords)
         
-        print "*PASSED"
+        print("*PASSED")
         
     def testEosPartial(self):
-        print "\n-------- TESTING EOS w/COMPLEX DATA PARTIAL --------"
+        print("\n-------- TESTING EOS w/COMPLEX DATA PARTIAL --------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -887,7 +887,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sample_rate = 65536.
         nsamples = 4096
 
-        data = [random.random() for _ in xrange(2*nsamples)]
+        data = [random.random() for _ in range(2*nsamples)]
         
         #------------------------------------------------
         # Test Component Functionality.
@@ -909,7 +909,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
 
         time.sleep(.5)
         self.src.push(data[:fftSize], EOS=True, streamID=ID, sampleRate=sample_rate, complexData=cxData, SRIKeywords = keywords)
-        print 'pushed %s samples w/ EOS=true, fftSize=%s'%(len(data[:fftSize]),fftSize)
+        print('pushed %s samples w/ EOS=true, fftSize=%s'%(len(data[:fftSize]),fftSize))
         time.sleep(.5)
 
         # Get Output Data
@@ -919,10 +919,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         psdOut = self.psdsink.getData()[0] # use first frame
         self.validateSRIPushing(ID, cxData, sample_rate, fftSize, colRfVal, SRIKeywords = keywords)
         
-        print "*PASSED"
+        print("*PASSED")
 
     def testSriBlockingToggle(self):
-        print "\n-------- TESTING SriBlockingToggle --------"
+        print("\n-------- TESTING SriBlockingToggle --------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -938,7 +938,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         cxData = False
         sample_rate = 65536.
         nsamples = 4096
-        data = [random.random() for _ in xrange(nsamples)]
+        data = [random.random() for _ in range(nsamples)]
 
         #------------------------------------------------
         # Test Component Functionality.
@@ -972,7 +972,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         # Validate SRI Pushed Correctly
         self.validateSRIPushing(ID, cxData, sample_rate, fftSize, sriBlocking=sri.blocking)
 
-        print "*PASSED"
+        print("*PASSED")
 
 if __name__ == "__main__":
     ossie.utils.testing.main("../psd.spd.xml") # By default tests all implementations

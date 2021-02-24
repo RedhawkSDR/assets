@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -27,7 +27,7 @@ import ossie.utils.bulkio.bulkio_helpers as _bulkio_helpers
 import ossie.utils.bulkio.bulkio_data_helpers as _bulkio_data_helpers
 import logging as _logging
 
-import Queue as _Queue
+import queue as _Queue
 import select
 import socket
 import struct
@@ -100,7 +100,7 @@ class NetworkSource(io_helpers._SourceBase):
         """
         out = ""
 
-        for i in xrange(len(dataStr)/numBytes):
+        for i in range(len(dataStr)/numBytes):
             l = list(dataStr[numBytes*i:numBytes*(i+1)])
             l.reverse()
             out += (''.join(l))
@@ -129,7 +129,7 @@ class NetworkSource(io_helpers._SourceBase):
 
             try:
                 self._serverSocket.bind(("localhost", self.port))
-            except Exception, e:
+            except Exception as e:
                 log.error("Unable to bind socket: " + str(e))
                 return
 
@@ -149,7 +149,7 @@ class NetworkSource(io_helpers._SourceBase):
         bytesPerSample = 1
         srcPortType    = connection['srcPortType']
 
-        for i in self.supportedPorts.values():
+        for i in list(self.supportedPorts.values()):
             if i['portType'] == srcPortType:
                 bytesPerSample = i['bytesPerSample']
                 break
@@ -235,7 +235,7 @@ class NetworkSource(io_helpers._SourceBase):
                 _time.sleep(0.1)
                 continue
 
-            if len(self._connections.values()) == 0:
+            if len(list(self._connections.values())) == 0:
                 log.warn("No connections to NetworkSource")
                 _time.sleep(1.0)
                 continue
@@ -245,7 +245,7 @@ class NetworkSource(io_helpers._SourceBase):
                 numLoops = len(self._buffer) / self.max_bytes
 
                 for i in range(0, numLoops):
-                    for connection in self._connections.values():
+                    for connection in list(self._connections.values()):
                         self._pushData(connection, self._buffer[i * self.max_bytes:], self.max_bytes, currentSampleTime)
 
                 self._buffer = self._buffer[numLoops * self.max_bytes:]
@@ -261,7 +261,7 @@ class NetworkSource(io_helpers._SourceBase):
                 numLeft = len(self._buffer) % self._multSize
                 pushBytes = len(self._buffer) - numLeft
 
-                for connection in self._connections.values():
+                for connection in list(self._connections.values()):
                     self._pushData(connection, self._buffer, pushBytes, currentSampleTime)
 
                 self._buffer = self._buffer[len(self._buffer)-numLeft:]
@@ -360,7 +360,7 @@ class NetworkSource(io_helpers._SourceBase):
                 timeout_count -= 1
 
                 if timeout_count < 0:
-                    raise AssertionError, self.className + ":stop() failed to exit thread"
+                    raise AssertionError(self.className + ":stop() failed to exit thread")
 
     def _stringToList(self, string, bytesPerSample, srcPortType):
         """

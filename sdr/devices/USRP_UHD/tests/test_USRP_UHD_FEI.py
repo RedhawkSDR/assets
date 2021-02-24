@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -419,7 +419,7 @@ class FrontendTunerTests(fe.FrontendTunerTests):
             device_channels = cls._query( ('device_channels',) )['device_channels']
             if DEBUG_LEVEL >= 4:
                 from pprint import pprint as pp
-                print 'device channel: '
+                print('device channel: ')
                 pp(device_channels)
 
             for chan in device_channels:
@@ -445,7 +445,7 @@ class FrontendTunerTests(fe.FrontendTunerTests):
                 device_mbs = cls._query( ('device_motherboards',) )['device_motherboards']
                 if DEBUG_LEVEL >= 4:
                     from pprint import pprint as pp
-                    print 'device motherboards: '
+                    print('device motherboards: ')
                     pp(device_mbs)
 
                 for mb in device_mbs:
@@ -465,12 +465,12 @@ class FrontendTunerTests(fe.FrontendTunerTests):
         global DELAY_BT_TESTS, ADD_DELAY_BT_TESTS, UHD_VERSION_REQUIRES_DELAY, USRP_MODEL_REQUIRES_DELAY
         if DELAY_BT_TESTS > 0: #No need to add delay if set to 0
             if ADD_DELAY_BT_TESTS==True:
-                print 'DELAY: adding user forced delay'
+                print('DELAY: adding user forced delay')
                 time.sleep(DELAY_BT_TESTS)
             elif ADD_DELAY_BT_TESTS==False:
-                print 'DELAY: user forced no delay'
+                print('DELAY: user forced no delay')
             elif UHD_VERSION_REQUIRES_DELAY and USRP_MODEL_REQUIRES_DELAY:
-                print 'DELAY: adding uhd+usrp required delay'
+                print('DELAY: adding uhd+usrp required delay')
                 time.sleep(DELAY_BT_TESTS)
 
 

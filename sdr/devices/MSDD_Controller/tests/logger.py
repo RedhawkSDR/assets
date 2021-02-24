@@ -26,4 +26,4 @@ if __name__ == "__main__":
     s.bind(("", 8900))
     while 1:
         data, addr = s.recvfrom(1024)
-        print data
+        print(data)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -90,7 +90,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         props = dict((x.id, any.from_any(x.value)) for x in props)
         # Query may return more than expected, but not less
         for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
+            self.assertEqual(expectedProp.id in props, True)
         
         #######################################################################
         # Verify that all expected ports are available
@@ -143,7 +143,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         """ Test that default configuration is a working allpass filter
         """
         dataPoints = 1024
-        data = range(dataPoints)
+        data = list(range(dataPoints))
         
         self.src.push(data,complexData=False, sampleRate=1.0, EOS=False,streamID="someSRI")
         count = 0
@@ -165,7 +165,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         """ Test EOS
         """
         dataPoints = 1024
-        data = range(dataPoints)
+        data = list(range(dataPoints))
         
         self.src.push(data,complexData=False, sampleRate=1.0, EOS=False,streamID="someSRI")
         count = 0
@@ -261,7 +261,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
     def testRealManualImpulse(self):
         """use manual configuration (real taps) and ensure that the impulse response matches the response
         """
-        filter = [random.random() for _ in xrange(513)]
+        filter = [random.random() for _ in range(513)]
         self.comp.fftSize = 1024
         self.comp.realFilterCoefficients = filter
         self.doImpulseResponse(1e6,filter)    
@@ -269,7 +269,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
     def testCxManualImpulse(self):
         """use manual configuration (complex taps) and ensure that the impulse response matches the response
         """
-        filter = [complex(random.random(), random.random()) for _ in xrange(513)]
+        filter = [complex(random.random(), random.random()) for _ in range(513)]
         self.comp.fftSize = 1024
         self.comp.complexFilterCoefficients = filter
         self.doImpulseResponse(1e6,filter) 
@@ -277,7 +277,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
     def testRealCorrelation(self):
         """Put the filter into correlation mode and ensure that it correlates
         """
-        filter = [random.random() for _ in xrange(513)]
+        filter = [random.random() for _ in range(513)]
         self.comp.correlationMode=True
         self.comp.fftSize = 1024
         self.comp.realFilterCoefficients = filter
@@ -294,7 +294,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
     def testCxCorrelation(self):
         """Put the filter into correlation mode and ensure that it correlates with cx data and coeficients
         """
-        filter = [complex(random.random(),random.random()) for _ in xrange(513)]
+        filter = [complex(random.random(),random.random()) for _ in range(513)]
         self.comp.correlationMode=True
         self.comp.fftSize = 1024
         self.comp.complexFilterCoefficients = filter
@@ -309,7 +309,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
     def testCxRealCorrelation(self):
         """real filter complex data for correlation
         """
-        filter = [random.random() for _ in xrange(513)]
+        filter = [random.random() for _ in range(513)]
         self.comp.correlationMode=True
         self.comp.fftSize = 1024
         self.comp.realFilterCoefficients = filter
@@ -324,7 +324,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
     def testRealCxCorrelationWithReconnecting(self):
         """complex filter real data
         """
-        filter = [complex(random.random(),random.random()) for _ in xrange(513)]
+        filter = [complex(random.random(),random.random()) for _ in range(513)]
         self.comp.correlationMode=True
         self.comp.fftSize = 1024
         self.comp.complexFilterCoefficients = filter

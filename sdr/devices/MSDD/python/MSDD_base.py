@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -34,7 +34,7 @@ from ossie.properties import simpleseq_property
 from ossie.properties import struct_property
 from ossie.properties import structseq_property
 
-import Queue, copy, time, threading
+import queue, copy, time, threading
 from ossie.resource import usesport, providesport, PortCallError
 import bulkio
 import frontend
@@ -332,10 +332,10 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
         
             def __init__(self, **kw):
                 """Construct an initialized instance of this struct definition"""
-                for classattr in type(self).__dict__.itervalues():
+                for classattr in type(self).__dict__.values():
                     if isinstance(classattr, (simple_property, simpleseq_property)):
                         classattr.initialize(self)
-                for k,v in kw.items():
+                for k,v in list(kw.items()):
                     setattr(self,k,v)
         
             def __str__(self):
@@ -425,10 +425,10 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
         
             def __init__(self, **kw):
                 """Construct an initialized instance of this struct definition"""
-                for classattr in type(self).__dict__.itervalues():
+                for classattr in type(self).__dict__.values():
                     if isinstance(classattr, (simple_property, simpleseq_property)):
                         classattr.initialize(self)
-                for k,v in kw.items():
+                for k,v in list(kw.items()):
                     setattr(self,k,v)
         
             def __str__(self):
@@ -705,10 +705,10 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
         
             def __init__(self, **kw):
                 """Construct an initialized instance of this struct definition"""
-                for classattr in type(self).__dict__.itervalues():
+                for classattr in type(self).__dict__.values():
                     if isinstance(classattr, (simple_property, simpleseq_property)):
                         classattr.initialize(self)
-                for k,v in kw.items():
+                for k,v in list(kw.items()):
                     setattr(self,k,v)
         
             def __str__(self):
@@ -818,10 +818,10 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
         
             def __init__(self, **kw):
                 """Construct an initialized instance of this struct definition"""
-                for classattr in type(self).__dict__.itervalues():
+                for classattr in type(self).__dict__.values():
                     if isinstance(classattr, (simple_property, simpleseq_property)):
                         classattr.initialize(self)
-                for k,v in kw.items():
+                for k,v in list(kw.items()):
                     setattr(self,k,v)
         
             def __str__(self):
@@ -904,10 +904,10 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
         
             def __init__(self, **kw):
                 """Construct an initialized instance of this struct definition"""
-                for classattr in type(self).__dict__.itervalues():
+                for classattr in type(self).__dict__.values():
                     if isinstance(classattr, (simple_property, simpleseq_property)):
                         classattr.initialize(self)
-                for k,v in kw.items():
+                for k,v in list(kw.items()):
                     setattr(self,k,v)
         
             def __str__(self):
@@ -966,10 +966,10 @@ class MSDD_base(CF__POA.Device, FrontendTunerDevice, digital_tuner_delegation, r
         
             def __init__(self, **kw):
                 """Construct an initialized instance of this struct definition"""
-                for classattr in type(self).__dict__.itervalues():
+                for classattr in type(self).__dict__.values():
                     if isinstance(classattr, (simple_property, simpleseq_property)):
                         classattr.initialize(self)
-                for k,v in kw.items():
+                for k,v in list(kw.items()):
                     setattr(self,k,v)
         
             def __str__(self):
@@ -1843,7 +1843,7 @@ Allow for blocks of output configuration applied to FFT channels. These properti
         def assignListener(self,listen_alloc_id, allocation_id):
             # find control allocation_id
             existing_alloc_id = allocation_id
-            if self.listeners.has_key(existing_alloc_id):
+            if existing_alloc_id in self.listeners:
                 existing_alloc_id = self.listeners[existing_alloc_id]
             self.listeners[listen_alloc_id] = existing_alloc_id
 
@@ -1878,7 +1878,7 @@ Allow for blocks of output configuration applied to FFT channels. These properti
             self.port_dataVITA49_out_PSD.updateConnectionFilter(newValue)
 
         def removeListener(self,listen_alloc_id):
-            if self.listeners.has_key(listen_alloc_id):
+            if listen_alloc_id in self.listeners:
                 del self.listeners[listen_alloc_id]
 
             # Check to see if port "port_dataSDDS_out" has a connection for this listener
@@ -1921,7 +1921,7 @@ Allow for blocks of output configuration applied to FFT channels. These properti
                 if entry.connection_id == allocation_id:
                     self.connectionTable.remove(entry)
 
-            for key,value in self.listeners.items():
+            for key,value in list(self.listeners.items()):
                 if (value == allocation_id):
                     for entry in list(self.connectionTable):
                         if entry.connection_id == key:
@@ -1939,7 +1939,7 @@ Allow for blocks of output configuration applied to FFT channels. These properti
                     if entry.stream_id == stream_id and entry.connection_id == allocation_id:
                         self.connectionTable.remove(entry)
 
-            for key,value in self.listeners.items():
+            for key,value in list(self.listeners.items()):
                 if (value == allocation_id):
                     for entry in list(self.connectionTable):
                         if entry.connection_id == key and entry.stream_id == stream_id:

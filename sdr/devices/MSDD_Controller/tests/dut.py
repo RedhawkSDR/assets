@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -521,7 +521,7 @@ def  get_config( msdd_id,
     ]
     """
 
-    if msdd_id in dut_config.keys():
+    if msdd_id in list(dut_config.keys()):
         dut_cfg = copy.deepcopy(dut_config[msdd_id])
         configure_output_channels(dut_cfg, OUTPUT_ADDR, OUTPUT_PORT, OUTPUT_VLAN, OUTPUT_IFACE )
 
@@ -538,7 +538,7 @@ def configure_output_channels( dut_config, OUTPUT_ADDR, OUTPUT_PORT, OUTPUT_VLAN
     # create number of configs for each wbddc 
     rcv_idx=0
     for ncfgs in dut_config['additional_tuner_outputs']:
-        for i in xrange(1, ncfgs+1):
+        for i in range(1, ncfgs+1):
             mcast_octets[-1] += 1
             dut_config['configure']['tuner_output'].append(
                 {

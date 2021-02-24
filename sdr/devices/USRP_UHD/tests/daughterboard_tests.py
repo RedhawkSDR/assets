@@ -39,11 +39,11 @@ dboard_ignore = None      # If two dboards installed, this is the one not being 
 #dboard        = 'SBX120'  # dboard being tested (WBX40, CBX120, or SBX120)
 #dboard_ignore = 'CBX120'  # If two dboards installed, this is the one not being tested
 
-print '=========================================================================='
-print 'Testing dboard %s of USRP at IP %s'%(dboard,USRP_IP)
-if dboard_ignore: print '  (ignoring second dboard %s)'%dboard_ignore
-print 'Note: Overflow may occur if network interface cannot support full data rate'
-print '=========================================================================='
+print('==========================================================================')
+print('Testing dboard %s of USRP at IP %s'%(dboard,USRP_IP))
+if dboard_ignore: print('  (ignoring second dboard %s)'%dboard_ignore)
+print('Note: Overflow may occur if network interface cannot support full data rate')
+print('==========================================================================')
 
 DBOARDS = {}
 
@@ -119,10 +119,10 @@ def assertEqual(a,b,msg=None):
   else:
     msg = '%s: %s %s %s'
   if a == None or b == None or floatingPointCompare(a,b) != 0:
-    print '    '+msg%('Fail',a,'does not equal',b)
+    print('    '+msg%('Fail',a,'does not equal',b))
     return False
   else:
-    print '    '+msg%('PASS',a,'equals',b)
+    print('    '+msg%('PASS',a,'equals',b))
     return True
 
 def runAllocTuneTest(msg, key, expected, dut, ttype, alloc_id='test_alloc',
@@ -152,8 +152,8 @@ def runAllocTuneTest(msg, key, expected, dut, ttype, alloc_id='test_alloc',
         if alloc_id in tuner['FRONTEND::tuner_status::allocation_id_csv']:
           actual = tuner[key]
           break
-  except Exception, e:
-    print 'Exception', e
+  except Exception as e:
+    print('Exception', e)
     dealloc = True
   if dealloc:
     dut.deallocateCapacity(alloc)
@@ -183,17 +183,17 @@ dut.target_device.ip_address = USRP_IP
 time.sleep(1)
 
 # verify values
-print '=========================================================================='
-print 'Verifying values reported by UHD match test values'
-print '=========================================================================='
+print('==========================================================================')
+print('Verifying values reported by UHD match test values')
+print('==========================================================================')
 passing = True
-for chan in xrange(len(dut.device_channels)):
+for chan in range(len(dut.device_channels)):
   #pp(dut.device_channels[chan])
   if dut.device_channels[chan].tuner_type not in ['RX_DIGITIZER','TX']:
-    print 'Skipping tuner type:', dut.device_channels[chan].tuner_type
+    print('Skipping tuner type:', dut.device_channels[chan].tuner_type)
     continue
   if DBOARD['NAME'] not in dut.device_channels[chan].ch_name:
-    print 'Skipping channel that is not %s (%s)'%(DBOARD['NAME'],dut.device_channels[chan].ch_name)
+    print('Skipping channel that is not %s (%s)'%(DBOARD['NAME'],dut.device_channels[chan].ch_name))
     continue
   passing &= assertEqual(dut.device_channels[chan].freq_min,      DBOARD['CF_MIN'], 'cf min')
   passing &= assertEqual(dut.device_channels[chan].freq_max,      DBOARD['CF_MAX'], 'cf max')
@@ -211,24 +211,24 @@ for chan in xrange(len(dut.device_channels)):
     passing &= assertEqual(dut.device_channels[chan].gain_max, DBOARD['TX_GAIN_MAX'], 'tx gain max')
 
 if passing:
-  print '=========================================================================='
-  print dboard, 'PASSED VALUE CHECK'
-  print '=========================================================================='
+  print('==========================================================================')
+  print(dboard, 'PASSED VALUE CHECK')
+  print('==========================================================================')
 else:
-  print '=========================================================================='
-  print dboard, 'FAILED VALUE CHECK'
-  print '=========================================================================='
+  print('==========================================================================')
+  print(dboard, 'FAILED VALUE CHECK')
+  print('==========================================================================')
   sys.exit(1)
 
 # run verification tests
 
 # allocate dboard to ignore
 if DBOARD_IGNORE:
-  print '=========================================================================='
-  print 'Ignoring other dboard tuners by allocating them with output disabled'
-  print '=========================================================================='
+  print('==========================================================================')
+  print('Ignoring other dboard tuners by allocating them with output disabled')
+  print('==========================================================================')
   port = dut.getPort('DigitalTuner_in')
-  for chan in xrange(len(dut.device_channels)):
+  for chan in range(len(dut.device_channels)):
     if dut.device_channels[chan].tuner_type not in ['RX_DIGITIZER','TX']:
       continue
     if DBOARD_IGNORE['NAME'] not in dut.device_channels[chan].ch_name:
@@ -264,16 +264,16 @@ if DBOARD_IGNORE:
         #  print 'Failed to allocate a %s (%s)'%(dut.device_channels[chan].tuner_type,alloc_id)
 
   # Now deallocate any that happen to be for dboard we are testing
-  for chan in xrange(len(dut.device_channels)):
+  for chan in range(len(dut.device_channels)):
     if dut.device_channels[chan].tuner_type not in ['RX_DIGITIZER','TX']:
       continue
     alloc_id = dut.frontend_tuner_status[chan].allocation_id_csv
     if not alloc_id:
       continue
     if DBOARD['NAME'] not in dut.device_channels[chan].ch_name:
-      print 'Ignoring other dboard: %s #%s (%s)'%(dut.device_channels[chan].ch_name,chan,alloc_id)
+      print('Ignoring other dboard: %s #%s (%s)'%(dut.device_channels[chan].ch_name,chan,alloc_id))
       continue
-    print 'Freeing for testing: %s #%s (%s)'%(dut.device_channels[chan].ch_name,chan,alloc_id)
+    print('Freeing for testing: %s #%s (%s)'%(dut.device_channels[chan].ch_name,chan,alloc_id))
     #tuner['FRONTEND::tuner_status::allocation_id_csv']:
     alloc = createTunerAllocation( tuner_type = str(dut.device_channels[chan].tuner_type),
                                    allocation_id = str(alloc_id),
@@ -286,9 +286,9 @@ if DBOARD_IGNORE:
 dut.device_rx_mode = '8bit'
 dut.device_tx_mode = '8bit'
 
-print '=========================================================================='
-print 'Testing RX capabilities'
-print '=========================================================================='
+print('==========================================================================')
+print('Testing RX capabilities')
+print('==========================================================================')
 # allocate an RX_Digitizer with CF_MIN 
 msg = 'RX alloc cf min'
 key = 'FRONTEND::tuner_status::center_frequency'
@@ -377,9 +377,9 @@ expected_min = DBOARD['RX_GAIN_MIN']
 expected_max = DBOARD['RX_GAIN_MAX']
 passing &= runAvailableRangeTest(msg, key, expected_min, expected_max, dut, 'RX_DIGITIZER')
 
-print '=========================================================================='
-print 'Testing TX capabilities'
-print '=========================================================================='
+print('==========================================================================')
+print('Testing TX capabilities')
+print('==========================================================================')
 # allocate a TX with CF_MIN 
 msg = 'TX alloc cf min'
 key = 'FRONTEND::tuner_status::center_frequency'
@@ -469,10 +469,10 @@ expected_max = DBOARD['TX_GAIN_MAX']
 passing &= runAvailableRangeTest(msg, key, expected_min, expected_max, dut, 'TX')
 
 
-print '=========================================================================='
+print('==========================================================================')
 if passing:
-  print dboard, 'PASSED ALL TESTS'
+  print(dboard, 'PASSED ALL TESTS')
 else:
-  print dboard, 'FAILED ONE OR MORE TESTS'
-print '=========================================================================='
+  print(dboard, 'FAILED ONE OR MORE TESTS')
+print('==========================================================================')
 

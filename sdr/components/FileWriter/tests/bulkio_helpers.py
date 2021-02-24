@@ -93,9 +93,9 @@ class ArraySource:
         self.sri = H
         try:    
             try:
-                for connId, port in self.outPorts.items():
+                for connId, port in list(self.outPorts.items()):
                     if port != None: port.pushSRI(H)
-            except Exception, e:
+            except Exception as e:
                 msg = "The call to pushSRI failed with %s " % e
                 msg += "connection %s instance %s" % (connId, port)
                 print(msg)
@@ -109,9 +109,9 @@ class ArraySource:
         self.port_lock.acquire()
         try:    
             try:
-                for connId, port in self.outPorts.items():
+                for connId, port in list(self.outPorts.items()):
                     if port != None: port.pushPacket(data, T, EOS, streamID)
-            except Exception, e:
+            except Exception as e:
                 msg = "The call to pushPacket failed with %s " % e
                 msg += "connection %s instance %s" % (connId, port)
                 print(msg)
@@ -353,9 +353,9 @@ class FileSource:
         self.sri = H
         try:    
             try:
-                for connId, port in self.outPorts.items():
+                for connId, port in list(self.outPorts.items()):
                     if port != None: port.pushSRI(H)
-            except Exception, e:
+            except Exception as e:
                 msg = "The call to pushSRI failed with %s " % e
                 msg += "connection %s instance %s" % (connId, port)
                 print(msg)
@@ -369,9 +369,9 @@ class FileSource:
         self.port_lock.acquire()
         try:    
             try:
-                for connId, port in self.outPorts.items():
+                for connId, port in list(self.outPorts.items()):
                     if port != None: port.pushPacket(data, T, EOS, streamID)
-            except Exception, e:
+            except Exception as e:
                 msg = "The call to pushPacket failed with %s " % e
                 msg += "connection %s instance %s" % (connId, port)
                 print(msg)

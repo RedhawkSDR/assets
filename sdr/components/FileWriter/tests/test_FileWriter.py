@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this
 # source distribution.
@@ -84,17 +84,17 @@ def hdr_to_sri(hdr, stream_id):
     kwds = []
 
     # Getting all the items in the extended header
-    if hdr.has_key('ext_header'):
+    if 'ext_header' in hdr:
         ext_hdr = hdr['ext_header']
         if isinstance(ext_hdr, dict):
-            for key, value in ext_hdr.iteritems():
+            for key, value in ext_hdr.items():
                 # WARNING: CORBA types are hard-coded through here
-                dt = CF.DataType(key, ossie.properties.to_tc_value(long(value), 'long')) # FIXME - cast to long from numpy (or other) type (in 32-bit, the value is np.int32 and causes CORBA wrong python type error when SRI is pushed)
+                dt = CF.DataType(key, ossie.properties.to_tc_value(int(value), 'long')) # FIXME - cast to long from numpy (or other) type (in 32-bit, the value is np.int32 and causes CORBA wrong python type error when SRI is pushed)
                 kwds.append(dt)
         elif isinstance(ext_hdr, list):
             for item in ext_hdr:
                 try:
-                    dt = CF.DataType(item[0], ossie.properties.to_tc_value(long(item[1]), 'long')) #FIXME - cast to long from numpy (or other) type
+                    dt = CF.DataType(item[0], ossie.properties.to_tc_value(int(item[1]), 'long')) #FIXME - cast to long from numpy (or other) type
                     kwds.append(dt)
                 except:
                     continue
@@ -172,7 +172,7 @@ def bluefile_helpers_BlueFileWriter_pushPacket(self, data, ts, EOS, stream_id):
         try:
             #if self.header and not self.gotTimecode:
             if self.header and self.header['timecode'] <= 631152000.0:
-                self.header['timecode'] = ts.twsec+ts.tfsec + long(631152000)
+                self.header['timecode'] = ts.twsec+ts.tfsec + int(631152000)
                 bluefile.writeheader(self.outFile, self.header, keepopen=0, ext_header_type=list)
 
             if self.header and self.header['format'][1] == 'B':
@@ -257,9 +257,9 @@ def bluefile_helpers_BlueFileReader_run(self, infile, pktsize=1024, streamID=Non
         # NOTE: midas time is seconds since Jan. 1 1950
         #       Redhawk time is seconds since Jan. 1 1970
         currentSampleTime = 0.0
-        if hdr.has_key('timecode'):
+        if 'timecode' in hdr:
             # Set sample time to seconds since Jan. 1 1970
-            currentSampleTime = hdr['timecode'] - long(631152000)
+            currentSampleTime = hdr['timecode'] - int(631152000)
             if currentSampleTime < 0:
                 currentSampleTime = 0.0
 
@@ -323,7 +323,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         props = dict((x.id, any.from_any(x.value)) for x in props)
         # Query may return more than expected, but not less
         for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
+            self.assertEqual(expectedProp.id in props, True)
 
         #######################################################################
         # Verify that all expected ports are available
@@ -357,7 +357,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def testCharPort(self):
         #######################################################################
         # Test Char Functionality
-        print "\n**TESTING CHAR PORT"
+        print("\n**TESTING CHAR PORT")
 
         #Define test files
         dataFileIn = './data.in'
@@ -403,7 +403,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         os.remove(dataFileIn)
         os.remove(dataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testBlue1000CharPort(self):
@@ -412,7 +412,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileChar'
         port_poa = BULKIO__POA.dataChar
         port_name = 'dataChar_in'
-        print "\n**TESTING TYPE 1000 BLUEFILE + CHAR PORT"
+        print("\n**TESTING TYPE 1000 BLUEFILE + CHAR PORT")
         return self.blue1000PortTests(sid, port_poa, port_name)
 
     def testBlue2000CharPort(self):
@@ -421,7 +421,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileChar'
         port_poa = BULKIO__POA.dataChar
         port_name = 'dataChar_in'
-        print "\n**TESTING TYPE 2000 BLUEFILE + CHAR PORT"
+        print("\n**TESTING TYPE 2000 BLUEFILE + CHAR PORT")
         return self.blue2000PortTests(sid, port_poa, port_name)
 
     def testBlue1000CharPortCx(self):
@@ -430,7 +430,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileCharCx'
         port_poa = BULKIO__POA.dataChar
         port_name = 'dataChar_in'
-        print "\n**TESTING Cx TYPE 1000 BLUEFILE + CHAR PORT"
+        print("\n**TESTING Cx TYPE 1000 BLUEFILE + CHAR PORT")
         return self.blue1000PortTests(sid, port_poa, port_name, True)
 
     def testBlue2000CharPortCx(self):
@@ -439,13 +439,13 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileCharCx'
         port_poa = BULKIO__POA.dataChar
         port_name = 'dataChar_in'
-        print "\n**TESTING Cx TYPE 2000 BLUEFILE + CHAR PORT"
+        print("\n**TESTING Cx TYPE 2000 BLUEFILE + CHAR PORT")
         return self.blue2000PortTests(sid, port_poa, port_name, True)
 
     def testOctetPort(self):
         #######################################################################
         # Test OCTET Functionality
-        print "\n**TESTING OCTET PORT"
+        print("\n**TESTING OCTET PORT")
 
         #Define test files
         dataFileIn = './data.in'
@@ -491,7 +491,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         os.remove(dataFileIn)
         os.remove(dataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def octetnotsupported_testBlue1000OctetPort(self):
@@ -500,7 +500,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileOctet'
         port_poa = BULKIO__POA.dataOctet
         port_name = 'dataOctet_in'
-        print "\n**TESTING TYPE 1000 BLUEFILE + OCTET PORT"
+        print("\n**TESTING TYPE 1000 BLUEFILE + OCTET PORT")
         return self.blue1000PortTests(sid, port_poa, port_name)
 
     def octetnotsupported_testBlue2000OctetPort(self):
@@ -509,7 +509,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileOctet'
         port_poa = BULKIO__POA.dataOctet
         port_name = 'dataOctet_in'
-        print "\n**TESTING TYPE 2000 BLUEFILE + OCTET PORT"
+        print("\n**TESTING TYPE 2000 BLUEFILE + OCTET PORT")
         return self.blue2000PortTests(sid, port_poa, port_name)
 
     def octetnotsupported_testBlue1000OctetPortCx(self):
@@ -518,7 +518,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileOctetCx'
         port_poa = BULKIO__POA.dataOctet
         port_name = 'dataOctet_in'
-        print "\n**TESTING Cx TYPE 1000 BLUEFILE + OCTET PORT"
+        print("\n**TESTING Cx TYPE 1000 BLUEFILE + OCTET PORT")
         return self.blue1000PortTests(sid, port_poa, port_name, True)
 
     def octetnotsupported_testBlue2000OctetPortCx(self):
@@ -527,13 +527,13 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileOctetCx'
         port_poa = BULKIO__POA.dataOctet
         port_name = 'dataOctet_in'
-        print "\n**TESTING Cx TYPE 2000 BLUEFILE + OCTET PORT"
+        print("\n**TESTING Cx TYPE 2000 BLUEFILE + OCTET PORT")
         return self.blue2000PortTests(sid, port_poa, port_name, True)
 
     def testShortPort(self):
         #######################################################################
         # Test SHORT Functionality
-        print "\n**TESTING SHORT PORT"
+        print("\n**TESTING SHORT PORT")
 
         #Define test files
         dataFileIn = './data.in'
@@ -579,7 +579,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         os.remove(dataFileIn)
         os.remove(dataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testBlue1000ShortPort(self):
@@ -588,7 +588,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileShort'
         port_poa = BULKIO__POA.dataShort
         port_name = 'dataShort_in'
-        print "\n**TESTING TYPE 1000 BLUEFILE + SHORT PORT"
+        print("\n**TESTING TYPE 1000 BLUEFILE + SHORT PORT")
         return self.blue1000PortTests(sid, port_poa, port_name)
 
     def testBlue2000ShortPort(self):
@@ -597,7 +597,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileShort'
         port_poa = BULKIO__POA.dataShort
         port_name = 'dataShort_in'
-        print "\n**TESTING TYPE 2000 BLUEFILE + SHORT PORT"
+        print("\n**TESTING TYPE 2000 BLUEFILE + SHORT PORT")
         return self.blue2000PortTests(sid, port_poa, port_name)
 
     def testBlue1000ShortPortCx(self):
@@ -606,7 +606,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileShortCx'
         port_poa = BULKIO__POA.dataShort
         port_name = 'dataShort_in'
-        print "\n**TESTING Cx TYPE 1000 BLUEFILE + SHORT PORT"
+        print("\n**TESTING Cx TYPE 1000 BLUEFILE + SHORT PORT")
         return self.blue1000PortTests(sid, port_poa, port_name, True)
 
     def testBlue2000ShortPortCx(self):
@@ -615,13 +615,13 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileShortCx'
         port_poa = BULKIO__POA.dataShort
         port_name = 'dataShort_in'
-        print "\n**TESTING Cx TYPE 2000 BLUEFILE + SHORT PORT"
+        print("\n**TESTING Cx TYPE 2000 BLUEFILE + SHORT PORT")
         return self.blue2000PortTests(sid, port_poa, port_name, True)
 
     def testUShortPort(self):
         #######################################################################
         # Test USHORT Functionality
-        print "\n**TESTING USHORT PORT"
+        print("\n**TESTING USHORT PORT")
 
         #Define test files
         dataFileIn = './data.in'
@@ -667,7 +667,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         os.remove(dataFileIn)
         os.remove(dataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testBlue1000UshortPort(self):
@@ -676,7 +676,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileUshort'
         port_poa = BULKIO__POA.dataUshort
         port_name = 'dataUshort_in'
-        print "\n**TESTING TYPE 1000 BLUEFILE + USHORT PORT"
+        print("\n**TESTING TYPE 1000 BLUEFILE + USHORT PORT")
         return self.blue1000PortTests(sid, port_poa, port_name)
 
     def testBlue2000UshortPort(self):
@@ -685,7 +685,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileUshort'
         port_poa = BULKIO__POA.dataUshort
         port_name = 'dataUshort_in'
-        print "\n**TESTING TYPE 2000 BLUEFILE + USHORT PORT"
+        print("\n**TESTING TYPE 2000 BLUEFILE + USHORT PORT")
         return self.blue2000PortTests(sid, port_poa, port_name)
 
     def testBlue1000UshortPortCx(self):
@@ -694,7 +694,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileUshortCx'
         port_poa = BULKIO__POA.dataUshort
         port_name = 'dataUshort_in'
-        print "\n**TESTING Cx TYPE 1000 BLUEFILE + USHORT PORT"
+        print("\n**TESTING Cx TYPE 1000 BLUEFILE + USHORT PORT")
         return self.blue1000PortTests(sid, port_poa, port_name, True)
 
     def testBlue2000UshortPortCx(self):
@@ -703,13 +703,13 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileUshortCx'
         port_poa = BULKIO__POA.dataUshort
         port_name = 'dataUshort_in'
-        print "\n**TESTING Cx TYPE 2000 BLUEFILE + USHORT PORT"
+        print("\n**TESTING Cx TYPE 2000 BLUEFILE + USHORT PORT")
         return self.blue2000PortTests(sid, port_poa, port_name, True)
 
     def testFloatPort(self):
         #######################################################################
         # Test FLOAT Functionality
-        print "\n**TESTING FLOAT PORT"
+        print("\n**TESTING FLOAT PORT")
 
         #Define test files
         dataFileIn = './data.in'
@@ -750,9 +750,9 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             for a,b in zip(data,data2):
                 if a!=b:
                     if a!=a and b!=b:
-                        print "Difference in NaN format, ignoring..."
+                        print("Difference in NaN format, ignoring...")
                     else:
-                        print "FAILED:",a,"!=",b
+                        print("FAILED:",a,"!=",b)
                         raise e
 
         #Release the components and remove the generated files
@@ -762,7 +762,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             os.remove(dataFileIn)
             os.remove(dataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testBlue1000FloatPort(self):
@@ -771,7 +771,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileFloat'
         port_poa = BULKIO__POA.dataFloat
         port_name = 'dataFloat_in'
-        print "\n**TESTING TYPE 1000 BLUEFILE + FLOAT PORT"
+        print("\n**TESTING TYPE 1000 BLUEFILE + FLOAT PORT")
         return self.blue1000PortTests(sid, port_poa, port_name)
 
     def testBlue2000FloatPort(self):
@@ -780,7 +780,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileFloat'
         port_poa = BULKIO__POA.dataFloat
         port_name = 'dataFloat_in'
-        print "\n**TESTING TYPE 2000 BLUEFILE + FLOAT PORT"
+        print("\n**TESTING TYPE 2000 BLUEFILE + FLOAT PORT")
         return self.blue2000PortTests(sid, port_poa, port_name)
 
     def testBlue1000FloatPortCx(self):
@@ -789,7 +789,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileFloatCx'
         port_poa = BULKIO__POA.dataFloat
         port_name = 'dataFloat_in'
-        print "\n**TESTING Cx TYPE 1000 BLUEFILE + FLOAT PORT"
+        print("\n**TESTING Cx TYPE 1000 BLUEFILE + FLOAT PORT")
         return self.blue1000PortTests(sid, port_poa, port_name, True)
 
     def testBlue2000FloatPortCx(self):
@@ -798,13 +798,13 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileFloatCx'
         port_poa = BULKIO__POA.dataFloat
         port_name = 'dataFloat_in'
-        print "\n**TESTING Cx TYPE 2000 BLUEFILE + FLOAT PORT"
+        print("\n**TESTING Cx TYPE 2000 BLUEFILE + FLOAT PORT")
         return self.blue2000PortTests(sid, port_poa, port_name, True)
 
     def testDoublePort(self):
         #######################################################################
         # Test DOUBLE Functionality
-        print "\n**TESTING DOUBLE PORT"
+        print("\n**TESTING DOUBLE PORT")
 
         #Define test files
         dataFileIn = './data.in'
@@ -850,7 +850,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         os.remove(dataFileIn)
         os.remove(dataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testBlue1000DoublePort(self):
@@ -859,7 +859,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileDouble'
         port_poa = BULKIO__POA.dataDouble
         port_name = 'dataDouble_in'
-        print "\n**TESTING TYPE 1000 BLUEFILE + DOUBLE PORT"
+        print("\n**TESTING TYPE 1000 BLUEFILE + DOUBLE PORT")
         return self.blue1000PortTests(sid, port_poa, port_name)
 
     def testBlue2000DoublePort(self):
@@ -868,7 +868,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileDouble'
         port_poa = BULKIO__POA.dataDouble
         port_name = 'dataDouble_in'
-        print "\n**TESTING TYPE 2000 BLUEFILE + DOUBLE PORT"
+        print("\n**TESTING TYPE 2000 BLUEFILE + DOUBLE PORT")
         return self.blue2000PortTests(sid, port_poa, port_name)
 
     def testBlue1000DoublePortCx(self):
@@ -877,7 +877,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileDoubleCx'
         port_poa = BULKIO__POA.dataDouble
         port_name = 'dataDouble_in'
-        print "\n**TESTING Cx TYPE 1000 BLUEFILE + DOUBLE PORT"
+        print("\n**TESTING Cx TYPE 1000 BLUEFILE + DOUBLE PORT")
         return self.blue1000PortTests(sid, port_poa, port_name, True)
 
     def testBlue2000DoublePortCx(self):
@@ -886,13 +886,13 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         sid = 'bluefileDoubleCx'
         port_poa = BULKIO__POA.dataDouble
         port_name = 'dataDouble_in'
-        print "\n**TESTING Cx TYPE 2000 BLUEFILE + DOUBLE PORT"
+        print("\n**TESTING Cx TYPE 2000 BLUEFILE + DOUBLE PORT")
         return self.blue2000PortTests(sid, port_poa, port_name, True)
 
     def testXmlPort(self):
         #######################################################################
         # Test XML Functionality
-        print "\n**TESTING XML PORT"
+        print("\n**TESTING XML PORT")
 
         #Create Test Data
         dataFileOut = './data.out'
@@ -928,7 +928,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         source.releaseObject()
         os.remove(dataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
 
@@ -936,7 +936,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def testBaseUri(self):
         #######################################################################
         # Test base uri w/ keyword substitution
-        print "\n**TESTING URI w/ KW Substitution"
+        print("\n**TESTING URI w/ KW Substitution")
 
         #Define test files
         dataFileIn = './data.in'
@@ -1003,9 +1003,9 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             for a,b in zip(data,data2):
                 if a!=b:
                     if a!=a and b!=b:
-                        print "Difference in NaN format, ignoring..."
+                        print("Difference in NaN format, ignoring...")
                     else:
-                        print "FAILED:",a,"!=",b
+                        print("FAILED:",a,"!=",b)
                         raise e
 
         #Release the components and remove the generated files
@@ -1016,19 +1016,19 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             os.remove(dataFileOut1)
             os.remove(dataFileOut2)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testRecordingCpuTimers(self):
         #######################################################################
         # Test multiple recording timers using cpu clock
-        print "\n**TESTING TIMERS w/ CPU TIMESTAMP"
+        print("\n**TESTING TIMERS w/ CPU TIMESTAMP")
         return self.timerTests(pkt_ts=False)
 
     def testRecordingPktTimers(self):
         #######################################################################
         # Test multiple recording timers using packet timestamp
-        print "\n**TESTING TIMERS w/ PACKET TIMESTAMP"
+        print("\n**TESTING TIMERS w/ PACKET TIMESTAMP")
         return self.timerTests(pkt_ts=True)
 
     def timerTests(self,pkt_ts=False):
@@ -1115,7 +1115,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                 #print 'offset1 is', offset1
                 if offset1 != 0:
                     if abs(offset1) > num_samps: # allow it to be off by one data push
-                        print "FAILED: offset1 =",offset1
+                        print("FAILED: offset1 =",offset1)
                         raise e
                     shifted_res1 = results[offset1:]+results[:offset1]
                 else:
@@ -1123,9 +1123,9 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                 for a,b in zip(shifted_res1,data1):
                     if a!=b:
                         if a!=a and b!=b:
-                            print "Difference in NaN format, ignoring..."
+                            print("Difference in NaN format, ignoring...")
                         else:
-                            print "1st FAILED:",a,"!=",b
+                            print("1st FAILED:",a,"!=",b)
                             raise e
             try:
                 self.assertEqual(filecmp.cmp(resultsFileOut, dataFileOut+'-1'), True)
@@ -1139,7 +1139,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                 #print 'offset2 is', offset2
                 if offset2 != 0:
                     if abs(offset2) > num_samps: # allow it to be off by one data push
-                        print "FAILED: offset2 =",offset2
+                        print("FAILED: offset2 =",offset2)
                         raise e
                     shifted_res2 = results[offset2:]+results[:offset2]
                 else:
@@ -1147,9 +1147,9 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                 for a,b in zip(shifted_res2,data2):
                     if a!=b:
                         if a!=a and b!=b:
-                            print "Difference in NaN format, ignoring..."
+                            print("Difference in NaN format, ignoring...")
                         else:
-                            print "2nd FAILED:",a,"!=",b
+                            print("2nd FAILED:",a,"!=",b)
                             raise e
         except:
             raise e
@@ -1164,7 +1164,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
 
         #TODO - validate timestamps, perhaps using BLUEFILEs
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def blue1000PortTests(self, sid, port_poa, port_name, cxmode=False):
@@ -1198,7 +1198,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                                       keywords=kws)
             tmpSink.pushSRI(tmpSri)
             tmpTs = createTs()
-            tmpData = range(0, 1024*(cxmode+1)) # double number of samples to account for complex pairs
+            tmpData = list(range(0, 1024*(cxmode+1))) # double number of samples to account for complex pairs
             tmpSink.pushPacket(tmpData, tmpTs, True, sid)
 
         #Read in Data from Test File
@@ -1238,26 +1238,26 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                 hdr2, d2 = bluefile.read(dataFileOut, dict)
 
                 print_hdrs = False
-                if hdr1.keys() != hdr2.keys():
+                if list(hdr1.keys()) != list(hdr2.keys()):
                     print_hdrs = True
                 else:
-                    for key in hdr1.keys():
+                    for key in list(hdr1.keys()):
                         if hdr1[key] != hdr2[key]:
-                            print "HCB['%s'] in: %s  out: %s"%(key,hdr1[key],hdr2[key])
+                            print("HCB['%s'] in: %s  out: %s"%(key,hdr1[key],hdr2[key]))
                             if key != 'file_name':
                                 print_hdrs = True
                 if print_hdrs:
-                    print 'DEBUG - input header:'
+                    print('DEBUG - input header:')
                     pp(hdr1)
-                    print 'DEBUG - output header:'
+                    print('DEBUG - output header:')
                     pp(hdr2)
 
-                print 'DEBUG - len(input_data)=%s'%(len(d1))
-                print 'DEBUG - len(output_data)=%s'%(len(d2))
+                print('DEBUG - len(input_data)=%s'%(len(d1)))
+                print('DEBUG - len(output_data)=%s'%(len(d2)))
                 data1 = list(numpy.reshape(d1,(-1,))) # flatten data
                 data2 = list(numpy.reshape(d2,(-1,))) # flatten data
-                print 'DEBUG - len(input_data)=%s'%(len(data1))
-                print 'DEBUG - len(output_data)=%s'%(len(data2))
+                print('DEBUG - len(input_data)=%s'%(len(data1)))
+                print('DEBUG - len(output_data)=%s'%(len(data2)))
 
                 raise e
 
@@ -1275,7 +1275,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         try: os.remove(dataFileOut)
         except: pass
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def blue2000PortTests(self, sid, port_poa, port_name, cxmode=False):
@@ -1312,9 +1312,9 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             tmpSink.pushSRI(tmpSri)
             tmpTs = createTs()
             tmpData = []
-            for i in xrange(frames):
+            for i in range(frames):
                 #tmpData.append(range(i,i+framesize*(cxmode+1))) # this would create framed data, but we need flat data
-                tmpData.extend(range(i,i+framesize*(cxmode+1))) # double number of samples to account for complex pairs
+                tmpData.extend(list(range(i,i+framesize*(cxmode+1)))) # double number of samples to account for complex pairs
             tmpSink.pushPacket(tmpData, tmpTs, True, sid)
 
         #Read in Data from Test File
@@ -1354,26 +1354,26 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                 hdr2, d2 = bluefile.read(dataFileOut, dict)
 
                 print_hdrs = False
-                if hdr1.keys() != hdr2.keys():
+                if list(hdr1.keys()) != list(hdr2.keys()):
                     print_hdrs = True
                 else:
-                    for key in hdr1.keys():
+                    for key in list(hdr1.keys()):
                         if hdr1[key] != hdr2[key]:
-                            print "HCB['%s'] in: %s  out: %s"%(key,hdr1[key],hdr2[key])
+                            print("HCB['%s'] in: %s  out: %s"%(key,hdr1[key],hdr2[key]))
                             if key != 'file_name':
                                 print_hdrs = True
                 if print_hdrs:
-                    print 'DEBUG - input header:'
+                    print('DEBUG - input header:')
                     pp(hdr1)
-                    print 'DEBUG - output header:'
+                    print('DEBUG - output header:')
                     pp(hdr2)
 
-                print 'DEBUG - len(input_data)=%s - len(input_data[0])=%s'%(len(d1),len(d1[0]))
-                print 'DEBUG - len(output_data)=%s - len(output_data[0])=%s'%(len(d2),len(d2[0]))
+                print('DEBUG - len(input_data)=%s - len(input_data[0])=%s'%(len(d1),len(d1[0])))
+                print('DEBUG - len(output_data)=%s - len(output_data[0])=%s'%(len(d2),len(d2[0])))
                 data1 = list(numpy.reshape(d1,(-1,))) # flatten data
                 data2 = list(numpy.reshape(d2,(-1,))) # flatten data
-                print 'DEBUG - len(input_data)=%s'%(len(data1))
-                print 'DEBUG - len(output_data)=%s'%(len(data2))
+                print('DEBUG - len(input_data)=%s'%(len(data1)))
+                print('DEBUG - len(output_data)=%s'%(len(data2)))
 
                 raise e
 
@@ -1391,13 +1391,13 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         try: os.remove(dataFileOut)
         except: pass
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testBlueTimestampPrecision(self):
         #######################################################################
         # Test BLUE file high precision timecode using TC_PREC keyword
-        print "\n**TESTING BLUE file with TC_PREC"
+        print("\n**TESTING BLUE file with TC_PREC")
 
         #Define test files
         dataFileIn = './data.in'
@@ -1421,7 +1421,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
 
         # Create timestamp
         ts_start = bulkio_helpers.createCPUTimestamp()
-        print 'Using timestamp', repr(ts_start)
+        print('Using timestamp', repr(ts_start))
 
         source = sb.DataSource(bytesPerPush=64, dataFormat='8t', startTime=ts_start.twsec+ts_start.tfsec)
         source.connect(comp,providesPortName='dataChar_in')
@@ -1457,13 +1457,13 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         os.remove(dataFileIn)
         os.remove(dataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testBlueTimestampNoPrecision(self):
         #######################################################################
         # Test BLUE file without high precision timecode
-        print "\n**TESTING BLUE file w/o TC_PREC"
+        print("\n**TESTING BLUE file w/o TC_PREC")
 
         #Define test files
         dataFileIn = './data.in'
@@ -1488,7 +1488,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
 
         # Create timestamp
         ts_start = bulkio_helpers.createCPUTimestamp()
-        print 'Using timestamp', repr(ts_start)
+        print('Using timestamp', repr(ts_start))
 
         source = sb.DataSource(bytesPerPush=64, dataFormat='8t', startTime=ts_start.twsec+ts_start.tfsec)
         source.connect(comp,providesPortName='dataChar_in')
@@ -1518,49 +1518,49 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         os.remove(dataFileIn)
         os.remove(dataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testMixedCaseRawFile(self):
         #######################################################################
         # Test Mixed case RAW file output
-        print "\n**TESTING Mixed Case RAW file "
+        print("\n**TESTING Mixed Case RAW file ")
         self.filenameCaseTests(0,'RAW')
 
     def testLowerCaseRawFile(self):
         #######################################################################
         # Test Lower case RAW file output
-        print "\n**TESTING Lower Case RAW file "
+        print("\n**TESTING Lower Case RAW file ")
         self.filenameCaseTests(1,'RAW')
 
     def testUpperCaseRawFile(self):
         #######################################################################
         # Test Upper case RAW file output
-        print "\n**TESTING Upper Case RAW file "
+        print("\n**TESTING Upper Case RAW file ")
         self.filenameCaseTests(2,'RAW')
 
     def testMixedCaseBlueFile(self):
         #######################################################################
         # Test Mixed case BLUE file output
-        print "\n**TESTING Mixed Case BLUE file "
+        print("\n**TESTING Mixed Case BLUE file ")
         self.filenameCaseTests(0,'BLUEFILE')
 
     def testLowerCaseBlueFile(self):
         #######################################################################
         # Test Lower case BLUE file output
-        print "\n**TESTING Lower Case BLUE file "
+        print("\n**TESTING Lower Case BLUE file ")
         self.filenameCaseTests(1,'BLUEFILE')
 
     def testUpperCaseBlueFile(self):
         #######################################################################
         # Test Upper case BLUE file output
-        print "\n**TESTING Upper Case BLUE file "
+        print("\n**TESTING Upper Case BLUE file ")
         self.filenameCaseTests(2,'BLUEFILE')
 
     def filenameCaseTests(self, case=0, fformat='RAW'):
         #######################################################################
         # Test output filename case
-        print "\n**TESTING Case %s of %s file "%(case,fformat)
+        print("\n**TESTING Case %s of %s file "%(case,fformat))
 
         #Define test files
         dataFileIn = './data.in'
@@ -1629,9 +1629,9 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                 for a,b in zip(data,data2):
                     if a!=b:
                         if a!=a and b!=b:
-                            print "Difference in NaN format, ignoring..."
+                            print("Difference in NaN format, ignoring...")
                         else:
-                            print "FAILED:",a,"!=",b
+                            print("FAILED:",a,"!=",b)
                             raise e
 
             #Release the components and remove the generated files
@@ -1642,7 +1642,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                 os.remove(dataFileOut)
 
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
 
     def testBlueFileKeywords(self):
 
@@ -1672,7 +1672,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                                   streamID="test_streamID",
                                   blocking=False,
                                   keywords=kws)
-        data = range(1000)
+        data = list(range(1000))
 
         # Push SRI
         port.pushSRI(sri1)
@@ -1743,7 +1743,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                                   streamID="test_streamID2",
                                   blocking=False,
                                   keywords=kws)
-        data = range(1000)
+        data = list(range(1000))
 
         # Push SRI
         port.pushSRI(sri1)
@@ -1805,7 +1805,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                                   streamID="test_streamID",
                                   blocking=False,
                                   keywords=kws)
-        data = range(1000)
+        data = list(range(1000))
 
         # Push SRI
         port.pushSRI(sri1)
@@ -1895,7 +1895,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                                   streamID="test_streamID",
                                   blocking=False,
                                   keywords=kws)
-        data = range(1000)
+        data = list(range(1000))
 
         # Push SRI
         port.pushSRI(sri1)
@@ -2095,8 +2095,8 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                                   streamID="test_streamID",
                                   blocking=False,
                                   keywords=kws)
-        data = range(1000)
-        data2 = range(1500)
+        data = list(range(1000))
+        data2 = list(range(1500))
 
         # Push SRI
         port.pushSRI(sri1)
@@ -2284,8 +2284,8 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                                   streamID="test_streamID",
                                   blocking=False,
                                   keywords=kws)
-        data = range(1000)
-        data2 = range(1500)
+        data = list(range(1000))
+        data2 = list(range(1500))
 
         # Push SRI
         port.pushSRI(sri1)
@@ -2435,7 +2435,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         # Setup FileWriter
         comp = sb.launch('../FileWriter.spd.xml')
         comp.destination_uri = dataFileOut
-        print " Hootie ", dataFileOut
+        print(" Hootie ", dataFileOut)
 
         comp.advanced_properties.enable_metadata_file=True
         comp.advanced_properties.use_hidden_files = False
@@ -2458,8 +2458,8 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                                   streamID="test_streamID",
                                   blocking=False,
                                   keywords=kws)
-        data = range(1000)
-        data2 = range(1500)
+        data = list(range(1000))
+        data2 = list(range(1500))
 
         # Push SRI
         port.pushSRI(sri1)
@@ -2590,8 +2590,8 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                                   streamID="test_streamID",
                                   blocking=False,
                                   keywords=kws)
-        data = range(1000)
-        data2 = range(1500)
+        data = list(range(1000))
+        data2 = list(range(1500))
 
         # Push SRI
         port.pushSRI(sri1)
@@ -2763,9 +2763,9 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                                   streamID="test_streamID",
                                   blocking=False,
                                   keywords=kws)
-        data1 = range(3100)
-        data2 = range(1000)
-        data3 = range(3100)
+        data1 = list(range(3100))
+        data2 = list(range(1000))
+        data3 = list(range(3100))
 
         # Push SRI
         port.pushSRI(sri1)
@@ -2981,7 +2981,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         # Push SRI
         port.pushSRI(sri1)
 
-        data = range(1000)
+        data = list(range(1000))
 
         # Push SRI
 
@@ -3132,7 +3132,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def testHostByteOrderProp(self):
         #######################################################################
         # Test the host_byte_order property indicates correct host endianness
-        print "\n**TESTING HOST BYTE ORDER PROP VALUE"
+        print("\n**TESTING HOST BYTE ORDER PROP VALUE")
 
         # Create Component
         comp = sb.launch('../FileWriter.spd.xml')
@@ -3147,7 +3147,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         # Release the components and remove the generated files
         comp.releaseObject()
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
 
     def testCharPortDataFormatStringHostNoswap(self):
         #######################################################################
@@ -3212,7 +3212,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def charDataFormatStringTest(self, input_endian, swap_bytes, bluefile_out=False):
         #######################################################################
         # Test Data Format String for Char Port
-        print "\n**TESTING DATA FORMAT STRING FOR CHAR+INPUT=%s+SWAP=%s+BLUE=%s"%(input_endian,swap_bytes,bluefile_out)
+        print("\n**TESTING DATA FORMAT STRING FOR CHAR+INPUT=%s+SWAP=%s+BLUE=%s"%(input_endian,swap_bytes,bluefile_out))
 
         blue_file_atom = 1
         if ((input_endian == 'little_endian' or (input_endian == 'host_order' and sys.byteorder == 'little')) != swap_bytes):
@@ -3279,7 +3279,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         os.remove(dataFileIn)
         os.remove(expectedDataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testOctetPortDataFormatStringHostNoswap(self):
@@ -3315,7 +3315,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def octetDataFormatStringTest(self, input_endian, swap_bytes):
         #######################################################################
         # Test Data Format String for Octet Port
-        print "\n**TESTING DATA FORMAT STRING FOR OCTET+INPUT=%s+SWAP=%s"%(input_endian,swap_bytes)
+        print("\n**TESTING DATA FORMAT STRING FOR OCTET+INPUT=%s+SWAP=%s"%(input_endian,swap_bytes))
         
         
         data_format_string = '8o'
@@ -3370,7 +3370,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         os.remove(dataFileIn)
         os.remove(expectedDataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testShortPortDataFormatStringHostNoswap(self):
@@ -3436,7 +3436,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def shortDataFormatStringTest(self, input_endian, swap_bytes, bluefile_out=False):
         #######################################################################
         # Test Data Format String for Short Port
-        print "\n**TESTING DATA FORMAT STRING FOR SHORT+INPUT=%s+SWAP=%s"%(input_endian,swap_bytes)
+        print("\n**TESTING DATA FORMAT STRING FOR SHORT+INPUT=%s+SWAP=%s"%(input_endian,swap_bytes))
 
         # If input byte order is Little (or Host and Host is Little), and not byte swap --> Little Endian output
         # Otherwise, Big Endian output
@@ -3520,7 +3520,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         os.remove(dataFileIn)
         os.remove(expectedDataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testUShortPortDataFormatStringHostNoswap(self):
@@ -3586,7 +3586,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def ushortDataFormatStringTest(self, input_endian, swap_bytes, bluefile_out=False):
         #######################################################################
         # Test Data Format String for UShort Port
-        print "\n**TESTING DATA FORMAT STRING FOR USHORT+INPUT=%s+SWAP=%s+BLUE=%s"%(input_endian,swap_bytes,bluefile_out)
+        print("\n**TESTING DATA FORMAT STRING FOR USHORT+INPUT=%s+SWAP=%s+BLUE=%s"%(input_endian,swap_bytes,bluefile_out))
 
         # If input byte order is Little (or Host and Host is Little), and not byte swap --> Little Endian output
         # Otherwise, Big Endian output
@@ -3655,7 +3655,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         os.remove(dataFileIn)
         os.remove(expectedDataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testFloatPortDataFormatStringHostNoswap(self):
@@ -3721,7 +3721,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def floatDataFormatStringTest(self, input_endian, swap_bytes, bluefile_out=False):
         #######################################################################
         # Test Data Format String for Float Port
-        print "\n**TESTING DATA FORMAT STRING FOR FLOAT+INPUT=%s+SWAP=%s+BLUE=%s"%(input_endian,swap_bytes,bluefile_out)
+        print("\n**TESTING DATA FORMAT STRING FOR FLOAT+INPUT=%s+SWAP=%s+BLUE=%s"%(input_endian,swap_bytes,bluefile_out))
 
         # If input byte order is Little (or Host and Host is Little), and not byte swap --> Little Endian output
         # Otherwise, Big Endian output
@@ -3790,7 +3790,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         os.remove(dataFileIn)
         os.remove(expectedDataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testDoublePortDataFormatStringHostNoswap(self):
@@ -3856,7 +3856,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def doubleDataFormatStringTest(self, input_endian, swap_bytes, bluefile_out=False):
         #######################################################################
         # Test Data Format String for Double Port
-        print "\n**TESTING DATA FORMAT STRING FOR DOUBLE+INPUT=%s+SWAP=%s+BLUE=%s"%(input_endian,swap_bytes,bluefile_out)
+        print("\n**TESTING DATA FORMAT STRING FOR DOUBLE+INPUT=%s+SWAP=%s+BLUE=%s"%(input_endian,swap_bytes,bluefile_out))
 
         # If input byte order is Little (or Host and Host is Little), and not byte swap --> Little Endian output
         # Otherwise, Big Endian output
@@ -3925,7 +3925,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         os.remove(dataFileIn)
         os.remove(expectedDataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testXmlPortDataFormatStringHostNoswap(self):
@@ -3961,7 +3961,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def xmlDataFormatStringTest(self, input_endian, swap_bytes):
         #######################################################################
         # Test Data Format String for Xml Port
-        print "\n**TESTING DATA FORMAT STRING FOR XML+INPUT=%s+SWAP=%s"%(input_endian,swap_bytes)
+        print("\n**TESTING DATA FORMAT STRING FOR XML+INPUT=%s+SWAP=%s"%(input_endian,swap_bytes))
         
         
         data_format_string = '8t'
@@ -4008,7 +4008,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         source.releaseObject()
         os.remove(expectedDataFileOut)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
     def testByteOrderMidFileRawNoStreams(self):
@@ -4054,10 +4054,10 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def byteChangeByteOrderPropsMidFile(self, bluefile_out, change_swap, change_input, close_streams):
         #######################################################################
         # Test Byte Swap Mid-File
-        print "\n**TESTING BYTE %s%s CHANGE IN MIDDLE OF %s FILE WITH %s STREAMS"%('SWAP'  if change_swap   else '',
+        print("\n**TESTING BYTE %s%s CHANGE IN MIDDLE OF %s FILE WITH %s STREAMS"%('SWAP'  if change_swap   else '',
                                                                                    'ORDER' if change_input  else '',
                                                                                    'BLUE'  if bluefile_out  else 'RAW',
-                                                                                   'NO'    if close_streams else 'ACTIVE')
+                                                                                   'NO'    if close_streams else 'ACTIVE'))
 
         # Input byte order is Little and not byte swap --> Little Endian output
         blue_file_atom = 2
@@ -4189,7 +4189,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         if os.path.exists(expectedDataFileOut2):
             os.remove(expectedDataFileOut2)
 
-        print "........ PASSED\n"
+        print("........ PASSED\n")
         return
 
 if __name__ == "__main__":
