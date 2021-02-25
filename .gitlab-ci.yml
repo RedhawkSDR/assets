@@ -10,7 +10,7 @@ variables:
   namespace: rh.
   asset_name: none
   lowercase_asset_name: None
-  latest_version: develop-py3
+  latest_version: 'feature/cf-2276-py3-rh-base'
   release_version: $rh_develop_release
   short_version: '3.0'
   arch: x86_64
@@ -51,7 +51,7 @@ before_script:
         rpm_release="`rpm --query --queryformat "%{release}\n" --specfile $namespace$asset_name.spec | head -n 1 | awk -F"." "{print $1}"`.rh${safe_version}"
         cd - ;
       fi
-    - redhawk_repo=$s3_repo_url/$redhawk_repo_proj/yum/$redhawk_version/$dist/$arch
+    - redhawk_repo=$s3_repo_url/$redhawk_repo_proj/yum/$redhawk_version/py3/$dist/$arch
     - rtl_repo=$s3_repo_url/redhawk-dependencies/librtlsdr/yum/0.5.2/$dist/$arch
     - librf_repo=$s3_repo_url/redhawk-dependencies/libRfSimulators/yum/develop/$dist/$arch
     - asset_repo=$s3_repo_url/redhawk/assets/yum/$redhawk_version/$dist/$arch
@@ -331,7 +331,7 @@ deploytests:
     - for file in `find output -name *.rpm`; do
         cp $file $arch;
       done
-    - /usr/bin/s3cmd put -F -v -r $arch/ s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_NAME/$dist/$arch/  && s3cmd setacl -v s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_NAME/$dist --acl-public --recursive || true
+    - /usr/bin/s3cmd put -F -v -r $arch/ s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_NAME/py3/$dist/$arch/  && s3cmd setacl -v s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_NAME/py3/$dist --acl-public --recursive || true
   only:
     variables:
       - $latest_version =~ /^develop.*$/
@@ -346,7 +346,7 @@ deploytests:
   script:
     - /usr/bin/s3cmd sync s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_NAME/$dist/$arch .
     - repomanage --old $arch| xargs rm -f; createrepo --update $arch
-    - /usr/bin/s3cmd sync -F -v --delete-removed $arch s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_NAME/$dist/  && s3cmd setacl -v s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_NAME/$dist --acl-public --recursive || true
+    - /usr/bin/s3cmd sync -F -v --delete-removed $arch s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_NAME/py3/$dist/  && s3cmd setacl -v s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_NAME/py3/$dist --acl-public --recursive || true
 
   only:
     variables:
