@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-AC_INIT(rh.psk_soft, 2.0.2)
+AC_INIT(rh.psk_soft, 2.1.0)
 AM_INIT_AUTOMAKE([nostdinc foreign])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -32,8 +32,8 @@ OSSIE_SDRROOT_AS_PREFIX
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Dependencies
-PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 2.0 omniORB4 >= 4.1.0])
-PKG_CHECK_MODULES([INTERFACEDEPS], [bulkio >= 2.0])
+PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 3.0 omniORB4 >= 4.2.3])
+PKG_CHECK_MODULES([INTERFACEDEPS], [bulkio >= 3.0])
 OSSIE_ENABLE_LOG4CXX
 AX_BOOST_BASE([1.41])
 AX_BOOST_SYSTEM

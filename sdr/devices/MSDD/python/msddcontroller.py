@@ -180,7 +180,7 @@ class Connection(object):
         address: tuple (ip, port)
         timeout: default time in seconds to wait when receiving a message
         """
-	self._debug=False
+        self._debug=False
         self.__mutexLock = threading.Lock()
         self.radioAddress = address
         self.radioSocket=None
@@ -827,14 +827,14 @@ class baseIPPModule(baseModule):
         return ipp_args
 
     def setAddressPort(self,ip_address, port, interface=None):
-	ipp_args=self._formatIPPargs(ip_address,port,interface)
+        ipp_args=self._formatIPPargs(ip_address,port,interface)
         self.setIPP(ipp_args)
         # validate return..and check for interface
         self.validateIPP(ipp_args)
         return True
 
     def validateIPP(self,ipp_args):
-	ipp_resp=self.getIPP()
+        ipp_resp=self.getIPP()
         ipp_set = ipp_args.split(":")
         if self._debug:
             print("baseIPPModule, validateIPP ipp_args: ", ipp_args, " result: ", ipp_resp)
@@ -861,7 +861,7 @@ class baseIPPModule(baseModule):
     def getIPP(self):
         """ Gets the  IP and UDP port setting for the module"""
         resp = self.send_query_command("IPP")
-	response=[]
+        response=[]
         try:
             response = self.parseResponse(resp, 3,':')
         except:
@@ -3054,7 +3054,7 @@ class OUTModule(baseIPPModule):
         self.send_set_command("ENB",str(enable_arg))
 
     def getEnable(self):
-	try:
+        try:
             resp = self.send_query_command("ENB")
             if self._debug:
                 print("OUTModule,  getEnable resp ", resp)
@@ -4233,7 +4233,7 @@ class MSDDRadio:
         self.msdr_rs422_modules = []                        #MSDR_RS422
         self.tfn_modules = []                               #TFN
         self.gps_modules = []                               #GPS
-	self._debug=radio_debug
+        self._debug=radio_debug
         
         #setup the basic modules    
         self.console = ConsoleModule(self.connection)       #CON

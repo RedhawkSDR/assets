@@ -18,15 +18,15 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-
+asset_version="rh.USRP_UHD-6.2.0"
 if [ "$1" = "rpm" ]; then
     # A very simplistic RPM build scenario
     if [ -e rh.USRP_UHD.spec ]; then
         mydir=`dirname $0`
         tmpdir=`mktemp -d`
-        cp -r ${mydir} ${tmpdir}/rh.USRP_UHD-6.1.1
-        tar czf ${tmpdir}/rh.USRP_UHD-6.1.1.tar.gz --exclude=".svn" --exclude=".git" -C ${tmpdir} rh.USRP_UHD-6.1.1
-        rpmbuild -ta ${tmpdir}/rh.USRP_UHD-6.1.1.tar.gz
+        cp -r ${mydir} ${tmpdir}/$asset_version
+        tar czf ${tmpdir}/$asset_version.tar.gz --exclude=".svn" --exclude=".git" -C ${tmpdir} $asset_version
+        rpmbuild -ta ${tmpdir}/$asset_version.tar.gz
         rm -rf $tmpdir
     else
         echo "Missing RPM spec file in" `pwd`

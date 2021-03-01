@@ -634,9 +634,9 @@ class MSDD_i(MSDD_base):
         Called when RF Flow ID is passed to this device, update all the tuner_status objects
         """
         self.info_msg('Setting rf_flow_id to {0}',rf_flow_id)
-	self.device_rf_flow = rf_flow_id
-	for tuner_num in range(0,len(self.frontend_tuner_status)):
-	    self.frontend_tuner_status[tuner_num].rf_flow_id = self.device_rf_flow
+        self.device_rf_flow = rf_flow_id
+        for tuner_num in range(0,len(self.frontend_tuner_status)):
+            self.frontend_tuner_status[tuner_num].rf_flow_id = self.device_rf_flow
 
 
     def update_msdd_status(self):

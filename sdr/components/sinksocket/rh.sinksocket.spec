@@ -31,7 +31,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.sinksocket
-Version:        2.1.0
+Version:        2.2.0
 Release:        1%{?dist}
 Summary:        Component %{name}
 
@@ -40,13 +40,13 @@ License:        LGPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.2
-Requires:       redhawk >= 2.2
+BuildRequires:  redhawk-devel >= 3.0
+Requires:       redhawk >= 3.0
 
 
 # Interface requirements
-BuildRequires:  bulkioInterfaces >= 2.2
-Requires:       bulkioInterfaces >= 2.2
+BuildRequires:  bulkioInterfaces >= 3.0
+Requires:       bulkioInterfaces >= 3.0
 
 # Allow upgrades from previous package name
 Obsoletes:      sinksocket < 2.0.0

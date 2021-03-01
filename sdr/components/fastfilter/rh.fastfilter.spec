@@ -29,8 +29,8 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.fastfilter
-Version:        2.0.2
-Release:        4%{?dist}
+Version:        2.1.0
+Release:        0%{?dist}
 Summary:        Component %{name}
 
 Group:          REDHAWK/Components
@@ -38,8 +38,8 @@ License:        GPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
-Requires:       redhawk >= 2.0
+BuildRequires:  redhawk-devel >= 3.0
+Requires:       redhawk >= 3.0
 
 # Shared library requirements
 BuildRequires:  rh.dsp-devel >= 2.0
@@ -48,8 +48,8 @@ BuildRequires:  rh.fftlib-devel >= 2.0
 Requires:       rh.fftlib >= 2.0
 
 # Interface requirements
-BuildRequires:  bulkioInterfaces >= 2.0
-Requires:       bulkioInterfaces >= 2.0
+BuildRequires:  bulkioInterfaces >= 3.0
+Requires:       bulkioInterfaces >= 3.0
 
 # Allow upgrades from previous package name
 Obsoletes:      fastfilter < 2.0.0
