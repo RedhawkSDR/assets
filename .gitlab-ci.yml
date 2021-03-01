@@ -1462,4 +1462,3 @@ create-repo:el7:3.0:
     - deploy-el7-3.0:socket_loopback_demo
     - deploy-el7-3.0:vita49_loopback_demo
 
-
