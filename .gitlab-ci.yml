@@ -214,7 +214,7 @@ before_script:
     - comp_type=${arr[$count]}
     - cd tests
     - env | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
-    - pip list | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
+    - pip3 list | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
     - python3 test_$asset_name.py 2>&1 | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
     - cd ..
     - if [ -d cpp ]; then
