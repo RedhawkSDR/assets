@@ -192,6 +192,7 @@ int fastfilter_i::serviceFunction()
                         i->second.filter->flush();
         }
         bool updateSRI = tmp->sriChanged;
+
         if(bypassMode){	        
                 LOG_TRACE(fastfilter_i, "BYPASS MODE PUSHING INPUT AS OUTPUT");
                 if(updateSRI)
@@ -205,11 +206,13 @@ int fastfilter_i::serviceFunction()
                 delete tmp;
                 return NORMAL;
         }
+
     float fs = 1.0/tmp->SRI.xdelta;
         {
                 boost::mutex::scoped_lock lock(filterLock_);
                 map_type::iterator i = filters_.find(tmp->streamID);
                 firfilter* filter=NULL;
+
                 if (i==filters_.end())
                 {
                         //this is a new stream - need to create a new filter & wrapper
@@ -219,7 +222,6 @@ int fastfilter_i::serviceFunction()
                                 LOG_DEBUG(fastfilter_i, "using manual taps ");
                                 bool real, complex;
                                 getManualTaps(real,complex);
-
                                 if (real)
                                         filter = new firfilter(fftSize, realOut, complexOut, realTaps_);
                                 else if(complex)
@@ -257,6 +259,10 @@ int fastfilter_i::serviceFunction()
                 else{
                         filter = i->second.filter;
                 }
+
+
+                //Adjust timecode with the offset for the start of this packet
+                i->second.adjustTC(tmp->T);
                 //if we are in design mode and the sample rate has changed - redesign and apply our filter
                 if (!manualTaps_ && i->second.hasSampleRateChanged(fs))
                 {
@@ -271,7 +277,7 @@ int fastfilter_i::serviceFunction()
                                 filter->setTaps(realTaps_);
                         }
                 }
-                //long samplesDiff=0;
+                long samplesDiff=0;
                 //now process the data
                 if (tmp->SRI.mode==1)
                 {
@@ -279,12 +285,15 @@ int fastfilter_i::serviceFunction()
                         //run the filter
                         std::vector<std::complex<float> >* cxData = (std::vector<std::complex<float> >*) &(tmp->dataBuffer);
                         filter->newComplexData(*cxData);
+                        samplesDiff=cxData->size();
                 }
                 else
                 {
                         //data is real
                         //run the filter
                         filter->newRealData(tmp->dataBuffer);
+                        samplesDiff=tmp->dataBuffer.size();
+
                         //we might have a single complex frame if the previous data was complex and there were
                         //complex data still in the filter taps
                         if (!complexOut.empty())
@@ -299,6 +308,11 @@ int fastfilter_i::serviceFunction()
                 //if we have an eos - remove the wrapper from the container
                 filters_.erase(i);
             }
+            else{
+                //adjust timecode offset for next packet based upon (samples received - samples consumed)
+                samplesDiff-=(complexOut.size() + realOut.size());
+                i->second.adjustOffset(samplesDiff);
+            }
         }
 
         //to do -- adjust time stamps appropriately on all these output pushes
@@ -308,7 +322,6 @@ int fastfilter_i::serviceFunction()
     }
     if (!complexOut.empty())
     {
-
         std::vector<float>* tmpRealOut = (std::vector<float>*) &(complexOut);
         dataFloat_out->pushPacket(*tmpRealOut, tmp->T, tmp->EOS, tmp->streamID);
     }
