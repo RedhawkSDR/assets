@@ -101,6 +101,7 @@ class CompositeMSDD_i(MSDD_i):
         we need our properties initialized first before we can proceed.  the postContructor method is called
         by MSDD_Controller after launch and property initialization.
         """
+        self.msdd_lock=threading.Lock()
         self.MSDD = None                     # provided by MSDD_Controller
         self.msdd_console = None             # resolved when self.MSDD is assigned
         self.device_rf_flow = ""             # flow id assigned to this device
@@ -113,6 +114,8 @@ class CompositeMSDD_i(MSDD_i):
         self.tuner_allocation_ids = []       # allocation ids for all tuner allocation requests
         self.rx_channel_tuner_status={}      # reverse lookup of MSDD rx_channel to frontend_tuner_status object
         self.receiver_identifier=None        # assigned receiver identifier RCV:1, etc..
+        self._enableTimeChecks=False          # process method is auto started.. disable time variance checks until time of day module is configured
+        self._nextTimeCheck=None
 
     def postConstructor(self):
         """
@@ -127,11 +130,14 @@ class CompositeMSDD_i(MSDD_i):
         # set our assigned receiver identifer, we filter channels based on the source receiver id
         self.msdd_status.receiver_identifier=self.receiver_identifier
 
+        #update status information
+        self.update_msdd_status()
+
         # initilize frontend_tuner_status objects for our rx_channels
         self.update_tuner_status()
         
         self.debug_msg("Create output configuration for assigned tuners and fft channels ")
-        self.update_output_configuration()
+        self.create_output_configuration()
 
         self.debug_msg("Update tuner status with output configuration")
         self.update_tuner_status()
@@ -175,7 +181,6 @@ class CompositeMSDD_i(MSDD_i):
                     self.msdd.ip_address = self.MSDD.radioAddress[0]
                     self.msdd.port = self.MSDD.radioAddress[1]
                     self.msdd_console = self.MSDD.console
-                    self.update_msdd_status()
             except:
                 if logging.NOTSET < self._baseLog.level < logging.INFO:
                     traceback.print_exc()

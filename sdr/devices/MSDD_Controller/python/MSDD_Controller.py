@@ -140,6 +140,7 @@ class MSDD_Controller_i(MSDD_Controller_base,DynamicComponent):
 
         # thread is auto started.. wait until we fully initialized to start time variance checks
         self._enableTimeChecks=False
+        self._nextTimeCheck=None
 
         # determine time source method and output protocol
         self.output_protocol=self.determine_output_protocol()
@@ -160,12 +161,12 @@ class MSDD_Controller_i(MSDD_Controller_base,DynamicComponent):
             # initialize time of day module
             try:
                 # initialize time of day module with TimeOfDay class
-                self._time_of_day=TimeOfDay(self.MSDD, 
+                self._time_of_day=TimeOfDay(self.MSDD.get_timeofday_module(),
                                             self,          
                                             self.enable_time_checks, 
                                             self.host_delta_cb, 
                                             self.ntp_status_cb)
-                self._time_of_day.initialize(self.time_of_day, self.output_protocol)
+                self._time_of_day.initialize(self.time_of_day, self.output_protocol,enable_thread=True)
             except:
                 traceback.print_exc()
                 raise CF.LifeCycle.InitializeError(self.format_msg_with_radio("Failure to process time of day configuration"))
@@ -292,10 +293,9 @@ class MSDD_Controller_i(MSDD_Controller_base,DynamicComponent):
 
             self.MSDD = MSDDRadio(self.msdd.ip_address,
                                   self.msdd.port,
-                                  self.msdd.timeout,
-                                  enable_inline_swddc=self.advanced.enable_inline_swddc,
-                                  enable_fft_channels=self.advanced.enable_fft_channels)
-
+                                  udp_timeout=min(0.2,self.msdd.timeout),
+                                  enable_fft_channels=self.advanced.enable_fft_channels,
+                                  radio_debug=False)
 
             rate_failure = None
             for net_mods in self.MSDD.network_modules:
@@ -330,18 +330,51 @@ class MSDD_Controller_i(MSDD_Controller_base,DynamicComponent):
         return "{0}:{1}/Controller".format(self.msdd.ip_address, self.msdd.port )
 
     def process_clock_ref(self):
-        for board_num in range(0,len(self.MSDD.board_modules)):
-            self.MSDD.board_modules[board_num].object.setExternalRef(self.msdd.clock_ref)
+        """
+        Process external clock reference settings, this happens once during device startup
+        """
+        if self.MSDD == None:
+            return
+        try:
+            idn=self.MSDD.msdd_id 
+            self.info_msg('Setting external reference clock to {} for msdd id {} ',self.msdd.clock_ref, idn)
+            
+            # for the 660D dual channel receiver, use the board module to determine/configure reference clock
+            if '0660D' in idn[0]:
+                for board_num in range(0,len(self.MSDD.board_modules)):
+                    self.MSDD.board_modules[board_num].object.setExternalRef(self.msdd.clock_ref)
+        except Exception as e:
+            self.error_msg('Exception occurred on MSDD {} ' \
+                          ' when trying to configure external reference clock to {}, reason {} ',
+                           self.msddReceiverInfo(),
+                           self.msdd.clock_ref,
+                           e,
+                           no_id=True)
 
     def enable_time_checks(self, time_was_set=False):
+        """
+        Callback provided to TimeHelper to signal that initial time synchronization has completed
+        """
         self._enableTimeChecks=time_was_set
+        # check if we should be tracking time variances
+        if self.time_of_day.tracking_interval > 0.0 :
+            self._nextTimeCheck=time.time()+self.time_of_day.tracking_interval
 
     def host_delta_cb(self, new_delta):
-        self.debug_msg('host_delta_cb delta {0}',new_delta)
-        self.msdd_status.tod_host_delta = new_delta
+        """
+        Callback provided to TimeHelper to record the new delta between host time and the radio
+        """
+        try:
+            self.trace_msg('host_delta_cb delta {0}',new_delta)
+            self.msdd_status.tod_host_delta = new_delta
+        except:
+            traceback.print_exc()
 
     def ntp_status_cb(self, is_running):
-        self.msdd_status.tod_ntp_running = is_running
+        """
+        Callback provided to TimeHelper to determine if NTP service is running
+        """
+        self.msdd_status.ntp_running = is_running
 
     def determine_output_protocol(self, default_proto='sdds'):
         """
@@ -401,7 +434,7 @@ class MSDD_Controller_i(MSDD_Controller_base,DynamicComponent):
                 self.msdd_status.tod_meter_list = tod.meter_readable
                 self.msdd_status.tod_tod_reference_adjust = str(tod.ref_adjust)
                 self.msdd_status.tod_track_mode_state = str(tod.ref_track)
-                self.msdd_status.tod_bit_state = tod.getBITStr(self.check_tod_bit(force=True))
+                self.msdd_status.tod_bit_state = tod.getBITStr(None)
                 self.msdd_status.tod_toy = str(tod.toy)
 
             self.trace_msg("Completed update msdd_status")
@@ -414,17 +447,36 @@ class MSDD_Controller_i(MSDD_Controller_base,DynamicComponent):
         return True
         
     def process(self):
+        #
+        # if time_helper has completed initial check and 
+        # configuration is enable time variance tracking
+        #
         if self._enableTimeChecks and self.MSDD:
-            try:
-                if self._time_of_day:
-                    self._time_of_day.monitor_time_variances()
-            except Exception as e:
-                self.warn_msg('Exception occurred when performing time variance monitoring:\n{0}\n',
-                              e)
+
+            #
+            # check if time variance check is enabled
+            #
+            if self.time_of_day.tracking_interval > 0:
                 
-        if time.time() > self.update_msdd_status_mark+self.interval_update_msdd_status:
-            self.update_msdd_status()
-            self.update_msdd_status_mark = time.time()
+                #
+                # is the next time check value set..
+                #
+                if self._nextTimeCheck:
+                    if time.time() > self._nextTimeCheck:
+                        try:
+                            # let time helper module use the radio
+                            self.msdd_lock.acquire()
+                            if self._time_of_day:
+                                self._time_of_day.monitor_time_variances()
+                        except Exception as e:
+                            self.warn_msg('Exception occurred when performing time variance monitoring:\n{0}\n',
+                                          e)
+                        finally:
+                            self.msdd_lock.release()
+                        self._nextTimeCheck=time.time()+self.time_of_day.tracking_interval
+                else:
+                    # we are tracking but interval was not set
+                    self._nextTimeCheck=time.time()+self.time_of_day.tracking_interval
 
         self.updateUsageState()
         
