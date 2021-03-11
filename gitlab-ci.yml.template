@@ -45,8 +45,6 @@ before_script:
     - redhawk_repo=${s3_repo_url}$redhawk_repo_proj/yum/__REDHAWK_VERSION__/$dist/$arch
     - rtl_repo=${s3_repo_url}redhawk-dependencies/librtlsdr/yum/0.5.2/$dist/$arch
     - librf_repo=${s3_repo_url}redhawk-dependencies/librfsimulators/yum/develop/$dist/$arch
-    #- uhd_repo=${s3_repo_url}redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch # el6
-    #- uhd_repo=${s3_repo_url)redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch # el7
     - asset_repo=${s3_repo_url}redhawk/assets/yum/$redhawk_version/$dist/$arch
 
 .create_local_repo: &create_local_repo
@@ -74,6 +72,9 @@ before_script:
     - redhawk
     - docker
   script:
+     - echo "librf_repo => $librf_repo"
+     - echo "redhawk_repo => $redhawk_repo"
+     - echo "rtl_repo => $rtl_repo"
      - cd $(find -maxdepth 3 -name ${asset_name})
      - printf "FROM ${docker_registry}${rpmbuild_repository}toa/rpmbuild:$dist-$arch-onbuild" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
@@ -83,7 +84,7 @@ before_script:
                           --build-arg "rpm_release=$rpm_release"
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
-                          --build-arg "other_repos=$redhawk_repo $rtl_repo $uhd_repo $librf_repo" .
+                          --build-arg "other_repos=$redhawk_repo $rtl_repo $librf_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output
      - cd ../../..
@@ -105,6 +106,9 @@ before_script:
     - redhawk
     - docker
   script:
+     - echo "librf_repo => $librf_repo"
+     - echo "redhawk_repo => $redhawk_repo"
+     - echo "rtl_repo => $rtl_repo"
      - cd $(find -maxdepth 3 -name ${asset_name})
      - cp -R ../../../output local_yumrepo
      - rm -rf ../../../output/*
@@ -117,7 +121,7 @@ before_script:
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
                           --build-arg "local_repo=local_yumrepo"
-                          --build-arg "other_repos=$redhawk_repo $rtl_repo $uhd_repo $librf_repo" .
+                          --build-arg "other_repos=$redhawk_repo $rtl_repo $librf_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output
      - cd ../../..
@@ -144,7 +148,6 @@ before_script:
     - . /usr/local/redhawk/python-virtualenv/bin/activate
     - yum-config-manager --add-repo $redhawk_repo
     - yum-config-manager --add-repo $rtl_repo
-#    - yum-config-manager --add-repo $uhd_repo
     - yum-config-manager --add-repo $librf_repo
     - cp -R output local_yumrepo || true
     - yum-config-manager --add-repo file://$(pwd)/local_yumrepo
@@ -185,7 +188,7 @@ before_script:
       - /^(\d+\.)?(\d+)?(\.\d+)$/      
 
 assembletests:
-  image: ${docker_registry}toa/centos:centos7
+  image: ${docker_registry}toa/centos7-evo
   stage: test_assembly
   before_script:
     - echo "Assembling the test results from the different component tests"
