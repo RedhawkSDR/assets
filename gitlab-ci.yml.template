@@ -177,7 +177,7 @@ before_script:
 
 
 .test: &test
-  image: ${docker_registry}redhawk/buildenv:${short_version}-$dist-$arch
+  image: ${docker_registry}redhawk/buildenv:${short_version}-py3-$dist-$arch
   stage: test
   tags:
     - ca
