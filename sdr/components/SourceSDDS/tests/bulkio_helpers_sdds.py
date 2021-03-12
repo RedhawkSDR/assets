@@ -22,7 +22,6 @@ from ossie.cf import CF, CF__POA
 import time
 from ossie.utils import uuid
 import threading
-from new import classobj
 import bulkio
 
 def create_cputime_stamp():
@@ -129,7 +128,7 @@ class ArraySource:
         #    bases:       A tuple containing all the base classes to use
         #    dct:         A dictionary containing all the attributes such as
         #                 functions, and class variables
-        PortClass = classobj('PortClass',
+        PortClass = type('PortClass',
                              (CF__POA.Port,),
                              {'connectPort':self.connectPort,
                               'disconnectPort':self.disconnectPort})
@@ -263,7 +262,7 @@ class ArraySink:
         #    bases:       A tuple containing all the base classes to use
         #    dct:         A dictionary containing all the attributes such as
         #                 functions, and class variables
-        PortClass = classobj('PortClass',
+        PortClass = type('PortClass',
                              (self.port_type,),
                              {'pushPacket':self.pushPacket,
                               'pushSRI':self.pushSRI})

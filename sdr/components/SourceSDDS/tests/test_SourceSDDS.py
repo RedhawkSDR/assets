@@ -176,7 +176,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         # Validate correct amount of data was received
         self.assertEqual(len(data), 1024)
         # Validate data is correct
-        self.assertEqual([chr(i) for i in data[:256]], list(struct.pack('256B', *fakeData[:256])))
+        import pdb
+        pdb.set_trace()
+        self.assertEqual( data[:256], list(struct.pack('256B', *fakeData[:256])))
         self.assertEqual(self.comp.status.dropped_packets, 0)
         
         
@@ -514,7 +516,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         # Validate correct amount of data was received
         self.assertEqual(len(data), 1024)
         # Validate data is correct
-        self.assertEqual([chr(i) for i in data[:256]], list(struct.pack('256B', *fakeData[:256])))
+        
+        self.assertEqual(data[:256], list(struct.pack('256B', *fakeData[:256])))
         self.assertEqual(self.comp.status.dropped_packets, 0)
         
         

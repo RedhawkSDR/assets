@@ -173,14 +173,14 @@ class SddsHeader:
         # instantaneous frequency of the last SSC of the packet and the
         # instantaneous frequency of the first SSC of the packet divided by the
         # packet duration.
-        self.dfdt = DFDT # df/dt (4 bytes)
+        self.dfdt = int(DFDT) # df/dt (4 bytes)
 
         #######################################################################
         # The frequency field shall be a 64-bit signed number containing the
         # frequency of the SSC in two's complement notation with the LSB value
         # equal to (125-MHz) / 2^63. This value will represent the instantaneous
         # frequency of the SSC associated with the first sample of the frame.
-        self.freq = FREQ # (8 bytes)
+        self.freq = int(FREQ) # (8 bytes)
 
         #######################################################################
         # 24 bytes

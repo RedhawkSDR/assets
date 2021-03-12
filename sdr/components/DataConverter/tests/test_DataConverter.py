@@ -25,7 +25,6 @@ from ossie.utils.bulkio import bulkio_data_helpers
 import sys
 import time
 import threading
-from new import classobj
 from omniORB import any, CORBA
 from bulkio.bulkioInterfaces import BULKIO, BULKIO__POA
 import bulkio
