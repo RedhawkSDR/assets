@@ -94,7 +94,7 @@ def phasemodulate(inSig):
    """
    out = []
    #start the phasor at pi/2 to avoid an offset
-   phasor = [math.pi//2,math.pi,3*math.pi//2,0]
+   phasor = [math.pi/2,math.pi,3*math.pi/2,0]
    for i, d in enumerate(inSig):
      ph = phasor[i%4]
      out.append(math.cos(ph+d*math.pi*2))
@@ -103,7 +103,7 @@ def phasemodulate(inSig):
 def freqmodulate(inSig):
    """ freq modulate the signal to fs/4
    """
-   phasor = [math.pi//2,math.pi,3*math.pi//2,0]
+   phasor = [math.pi/2,math.pi,3*math.pi/2,0]
    #start the phasor at pi/2 to avoid an osset
    out =[]
    f=0
