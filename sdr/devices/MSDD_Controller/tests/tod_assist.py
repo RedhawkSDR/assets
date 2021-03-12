@@ -4,11 +4,11 @@ import sys
 import time
 import traceback
 import re
-from datetime import datetime, timedelta
+import datetime
 from msdd_connection import *
 
 def get_seconds_from_start_of_year():
-    utcdiff = datetime.utcnow() - datetime(int(datetime.now().year),1,1)
+    utcdiff = datetime.datetime.utcnow() - datetime.datetime(int(datetime.datetime.now().year),1,1)
     whole_sec = (utcdiff.seconds + utcdiff.days * 24 * 3600)
     frac_sec = utcdiff.microseconds / 1e6
     return whole_sec+frac_sec
