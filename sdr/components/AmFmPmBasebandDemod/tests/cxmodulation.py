@@ -24,7 +24,7 @@ def getHilbertWin(nTap,window=False):
     #quick method to generate a hilbert transform
     positive = []
     c = 2/math.pi
-    for i in range(1,(nTap+1)/2,2):
+    for i in range(1,(nTap+1)//2,2):
         val = c/i
         positive.append(val)
         positive.append(0)
@@ -54,7 +54,7 @@ def upperSideBand2(input,numTaps=127, window=True):
     #this implementation is the mux of the hilbert transform with the input
     hil = hilbertTransform(input,numTaps,window)
     numMissing = len(input)-len(hil)
-    numStart = numMissing/2
+    numStart = numMissing//2
     out = [complex(x,y) for (x,y) in zip(input[numStart:],hil)]
     return out
 
@@ -66,7 +66,7 @@ def upperSideBand(input,numTaps=127,window=True):
     h = getHilbertWin(numTaps,window)
     sideBandH = [complex(0,x) for x in h]
     filtLen = len(h)
-    sideBandH[filtLen/2]= sideBandH[filtLen/2]+1
+    sideBandH[filtLen//2]= sideBandH[filtLen//2]+1
     return firfilter(input,sideBandH)    
 
 def cxBB(input,numTaps=127,window=True):
@@ -81,7 +81,7 @@ def cxBB(input,numTaps=127,window=True):
 
 def getFilterDelay(inSig,outSig):
     numMissing = len(inSig)-len(outSig)
-    delay = numMissing/2
+    delay = numMissing//2
     return delay
 
 #all of these little modulation methods use 
@@ -94,7 +94,7 @@ def phasemodulate(inSig):
    """
    out = []
    #start the phasor at pi/2 to avoid an offset
-   phasor = [math.pi/2,math.pi,3*math.pi/2,0]
+   phasor = [math.pi//2,math.pi,3*math.pi//2,0]
    for i, d in enumerate(inSig):
      ph = phasor[i%4]
      out.append(math.cos(ph+d*math.pi*2))
@@ -103,7 +103,7 @@ def phasemodulate(inSig):
 def freqmodulate(inSig):
    """ freq modulate the signal to fs/4
    """
-   phasor = [math.pi/2,math.pi,3*math.pi/2,0]
+   phasor = [math.pi//2,math.pi,3*math.pi//2,0]
    #start the phasor at pi/2 to avoid an osset
    out =[]
    f=0
