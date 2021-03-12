@@ -56,7 +56,6 @@ SddsToBulkIOProcessor::SddsToBulkIOProcessor(bulkio::OutOctetPort *octet_out, bu
 	m_sri.yunits= 0;
 	m_sri.blocking= false;
 	m_start_of_year = getStartOfYear();
-	__debug_pkt_cnt = 0;
 }
 
 SddsToBulkIOProcessor::~SddsToBulkIOProcessor() {
