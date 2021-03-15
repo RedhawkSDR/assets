@@ -241,8 +241,29 @@ assembletests:
     - cd ..
   dependencies:
     - test:el7:rh3.0:AmFmPmBasebandDemod
+    - test:el7:rh3.0:ArbitraryRateResampler
+    - test:el7:rh3.0:DataConverter
+    - test:el7:rh3.0:FileReader
+    - test:el7:rh3.0:FileWriter
+    - test:el7:rh3.0:HardLimit
     - test:el7:rh3.0:RBDSDecoder
+    - test:el7:rh3.0:SigGen
+    - test:el7:rh3.0:SinkSDDS
+    - test:el7:rh3.0:SinkVITA49
     - test:el7:rh3.0:SourceSDDS
+    - test:el7:rh3.0:SourceVITA49
+    - test:el7:rh3.0:TuneFilterDecimate
+    - test:el7:rh3.0:agc
+    - test:el7:rh3.0:autocorrelate
+    - test:el7:rh3.0:fastfilter
+    - test:el7:rh3.0:fcalc
+    - test:el7:rh3.0:psd
+    - test:el7:rh3.0:psk_soft
+    - test:el7:rh3.0:sinksocket
+    - test:el7:rh3.0:sourcesocket
+    - test:el7:rh3.0:FmRdsSimulator
+    - test:el7:rh3.0:RTL2832U
+    - test:el7:rh3.0:USRP_UHD
   artifacts:
     paths:
       - results 
@@ -484,6 +505,160 @@ deploy-el7-3.0:AmFmPmBasebandDemod:
     - package:el7:rh3.0:AmFmPmBasebandDemod
   <<: *s3
 
+package:el7:rh3.0:ArbitraryRateResampler:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:ArbitraryRateResampler:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:ArbitraryRateResampler:
+  variables:
+    dist: el7
+    asset_name: ArbitraryRateResampler
+    lowercase_asset_name: arbitraryrateresampler
+  dependencies:
+    - package:el7:rh3.0:ArbitraryRateResampler
+  <<: *s3
+
+package:el7:rh3.0:DataConverter:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:DataConverter:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:DataConverter:
+  variables:
+    dist: el7
+    asset_name: DataConverter
+    lowercase_asset_name: dataconverter
+  dependencies:
+    - package:el7:rh3.0:DataConverter
+  <<: *s3
+
+package:el7:rh3.0:FileReader:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: FileReader
+    lowercase_asset_name: filereader
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:FileReader:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: FileReader
+    lowercase_asset_name: filereader
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:FileReader:
+  variables:
+    dist: el7
+    asset_name: FileReader
+    lowercase_asset_name: filereader
+  dependencies:
+    - package:el7:rh3.0:FileReader
+  <<: *s3
+
+package:el7:rh3.0:FileWriter:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:FileWriter:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:FileWriter:
+  variables:
+    dist: el7
+    asset_name: FileWriter
+    lowercase_asset_name: filewriter
+  dependencies:
+    - package:el7:rh3.0:FileWriter
+  <<: *s3
+
+package:el7:rh3.0:HardLimit:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:HardLimit:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:HardLimit:
+  variables:
+    dist: el7
+    asset_name: HardLimit
+    lowercase_asset_name: hardlimit
+  dependencies:
+    - package:el7:rh3.0:HardLimit
+  <<: *s3
 
 package:el7:rh3.0:RBDSDecoder:
   stage: build_components
@@ -514,6 +689,99 @@ deploy-el7-3.0:RBDSDecoder:
     lowercase_asset_name: rbdsdecoder
   dependencies:
     - package:el7:rh3.0:RBDSDecoder
+  <<: *s3
+
+package:el7:rh3.0:SigGen:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: SigGen
+    lowercase_asset_name: siggen
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:SigGen:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: SigGen
+    lowercase_asset_name: siggen
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:SigGen:
+  variables:
+    dist: el7
+    asset_name: SigGen
+    lowercase_asset_name: siggen
+  dependencies:
+    - package:el7:rh3.0:SigGen
+  <<: *s3
+
+package:el7:rh3.0:SinkSDDS:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:SinkSDDS:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:SinkSDDS:
+  variables:
+    dist: el7
+    asset_name: SinkSDDS
+    lowercase_asset_name: sinksdds
+  dependencies:
+    - package:el7:rh3.0:SinkSDDS
+  <<: *s3
+
+package:el7:rh3.0:SinkVITA49:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:SinkVITA49:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:SinkVITA49:
+  variables:
+    dist: el7
+    asset_name: SinkVITA49
+    lowercase_asset_name: sinkvita49
+  dependencies:
+    - package:el7:rh3.0:SinkVITA49
   <<: *s3
 
 package:el7:rh3.0:SourceSDDS:
@@ -547,6 +815,449 @@ deploy-el7-3.0:SourceSDDS:
     - package:el7:rh3.0:SourceSDDS
   <<: *s3
 
+package:el7:rh3.0:SourceVITA49:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:SourceVITA49:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:SourceVITA49:
+  variables:
+    dist: el7
+    asset_name: SourceVITA49
+    lowercase_asset_name: sourcevita49
+  dependencies:
+    - package:el7:rh3.0:SourceVITA49
+  <<: *s3
+
+package:el7:rh3.0:TuneFilterDecimate:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:TuneFilterDecimate:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:TuneFilterDecimate:
+  variables:
+    dist: el7
+    asset_name: TuneFilterDecimate
+    lowercase_asset_name: tunefilterdecimate
+  dependencies:
+    - package:el7:rh3.0:TuneFilterDecimate
+  <<: *s3
+
+package:el7:rh3.0:agc:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: agc
+    lowercase_asset_name: agc
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:agc:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: agc
+    lowercase_asset_name: agc
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:agc:
+  variables:
+    dist: el7
+    asset_name: agc
+    lowercase_asset_name: agc
+  dependencies:
+    - package:el7:rh3.0:agc
+  <<: *s3
+
+package:el7:rh3.0:autocorrelate:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:autocorrelate:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:autocorrelate:
+  variables:
+    dist: el7
+    asset_name: autocorrelate
+    lowercase_asset_name: autocorrelate
+  dependencies:
+    - package:el7:rh3.0:autocorrelate
+  <<: *s3
+
+package:el7:rh3.0:fastfilter:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:fastfilter:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:fastfilter:
+  variables:
+    dist: el7
+    asset_name: fastfilter
+    lowercase_asset_name: fastfilter
+  dependencies:
+    - package:el7:rh3.0:fastfilter
+  <<: *s3
+
+package:el7:rh3.0:fcalc:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:fcalc:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:fcalc:
+  variables:
+    dist: el7
+    asset_name: fcalc
+    lowercase_asset_name: fcalc
+  dependencies:
+    - package:el7:rh3.0:fcalc
+  <<: *s3
+
+package:el7:rh3.0:psd:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: psd
+    lowercase_asset_name: psd
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:psd:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: psd
+    lowercase_asset_name: psd
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:psd:
+  variables:
+    dist: el7
+    asset_name: psd
+    lowercase_asset_name: psd
+  dependencies:
+    - package:el7:rh3.0:psd
+  <<: *s3
+
+package:el7:rh3.0:psk_soft:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:psk_soft:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:psk_soft:
+  variables:
+    dist: el7
+    asset_name: psk_soft
+    lowercase_asset_name: psk_soft
+  dependencies:
+    - package:el7:rh3.0:psk_soft
+  <<: *s3
+
+package:el7:rh3.0:sinksocket:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:sinksocket:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:sinksocket:
+  variables:
+    dist: el7
+    asset_name: sinksocket
+    lowercase_asset_name: sinksocket
+  dependencies:
+    - package:el7:rh3.0:sinksocket
+  <<: *s3
+
+package:el7:rh3.0:sourcesocket:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:sourcesocket:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: components
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:sourcesocket:
+  variables:
+    dist: el7
+    asset_name: sourcesocket
+    lowercase_asset_name: sourcesocket
+  dependencies:
+    - package:el7:rh3.0:sourcesocket
+  <<: *s3
+
+package:el7:rh3.0:FmRdsSimulator:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: FmRdsSimulator
+    lowercase_asset_name: fmrdssimulator
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:FmRdsSimulator:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: devices
+    asset_name: FmRdsSimulator
+    lowercase_asset_name: fmrdssimulator
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:FmRdsSimulator:
+  variables:
+    dist: el7
+    asset_name: FmRdsSimulator
+    lowercase_asset_name: fmrdssimulator
+  dependencies:
+    - package:el7:rh3.0:FmRdsSimulator
+  <<: *s3
+
+package:el7:rh3.0:MSDD:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: MSDD
+    lowercase_asset_name: msdd
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+deploy-el7-3.0:MSDD:
+  variables:
+    dist: el7
+    asset_name: MSDD
+    lowercase_asset_name: msdd
+  dependencies:
+    - package:el7:rh3.0:MSDD
+  <<: *s3
+
+package:el7:rh3.0:RTL2832U:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: RTL2832U
+    lowercase_asset_name: rtl2832u
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:RTL2832U:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: devices
+    asset_name: RTL2832U
+    lowercase_asset_name: rtl2832u
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:RTL2832U:
+  variables:
+    dist: el7
+    asset_name: RTL2832U
+    lowercase_asset_name: rtl2832u
+  dependencies:
+    - package:el7:rh3.0:RTL2832U
+  <<: *s3
+
+package:el7:rh3.0:USRP_UHD:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: USRP_UHD
+    lowercase_asset_name: usrp_uhd
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package
+
+test:el7:rh3.0:USRP_UHD:
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    comp_type: devices
+    asset_name: USRP_UHD
+    lowercase_asset_name: usrp_uhd
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *test
+
+deploy-el7-3.0:USRP_UHD:
+  variables:
+    dist: el7
+    asset_name: USRP_UHD
+    lowercase_asset_name: usrp_uhd
+  dependencies:
+    - package:el7:rh3.0:USRP_UHD
+  <<: *s3
+
+package:el7:rh3.0:MSDD_Controller:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: MSDD_Controller
+    lowercase_asset_name: msdd_controller
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package-msddc
+
+deploy-el7-3.0:MSDD_Controller:
+  variables:
+    dist: el7
+    asset_name: MSDD_Controller
+    lowercase_asset_name: msdd_controller
+  dependencies:
+    - package:el7:rh3.0:MSDD_Controller
+  <<: *s3
+
 create-el7:local:comps:devs:repos:
   stage: create_comps_devs_repo
   variables:
@@ -558,10 +1269,153 @@ create-el7:local:comps:devs:repos:
     - base_package:el7:rh3.0:dsp
     - package:el7:rh3.0:fftlib
     - package:el7:rh3.0:AmFmPmBasebandDemod
+    - package:el7:rh3.0:ArbitraryRateResampler
+    - package:el7:rh3.0:DataConverter
+    - package:el7:rh3.0:FileReader
+    - package:el7:rh3.0:FileWriter
+    - package:el7:rh3.0:HardLimit
     - package:el7:rh3.0:RBDSDecoder
+    - package:el7:rh3.0:SigGen
+    - package:el7:rh3.0:SinkSDDS
+    - package:el7:rh3.0:SinkVITA49
     - package:el7:rh3.0:SourceSDDS
+    - package:el7:rh3.0:SourceVITA49
+    - package:el7:rh3.0:TuneFilterDecimate
+    - package:el7:rh3.0:agc
+    - package:el7:rh3.0:autocorrelate
+    - package:el7:rh3.0:fastfilter
+    - package:el7:rh3.0:fcalc
+    - package:el7:rh3.0:psd
+    - package:el7:rh3.0:psk_soft
+    - package:el7:rh3.0:sinksocket
+    - package:el7:rh3.0:sourcesocket
+    - package:el7:rh3.0:FmRdsSimulator
+    - package:el7:rh3.0:MSDD
+    - package:el7:rh3.0:RTL2832U
+    - package:el7:rh3.0:USRP_UHD
+    - package:el7:rh3.0:MSDD_Controller
 
   <<: *create_local_repo
+
+package:el7:rh3.0:FM_RBDS_demo:
+  stage: build_waveforms
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: FM_RBDS_demo
+    lowercase_asset_name: fm_rbds_demo
+  dependencies:
+    - create-el7:local:comps:devs:repos
+  <<: *package
+
+deploy-el7-3.0:FM_RBDS_demo:
+  variables:
+    dist: el7
+    asset_name: FM_RBDS_demo
+    lowercase_asset_name: fm_rbds_demo
+  dependencies:
+    - package:el7:rh3.0:FM_RBDS_demo
+  <<: *s3
+
+package:el7:rh3.0:FM_mono_demo:
+  stage: build_waveforms
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: FM_mono_demo
+    lowercase_asset_name: fm_mono_demo
+  dependencies:
+    - create-el7:local:comps:devs:repos
+  <<: *package
+
+deploy-el7-3.0:FM_mono_demo:
+  variables:
+    dist: el7
+    asset_name: FM_mono_demo
+    lowercase_asset_name: fm_mono_demo
+  dependencies:
+    - package:el7:rh3.0:FM_mono_demo
+  <<: *s3
+
+package:el7:rh3.0:basic_components_demo:
+  stage: build_waveforms
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: basic_components_demo
+    lowercase_asset_name: basic_components_demo
+  dependencies:
+    - create-el7:local:comps:devs:repos
+  <<: *package
+
+deploy-el7-3.0:basic_components_demo:
+  variables:
+    dist: el7
+    asset_name: basic_components_demo
+    lowercase_asset_name: basic_components_demo
+  dependencies:
+    - package:el7:rh3.0:basic_components_demo
+  <<: *s3
+
+package:el7:rh3.0:short_file_to_float_file:
+  stage: build_waveforms
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: short_file_to_float_file
+    lowercase_asset_name: short_file_to_float_file
+  dependencies:
+    - create-el7:local:comps:devs:repos
+  <<: *package
+
+deploy-el7-3.0:short_file_to_float_file:
+  variables:
+    dist: el7
+    asset_name: short_file_to_float_file
+    lowercase_asset_name: short_file_to_float_file
+  dependencies:
+    - package:el7:rh3.0:short_file_to_float_file
+  <<: *s3
+
+package:el7:rh3.0:socket_loopback_demo:
+  stage: build_waveforms
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: socket_loopback_demo
+    lowercase_asset_name: socket_loopback_demo
+  dependencies:
+    - create-el7:local:comps:devs:repos
+  <<: *package
+
+deploy-el7-3.0:socket_loopback_demo:
+  variables:
+    dist: el7
+    asset_name: socket_loopback_demo
+    lowercase_asset_name: socket_loopback_demo
+  dependencies:
+    - package:el7:rh3.0:socket_loopback_demo
+  <<: *s3
+
+package:el7:rh3.0:vita49_loopback_demo:
+  stage: build_waveforms
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: vita49_loopback_demo
+    lowercase_asset_name: vita49_loopback_demo
+  dependencies:
+    - create-el7:local:comps:devs:repos
+  <<: *package
+
+deploy-el7-3.0:vita49_loopback_demo:
+  variables:
+    dist: el7
+    asset_name: vita49_loopback_demo
+    lowercase_asset_name: vita49_loopback_demo
+  dependencies:
+    - package:el7:rh3.0:vita49_loopback_demo
+  <<: *s3
 
 create-repo:el7:3.0:
   variables:
@@ -576,7 +1430,36 @@ create-repo:el7:3.0:
     - deploy-el7-3.0:dsp
     - deploy-el7-3.0:fftlib
     - deploy-el7-3.0:AmFmPmBasebandDemod
+    - deploy-el7-3.0:ArbitraryRateResampler
+    - deploy-el7-3.0:DataConverter
+    - deploy-el7-3.0:FileReader
+    - deploy-el7-3.0:FileWriter
+    - deploy-el7-3.0:HardLimit
     - deploy-el7-3.0:RBDSDecoder
+    - deploy-el7-3.0:SigGen
+    - deploy-el7-3.0:SinkSDDS
+    - deploy-el7-3.0:SinkVITA49
     - deploy-el7-3.0:SourceSDDS
+    - deploy-el7-3.0:SourceVITA49
+    - deploy-el7-3.0:TuneFilterDecimate
+    - deploy-el7-3.0:agc
+    - deploy-el7-3.0:autocorrelate
+    - deploy-el7-3.0:fastfilter
+    - deploy-el7-3.0:fcalc
+    - deploy-el7-3.0:psd
+    - deploy-el7-3.0:psk_soft
+    - deploy-el7-3.0:sinksocket
+    - deploy-el7-3.0:sourcesocket
+    - deploy-el7-3.0:FmRdsSimulator
+    - deploy-el7-3.0:MSDD
+    - deploy-el7-3.0:RTL2832U
+    - deploy-el7-3.0:USRP_UHD
+    - deploy-el7-3.0:MSDD_Controller
+    - deploy-el7-3.0:FM_RBDS_demo
+    - deploy-el7-3.0:FM_mono_demo
+    - deploy-el7-3.0:basic_components_demo
+    - deploy-el7-3.0:short_file_to_float_file
+    - deploy-el7-3.0:socket_loopback_demo
+    - deploy-el7-3.0:vita49_loopback_demo
 
 
