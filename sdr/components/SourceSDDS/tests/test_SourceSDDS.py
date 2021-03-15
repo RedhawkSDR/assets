@@ -176,8 +176,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         # Validate correct amount of data was received
         self.assertEqual(len(data), 1024)
         # Validate data is correct
-        import pdb
-        pdb.set_trace()
         self.assertEqual( data[:256], list(struct.pack('256B', *fakeData[:256])))
         self.assertEqual(self.comp.status.dropped_packets, 0)
         
@@ -1222,7 +1220,6 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         for index,keyword in enumerate(sri.keywords):
             self.assertEqual(keyword.id, sri_rx.keywords[index].id, "SRI Keyword ID do not match")
             self.assertEqual(keyword.value.value(), sri_rx.keywords[index].value.value(), "SRI Keyword Value do not match")
-            self.assertEqual(keyword.value.typecode().kind(), sri_rx.keywords[index].value.typecode().kind(), "SRI Keyword Type codes do not match")
 
         sri.keywords = []
         sri_rx.keywords = []

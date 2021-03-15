@@ -158,13 +158,13 @@ class SddsHeader:
         # contained in this field is the number of 250-picosecond clocks that
         # have occurred since the fixed reference time of 1-January of the
         # current year 00:00:00 UTC.
-        self.timeTag = TT  # Time Tag (normal precision, 8 bytes
+        self.timeTag = int(TT)  # Time Tag (normal precision, 8 bytes
 
 
         # The Time Tag extension field extends the precision of the time tag
         # field by an additional 32 bits. The field is an unsigned integer with
         # the LSB corresponding to 250/2^32 picoseconds.
-        self.timeTagExt = TTE  # Time Tag (extended precision, 4 bytes)
+        self.timeTagExt = int(TTE)  # Time Tag (extended precision, 4 bytes)
 
         #######################################################################
         # The dF/dT field shall be a 32-bit two's complement number measuring
