@@ -217,7 +217,6 @@ before_script:
     - pip3 list | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
     - python3 test_$asset_name.py 2>&1 | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
     - cd ..
-    - pip3 install gcovr~=4.2
     - if [ -d cpp ]; then
         python3 /usr/local/bin/gcovr -r . --xml --exclude-directories=tests > gcovr.xml;
         cppcheck --enable=all --xml-version=2 -i tests . 2> cppcheck-results.xml;
