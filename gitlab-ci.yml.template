@@ -48,7 +48,7 @@ before_script:
     - asset_repo=${s3_repo_url}redhawk/assets/yum/$redhawk_version/$dist/$arch
 
 .create_local_repo: &create_local_repo
-  image: ${docker_registry}toa/redhawk/buildenv:${short_version}-$dist-$arch
+  image: ${docker_registry}redhawk/buildenv:${short_version}-$dist-$arch
   before_script:
     - safe_version=$(echo ${short_version} | tr -d -)
     - safe_ref=$(echo ${CI_COMMIT_REF_NAME} | tr -d /| tr '[:upper:]' '[:lower:]')
@@ -66,7 +66,7 @@ before_script:
     
 
 .base_package: &base_package
-  image: ${docker_registry}${docker_rpm_repository}toa/docker:latest-rpm
+  image: ${docker_registry}${docker_rpm_repository}redhawk/alpine-dockerd-plus-utils
   stage: base_build
   tags:
     - redhawk
@@ -76,7 +76,7 @@ before_script:
      - echo "redhawk_repo => $redhawk_repo"
      - echo "rtl_repo => $rtl_repo"
      - cd $(find -maxdepth 3 -name ${asset_name})
-     - printf "FROM ${docker_registry}${rpmbuild_repository}toa/rpmbuild:$dist-$arch-onbuild" > Dockerfile
+     - printf "FROM ${docker_registry}${rpmbuild_repository}redhawk/rpmbuild:$dist-$arch-onbuild" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
@@ -100,7 +100,7 @@ before_script:
     - /^(\d+\.)?(\d+)?(\.\d+)$/
 
 .package: &package
-  image: ${docker_registry}${docker_rpm_repository}toa/docker:latest-rpm
+  image: ${docker_registry}${docker_rpm_repository}redhawk/alpine-dockerd-plus-utils
   #stage: build
   tags:
     - redhawk
@@ -112,7 +112,7 @@ before_script:
      - cd $(find -maxdepth 3 -name ${asset_name})
      - cp -R ../../../output local_yumrepo
      - rm -rf ../../../output/*
-     - printf "FROM ${docker_registry}${rpmbuild_repository}toa/rpmbuild:$dist-$arch-onbuild" > Dockerfile
+     - printf "FROM ${docker_registry}${rpmbuild_repository}redhawk/rpmbuild:$dist-$arch-onbuild" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
@@ -140,7 +140,7 @@ before_script:
     - /^(\d+\.)?(\d+)?(\.\d+)$/
 
 .test: &test
-  image: ${docker_registry}toa/redhawk/buildenv:${short_version}-$dist-$arch
+  image: ${docker_registry}redhawk/buildenv:${short_version}-$dist-$arch
   stage: test
   tags:
     - redhawk
@@ -188,7 +188,7 @@ before_script:
       - /^(\d+\.)?(\d+)?(\.\d+)$/      
 
 assembletests:
-  image: ${docker_registry}toa/centos7-evo
+  image: ${docker_registry}redhawk/centos7-evo
   stage: test_assembly
   before_script:
     - echo "Assembling the test results from the different component tests"
@@ -205,7 +205,7 @@ assembletests:
       - /^(\d+\.)?(\d+)?(\.\d+)$/           
 
 deploy:html:
-  image: ${docker_registry}toa/xunit-viewer:latest
+  image: ${docker_registry}redhawk/xunit-viewer:latest
   stage: deploy
   before_script:
     - safe_version=$(echo ${short_version} | tr -d -)
@@ -234,7 +234,7 @@ deploy:html:
   
 
 .s3: &s3
-  image: ${docker_registry}toa/rpmbuild:el7-x86_64
+  image: ${docker_registry}redhawk/rpmbuild:el7-x86_64
   stage: deploy
   tags:
     - redhawk
@@ -251,7 +251,7 @@ deploy:html:
       - /^(\d+\.)?(\d+)?(\.\d+)$/            
 
 .create-repo: &create-repo
-  image: ${docker_registry}toa/rpmbuild:el7-x86_64
+  image: ${docker_registry}redhawk/rpmbuild:el7-x86_64
   stage: build-yum-repo
   tags:
     - redhawk
