@@ -220,7 +220,7 @@ bool SddsToBulkIOProcessor::orderIsValid(SddsPacketPtr &pkt) {
 		m_last_sdds_time = 0;
 
 		double _rate = pkt->get_rate();
-		if (_rate != 0) {
+		if (_rate > 0) {
 			updateExpectedXdelta(m_non_conforming_device ? _rate * 2 : _rate, pkt->cx != 0);
 		}
 		return true;
@@ -379,7 +379,7 @@ void SddsToBulkIOProcessor::processPackets(std::deque<SddsPacketPtr> &pktsToWork
 				pushSri();
 
 				double _rate = pkt->get_rate();
-				if (_rate != 0) {
+				if (_rate > 0) {
 					updateExpectedXdelta(m_non_conforming_device ? _rate * 2 : _rate, pkt->cx != 0);
 				}
 				m_last_sdds_time = 0;
