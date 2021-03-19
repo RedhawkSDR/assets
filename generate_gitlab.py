@@ -33,7 +33,6 @@ package_template_msddc = """package:__DIST____V__:rh__SHORT_V__:__ASSET_NAME__:
   stage: __BUILD__
   variables:
     dist: __DIST__
-    uhd_repo: __UHDREPO__
     asset_name: __ASSET_NAME__
     lowercase_asset_name: __ASSET_LC_NAME__
 __DEP__
@@ -145,11 +144,6 @@ def replace_package_template(os_version, rh_version, comp_name, base_library=Fal
 def replace_package_template_msddc(os_version, rh_version, comp_name, base_library=False, isComponentOrDevice=False, isWaveform=False):
     retval = package_template_msddc.replace('__DIST__', platforms[os_version]['dist']).replace('__LATEST_V__', versions[rh_version]['latest_version']).replace('__RELEASE_V__', versions[rh_version]['release_version']).replace('__SHORT_V__', versions[rh_version]['short_version']).replace('__ASSET_NAME__', comp_name).replace('__ASSET_LC_NAME__', comp_name.lower())
 
-    if "el6" in os_version:
-        retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.7.3/$dist/$arch')
-    elif "el7" in os_version:
-        retval = retval.replace('__UHDREPO__', '$s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch')
-    
     if isComponentOrDevice:
         retval = retval.replace("__DEP__\n", "  dependencies:\n    - create-"+platforms[os_version]['dist']+"__V__:local:libraries:repos\n")
     if isComponentOrDevice:

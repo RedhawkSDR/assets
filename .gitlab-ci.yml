@@ -168,7 +168,7 @@ before_script:
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
                           --build-arg "local_repo=local_yumrepo"
-                          --build-arg "other_repos=$redhawk_repo $rtl_repo $uhd_repo $librf_repo" .
+                          --build-arg "other_repos=$redhawk_repo $rtl_repo $librf_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output
      - cd ../../..
@@ -1172,7 +1172,6 @@ package:el7:rh2.2:MSDD_Controller:
   stage: build_components
   variables:
     dist: el7
-    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
     asset_name: MSDD_Controller
     lowercase_asset_name: msdd_controller
   dependencies:
