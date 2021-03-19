@@ -143,7 +143,7 @@ before_script:
   image: ${docker_registry}${docker_rpm_repository}docker:latest-rpm
   #stage: build
   tags:
-    - ca
+    - redhawk
     - docker
   script:
      - cd $(find -maxdepth 3 -name ${asset_name})
