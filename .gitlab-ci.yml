@@ -73,7 +73,7 @@ before_script:
     
 
 .base_package: &base_package
-  image: ${docker_registry}${docker_rpm_repository}redhawk/alpine-dockerd-plus-utils
+  image: ${docker_registry}redhawk/alpine-dockerd-plus-utils
   stage: base_build
   tags:
     - redhawk
@@ -107,7 +107,7 @@ before_script:
     - /^(\d+\.)?(\d+)?(\.\d+)$/
 
 .package: &package
-  image: ${docker_registry}${docker_rpm_repository}redhawk/alpine-dockerd-plus-utils
+  image: ${docker_registry}redhawk/alpine-dockerd-plus-utils
   #stage: build
   tags:
     - redhawk
@@ -147,7 +147,7 @@ before_script:
     - /^(\d+\.)?(\d+)?(\.\d+)$/
 
 .package-msddc: &package-msddc
-  image: ${docker_registry}${docker_rpm_repository}docker:latest-rpm
+  image: ${docker_registry}redhawk/alpine-dockerd-plus-utils
   #stage: build
   tags:
     - redhawk
@@ -159,8 +159,8 @@ before_script:
      - cp -r ../MSDD/python python/MSDD
      - cp -R ../../../output local_yumrepo
      - rm -rf ../../../output/*
-     - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
-     - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
+     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild" > Dockerfile
+     - docker login ${docker_registry} -u ${docker_user_redhawk} -p ${docker_password_redhawk}
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
                           --build-arg "project=${asset_name}"
