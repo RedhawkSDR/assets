@@ -44,10 +44,10 @@ before_script:
         rpm_release="`rpm --query --queryformat "%{release}\n" --specfile $namespace$asset_name.spec | head -n 1 | awk -F"." "{print $1}"`.rh${safe_version}"
         cd - ;
       fi
-    - redhawk_repo=$s3_repo_url/$redhawk_repo_proj/yum/__REDHAWK_VERSION__/$dist/$arch
-    - rtl_repo=$s3_repo_url/redhawk-dependencies/librtlsdr/yum/0.5.2/$dist/$arch
-    - librf_repo=$s3_repo_url/redhawk-dependencies/libRfSimulators/yum/develop/$dist/$arch
-    - asset_repo=$s3_repo_url/redhawk/assets/yum/$redhawk_version/$dist/$arch
+    - redhawk_repo=${s3_repo_url}$redhawk_repo_proj/yum/__REDHAWK_VERSION__/$dist/$arch
+    - rtl_repo=${s3_repo_url}redhawk-dependencies/librtlsdr/yum/0.5.2/$dist/$arch
+    - librf_repo=${s3_repo_url}redhawk-dependencies/librfsimulators/yum/develop/$dist/$arch
+    - asset_repo=${s3_repo_url}redhawk/assets/yum/$redhawk_version/$dist/$arch
 
 .create_local_repo: &create_local_repo
   image: ${docker_registry}redhawk/buildenv:${short_version}-$dist-$arch
@@ -55,7 +55,7 @@ before_script:
     - safe_version=$(echo ${short_version} | tr -d -)
     - safe_ref=$(echo ${CI_COMMIT_REF_NAME} | tr -d /| tr '[:upper:]' '[:lower:]')
   tags:
-    - ca
+    - redhawk
     - docker
   script:
      - createrepo output
@@ -68,22 +68,25 @@ before_script:
     
 
 .base_package: &base_package
-  image: ${docker_registry}${docker_rpm_repository}docker:latest-rpm
+  image: ${docker_registry}redhawk/alpine-dockerd-plus-utils
   stage: base_build
   tags:
-    - ca
+    - redhawk
     - docker
   script:
+     - echo "librf_repo => $librf_repo"
+     - echo "redhawk_repo => $redhawk_repo"
+     - echo "rtl_repo => $rtl_repo"
      - cd $(find -maxdepth 3 -name ${asset_name})
-     - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
-     - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
+     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild" > Dockerfile
+     - docker login ${docker_registry} -u ${docker_user_redhawk} -p ${docker_password_redhawk}
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
                           --build-arg "project=${asset_name}"
                           --build-arg "rpm_release=$rpm_release"
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
-                          --build-arg "other_repos=$redhawk_repo $rtl_repo $uhd_repo $librf_repo" .
+                          --build-arg "other_repos=$redhawk_repo $rtl_repo $librf_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output
      - cd ../../..
@@ -99,17 +102,20 @@ before_script:
     - /^(\d+\.)?(\d+)?(\.\d+)$/
 
 .package: &package
-  image: ${docker_registry}${docker_rpm_repository}docker:latest-rpm
+  image: ${docker_registry}redhawk/alpine-dockerd-plus-utils
   #stage: build
   tags:
-    - ca
+    - redhawk
     - docker
   script:
+     - echo "librf_repo => $librf_repo"
+     - echo "redhawk_repo => $redhawk_repo"
+     - echo "rtl_repo => $rtl_repo"
      - cd $(find -maxdepth 3 -name ${asset_name})
      - cp -R ../../../output local_yumrepo
      - rm -rf ../../../output/*
-     - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
-     - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
+     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild" > Dockerfile
+     - docker login ${docker_registry} -u ${docker_user_redhawk} -p ${docker_password_redhawk}
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
                           --build-arg "project=${asset_name}"
@@ -117,7 +123,7 @@ before_script:
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
                           --build-arg "local_repo=local_yumrepo"
-                          --build-arg "other_repos=$redhawk_repo $rtl_repo $uhd_repo $librf_repo" .
+                          --build-arg "other_repos=$redhawk_repo $rtl_repo $librf_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output
      - cd ../../..
@@ -136,10 +142,10 @@ before_script:
     - /^(\d+\.)?(\d+)?(\.\d+)$/
 
 .package-msddc: &package-msddc
-  image: ${docker_registry}${docker_rpm_repository}docker:latest-rpm
+  image: ${docker_registry}redhawk/alpine-dockerd-plus-utils
   #stage: build
   tags:
-    - ca
+    - redhawk
     - docker
   script:
      - cd $(find -maxdepth 3 -name ${asset_name})
@@ -148,8 +154,8 @@ before_script:
      - cp -r ../MSDD/python python/MSDD
      - cp -R ../../../output local_yumrepo
      - rm -rf ../../../output/*
-     - printf "FROM ${docker_registry}${rpmbuild_repository}rpmbuild:$dist-$arch-onbuild" > Dockerfile
-     - docker login ${docker_registry} -u ${docker_user} -p ${docker_password}
+     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild" > Dockerfile
+     - docker login ${docker_registry} -u ${docker_user_redhawk} -p ${docker_password_redhawk}
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
                           --build-arg "project=${asset_name}"
@@ -157,7 +163,7 @@ before_script:
                           --build-arg "spec_file=${namespace}${asset_name}.spec"
                           --build-arg "arch=$arch"
                           --build-arg "local_repo=local_yumrepo"
-                          --build-arg "other_repos=$redhawk_repo $rtl_repo $uhd_repo $librf_repo" .
+                          --build-arg "other_repos=$redhawk_repo $rtl_repo $librf_repo" .
      - id=$(docker container create $CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version})
      - docker container cp $id:/root/rpmbuild/RPMS/ ../../../output
      - cd ../../..
@@ -180,15 +186,17 @@ before_script:
   image: ${docker_registry}redhawk/buildenv:${short_version}-$dist-$arch
   stage: test
   tags:
-    - ca
+    - redhawk
   script:
     - . /usr/local/redhawk/python-virtualenv/bin/activate
     - yum-config-manager --add-repo $redhawk_repo
     - yum-config-manager --add-repo $rtl_repo
-    - yum-config-manager --add-repo $uhd_repo
     - yum-config-manager --add-repo $librf_repo
     - cp -R output local_yumrepo || true
     - yum-config-manager --add-repo file://$(pwd)/local_yumrepo
+    - yum-config-manager --save --setopt=mpf*.s3_enabled=1
+    - yum-config-manager --save --setopt=mpf*.region=us-east-1
+    - yum-config-manager --save --setopt=mpf*.gpgcheck=0
     - mkdir -p $results_dir
     - asset_location=$(find -maxdepth 3 -name ${asset_name})
     - cd $asset_location
@@ -223,7 +231,7 @@ before_script:
       - /^(\d+\.)?(\d+)?(\.\d+)$/      
 
 assembletests:
-  image: ${docker_registry}centos:7
+  image: ${docker_registry}redhawk/centos7-evo
   stage: test_assembly
   before_script:
     - echo "Assembling the test results from the different component tests"
@@ -240,7 +248,7 @@ assembletests:
       - /^(\d+\.)?(\d+)?(\.\d+)$/           
 
 deploy:html:
-  image: ${docker_registry}utils/xunit-viewer:latest
+  image: ${docker_registry}redhawk/xunit-viewer:latest
   stage: deploy
   before_script:
     - safe_version=$(echo ${short_version} | tr -d -)
@@ -266,41 +274,19 @@ deploy:html:
   except:
       - /^(\d+\.)?(\d+)?(\.\d+)$/
 
-deploytests:
-  image: ${docker_registry}centos:7
-  stage: deploy
-  before_script:
-    - echo "Deploying to $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
-  script:
-    - echo $(ls)
-    - cd results
-    - echo $(find .)
-    - cd ..
-    - if [ -n "$jenkins_url" ]; then
-        curl --insecure -X POST $jenkins_url/job/$CI_PROJECT_NAMESPACE/job/$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME/buildWithParameters?pipeline_id=$CI_PIPELINE_ID --user $jenkins_user:$jenkins_api_token;
-      fi
-  dependencies:
-    - assembletests
-  artifacts:
-    paths:
-      - results
-  only:
-    variables:
-      - $latest_version =~ /^develop.*$/
-  except:
-      - /^(\d+\.)?(\d+)?(\.\d+)$/      
+  
 
 .s3: &s3
-  image: ${docker_registry}utils/s3cmd:el7-createrepo
+  image: ${docker_registry}redhawk/rpmbuild:el7-x86_64
   stage: deploy
   tags:
-    - s3
+    - redhawk
   script:
     - mkdir -p $arch
     - for file in `find output -name *.rpm`; do
         cp $file $arch;
       done
-    - /usr/bin/s3cmd put -F -v -r $arch/ s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist/$arch/  && s3cmd setacl -v s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist --acl-public --recursive || true
+    - /usr/bin/s3cmd put -F -v -r $arch/ s3://${s3_bucket}/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist/$arch/
   only:
     variables:
       - $latest_version =~ /^develop.*$/
@@ -308,14 +294,14 @@ deploytests:
       - /^(\d+\.)?(\d+)?(\.\d+)$/            
 
 .create-repo: &create-repo
-  image: ${docker_registry}utils/s3cmd:el7-createrepo
+  image: ${docker_registry}redhawk/rpmbuild:el7-x86_64
   stage: build-yum-repo
   tags:
-    - s3
+    - redhawk
   script:
-    - /usr/bin/s3cmd sync s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist/$arch .
-    - repomanage --old $arch| xargs rm -f; createrepo --update $arch
-    - /usr/bin/s3cmd sync -F -v --delete-removed $arch s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist/  && s3cmd setacl -v s3://$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist --acl-public --recursive || true
+    - /usr/bin/s3cmd sync s3://${s3_bucket}/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist/$arch .
+    - repomanage --keep=2 --old $arch| xargs rm -f; createrepo --update $arch
+    - /usr/bin/s3cmd sync -F -v --delete-removed $arch s3://${s3_bucket}/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist/ && s3cmd setacl -v s3://${s3_bucket}/$CI_PROJECT_NAMESPACE/$CI_PROJECT_NAME/yum/$CI_COMMIT_REF_SLUG/$dist --acl-public --recursive || true
 
   only:
     variables:
