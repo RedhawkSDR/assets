@@ -45,7 +45,7 @@ void copyVec(const bulkio::FloatDataBlock &block, RealFFTWVector &out){
 
 void copyVec(const bulkio::FloatDataBlock &block, ComplexFFTWVector &out){
     out.resize(block.cxsize());
-    memcpy(&out[0], block.data(), out.size()*sizeof(std::complex<float>));
+    memcpy((void*) &out[0], block.data(), out.size()*sizeof(std::complex<float>));
 }
 
 /****************************************************************
