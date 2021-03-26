@@ -28,7 +28,9 @@
 
 #include "FmRdsSimulator.h"
 #include <boost/thread.hpp>
+#define BOOST_NO_CXX11_SCOPED_ENUMS
 #include <boost/filesystem/path.hpp>
+#undef BOOST_NO_CXX11_SCOPED_ENUMS
 #include <math.h>
 
 #define DEFAULT_STREAM_ID "MyStreamID"

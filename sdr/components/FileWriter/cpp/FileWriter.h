@@ -46,9 +46,11 @@
 #include <cerrno>
 #include <cstring>
 #include <ctime>
+#define BOOST_NO_CXX11_SCOPED_ENUMS
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/convenience.hpp>
+#undef BOOST_NO_CXX11_SCOPED_ENUMS
 #include <boost/smart_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/thread/thread.hpp>
