@@ -294,7 +294,7 @@ struct CALL_MAP{
 
 // Method for taking the int based PI code and converting it to the 4 character Station call sign.
 // Taken from: www.w9wi.com/articles/rds.htm
-static std::string decode_callsign(unsigned int picode) {
+inline std::string decode_callsign(unsigned int picode) {
 
 	char call2, call3, call4;
 	std::string csign;
