@@ -148,7 +148,6 @@ MutexObj::~MutexObj () {
   if (pthread_mutex_destroy(&mutexLock) != 0) {
     // Don't use VRTException since this can cause an infinite loop
     perror("ERROR: Unable to destroy mutex lock for VRTObject");
-    throw exception();
   }
 }
 
