@@ -70,7 +70,6 @@ void parser_impl::decode_type0(unsigned int *group, bool B) {
 	unsigned int  no_af    = 0;
 	double af_1            = 0;
 	double af_2            = 0;
-	char flagstring[8]     = "0000000";
 	
 	traffic_program        = (group[1] >> 10) & 0x01;       // "TP"
 	traffic_announcement   = (group[1] >>  4) & 0x01;       // "TA"
@@ -101,25 +100,18 @@ void parser_impl::decode_type0(unsigned int *group, bool B) {
 	}
 	std::stringstream flagstring_ss;
 	flagstring_ss << (traffic_program ? "traffic_program:" : "");
-	flagstring[0] = traffic_program        ? '1' : '0';
 
 	flagstring_ss << (traffic_announcement ? ", traffic_announcement" : "");
-	flagstring[1] = traffic_announcement   ? '1' : '0';
 
 	flagstring_ss << (music_speech ? "music_speech:" : "");
-	flagstring[2] = music_speech           ? '1' : '0';
 
 	flagstring_ss << (mono_stereo ? "mono_stereo:" : "");
-	flagstring[3] = mono_stereo            ? '1' : '0';
 
 	flagstring_ss << (artificial_head ? "artificial_head:" : "");
-	flagstring[4] = artificial_head        ? '1' : '0';
 
 	flagstring_ss << (compressed ? "compressed:" : "");
-	flagstring[5] = compressed             ? '1' : '0';
 
 	flagstring_ss << (static_pty ? "static_pty:" : "");
-	flagstring[6] = static_pty             ? '1' : '0';
 	static std::string af_string;
 
 	if(!B) { // type 0A
@@ -171,7 +163,6 @@ void parser_impl::decode_type0(unsigned int *group, bool B) {
 }
 
 double parser_impl::decode_af(unsigned int af_code) {
-	static unsigned int number_of_freqs = 0;
 	static bool vhf_or_lfmf             = 0; // 0 = vhf, 1 = lf/mf
 	double alt_frequency                = 0; // in kHz
 
@@ -180,16 +171,13 @@ double parser_impl::decode_af(unsigned int af_code) {
 		((af_code >= 206) && (af_code <= 223)) || // not assigned
 		( af_code == 224) ||                      // No AF exists
 		( af_code >= 251)) {                      // not assigned
-			number_of_freqs = 0;
 			alt_frequency   = 0;
 	}
 	if((af_code >= 225) && (af_code <= 249)) {        // VHF frequencies follow
-		number_of_freqs = af_code - 224;
 		alt_frequency   = 0;
 		vhf_or_lfmf     = 1;
 	}
 	if(af_code == 250) {                              // an LF/MF frequency follows
-		number_of_freqs = 1;
 		alt_frequency   = 0;
 		vhf_or_lfmf     = 0;
 	}
@@ -426,15 +414,18 @@ void parser_impl::decode_optional_content(int no_groups, unsigned long int *free
 	int content        = 0;
 	int content_length = 0;
 	int ff_pointer     = 0;
+	int shifted;
 	
 	for (int i = no_groups; i == 0; i--){
 		ff_pointer = 12 + 16;
 		while(ff_pointer > 0){
 			ff_pointer -= 4;
-			label = (free_format[i] && (0xf << ff_pointer));
+			shifted = 0xf << ff_pointer;
+			label = free_format[i] && shifted;
 			content_length = optional_content_lengths[label];
 			ff_pointer -= content_length;
-			content = (free_format[i] && (int(pow(2, content_length) - 1) << ff_pointer));
+			shifted = int(pow(2, content_length) - 1) << ff_pointer;
+			content = free_format[i] && shifted;
 			LOG(LoggingInterface::TRACE, "TMC optional content (" << label_descriptions[label] << "):" << content);
 		}
 	}
@@ -632,7 +623,7 @@ void parser_impl::parse(unsigned int * group) {
 		hexMsg << "  " << HEX(group[i]);
 	}
 
-	LOG(LoggingInterface::TRACE, hexMsg);
+	LOG(LoggingInterface::TRACE, hexMsg.str());
 }
 
 void parser_impl::notImplementedWarning(std::string type, bool notImplementedBoolean) {
