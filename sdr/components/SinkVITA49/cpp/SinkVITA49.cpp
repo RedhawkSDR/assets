@@ -642,6 +642,7 @@ int SinkVITA49_i::createPayload(int size, bool signed_v) {
         DataItemFormat format;
 
         int fieldSize = 0;
+        (void) fieldSize;  // Silence compiler warning for unused var.
 
         if (signed_v) {
             if (size == 1)
@@ -813,7 +814,7 @@ int SinkVITA49_i::createIFContextPacket(BULKIO::PrecisionUTCTime t, int index) {
         double value_d;
         float value_f;
         long value_l;
-        bool value_b;
+        bool value_b = false;
 
         unsigned long currSize = currSRI.keywords.length();
         for (unsigned long i = 0; i < currSize; ++i) {
