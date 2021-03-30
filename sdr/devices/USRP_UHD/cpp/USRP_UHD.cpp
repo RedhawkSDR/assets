@@ -2026,7 +2026,7 @@ void USRP_UHD_i::setTunerCenterFrequency(const std::string& allocation_id, doubl
                 LOG_WARN(USRP_UHD_i,msg.str() );
                 throw FRONTEND::BadParameterException(msg.str().c_str());
             }
-        } catch (FRONTEND::BadParameterException) {
+        } catch (const FRONTEND::BadParameterException&) {
             throw;
         } catch (...) {
             std::ostringstream msg;
@@ -2179,7 +2179,7 @@ void USRP_UHD_i::setTunerOutputSampleRate(const std::string& allocation_id, doub
 
             opt_sr = optimizeRate(sr, idx);
             LOG_DEBUG(USRP_UHD_i,"setTunerOutputSampleRate|REQ_SR=" << sr << " OPT_SR=" << opt_sr);
-        } catch (FRONTEND::BadParameterException) {
+        } catch (const FRONTEND::BadParameterException& ) {
             throw;
         } catch (...) {
             std::ostringstream msg;
