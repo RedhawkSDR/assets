@@ -204,7 +204,7 @@ void TuneFilterDecimate_i::configureTuner(const std::string &propid) {
 	}
 }
 
-void TuneFilterDecimate_i::start() throw (CORBA::SystemException, CF::Resource::StartError) {
+void TuneFilterDecimate_i::start() {
 	if (this->started()) { return; }
 
 	// Process the SRI and create an initial filter if one is not already created

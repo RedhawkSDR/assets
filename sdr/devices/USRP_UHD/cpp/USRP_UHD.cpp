@@ -308,7 +308,7 @@ int USRP_UHD_i::serviceFunctionTransmit(){
 
 }
 
-void USRP_UHD_i::start() throw (CORBA::SystemException, CF::Resource::StartError) {
+void USRP_UHD_i::start() {
     LOG_TRACE(USRP_UHD_i,__PRETTY_FUNCTION__);
     USRP_UHD_base::start();
     dataShortTX_in->unblock();
@@ -346,7 +346,7 @@ void USRP_UHD_i::start() throw (CORBA::SystemException, CF::Resource::StartError
     }*/
 }
 
-void USRP_UHD_i::stop() throw (CORBA::SystemException, CF::Resource::StopError) {
+void USRP_UHD_i::stop() {
     LOG_TRACE(USRP_UHD_i,__PRETTY_FUNCTION__);
     dataShortTX_in->block();
     dataShortTX_in->block();
@@ -1202,7 +1202,7 @@ void USRP_UHD_i::updateAvailableDevices(){
 }
 
 /* call acquire prop_lock prior to calling this function */
-void USRP_UHD_i::initUsrp() throw (CF::PropertySet::InvalidConfiguration) {
+void USRP_UHD_i::initUsrp() {
     LOG_TRACE(USRP_UHD_i,__PRETTY_FUNCTION__);
 
     clearBookkeeping();

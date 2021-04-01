@@ -113,7 +113,7 @@ static connection_t multicast_open_ (const char* iface, const char* group, int p
 }
 
 
-connection_t multicast_client (const char* iface, const char* group, int port) throw (BadParameterError)
+connection_t multicast_client (const char* iface, const char* group, int port)
 {
   connection_t client = multicast_open_(iface, group, port);
   return client;

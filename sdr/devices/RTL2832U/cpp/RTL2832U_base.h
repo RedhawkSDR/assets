@@ -20,11 +20,23 @@ class RTL2832U_base : public frontend::FrontendScanningTunerDevice<frontend_tune
         RTL2832U_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities, char *compDev);
         ~RTL2832U_base();
 
-        void start() throw (CF::Resource::StartError, CORBA::SystemException);
+        /**
+         * @throw CF::Resource::StartError
+         * @throw CORBA::SystemException
+         */
+        void start();
 
-        void stop() throw (CF::Resource::StopError, CORBA::SystemException);
+        /**
+         * @throw CF::Resource::StopError
+         * @throw CORBA::SystemException
+         */
+        void stop();
 
-        void releaseObject() throw (CF::LifeCycle::ReleaseError, CORBA::SystemException);
+        /**
+         * @throw CF::LIfeCycle::ReleaseError
+         * @throw CORBA::SystemException
+         */
+        void releaseObject();
 
         void loadProperties();
         void removeAllocationIdRouting(const size_t tuner_id);

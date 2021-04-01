@@ -65,13 +65,13 @@ psk_soft_base::~psk_soft_base()
     Framework-level functions
     These functions are generally called by the framework to perform housekeeping.
 *******************************************************************************************/
-void psk_soft_base::start() throw (CORBA::SystemException, CF::Resource::StartError)
+void psk_soft_base::start()
 {
     Component::start();
     ThreadedComponent::startThread();
 }
 
-void psk_soft_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
+void psk_soft_base::stop()
 {
     Component::stop();
     if (!ThreadedComponent::stopThread()) {
@@ -79,7 +79,7 @@ void psk_soft_base::stop() throw (CORBA::SystemException, CF::Resource::StopErro
     }
 }
 
-void psk_soft_base::releaseObject() throw (CORBA::SystemException, CF::LifeCycle::ReleaseError)
+void psk_soft_base::releaseObject()
 {
     // This function clears the component running condition so main shuts down everything
     try {

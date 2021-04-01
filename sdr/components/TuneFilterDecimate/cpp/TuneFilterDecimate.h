@@ -35,7 +35,7 @@ public:
 	~TuneFilterDecimate_i();
 	int serviceFunction();
 
-	void start() throw (CORBA::SystemException, CF::Resource::StartError);
+	void start();
 
 private:
 	// Handle changes to the SRI

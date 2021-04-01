@@ -300,9 +300,11 @@ class RTL2832U_i : public RTL2832U_base
         /* acquire prop_lock prior to calling this function */
         void updateAvailableDevices();
 
-        /* acquire prop_lock prior to calling this function */
-        /* acquires the rtl_tuner.lock */
-        void initRtl() throw (CF::PropertySet::InvalidConfiguration);
+        /** acquire prop_lock prior to calling this function
+         * acquires the rtl_tuner.lock
+         * @throw CF::PropertySet::InvalidConfiguration
+         */
+        void initRtl();
 
         /* acquire rtl_tuner.lock prior to calling this function */
         long rtlReceive(double timeout = 0.0);

@@ -37,7 +37,11 @@ class FmRdsSimulator_i : public FmRdsSimulator_base
         FmRdsSimulator_i(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, char *compDev);
         FmRdsSimulator_i(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities);
         FmRdsSimulator_i(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities, char *compDev);
-        void initialize() throw (CF::LifeCycle::InitializeError, CORBA::SystemException);
+        /**
+         * @throw CF::LifeCycle::InitializeError
+         * @throw CORBA::SystemException
+         */
+        void initialize();
         void initDigitizer();
         ~FmRdsSimulator_i();
         int serviceFunction();

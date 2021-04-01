@@ -1152,7 +1152,7 @@ void RTL2832U_i::updateAvailableDevices(){
 
 /* acquire prop_lock prior to calling this function */
 /* acquires the rtl_tuner.lock */
-void RTL2832U_i::initRtl() throw (CF::PropertySet::InvalidConfiguration) {
+void RTL2832U_i::initRtl() {
     LOG_TRACE(RTL2832U_i,__PRETTY_FUNCTION__);
     try {
         // clear current configuration

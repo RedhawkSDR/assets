@@ -242,12 +242,12 @@ void SinkVITA49_i::memoryManagement(int maxPacketLength) {
 
 }
 
-void SinkVITA49_i::start() throw (CF::Resource::StartError, CORBA::SystemException) {
+void SinkVITA49_i::start() {
     boost::mutex::scoped_lock runLock(startstop_lock);
     SinkVITA49_base::start();
 }
 
-void SinkVITA49_i::stop() throw (CF::Resource::StopError, CORBA::SystemException) {
+void SinkVITA49_i::stop() {
     boost::mutex::scoped_lock runLock(startstop_lock);
 
     SinkVITA49_base::stop();

@@ -245,8 +245,8 @@ class USRP_UHD_i : public USRP_UHD_base
         int serviceFunction(){return FINISH;} // unused
         int serviceFunctionReceive();
         int serviceFunctionTransmit();
-        void start() throw (CF::Resource::StartError, CORBA::SystemException);
-        void stop() throw (CF::Resource::StopError, CORBA::SystemException);
+        void start();
+        void stop();
     protected:
         std::string get_rf_flow_id(const std::string& port_name);
         void set_rf_flow_id(const std::string& port_name, const std::string& id);
@@ -347,7 +347,10 @@ class USRP_UHD_i : public USRP_UHD_base
 
         // interface with usrp device
         void updateAvailableDevices();
-        void initUsrp() throw (CF::PropertySet::InvalidConfiguration);
+        /**
+         * @throw CF::PropertySet::InvalidConfiguration
+         */
+        void initUsrp();
         void updateDeviceInfo();
         void updateDeviceRxGain(double gain,bool lock=true);
         void updateDeviceTxGain(double gain);

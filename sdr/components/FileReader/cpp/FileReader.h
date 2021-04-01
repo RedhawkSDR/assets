@@ -216,11 +216,23 @@ class FileReader_i : public FileReader_base {
 public:
     FileReader_i(const char *uuid, const char *label);
     ~FileReader_i();
-    void start() throw (CF::Resource::StartError, CORBA::SystemException);
-    void stop() throw (CF::Resource::StopError, CORBA::SystemException);
+    /**
+     * @throw CF::Resource::StartError
+     * @throw CORBA::SystemException
+     */
+    void start();
+    /**
+     * @throw CF::Resource::StopError
+     * @throw CORBA::SystemException
+     */
+    void stop();
     //void configure(const CF::Properties&) throw (CORBA::SystemException, CF::PropertySet::InvalidConfiguration, CF::PropertySet::PartialConfiguration);
     void constructor();
-    void initialize() throw (CF::LifeCycle::InitializeError, CORBA::SystemException);
+    /**
+     * @throw CF::LifeCycle::InitializeError
+     * @throw CORBA::SystemException
+     */
+    void initialize();
 
 
     int serviceFunction();

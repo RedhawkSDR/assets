@@ -51,13 +51,13 @@ autocorrelate_base::~autocorrelate_base()
     Framework-level functions
     These functions are generally called by the framework to perform housekeeping.
 *******************************************************************************************/
-void autocorrelate_base::start() throw (CORBA::SystemException, CF::Resource::StartError)
+void autocorrelate_base::start()
 {
     Resource_impl::start();
     ThreadedComponent::startThread();
 }
 
-void autocorrelate_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
+void autocorrelate_base::stop()
 {
     Resource_impl::stop();
     if (!ThreadedComponent::stopThread()) {
@@ -65,7 +65,7 @@ void autocorrelate_base::stop() throw (CORBA::SystemException, CF::Resource::Sto
     }
 }
 
-void autocorrelate_base::releaseObject() throw (CORBA::SystemException, CF::LifeCycle::ReleaseError)
+void autocorrelate_base::releaseObject()
 {
     // This function clears the component running condition so main shuts down everything
     try {

@@ -34,7 +34,7 @@ public:
     ~sourcesocket_i();
     int serviceFunction();
 
-    void start() throw (CF::Resource::StartError, CORBA::SystemException);
+    void start();
 
 private:
     template<typename T, typename U>

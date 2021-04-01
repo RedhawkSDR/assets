@@ -350,8 +350,6 @@ int fastfilter_i::serviceFunction()
 }
 
 void fastfilter_i::configure (const CF::Properties& configProperties)
-        throw (CF::PropertySet::PartialConfiguration,
-           CF::PropertySet::InvalidConfiguration, CORBA::SystemException)
 {
         if (started())
         {
