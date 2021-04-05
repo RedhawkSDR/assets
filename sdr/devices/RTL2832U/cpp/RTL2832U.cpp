@@ -1060,9 +1060,10 @@ void RTL2832U_i::groupIdChanged(const std::string* old_value, const std::string*
 /* acquires the rtl_tuner.lock */
 void RTL2832U_i::rtl2832uAgcEnableChanged(const bool* old_value, const bool* new_value){
     LOG_TRACE(RTL2832U_i,__PRETTY_FUNCTION__);
-    if(rtl_device_ptr != NULL)
+    if(rtl_device_ptr != NULL) {
         scoped_tuner_lock tuner_lock(rtl_tuner.lock);
         rtl_device_ptr->setAgcMode(*new_value);
+    }
 }
 
 /* acquires the prop_lock and the rtl_tuner.lock */
