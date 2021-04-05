@@ -135,7 +135,7 @@ int main(int argc, char **argv) {
         printf("%f\n",a_rate);
         break;
       }
-      n = sendto(sockfd, &p, sizeof(p), 0, &serveraddr, serverlen);
+      n = sendto(sockfd, &p, sizeof(p), 0, (const struct sockaddr*)(&serveraddr), serverlen);
       p_sent++;
       if (p_sent % pkts_per_sleep == 0) {
         usleep(t_wait);
