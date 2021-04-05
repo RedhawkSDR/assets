@@ -241,10 +241,14 @@ class SDDSpacket {
    // and vw bits to convert the data rate into true sample rate.
    // The cx bit must be set or cleared before calling set_rate().
    double get_rate(void) {
+     if (freq == 0) {
+       return 0;
+     }
 	   double rate = double(swap8(freq)) * 1.3552527156068805e-11; // 125 MHz/2^63
 	   if (vw) rate *= 16.0;
        //this might need to be implemented
 	   if (cx) rate *=  0.5;
+
        return rate;
  }
 
