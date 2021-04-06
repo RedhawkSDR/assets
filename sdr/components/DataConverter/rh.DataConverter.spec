@@ -46,6 +46,8 @@ Requires:       redhawk-sdrroot-dom-mgr >= 2.1
 BuildRequires:  rh.fftlib-devel >= 2.1
 Requires:       rh.fftlib >= 2.1
 
+BuildRequires:  autoconf-archive
+
 # Interface requirements
 BuildRequires:  bulkioInterfaces >= 2.1
 Requires:       bulkioInterfaces >= 2.1

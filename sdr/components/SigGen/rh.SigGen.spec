@@ -43,6 +43,8 @@ Requires:       redhawk >= 2.0
 Requires:       libuuid
 BuildRequires:  libuuid-devel
 
+BuildRequires:  autoconf-archive
+
 # Interface requirements
 BuildRequires:  bulkioInterfaces >= 2.0
 Requires:       bulkioInterfaces >= 2.0

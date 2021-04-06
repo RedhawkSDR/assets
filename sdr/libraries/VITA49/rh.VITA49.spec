@@ -41,6 +41,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  redhawk-devel >= 2.0
 Obsoletes:      redhawk-libVITA49_v1 < 3.0.0
 
+BuildRequires:  autoconf-archive
 
 %description
 REDHAWK shared library %{name}. VITA 49 packet processing library for REDHAWK (uses VRT Library).

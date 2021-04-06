@@ -24,6 +24,7 @@ LT_INIT([dlopen])
 m4_ifdef([AC_USE_INTEL],[AC_USE_INTEL])
 AC_PROG_CC
 AC_PROG_CXX
+AX_CXX_COMPILE_STDCXX(14, noext)
 AC_PROG_INSTALL
 
 if test "x$GCC" = xyes ; then

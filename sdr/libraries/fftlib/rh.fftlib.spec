@@ -39,6 +39,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  redhawk-devel >= 2.0
 BuildRequires:  fftw-devel >= 3
 BuildRequires:  autoconf automake libtool
+BuildRequires:  autoconf-archive
 
 BuildRequires:  rh.dsp-devel >= 2.0
 Requires:       rh.dsp >= 2.0

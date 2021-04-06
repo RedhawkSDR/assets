@@ -42,6 +42,8 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  redhawk-devel >= 2.0
 Requires:       redhawk >= 2.0
 
+BuildRequires:  autoconf-archive
+
 # Shared library requirements
 BuildRequires:  rh.VITA49-devel >= 4.0
 Requires:       rh.VITA49 >= 4.0

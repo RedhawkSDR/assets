@@ -41,6 +41,8 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  redhawk-devel >= 2.0
 BuildRequires:  bulkioInterfaces >= 2.0
 
+BuildRequires:  autoconf-archive
+
 # Allow upgrades from previous package name
 Obsoletes:      RedhawkDevUtils_v1 < 4.0.0
 

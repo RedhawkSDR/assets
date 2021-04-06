@@ -40,6 +40,8 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  redhawk-devel >= 2.0
 Requires:       redhawk >= 2.0
 
+BuildRequires:  autoconf-archive
+
 # Softpkg requirements
 BuildRequires:  rh.dsp-devel >= 2.0
 Requires:       rh.dsp >= 2.0

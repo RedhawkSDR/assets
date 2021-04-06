@@ -46,6 +46,8 @@ Requires:       rh.RedhawkDevUtils >= 4.0
 BuildRequires:  rh.blueFileLib-devel >= 2.1.0
 Requires:       rh.blueFileLib >= 2.1.0
 
+BuildRequires:  autoconf-archive
+
 # Interface requirements
 BuildRequires:  bulkioInterfaces >= 2.0
 Requires:       bulkioInterfaces >= 2.0

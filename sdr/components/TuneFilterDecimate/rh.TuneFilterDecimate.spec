@@ -45,6 +45,8 @@ Requires:       rh.dsp >= 2.0
 BuildRequires:  rh.fftlib-devel >= 2.0
 Requires:       rh.fftlib >= 2.0
 
+BuildRequires:  autoconf-archive
+
 # Interface requirements
 BuildRequires:  bulkioInterfaces >= 2.0
 Requires:       bulkioInterfaces >= 2.0

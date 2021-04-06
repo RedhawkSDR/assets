@@ -42,6 +42,8 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  redhawk-devel >= 2.0
 Requires:       redhawk >= 2.0
 
+BuildRequires:  autoconf-archive
+
 # Interface requirements
 BuildRequires:  frontendInterfaces >= 2.2 bulkioInterfaces >= 2.0
 Requires:       frontendInterfaces >= 2.2 bulkioInterfaces >= 2.0

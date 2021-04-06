@@ -49,6 +49,8 @@ Requires:       rh.blueFileLib >= 2.1
 BuildRequires:  expat-devel >= 1.95.8
 Requires:       expat >= 1.95.8
 
+BuildRequires:  autoconf-archive
+
 # Interface requirements
 BuildRequires:  bulkioInterfaces >= 2.0
 Requires:       bulkioInterfaces >= 2.0
