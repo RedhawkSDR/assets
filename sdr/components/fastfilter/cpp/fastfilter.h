@@ -30,13 +30,21 @@ class FilterWrapper
         public:
                 FilterWrapper() :
                         filter(NULL),
-                        fs_(1.0)
+                        fs_(1.0),
+                        offset_(0)
                 {
                 }
                 ~FilterWrapper()
                 {
                         if (filter!=NULL)
                                 delete filter;
+                }
+                void adjustTC(BULKIO::PrecisionUTCTime& T){
+                        float filterDelaySamples = (filter->getNumTaps()-1)/2.0;
+                        T-=(filterDelaySamples+offset_)/fs_;
+                }
+                void adjustOffset(long samples){
+                        offset_+=samples;
                 }
                 void setParams(float sampleRate, firfilter* filter)
                 {
@@ -57,9 +65,10 @@ class FilterWrapper
                 {
                         return fs_;
                 }
-                firfilter* filter;private:
+                firfilter* filter;
         private:
                 float fs_;
+                size_t offset_;
 };
 
 class fastfilter_i : public fastfilter_base
