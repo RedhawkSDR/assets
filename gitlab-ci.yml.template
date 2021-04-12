@@ -78,7 +78,7 @@ before_script:
      - echo "redhawk_repo => $redhawk_repo"
      - echo "rtl_repo => $rtl_repo"
      - cd $(find -maxdepth 3 -name ${asset_name})
-     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild" > Dockerfile
+     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild-cpp14" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user_redhawk} -p ${docker_password_redhawk}
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
@@ -114,7 +114,7 @@ before_script:
      - cd $(find -maxdepth 3 -name ${asset_name})
      - cp -R ../../../output local_yumrepo
      - rm -rf ../../../output/*
-     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild" > Dockerfile
+     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild-cpp14" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user_redhawk} -p ${docker_password_redhawk}
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}

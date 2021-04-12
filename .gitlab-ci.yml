@@ -85,7 +85,7 @@ before_script:
      - echo "redhawk_repo => $redhawk_repo"
      - echo "rtl_repo => $rtl_repo"
      - cd $(find -maxdepth 3 -name ${asset_name})
-     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild" > Dockerfile
+     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild-cpp14" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user_redhawk} -p ${docker_password_redhawk}
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
@@ -121,7 +121,7 @@ before_script:
      - cd $(find -maxdepth 3 -name ${asset_name})
      - cp -R ../../../output local_yumrepo
      - rm -rf ../../../output/*
-     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild" > Dockerfile
+     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild-cpp14" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user_redhawk} -p ${docker_password_redhawk}
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
@@ -1112,6 +1112,25 @@ deploy-el7-3.0:MSDD:
     - package:el7:rh3.0:MSDD
   <<: *s3
 
+package:el7:rh3.0:MSDD_Controller:
+  stage: build_components
+  variables:
+    dist: el7
+    asset_name: MSDD_Controller
+    lowercase_asset_name: msdd_controller
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package-msddc
+
+deploy-el7-3.0:MSDD_Controller:
+  variables:
+    dist: el7
+    asset_name: MSDD_Controller
+    lowercase_asset_name: msdd_controller
+  dependencies:
+    - package:el7:rh3.0:MSDD_Controller
+  <<: *s3
+
 package:el7:rh3.0:RTL2832U:
   stage: build_components
   variables:
@@ -1170,25 +1189,6 @@ deploy-el7-3.0:USRP_UHD:
     - package:el7:rh3.0:USRP_UHD
   <<: *s3
 
-package:el7:rh3.0:MSDD_Controller:
-  stage: build_components
-  variables:
-    dist: el7
-    asset_name: MSDD_Controller
-    lowercase_asset_name: msdd_controller
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *package-msddc
-
-deploy-el7-3.0:MSDD_Controller:
-  variables:
-    dist: el7
-    asset_name: MSDD_Controller
-    lowercase_asset_name: msdd_controller
-  dependencies:
-    - package:el7:rh3.0:MSDD_Controller
-  <<: *s3
-
 create-el7:local:comps:devs:repos:
   stage: create_comps_devs_repo
   variables:
@@ -1222,9 +1222,9 @@ create-el7:local:comps:devs:repos:
     - package:el7:rh3.0:sourcesocket
     - package:el7:rh3.0:FmRdsSimulator
     - package:el7:rh3.0:MSDD
+    - package:el7:rh3.0:MSDD_Controller
     - package:el7:rh3.0:RTL2832U
     - package:el7:rh3.0:USRP_UHD
-    - package:el7:rh3.0:MSDD_Controller
 
   <<: *create_local_repo
 
@@ -1377,9 +1377,9 @@ create-repo:el7:3.0:
     - deploy-el7-3.0:sourcesocket
     - deploy-el7-3.0:FmRdsSimulator
     - deploy-el7-3.0:MSDD
+    - deploy-el7-3.0:MSDD_Controller
     - deploy-el7-3.0:RTL2832U
     - deploy-el7-3.0:USRP_UHD
-    - deploy-el7-3.0:MSDD_Controller
     - deploy-el7-3.0:FM_RBDS_demo
     - deploy-el7-3.0:FM_mono_demo
     - deploy-el7-3.0:basic_components_demo
