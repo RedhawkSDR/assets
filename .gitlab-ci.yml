@@ -214,7 +214,7 @@ before_script:
         export CXXFLAGS='-g -Og -fprofile-arcs -ftest-coverage' V=1;
       fi
     - yum install --nogpgcheck -y redhawk-sdrroot-dom-mgr
-    - ./build.sh
+    - scl enable devtoolset-9 ./build.sh
     - IFS='/'; currdir=("$(pwd)")
     - arr=($currdir)
     - arr_length=${#arr[@]}
