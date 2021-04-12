@@ -205,7 +205,7 @@ assembletests:
       - /^(\d+\.)?(\d+)?(\.\d+)$/           
 
 deploy:html:
-  image: ${docker_registry}redhawk/xunit-viewer:latest
+  image: ${docker_registry}redhawk/utils/xunit-viewer:latest
   stage: deploy
   before_script:
     - safe_version=$(echo ${short_version} | tr -d -)
