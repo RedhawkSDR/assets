@@ -219,7 +219,10 @@ bool SddsToBulkIOProcessor::orderIsValid(SddsPacketPtr &pkt) {
 		m_bps = (pkt->bps == 31) ? 32 : pkt->bps;
 		m_last_sdds_time = 0;
 
-		updateExpectedXdelta(m_non_conforming_device ? pkt->get_rate() * 2 : pkt->get_rate(), pkt->cx != 0);
+		double _rate = pkt->get_rate();
+		if (_rate > 0) {
+			updateExpectedXdelta(m_non_conforming_device ? _rate * 2 : _rate, pkt->cx != 0);
+		}
 		return true;
 	}
 
@@ -375,7 +378,10 @@ void SddsToBulkIOProcessor::processPackets(std::deque<SddsPacketPtr> &pktsToWork
 			if (sriChanged) {
 				pushSri();
 
-				updateExpectedXdelta(m_non_conforming_device ? pkt->get_rate() * 2 : pkt->get_rate(), pkt->cx != 0);
+				double _rate = pkt->get_rate();
+				if (_rate > 0) {
+					updateExpectedXdelta(m_non_conforming_device ? _rate * 2 : _rate, pkt->cx != 0);
+				}
 				m_last_sdds_time = 0;
 				return; // Refill our packets
 			}
