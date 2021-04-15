@@ -2,6 +2,7 @@ variables:
   rh_20_release: '2-0-8'
   rh_22_release: '2.2-latest-release'
   rh_23_release: '2.3-latest-release'
+  rh_30_release: '3.0-latest-release'
   namespace: rh.
   asset_name: none
   lowercase_asset_name: None
@@ -32,7 +33,7 @@ before_script:
         redhawk_version=${latest_version}
         rpm_release="0.$CI_PIPELINE_ID.rh${safe_version}";
       else
-        if [[ $CI_COMMIT_TAG =~ /^[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?$/ ]];
+        if [[ $CI_COMMIT_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?$ ]];
         then
              redhawk_version=${CI_COMMIT_REF_SLUG}
         else

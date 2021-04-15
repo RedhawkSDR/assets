@@ -301,9 +301,13 @@ private:
             return false; // NOOP
         }
 
+        // Need to call eos method ONCE since any individual call will
+        // acknowledge EOS and mark the stream for removal
+        bool eos = stream.eos();
+
         typename IN_PORT_TYPE::StreamType::DataBlockType block = stream.read();
         if (!block) {
-            if (stream.eos()) {
+            if (eos) {
                 RH_DEBUG(singleService_log,"Received empty EOS block for stream "<<stream.streamID());
             } else {
                 RH_DEBUG(singleService_log,"Received empty non-EOS block for stream "<<stream.streamID());
@@ -336,12 +340,12 @@ private:
                 !block ?
                         redhawk::shared_buffer<typename IN_PORT_TYPE::dataTransfer::DataBufferType::value_type>() :
                         block.buffer();
-        pushDataService<signed char>(dataBuffer, dataChar_out, stream.eos(), _timestamp, stream.streamID(), scaleOutput.charPort);
-        pushDataService<unsigned char>(dataBuffer, dataOctet_out, stream.eos(), _timestamp, stream.streamID(), scaleOutput.octetPort);//,normalize_floating_point.normalized_input);
-        pushDataService<short>(dataBuffer, dataShort_out, stream.eos(), _timestamp, stream.streamID(), scaleOutput.shortPort); //,normalize_floating_point.normalized_input);
-        pushDataService<unsigned short>(dataBuffer, dataUshort_out, stream.eos(), _timestamp, stream.streamID(), scaleOutput.ushortPort);//,normalize_floating_point.normalized_input);
-        pushDataService<float>(dataBuffer, dataFloat_out, stream.eos(), _timestamp, stream.streamID(),normalize_floating_point.output);//,normalize_floating_point.normalized_output);
-        pushDataService<double>(dataBuffer, dataDouble_out, stream.eos(), _timestamp, stream.streamID(),normalize_floating_point.output);//,normalize_floating_point.normalized_output);
+        pushDataService<signed char>(dataBuffer, dataChar_out, eos, _timestamp, stream.streamID(), scaleOutput.charPort);
+        pushDataService<unsigned char>(dataBuffer, dataOctet_out, eos, _timestamp, stream.streamID(), scaleOutput.octetPort);//,normalize_floating_point.normalized_input);
+        pushDataService<short>(dataBuffer, dataShort_out, eos, _timestamp, stream.streamID(), scaleOutput.shortPort); //,normalize_floating_point.normalized_input);
+        pushDataService<unsigned short>(dataBuffer, dataUshort_out, eos, _timestamp, stream.streamID(), scaleOutput.ushortPort);//,normalize_floating_point.normalized_input);
+        pushDataService<float>(dataBuffer, dataFloat_out, eos, _timestamp, stream.streamID(),normalize_floating_point.output);//,normalize_floating_point.normalized_output);
+        pushDataService<double>(dataBuffer, dataDouble_out, eos, _timestamp, stream.streamID(),normalize_floating_point.output);//,normalize_floating_point.normalized_output);
 
         return true; // NORMAL
     }

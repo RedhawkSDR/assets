@@ -26,7 +26,7 @@
 # Because a.out is only a sample program we don't want it to be installed.
 # The 'noinst_' prefix indicates that the following targets are not to be
 # installed.
-noinst_PROGRAMS=sddsShooter
+noinst_PROGRAMS=sddsShooter sddsSrc
 
 #######################################
 # Build information for each executable. The variable name is derived
@@ -36,4 +36,5 @@ noinst_PROGRAMS=sddsShooter
 
 # Sources for the a.out 
 sddsShooterSOURCES= sddsShooter.c
+sddsSrcSOURCES=sddsSrc.c
 

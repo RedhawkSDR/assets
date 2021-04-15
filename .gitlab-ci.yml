@@ -6,6 +6,7 @@ variables:
   rh_20_release: '2-0-8'
   rh_22_release: '2.2-latest-release'
   rh_23_release: '2.3-latest-release'
+  rh_30_release: '3.0-latest-release'
   namespace: rh.
   asset_name: none
   lowercase_asset_name: None
@@ -39,7 +40,7 @@ before_script:
         redhawk_version=${latest_version}
         rpm_release="0.$CI_PIPELINE_ID.rh${safe_version}";
       else
-        if [[ $CI_COMMIT_TAG =~ /^[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?$/ ]];
+        if [[ $CI_COMMIT_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?$ ]];
         then
              redhawk_version=${CI_COMMIT_REF_SLUG}
         else
@@ -1111,6 +1112,26 @@ deploy-el7-2.3:MSDD:
     - package:el7:rh2.3:MSDD
   <<: *s3
 
+package:el7:rh2.3:MSDD_Controller:
+  stage: build_components
+  variables:
+    dist: el7
+    uhd_repo: $s3_repo_url/redhawk-dependencies/uhd/yum/3.9.4/$dist/$arch
+    asset_name: MSDD_Controller
+    lowercase_asset_name: msdd_controller
+  dependencies:
+    - create-el7:local:libraries:repos
+  <<: *package-msddc
+
+deploy-el7-2.3:MSDD_Controller:
+  variables:
+    dist: el7
+    asset_name: MSDD_Controller
+    lowercase_asset_name: msdd_controller
+  dependencies:
+    - package:el7:rh2.3:MSDD_Controller
+  <<: *s3
+
 package:el7:rh2.3:RTL2832U:
   stage: build_components
   variables:
@@ -1169,7 +1190,7 @@ deploy-el7-2.3:USRP_UHD:
     - package:el7:rh2.3:USRP_UHD
   <<: *s3
 
-package:el7:rh2.3:MSDD_Controller:
+package:el7:rh2.2:MSDD:
   stage: build_components
   variables:
     dist: el7
@@ -1177,15 +1198,15 @@ package:el7:rh2.3:MSDD_Controller:
     lowercase_asset_name: msdd_controller
   dependencies:
     - create-el7:local:libraries:repos
-  <<: *package-msddc
+  <<: *package
 
-deploy-el7-2.3:MSDD_Controller:
+deploy-el7-2.2:MSDD:
   variables:
     dist: el7
-    asset_name: MSDD_Controller
-    lowercase_asset_name: msdd_controller
+    asset_name: MSDD
+    lowercase_asset_name: msdd
   dependencies:
-    - package:el7:rh2.3:MSDD_Controller
+    - package:el7:rh2.2:MSDD
   <<: *s3
 
 create-el7:local:comps:devs:repos:
@@ -1221,9 +1242,9 @@ create-el7:local:comps:devs:repos:
     - package:el7:rh2.3:sourcesocket
     - package:el7:rh2.3:FmRdsSimulator
     - package:el7:rh2.3:MSDD
+    - package:el7:rh2.3:MSDD_Controller
     - package:el7:rh2.3:RTL2832U
     - package:el7:rh2.3:USRP_UHD
-    - package:el7:rh2.3:MSDD_Controller
 
   <<: *create_local_repo
 
@@ -1376,14 +1397,13 @@ create-repo:el7:2.3:
     - deploy-el7-2.3:sourcesocket
     - deploy-el7-2.3:FmRdsSimulator
     - deploy-el7-2.3:MSDD
+    - deploy-el7-2.3:MSDD_Controller
     - deploy-el7-2.3:RTL2832U
     - deploy-el7-2.3:USRP_UHD
-    - deploy-el7-2.3:MSDD_Controller
     - deploy-el7-2.3:FM_RBDS_demo
     - deploy-el7-2.3:FM_mono_demo
     - deploy-el7-2.3:basic_components_demo
     - deploy-el7-2.3:short_file_to_float_file
     - deploy-el7-2.3:socket_loopback_demo
     - deploy-el7-2.3:vita49_loopback_demo
-
 
