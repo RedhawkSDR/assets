@@ -10,7 +10,7 @@ variables:
   namespace: rh.
   asset_name: none
   lowercase_asset_name: None
-  latest_version: 'feature/cf-2276-py3-rh-base'
+  latest_version: 'feature-cf-2276-py3-rh-base'
   release_version: $rh_develop_release
   short_version: '3.0'
   arch: x86_64
