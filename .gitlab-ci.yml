@@ -1190,25 +1190,6 @@ deploy-el7-3.0:USRP_UHD:
     - package:el7:rh3.0:USRP_UHD
   <<: *s3
 
-package:el7:rh2.2:MSDD:
-  stage: build_components
-  variables:
-    dist: el7
-    asset_name: MSDD_Controller
-    lowercase_asset_name: msdd_controller
-  dependencies:
-    - create-el7:local:libraries:repos
-  <<: *package
-
-deploy-el7-2.2:MSDD:
-  variables:
-    dist: el7
-    asset_name: MSDD
-    lowercase_asset_name: msdd
-  dependencies:
-    - package:el7:rh2.2:MSDD
-  <<: *s3
-
 create-el7:local:comps:devs:repos:
   stage: create_comps_devs_repo
   variables:
