@@ -44,6 +44,7 @@ class fastfilter_base : public Resource_impl, protected ThreadedComponent
         // Member variables exposed as properties
         CORBA::ULong fftSize;
         bool correlationMode;
+        bool bypassMode;
         std::vector<float> realFilterCoefficients;
         std::vector<std::complex<float> > complexFilterCoefficients;
         filterProps_struct filterProps;

@@ -1253,8 +1253,34 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.assertNotEqual(sri_rx.mode, sri.mode, "SDDS Packet Mode should have overridden the supplied SRI")
         self.assertNotEqual(sri_rx.xdelta, sri.xdelta, "SDDS Packet xdelta should have overridden the supplied SRI")
         self.assertEqual(sri_rx.streamID, sri.streamID, "Output SRI StreamID should have been inherited from the SRI")
-        
-        
+
+    def testZeroRate(self):
+        self.setupComponent(endianness=LITTLE_ENDIAN)
+        sink = sb.StreamSink()
+        #sink = sb.DataSink()
+        self.comp.connect(sink, usesPortName='dataOctetOut')
+        sb.start()
+
+        target_speed = 1000000.0
+        run = True
+        sleepTime = 2
+        target_threshold = 0.7
+        speed_bump = 10.0
+        last_num_dropped = 0
+        packets_requested = 57
+
+        command = ["../cpp/test_utils/sddsSrc", self.uni_ip, str(self.port), str(target_speed), str(packets_requested)]
+        p = subprocess.Popen(command, stdout=subprocess.PIPE)
+        packets_sent = int(p.stdout.readline())
+        self.assertEquals(packets_requested, packets_sent)
+        time.sleep(sleepTime)
+        data=sink.read(timeout=5)
+        self.assertFalse(data==None)
+        packets_received = float(len(data.data))/1024.0
+        self.assertEquals(packets_requested, packets_received)
+
+        self.comp.stop()
+
     def testSpeed(self):
         print("------------ This test is informational only and should never fail ----------------------")
         
@@ -1409,6 +1435,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def tearDown(self):
         #Tear down the rest of the object.
         ossie.utils.testing.ScaComponentTestCase.tearDown(self)
+        sb.release()
         del(self.mserver)
         del(self.userver)
         
