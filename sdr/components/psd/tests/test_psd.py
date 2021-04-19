@@ -976,7 +976,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         print("*PASSED")
 
     def testHighChanRf(self):
-        print "\n-------- TESTING HighChanRf --------"
+        print("\n-------- TESTING HighChanRf --------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -993,7 +993,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sample_rate = 65536.
         nsamples = 4096
 
-        data = [random.random() for _ in xrange(nsamples)]
+        data = [random.random() for _ in range(nsamples)]
         
         #------------------------------------------------
         # Test Component Functionality.
@@ -1014,10 +1014,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.validateSRIPushing(ID, cxData, sample_rate, fftSize, chanRfVal, SRIKeywords = keywords)
 
 
-        print "*PASSED"
+        print("*PASSED")
 
     def testHighColRf(self):
-        print "\n-------- TESTING HighCoRf --------"
+        print("\n-------- TESTING HighCoRf --------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -1034,7 +1034,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sample_rate = 65536.
         nsamples = 4096
 
-        data = [random.random() for _ in xrange(nsamples)]
+        data = [random.random() for _ in range(nsamples)]
         
         #------------------------------------------------
         # Test Component Functionality.
@@ -1055,10 +1055,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.validateSRIPushing(ID, cxData, sample_rate, fftSize, colRfVal, SRIKeywords = keywords)
         
 
-        print "*PASSED"
+        print("*PASSED")
 
     def testHighRfFreqUnits(self):
-        print "\n-------- TESTING HighRfFreqUnits  --------"
+        print("\n-------- TESTING HighRfFreqUnits  --------")
         #---------------------------------
         # Start component and set fftSize
         #---------------------------------
@@ -1075,7 +1075,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sample_rate = 65536.
         nsamples = 4096
 
-        data = [random.random() for _ in xrange(nsamples)]
+        data = [random.random() for _ in range(nsamples)]
         
         #------------------------------------------------
         # Test Component Functionality.
@@ -1097,7 +1097,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.validateSRIPushing(ID, cxData, sample_rate, fftSize, chanRfVal, SRIKeywords = keywords)
 
         
-        print "*Passed"
+        print("*Passed")
 
 if __name__ == "__main__":
     ossie.utils.testing.main("../psd.spd.xml") # By default tests all implementations
