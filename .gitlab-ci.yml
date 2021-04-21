@@ -10,7 +10,8 @@ variables:
   namespace: rh.
   asset_name: none
   lowercase_asset_name: None
-  latest_version: 'feature/cf-2276-py3-rh-base'
+  latest_version: 'develop'
+  redhawk_version: 'feature/cf-2276-py3-rh-base'
   release_version: $rh_develop_release
   short_version: '3.0'
   arch: x86_64
@@ -37,7 +38,6 @@ before_script:
       redhawk_repo_proj="redhawk/cf-and-deps"
       if [ -z "$CI_COMMIT_TAG" ];
       then
-        redhawk_version=${latest_version}
         rpm_release="0.$CI_PIPELINE_ID.rh${safe_version}";
       else
         if [[ $CI_COMMIT_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?$ ]];
@@ -54,7 +54,6 @@ before_script:
     - redhawk_repo=$s3_repo_url/$redhawk_repo_proj/yum/$redhawk_version/py3/$dist/$arch
     - rtl_repo=$s3_repo_url/redhawk-dependencies/librtlsdr/yum/0.5.2/$dist/$arch
     - librf_repo=$s3_repo_url/redhawk-dependencies/libRfSimulators/yum/develop/$dist/$arch
-    - asset_repo=$s3_repo_url/redhawk/assets/yum/$redhawk_version/$dist/$arch
 
 .create_local_repo: &create_local_repo
   image: ${docker_registry}redhawk/buildenv:${short_version}-$dist-$arch
