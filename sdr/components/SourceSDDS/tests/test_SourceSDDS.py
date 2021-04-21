@@ -1,3 +1,4 @@
+#!/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -854,7 +855,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             time.sleep(0.05)
         
         data,stream,tsamps = self.getData(wanttstamps=True)
-        self.assertEqual(num_changes/2, len(tsamps), "The number of bulkIO pushes (" + str(len(tsamps)) + ") does not match the expected (" + str(num_changes/2) + ").")
+        self.assertEqual(num_changes//2, len(tsamps), "The number of bulkIO pushes (" + str(len(tsamps)) + ") does not match the expected (" + str(num_changes//2) + ").")
             
         self.comp.stop()
     

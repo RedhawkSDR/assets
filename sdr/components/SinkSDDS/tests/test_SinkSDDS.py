@@ -670,7 +670,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sb.start()
         
         # Create data
-        fakeData = [x % 256 for x in range(1024/2)]
+        fakeData = [x % 256 for x in range(1024//2)]
         recv = self.sendPacketGetPacket(fakeData, is_complex=is_complex, eos=True)
         
         # Validate correct amount of data was received
@@ -691,7 +691,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sb.start()
         
         # Create data
-        fakeData = [x % 256 for x in range(1024/4)]
+        fakeData = [x % 256 for x in range(1024//4)]
         recv = self.sendPacketGetPacket(fakeData, is_complex=is_complex, eos=True)
         
         # Validate correct amount of data was received

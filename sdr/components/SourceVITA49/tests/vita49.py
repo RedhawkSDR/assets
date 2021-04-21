@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -182,7 +182,7 @@ class VITA49():
         if data : nsamps=len(data)
         
         #Generate content
-        content = ""
+        content = bytes()
         if force_send_context:
             content += self.generateContextPacket()
         if data != None:
@@ -190,7 +190,7 @@ class VITA49():
         
         #Add header
         frame = struct.pack('!I', VRL_FAW)
-        frame += struct.pack('!I', len(content)/4+3)
+        frame += struct.pack('!I', len(content)//4+3)
         #Add content
         frame += content
         #Add No-CRC trailer
@@ -258,7 +258,7 @@ class VITA49():
         pkt = self.generateCommonHeader()
         
         
-        content = ""
+        content = bytes()
         
         #Flatten data presented as tuples
         complex, width, v49_type, cid_type, pack_type = self.format
@@ -290,7 +290,7 @@ class VITA49():
         
 
         #print "Data Packet format ", self.format, " samples ", nsamples, " pkt len ", len(pkt), " cnt ", len(content)
-        self.setPacketLength(pkt, len(pkt) + len(content)/4)
+        self.setPacketLength(pkt, len(pkt) + len(content)//4)
         return struct.pack('!%dI'%len(pkt), *pkt)+content
     
     def printData(self, pkt):

@@ -44,7 +44,7 @@ def genSinWave(fs, freq, numPts, cx=True, startTime=0, amp=1):
     phase =  2*math.pi*startTime
     phaseInc = 2*math.pi*freq/fs
     output = []
-    for i in range(numPts): 
+    for i in range(int(numPts)): 
         output.append(amp*math.cos(phase))
         if cx:
             output.append(amp*math.sin(phase))
@@ -53,7 +53,7 @@ def genSinWave(fs, freq, numPts, cx=True, startTime=0, amp=1):
 
 def toCx(input):
     output =[]
-    for i in range(len(input)/2):
+    for i in range(len(input)//2):
         output.append(complex(input[2*i], input[2*i+1]))
     return output 
 
@@ -262,12 +262,12 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sri = self.sink.sri() 
         steadyState = out[100:]
         fftNum = 4096
-        numAvgs = min(len(steadyState)/fftNum, 20)
+        numAvgs = min(len(steadyState)//fftNum, 20)
         print("numAvgs", numAvgs)
         #take multiple ffts and sum them together to get a better picture of the filtering shape involved
         fSum = None
         #have an overlap of half the fft size
-        shift = fftNum/2
+        shift = fftNum//2
         for i in range(numAvgs):
             f = scipy.fftpack.fftshift(fftpack.fft(steadyState[i*shift:],fftNum))
             fDb = [20*math.log10(abs(x)) for x in f]
@@ -716,7 +716,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
         fileSize =2.70e6
         floatSize = 1
-        numSamples = int(fileSize/floatSize)/2*2
+        numSamples = int(fileSize/floatSize)//2*2
         sig = [1000*random.random() for _ in range(numSamples)]
             
         inpRate = 25e6
@@ -757,7 +757,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         keywords = [sb.io_helpers.SRIKeyword('COL_RF',colRF, colRfType)]
         if chanRfType != None and chanRF != None:
             keywords.append(sb.io_helpers.SRIKeyword('CHAN_RF',chanRF, chanRfType))
-        numPushes = (len(inData)+pktSize-1)/pktSize
+        numPushes = (len(inData)+pktSize-1)//pktSize
         lastPush = numPushes-1
         for i in range(numPushes):
             eos = i==lastPush
@@ -785,7 +785,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         #data processing is asynchronos - so wait until the data is all processed
         count=0
         keywords = [sb.io_helpers.SRIKeyword('COL_RF',colRF, colRfType)]
-        numPushes = (len(inData)+pktSize-1)/pktSize
+        numPushes = (len(inData)+pktSize-1)//pktSize
         lastPush = numPushes-1
         for i in range(numPushes):
             eos = i==lastPush
@@ -821,9 +821,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             frameSize = self.comp.filterProps.FFT_size-self.comp.taps+1
             inDataNum = len(inData)
             if complexData:
-                inDataNum/=2
+                inDataNum//=2
             
-            expectedCompleteFrames = inDataNum/frameSize # int, truncated if incomplete last frame
+            expectedCompleteFrames = inDataNum//frameSize # int, truncated if incomplete last frame
             outDataNum = math.ceil(expectedCompleteFrames*frameSize/expectedDecimation)
                 # round up if there is a fractional number of expected output samples
             self.assertEqual(outDataNum, len(outCx))

@@ -458,11 +458,11 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
         streamName = 'myStream'
         
-        self.src.push(inData[:len(inData)/3],complexData = False, sampleRate=inputRate, streamID=streamName)
+        self.src.push(inData[:len(inData)//3],complexData = False, sampleRate=inputRate, streamID=streamName)
         self.comp.a=10
-        self.src.push(inData[len(inData)/3:len(inData)/3*2],complexData = False, sampleRate=inputRate, streamID=streamName)
+        self.src.push(inData[len(inData)//3:len(inData)//3*2],complexData = False, sampleRate=inputRate, streamID=streamName)
         self.comp.a=5
-        self.src.push(inData[len(inData)/3*2:],complexData = False, sampleRate=inputRate, streamID=streamName)
+        self.src.push(inData[len(inData)//3*2:],complexData = False, sampleRate=inputRate, streamID=streamName)
         outData = self.getOutput()
         
         assert(len(outData)==1)
@@ -483,9 +483,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
         streamName = 'myStream'
         
-        self.src.push(inData[:len(inData)/2],complexData = False, sampleRate=inputRate, streamID=streamName)
+        self.src.push(inData[:len(inData)//2],complexData = False, sampleRate=inputRate, streamID=streamName)
         self.comp.quantization=0
-        self.src.push(inData[len(inData)/2:],complexData = False, sampleRate=inputRate, streamID=streamName)
+        self.src.push(inData[len(inData)//2:],complexData = False, sampleRate=inputRate, streamID=streamName)
         outData = self.getOutput()
         
         assert(len(outData)==1)
@@ -506,9 +506,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
         streamName = 'myStream'
         
-        self.src.push(inData[:len(inData)/2],complexData = False, sampleRate=inputRate, streamID=streamName)
+        self.src.push(inData[:len(inData)//2],complexData = False, sampleRate=inputRate, streamID=streamName)
         self.comp.outputRate=9876.543
-        self.src.push(inData[len(inData)/2:],complexData = False, sampleRate=inputRate, streamID=streamName)
+        self.src.push(inData[len(inData)//2:],complexData = False, sampleRate=inputRate, streamID=streamName)
         outData = self.getOutput()
         
         assert(len(outData)==1)
@@ -561,10 +561,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
         #push some from stream A and some from stream B
         
-        self.src.push(inDataA[:len(inDataA)/2],complexData = False, sampleRate=inputRateA, streamID=streamNameA)
-        self.src.push(inDataB[:len(inDataB)/2],complexData = True, sampleRate=inputRateB, streamID=streamNameB)
-        self.src.push(inDataA[len(inDataA)/2:],complexData = False, sampleRate=inputRateA, streamID=streamNameA)
-        self.src.push(inDataB[len(inDataB)/2:],complexData = True, sampleRate=inputRateB, streamID=streamNameB)
+        self.src.push(inDataA[:len(inDataA)//2],complexData = False, sampleRate=inputRateA, streamID=streamNameA)
+        self.src.push(inDataB[:len(inDataB)//2],complexData = True, sampleRate=inputRateB, streamID=streamNameB)
+        self.src.push(inDataA[len(inDataA)//2:],complexData = False, sampleRate=inputRateA, streamID=streamNameA)
+        self.src.push(inDataB[len(inDataB)//2:],complexData = True, sampleRate=inputRateB, streamID=streamNameB)
 
         
         outData = self.getOutput()
@@ -697,7 +697,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
            As applicable
         """
         inSample=0
-        samplesPerPush = len(inData)/numPushes
+        samplesPerPush = len(inData)//numPushes
         for i in range(numPushes):
             outSample = inSample+samplesPerPush
             self.src.push(inData[inSample:outSample],complexData = cmplx, sampleRate=sampleRate, streamID=streamID)

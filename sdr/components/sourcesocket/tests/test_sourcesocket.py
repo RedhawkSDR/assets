@@ -46,11 +46,11 @@ def toStr(data,dataType):
 def flip(dataStr,numBytes):
     """given data packed into a string - reverse bytes for a given word length and returned the byte-flipped string
     """
-    out = ""
-    for i in range(len(dataStr)/numBytes):
+    out = bytes()
+    for i in range(len(dataStr)//numBytes):
         l= list(dataStr[numBytes*i:numBytes*(i+1)])
         l.reverse()
-        out+=(''.join(l))
+        out+= bytes(l)
     return out
 
 import traceback                
@@ -583,7 +583,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
                 newdata =self.sink.getData()
                 if newdata:
                     if portType ==  'octet':
-                        self.output.extend([ord(x) for x in newdata])
+                        self.output.extend(newdata)
                     else:
                         self.output.extend(newdata)
             time.sleep(.25)
@@ -594,7 +594,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
                 if newdata:
                     noData=0
                     if portType == 'octet':
-                        self.output.extend([ord(x) for x in newdata])
+                        self.output.extend(newdata)
                     else:
                         self.output.extend(newdata)
                 else:

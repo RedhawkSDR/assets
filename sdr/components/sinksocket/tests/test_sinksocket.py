@@ -51,12 +51,12 @@ def flip(dataStr, numBytes):
     Given data packed into a string, reverse bytes for a given
     word length and returned the byte-flipped string
     """
-    out = ""
+    out = bytes()
 
-    for i in range(len(dataStr)/numBytes):
+    for i in range(len(dataStr)//numBytes):
         l = list(dataStr[numBytes*i:numBytes*(i+1)])
         l.reverse()
-        out += (''.join(l))
+        out += bytes(l)
 
     return out
 
@@ -601,7 +601,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
 
             if newdata:
                 if portType == 'octet':
-                    self.output.extend([ord(x) for x in newdata])
+                    self.output.extend(newdata)
                 else:
                     self.output.extend(newdata)
 
@@ -616,7 +616,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
                 noData = 0
 
                 if portType == 'octet':
-                    self.output.extend([ord(x) for x in newdata])
+                    self.output.extend(newdata)
                 else:
                     self.output.extend(newdata)
             else:
@@ -708,7 +708,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
                     noData = 0
 
                     if portType == 'octet':
-                        self.output1.extend([ord(x) for x in newdata1])
+                        self.output1.extend(newdata1)
                     else:
                         self.output1.extend(newdata1)
 
@@ -716,7 +716,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
                     noData = 0
 
                     if portType == 'octet':
-                        self.output2.extend([ord(x) for x in newdata2])
+                        self.output2.extend(newdata2)
                     else:
                         self.output2.extend(newdata2)
 

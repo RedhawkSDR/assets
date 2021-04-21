@@ -66,7 +66,7 @@ def genSinWave(fs, freq, numPts, cx=True, startTime=0, amp=1):
     phase =  2*math.pi*startTime
     phaseInc = 2*math.pi*freq/fs
     output = []
-    for i in range(numPts): 
+    for i in range(int(numPts)): 
         output.append(amp*math.cos(phase))
         if cx:
             output.append(amp*math.sin(phase))
@@ -78,7 +78,7 @@ def genSqWave(fs, freq, numPts, cx=True, startTime=0, amp=1):
     output = []
     freqDelta = 1.0/freq
     nextTransition = 0  
-    for i in range(numPts): 
+    for i in range(int(numPts)): 
         output.append(amp)
         startTime+=xd
         if startTime > nextTransition:
@@ -91,7 +91,7 @@ def genCorrelatedData(numPts, taps, mean=0, stddev=1,cx=False):
     input =[]
     #simple FIR filter to correlate the data
     
-    for i in range(numPts):
+    for i in range(int(numPts)):
         if cx:
             next = complex(random.gauss(mean,stddev),random.gauss(mean,stddev)) #white noise input data
         else:

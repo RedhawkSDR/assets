@@ -81,7 +81,7 @@ def toClipboard(data):
 
 def toCx(input):
     output =[]
-    for i in range(len(input)/2):
+    for i in range(len(input)//2):
         output.append(complex(input[2*i], input[2*i+1]))
     return output 
 

@@ -36,7 +36,7 @@ import time, socket, struct
 class vita49_data_header(object):
     
     def __init__(self,header):
-        self.vrlframe,byte0,byte1,self.packet_size,self.streamID,self.reserved_word,byte3,byte4,self.vector_size,self.wsec,self.fsec = struct.unpack("!I2BHIIBBHIQ", header)
+        self.vrlframe,byte0,byte1,self.packet_size,self.streamID,self.reserved_word,byte3,byte4,self.vector_size,self.wsec,self.fsec = struct.unpack("!I2BHIIBBHIQ", header.encode())
         self.packet_type = byte0 >>4
         # Data Packet
         if self.packet_type == 1: 
@@ -348,7 +348,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                     self.assertEqual(header.complex, complex)
                     self.assertEqual(header.data_type,data_type)
                     m=m[HDRLEN:].split('VEND')[0]
-                    fmt = 'h'*int(len(m)/2)
+                    fmt = 'h'*int(len(m)//2)
                     m1 = struct.unpack(fmt,m)
                     self.assertEqual(list(m1),dataIn[:len(m1)])
 
@@ -357,7 +357,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                     id = self.boosthashStr(streamID)
                     self.assertEqual(header.streamID,id)
                     m=m[HDRLEN:].split('VEND')[0]
-                    #fmt = '!'+'I'*int(len(m)/4)
+                    #fmt = '!'+'I'*int(len(m)//4)
                     contextpayload=struct.unpack("!I",m[:4])
                     m = m[4:]
                     

@@ -420,7 +420,7 @@ class FileSource:
                 EOS = True
             signalData = byteData
             if self.structFormat != 'B':
-                dataSize = len(byteData)/self.byte_per_sample
+                dataSize = len(byteData)//self.byte_per_sample
                 fmt = '<' + str(dataSize) + self.structFormat
                 signalData = struct.unpack(fmt, byteData)
             self.pushPacket(signalData,T, False, self.stream_id)

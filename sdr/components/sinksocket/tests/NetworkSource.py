@@ -57,7 +57,7 @@ class NetworkSource(io_helpers._SourceBase):
         self.total_bytes     = 0
 
         # Internal Members
-        self._buffer       = ""
+        self._buffer       = bytes()
         self._dataQueue    = _Queue.Queue()
         self._dataSocket   = None
         self._leftovers    = {}
@@ -98,12 +98,12 @@ class NetworkSource(io_helpers._SourceBase):
         Given data packed into a string, reverse bytes for a given word
         length and return the byte-flipped string
         """
-        out = ""
+        out = bytes()
 
-        for i in range(len(dataStr)/numBytes):
+        for i in range(len(dataStr)//numBytes):
             l = list(dataStr[numBytes*i:numBytes*(i+1)])
             l.reverse()
-            out += (''.join(l))
+            out += bytes(l)
 
         return out
 
@@ -113,7 +113,7 @@ class NetworkSource(io_helpers._SourceBase):
         return self._gcd(b, a % b)
 
     def _lcm(self, a, b):
-        return a * b / (self._gcd(a, b))
+        return a * b // (self._gcd(a, b))
 
     def _openSocket(self):
         """
@@ -154,7 +154,7 @@ class NetworkSource(io_helpers._SourceBase):
                 bytesPerSample = i['bytesPerSample']
                 break
 
-        outputSize = numBytes / bytesPerSample
+        outputSize = numBytes // bytesPerSample
 
         # Set the byte swap to use
         if self.byte_swap == 1:
@@ -242,7 +242,7 @@ class NetworkSource(io_helpers._SourceBase):
 
             # Send packets of size max_bytes
             if len(self._buffer) >= self.max_bytes:
-                numLoops = len(self._buffer) / self.max_bytes
+                numLoops = len(self._buffer) // self.max_bytes
 
                 for i in range(0, numLoops):
                     for connection in list(self._connections.values()):
@@ -283,7 +283,6 @@ class NetworkSource(io_helpers._SourceBase):
         if not ready[0]:
             log.info("Data not available")
             return None
-
         self._buffer = self._buffer + self._dataSocket.recv(1024)
 
     def setByte_swap(self, byte_swap):
@@ -367,13 +366,13 @@ class NetworkSource(io_helpers._SourceBase):
         Given a string, use the output port type to
         create a list representing the data
         """
-        length = len(string) / bytesPerSample
+        length = len(string) // bytesPerSample
         remLength = length * bytesPerSample
 
         if srcPortType == '_BULKIO__POA.dataChar':
             listData = struct.unpack(str(length) + 'b', string)
         elif srcPortType == '_BULKIO__POA.dataOctet':
-            listData = struct.unpack(str(length) + 'B', string)
+            listData = list(string)
         elif srcPortType == '_BULKIO__POA.dataShort':
             listData = struct.unpack(str(length) + 'h', string[:remLength])
         elif srcPortType == '_BULKIO__POA.dataUshort':

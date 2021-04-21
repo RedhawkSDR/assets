@@ -197,7 +197,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         self.main(inData)
         self.validateSRIPushing()
         
-        outDataSS = self.output[(len(filter)-1)/2:]
+        outDataSS = self.output[(len(filter)-1)//2:]
         
         self.assertTrue(all([abs(x-y)<.1 for x,y in zip(outDataSS,inData[0])]))
 
@@ -217,7 +217,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         self.validateSRIPushing()
         
         re,im = demux(self.output)
-        reSS = self.output = re[(len(filter)-1)/2:]
+        reSS = self.output = re[(len(filter)-1)//2:]
         self.assertTrue(all([abs(x)<.01 for x in im]))
         self.assertTrue(all([abs(x-y)<.1 for x,y in zip(reSS,inData)]))
 
@@ -235,7 +235,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         self.validateSRIPushing()
         
         re,im = demux(self.output)
-        reSS = self.output = re[(len(filter)-1)/2:]
+        reSS = self.output = re[(len(filter)-1)//2:]
         self.assertTrue(all([abs(x)<.01 for x in im]))
         self.assertTrue(all([abs(x-y)<.1 for x,y in zip(reSS,inData)]))
 
@@ -254,7 +254,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         self.validateSRIPushing()
         
         re,im = demux(self.output)
-        reSS = self.output = re[(len(filter)-1)/2:]
+        reSS = self.output = re[(len(filter)-1)//2:]
         self.assertTrue(all([abs(x)<.01 for x in im]))
         self.assertTrue(all([abs(x-y)<.1 for x,y in zip(reSS,inData[0])]))
 
@@ -281,7 +281,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         self.comp.correlationMode=True
         self.comp.fftSize = 1024
         self.comp.realFilterCoefficients = filter
-        data = [random.random() for _ in range(int(self.comp.fftSize)/2)]
+        data = [random.random() for _ in range(int(self.comp.fftSize)//2)]
         outExpected = scipyCorl(filter,data)
         data.extend([0]*(self.comp.fftSize))
 
@@ -329,7 +329,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         self.comp.fftSize = 1024
         self.comp.complexFilterCoefficients = filter
         
-        data = [random.random() for _ in range(int(self.comp.fftSize)/2)]
+        data = [random.random() for _ in range(int(self.comp.fftSize)//2)]
         outExpected = scipyCorl(filter,data)
         data.extend([0]*(self.comp.fftSize))
         self.comp.disconnect(self.sink)

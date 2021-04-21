@@ -81,7 +81,7 @@ def unpackCx(data):
 
 def plotFreqData(fftSize, sampleRate, pyFFT, fftOut, psdOut):
     if figure:
-        freqs = linspace(0,1,fftSize/2) * (sampleRate/2)
+        freqs = linspace(0,1,fftSize//2) * (sampleRate/2)
             
         figure(1)
         title("REAL Py fft")
@@ -263,9 +263,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         fftOut = packCx(fftOut)
         
         # Adjust length of data for accurate comparisons
-        pyFFT = pyFFT[0:fftSize/2]
-        fftOut = fftOut[0:fftSize/2]
-        psdOut = psdOut[0:fftSize/2]
+        pyFFT = pyFFT[0:fftSize//2]
+        fftOut = fftOut[0:fftSize//2]
+        psdOut = psdOut[0:fftSize//2]
 
         # Uncomment function below to see output plots:
         #plotFreqData(fftSize, sample_rate, pyFFT, fftOut, psdOut)
@@ -338,9 +338,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         fftOut = packCx(fftOut)
 
         # Adjust length of data for accurate comparisons
-        pyFFT = pyFFT[0:fftSize/2]
-        fftOut = fftOut[0:fftSize/2]
-        psdOut = psdOut[0:fftSize/2]
+        pyFFT = pyFFT[0:fftSize//2]
+        fftOut = fftOut[0:fftSize//2]
+        psdOut = psdOut[0:fftSize//2]
 
         # Uncomment function below to see output plots:
         #plotFreqData(fftSize, sample_rate, pyFFT, fftOut, psdOut)
@@ -413,9 +413,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         fftOut = packCx(fftOut)
         
         # Adjust length of data for accurate comparisons
-        pyFFT = pyFFT[0:fftSize/2]
-        psdOut = psdOut[fftSize/2:fftSize]
-        fftOut = fftOut[fftSize/2:fftSize]
+        pyFFT = pyFFT[0:fftSize//2]
+        psdOut = psdOut[fftSize//2:fftSize]
+        fftOut = fftOut[fftSize//2:fftSize]
         
         # Uncomment function below to see output plots:
         #plotFreqData(fftSize, sample_rate, pyFFT, fftOut, psdOut)
@@ -485,9 +485,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         fftOut = packCx(fftOut)
         
         # Adjust length of data for accurate comparisons
-        pyFFT = pyFFT[0:fftSize/2]
-        psdOut = psdOut[fftSize/2:fftSize]
-        fftOut = fftOut[fftSize/2:fftSize]
+        pyFFT = pyFFT[0:fftSize//2]
+        psdOut = psdOut[fftSize//2:fftSize]
+        fftOut = fftOut[fftSize//2:fftSize]
 
         # Uncomment function below to see output plots:
         #plotFreqData(fftSize, sample_rate, pyFFT, fftOut, psdOut)

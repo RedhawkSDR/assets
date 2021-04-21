@@ -56,7 +56,7 @@ class NetworkSink(io_helpers._SinkBase):
         self.ip_address      = ""
         self.port            = 32191
         self.total_bytes     = 0
-        self.leftover        = ""
+        self.leftover        = bytes()
         # Internal Members
         self._dataQueue      = _Queue.Queue()
         self._dataSocket     = None
@@ -87,12 +87,12 @@ class NetworkSink(io_helpers._SinkBase):
         for a given word length and return the 
         byte-flipped string
         """
-        out = ""
+        out = bytes()
     
-        for i in range(len(dataStr)/numBytes):
+        for i in range(len(dataStr)//numBytes):
             l = list(dataStr[numBytes*i:numBytes*(i+1)])
             l.reverse()
-            out += (''.join(l))
+            out += bytes(l)
 
         return out
 
@@ -102,16 +102,16 @@ class NetworkSink(io_helpers._SinkBase):
         Given a list, or a list of lists, create a
         string representing the data
         """
-        retval = None
+        retval = bytes()
 
-        if str(type(data[0])) == "<type 'list'>":
-            retval = ""
+        if type(data[0]) == list:
+            retval = bytes()
 
             for i in data:
-                retval += append(self._listToString(i))
+                retval += self._listToBytes(i)
 
         else:
-            retval = self._listToString(data)
+            retval = self._listToBytes(data)
 
         return retval
 
@@ -139,7 +139,7 @@ class NetworkSink(io_helpers._SinkBase):
 
         return None
 
-    def _listToString(self,
+    def _listToBytes(self,
                        listData):
         """
         Given a list, use the input port type to
@@ -148,9 +148,14 @@ class NetworkSink(io_helpers._SinkBase):
         portType = self._sink.port_type
 
         if portType == _BULKIO__POA.dataChar:
-            string = ''.join(listData)
+            if type(listData) == str:
+                string = listData.encode()
+            else:
+                string=bytes()
+                for x in listData:
+                    string+=x.encode('ISO-8859-1')
         elif portType == _BULKIO__POA.dataOctet:
-            string = ''.join(listData)
+            string = bytes(listData)
         elif portType == _BULKIO__POA.dataShort:
             string = struct.pack(str(len(listData)) + 'h', *listData)
         elif portType == _BULKIO__POA.dataUshort:
@@ -244,7 +249,7 @@ class NetworkSink(io_helpers._SinkBase):
                 continue
             data = self._formatData(retval)
             data=self.leftover+data
-            self.leftover = ""
+            self.leftover = bytes()
 
             # If the byte swap value is 1, then
             # use the size of the data
@@ -287,7 +292,7 @@ class NetworkSink(io_helpers._SinkBase):
                 beforedata = copy.copy(data)
                 data = self._flip(data, self.byte_swap)
                 if len(data) < len(beforedata):
-                    self.leftover = str(beforedata[len(data):])
+                    self.leftover = beforedata[len(data):]
 
             self._pushToSocket(data)
 

@@ -76,7 +76,7 @@ def flip(dataStr, dataType):
     """
     numBytes = BYTE_MAP[dataType]
     out = ""
-    for i in range(len(dataStr) / numBytes):
+    for i in range(len(dataStr) // numBytes):
         l = list(dataStr[numBytes * i:numBytes * (i + 1)])
         l.reverse()
         out += ''.join(l)
@@ -331,7 +331,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('c'*size, dataIn.read(size)))
+            data=list(dataIn.read(size))
             
         #Create Components and Connections
         comp = sb.launch('../FileReader.spd.xml')
@@ -628,9 +628,9 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         with open (dataFileIn, 'rb') as dataIn:
             #print dataIn.read(size)
             if inputFileEndian == outputEndian:
-                data = list(struct.unpack('@'+'h'*(size/2), dataIn.read(size)))
+                data = list(struct.unpack('@'+'h'*(size//2), dataIn.read(size)))
             else:
-                data = list(struct.unpack(reverseChar+'h'*(size/2), dataIn.read(size)))
+                data = list(struct.unpack(reverseChar+'h'*(size//2), dataIn.read(size)))
             
         #Create Components and Connections
         comp = sb.launch('../FileReader.spd.xml', execparams={'DEBUG_LEVEL':DEBUG_LEVEL})
@@ -761,7 +761,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         for fileIn in fileList:
             size = os.path.getsize(fileIn)
             with open (fileIn, 'rb') as dataIn:
-                data += list(struct.unpack('h'*(size/2), dataIn.read(size)))
+                data += list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         #Create Components and Connections
         release = False
@@ -964,7 +964,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            data = list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         #Create Components and Connections
         print("Launched Component")
@@ -1032,7 +1032,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            data = list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         #Create Components and Connections
         print("Launched Component")
@@ -1128,7 +1128,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            data = list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         #Create Components and Connections
         print("Launched Component")
@@ -1224,7 +1224,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            data = list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         #Create Components and Connections
         print("Launched Component")
@@ -1531,7 +1531,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            data = list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         #Create Components and Connections
         print("Launched Component")
@@ -1576,7 +1576,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         for fileIn in fileList:
             size = os.path.getsize(fileIn)
             with open (fileIn, 'rb') as dataIn:
-                data.append(list(struct.unpack('h'*(size/2), dataIn.read(size))))
+                data.append(list(struct.unpack('h'*(size//2), dataIn.read(size))))
 
         #Create Components and Connections
         print("Launched Component")
@@ -1676,7 +1676,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #not equal one another
         if not os.path.isfile(dataFileIn):
             with open(dataFileIn, 'wb') as dataIn:
-                for i in range(1024/4):
+                for i in range(1024//4):
                     floatNum = struct.unpack('f', os.urandom(4))[0]
                     while isnan(floatNum):
                         floatNum = struct.unpack('f', os.urandom(4))[0]
@@ -1701,9 +1701,9 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         with open (dataFileIn, 'rb') as dataIn:
             #print dataIn.read(size)
             if inputFileEndian == outputEndian:
-                data = list(struct.unpack('@'+'f'*(size/4), dataIn.read(size)))
+                data = list(struct.unpack('@'+'f'*(size//4), dataIn.read(size)))
             else:
-                data = list(struct.unpack(reverseChar+'f'*(size/4), dataIn.read(size)))
+                data = list(struct.unpack(reverseChar+'f'*(size//4), dataIn.read(size)))
             
         #Create Components and Connections
         comp = sb.launch('../FileReader.spd.xml')
@@ -1765,7 +1765,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #not equal one another
         if not os.path.isfile(dataFileIn):
             with open(dataFileIn, 'wb') as dataIn:
-                for i in range(1024/8):
+                for i in range(1024//8):
                     doubleNum = struct.unpack('d', os.urandom(8))[0]
                     while isnan(doubleNum):
                         doubleNum = struct.unpack('d', os.urandom(8))[0]
@@ -1774,7 +1774,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('d'*(size/8), dataIn.read(size)))
+            data = list(struct.unpack('d'*(size//8), dataIn.read(size)))
             
         #Create Components and Connections
         comp = sb.launch('../FileReader.spd.xml')

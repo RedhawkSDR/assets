@@ -277,7 +277,7 @@ def bluefile_helpers_BlueFileReader_run(self, infile, pktsize=1024, streamID=Non
 
             # X-Midas returns an array, so we need to generate a list
             if hdr['format'].endswith('B'):
-                d = dataset.tostring()
+                d = dataset.tostring().decode('ISO-8859-1')
             else:
                 d = dataset.tolist()
             start = end
@@ -547,7 +547,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('h' * (size/2), dataIn.read(size)))
+            data = list(struct.unpack('h' * (size//2), dataIn.read(size)))
 
         #Create Components and Connections
         comp = sb.launch('../FileWriter.spd.xml')
@@ -635,7 +635,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('H' * (size/2), dataIn.read(size)))
+            data = list(struct.unpack('H' * (size//2), dataIn.read(size)))
 
         #Create Components and Connections
         comp = sb.launch('../FileWriter.spd.xml')
@@ -723,7 +723,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('f' * (size/4), dataIn.read(size)))
+            data = list(struct.unpack('f' * (size//4), dataIn.read(size)))
 
         #Create Components and Connections
         comp = sb.launch('../FileWriter.spd.xml')
@@ -746,7 +746,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             # unpacked bytes may be NaN, which could cause test to fail unnecessarily
             size = os.path.getsize(dataFileOut)
             with open (dataFileOut, 'rb') as dataOut:
-                data2 = list(struct.unpack('f' * (size/4), dataOut.read(size)))
+                data2 = list(struct.unpack('f' * (size//4), dataOut.read(size)))
             for a,b in zip(data,data2):
                 if a!=b:
                     if a!=a and b!=b:
@@ -818,7 +818,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('d' * (size/8), dataIn.read(size)))
+            data = list(struct.unpack('d' * (size//8), dataIn.read(size)))
 
         #Create Components and Connections
         comp = sb.launch('../FileWriter.spd.xml')
@@ -898,7 +898,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         dataFileOut = './data.out'
 
         with open ('data.xml', 'rb') as file:
-                inputData=file.read()
+                inputData=file.read().decode()
 
         #Connect DataSource to FileWriter
         comp = sb.launch('../FileWriter.spd.xml')
@@ -969,7 +969,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('f' * (size/4), dataIn.read(size)))
+            data = list(struct.unpack('f' * (size//4), dataIn.read(size)))
 
 
 
@@ -999,7 +999,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             # unpacked bytes may be NaN, which could cause test to fail unnecessarily
             size = os.path.getsize(dataFileOut)
             with open (dataFileOut, 'rb') as dataOut:
-                data2 = list(struct.unpack('f' * (size/4), dataOut.read(size)))
+                data2 = list(struct.unpack('f' * (size//4), dataOut.read(size)))
             for a,b in zip(data,data2):
                 if a!=b:
                     if a!=a and b!=b:
@@ -1051,7 +1051,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('f' * (size/4), dataIn.read(size)))
+            data = list(struct.unpack('f' * (size//4), dataIn.read(size)))
 
         #Create Components and Connections
         comp = sb.launch('../FileWriter.spd.xml')
@@ -1109,7 +1109,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                 # unpacked bytes may be NaN, which could cause test to fail unnecessarily
                 size1 = os.path.getsize(dataFileOut)
                 with open (dataFileOut, 'rb') as dataOut1:
-                    data1 = list(struct.unpack('f' * (size1/4), dataOut1.read(size1)))
+                    data1 = list(struct.unpack('f' * (size1//4), dataOut1.read(size1)))
 
                 offset1 = results.index(max(results))-data1.index(max(data1))
                 #print 'offset1 is', offset1
@@ -1133,7 +1133,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                 # unpacked bytes may be NaN, which could cause test to fail unnecessarily
                 size2 = os.path.getsize(dataFileOut+'-1')
                 with open (dataFileOut+'-1', 'rb') as dataOut:
-                    data2 = list(struct.unpack('f' * (size2/4), dataOut.read(size2)))
+                    data2 = list(struct.unpack('f' * (size2//4), dataOut.read(size2)))
 
                 offset2 = results.index(max(results))-data2.index(max(data2))
                 #print 'offset2 is', offset2
@@ -1591,7 +1591,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('f' * (size/4), dataIn.read(size)))
+            data = list(struct.unpack('f' * (size//4), dataIn.read(size)))
 
 
 
@@ -1625,7 +1625,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                 # unpacked bytes may be NaN, which could cause test to fail unnecessarily
                 size = os.path.getsize(dataFileOut)
                 with open (dataFileOut, 'rb') as dataOut:
-                    data2 = list(struct.unpack('f' * (size/4), dataOut.read(size)))
+                    data2 = list(struct.unpack('f' * (size//4), dataOut.read(size)))
                 for a,b in zip(data,data2):
                     if a!=b:
                         if a!=a and b!=b:
@@ -1720,10 +1720,10 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.assertEqual(keywords['TEST_KW1'],0,msg="Keyword 1 has wrong value")
 
         self.assertTrue('TEST_KW2' in keywords,msg="Keyword 2 missing")
-        self.assertEqual(keywords['TEST_KW2'],'2222',msg="Keyword 2 has wrong value")
+        self.assertEqual(keywords['TEST_KW2'].decode(),'2222',msg="Keyword 2 has wrong value")
 
         self.assertTrue('TEST_KW3' in keywords,msg="Keyword 3 missing")
-        self.assertEqual(keywords['TEST_KW3'],'3333',msg="Keyword 3 has wrong value")
+        self.assertEqual(keywords['TEST_KW3'].decode(),'3333',msg="Keyword 3 has wrong value")
 
         dataFileOut2 = './testdata2.out'
         comp.destination_uri = dataFileOut2
@@ -1764,10 +1764,10 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         keywords.update(header['keywords'])
 
         self.assertTrue('TEST_KW6' in keywords,msg="Keyword 1 missing")
-        self.assertEqual(keywords['TEST_KW6'],'6666',msg="Keyword 6 has wrong value")
+        self.assertEqual(keywords['TEST_KW6'].decode(),'6666',msg="Keyword 6 has wrong value")
 
         self.assertTrue('TEST_KW7' in keywords,msg="Keyword 2 missing")
-        self.assertEqual(keywords['TEST_KW7'],'7777',msg="Keyword 7 has wrong value")
+        self.assertEqual(keywords['TEST_KW7'].decode(),'7777',msg="Keyword 7 has wrong value")
 
         self.assertFalse('TEST_KW3' in keywords,msg="Keyword 3 still present")
         self.assertFalse('TEST_KW2' in keywords,msg="Keyword 2 still present")
@@ -1852,10 +1852,10 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.assertEqual(keywords['TEST_KW1'],0,msg="Keyword 1 has wrong value")
 
         self.assertTrue('TEST_KW2' in keywords,msg="Keyword 2 missing")
-        self.assertEqual(keywords['TEST_KW2'],'2222',msg="Keyword 2 has wrong value")
+        self.assertEqual(keywords['TEST_KW2'].decode(),'2222',msg="Keyword 2 has wrong value")
 
         self.assertTrue('TEST_KW3' in keywords,msg="Keyword 3 missing")
-        self.assertEqual(keywords['TEST_KW3'],'3333',msg="Keyword 3 has wrong value")
+        self.assertEqual(keywords['TEST_KW3'].decode(),'3333',msg="Keyword 3 has wrong value")
 
         os.remove(dataFileOut)
 
@@ -1946,7 +1946,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.assertEqual(keywords['TEST_KW1'],1111,msg="Keyword 1 has wrong value")
 
         self.assertTrue('TEST_KW2' in keywords,msg="Keyword 2 missing")
-        self.assertEqual(keywords['TEST_KW2'],'2222',msg="Keyword 2 has wrong value")
+        self.assertEqual(keywords['TEST_KW2'].decode(),'2222',msg="Keyword 2 has wrong value")
 
         self.assertEqual(os.path.exists(dataFileOut), True, msg='Output file does not exist on filesystem')
 
@@ -1961,10 +1961,10 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         self.assertEqual(keywords2['TEST_KW1'],0,msg="Keyword 1 has wrong value")
 
         self.assertTrue('TEST_KW2' in keywords2,msg="Keyword 2 missing")
-        self.assertEqual(keywords2['TEST_KW2'],'2222',msg="Keyword 2 has wrong value")
+        self.assertEqual(keywords2['TEST_KW2'].decode(),'2222',msg="Keyword 2 has wrong value")
 
         self.assertTrue('TEST_KW3' in keywords2,msg="Keyword 3 missing")
-        self.assertEqual(keywords2['TEST_KW3'],'3333',msg="Keyword 3 has wrong value")
+        self.assertEqual(keywords2['TEST_KW3'].decode(),'3333',msg="Keyword 3 has wrong value")
 
         os.remove(seconddataFileOut)
         os.remove(dataFileOut)
@@ -2135,7 +2135,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         timestamp = createTs(timestamp.twsec+gap, timestamp.tfsec+len(data2)*sri1.xdelta)
         port.pushPacket(data2, timestamp, True, "test_streamID")
         timecode_sent.append(timestamp)
-        time.sleep(1)
+        time.sleep(3)
 
         #This test scenario should create two files with associated metadata files.
         #The first should have an initial sri then three pushpackets with 1000 elements each.
@@ -2234,12 +2234,12 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         else:
             self.assertTrue(size < max_size, msg="Size of first file is not less than max_size")
         with open (dataFileOut, 'rb') as dataIn:
-            filedata = list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            filedata = list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         size = os.path.getsize(seconddataFileOut)
         self.assertTrue(size <= max_size, msg="Size of second file is not less than or equal to max_size")
         with open (seconddataFileOut, 'rb') as dataIn:
-            filedata+= list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            filedata+= list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         expectedData = data+data+data+data2+data2
         for i in range(len(filedata)):
@@ -2411,11 +2411,11 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File as Short
         size = os.path.getsize(dataFileOut)
         with open (dataFileOut, 'rb') as dataIn:
-            filedata = list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            filedata = list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         size = os.path.getsize(seconddataFileOut)
         with open (seconddataFileOut, 'rb') as dataIn:
-            filedata+= list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            filedata+= list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         expectedData = data+data+data+data2+data2
         for i in range(len(filedata)):
@@ -2699,11 +2699,11 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File as Short
         size = os.path.getsize(dataFileOut)
         with open (dataFileOut, 'rb') as dataIn:
-            filedata = list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            filedata = list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         size = os.path.getsize(seconddataFileOut)
         with open (seconddataFileOut, 'rb') as dataIn:
-            filedata+= list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            filedata+= list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         expectedData = data+data+data+data2
         for i in range(len(filedata)):
@@ -2904,17 +2904,17 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         size = os.path.getsize(dataFileOut1)
         self.assertTrue(size >= 6000, msg="Size of first file is not greater than 6000 Bytes")
         with open (dataFileOut1, 'rb') as dataIn:
-            filedata = list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            filedata = list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         size = os.path.getsize(dataFileOut2)
         self.assertTrue(size <= 6000, msg="Size of second file is not less than 6000 Bytes")
         with open (dataFileOut2, 'rb') as dataIn:
-            filedata+= list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            filedata+= list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         size = os.path.getsize(dataFileOut3)
         self.assertTrue(size >= 6000, msg="Size of third file is not greater than 6000 Bytes")
         with open (dataFileOut3, 'rb') as dataIn:
-            filedata+= list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            filedata+= list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         expectedData = data1+data2+data2+data3
         for i in range(len(filedata)):
@@ -3108,12 +3108,12 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         filedata = []
         size = os.path.getsize(dataFileName1)
         with open (dataFileName1, 'rb') as dataIn:
-            filedata = list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            filedata = list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         filedata2= []
         size = os.path.getsize(dataFileName2)
         with open (dataFileName2, 'rb') as dataIn:
-            filedata2+= list(struct.unpack('h'*(size/2), dataIn.read(size)))
+            filedata2+= list(struct.unpack('h'*(size//2), dataIn.read(size)))
 
         expectedData1 = data+data+data
         expectedData2 = data+data
@@ -3463,7 +3463,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('h' * (size/2), dataIn.read(size)))
+            data = list(struct.unpack('h' * (size//2), dataIn.read(size)))
             #print 'Data input:          ', data
 
         expectedData = data
@@ -3501,7 +3501,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             else:
                 size = os.path.getsize(expectedDataFileOut)
                 with open (expectedDataFileOut, 'rb') as dataIn:
-                    readData = list(struct.unpack(unpack_char + 'h' * (size/2), dataIn.read(size)))
+                    readData = list(struct.unpack(unpack_char + 'h' * (size//2), dataIn.read(size)))
             #print 'Actual data out:     ', readData
             self.assertEqual(expectedData, readData)
         except self.failureException as e:
@@ -3611,7 +3611,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('H' * (size/2), dataIn.read(size)))
+            data = list(struct.unpack('H' * (size//2), dataIn.read(size)))
 
         #Create Components and Connections
         comp = sb.launch('../FileWriter.spd.xml')
@@ -3746,7 +3746,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('f' * (size/4), dataIn.read(size)))
+            data = list(struct.unpack('f' * (size//4), dataIn.read(size)))
 
         #Create Components and Connections
         comp = sb.launch('../FileWriter.spd.xml')
@@ -3881,7 +3881,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('d' * (size/8), dataIn.read(size)))
+            data = list(struct.unpack('d' * (size//8), dataIn.read(size)))
 
         #Create Components and Connections
         comp = sb.launch('../FileWriter.spd.xml')
@@ -3973,7 +3973,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
 
         #Read in Data from Test File
         with open (dataFileIn, 'rb') as file:
-            data=file.read()
+            data=file.read().decode()
 
         #Create Components and Connections
         comp = sb.launch('../FileWriter.spd.xml')
@@ -4093,7 +4093,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         #Read in Data from Test File
         size = os.path.getsize(dataFileIn)
         with open (dataFileIn, 'rb') as dataIn:
-            data = list(struct.unpack('h' * (size/2), dataIn.read(size)))
+            data = list(struct.unpack('h' * (size//2), dataIn.read(size)))
             #print 'Data input:           ', data
 
         expectedData = data
@@ -4146,7 +4146,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
             else:
                 size = os.path.getsize(expectedDataFileOut)
                 with open (expectedDataFileOut, 'rb') as dataIn:
-                    readData = list(struct.unpack(unpack_char + 'h' * (size/2), dataIn.read(size)))
+                    readData = list(struct.unpack(unpack_char + 'h' * (size//2), dataIn.read(size)))
             #print 'Actual data out:      ', readData
             self.assertEqual(expectedData, readData)
             if close_streams:
@@ -4162,7 +4162,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
                 else:
                     size2 = os.path.getsize(expectedDataFileOut2)
                     with open (expectedDataFileOut2, 'rb') as dataIn2:
-                        readData2 = list(struct.unpack(unpack_char2 + 'h' * (size2/2), dataIn2.read(size2)))
+                        readData2 = list(struct.unpack(unpack_char2 + 'h' * (size2//2), dataIn2.read(size2)))
                 #print 'Actual data2 out:     ', readData2
                 self.assertEqual(expectedData2, readData2)
                 
