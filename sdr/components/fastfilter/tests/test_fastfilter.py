@@ -26,17 +26,19 @@ from omniORB import CORBA
 from ossie.utils import sb
 import time
 import random
+import bulkio
+import copy
 
 from filter_test_helpers import *
 
-class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMixIn):
+class ComponentTests(ossie.utils.testing.RHTestCase, ImpulseResponseMixIn):
     """Test for all component implementations in fastfilter"""
 
+    SPD_FILE = os.environ.get('SPD_FILE', '../fastfilter.spd.xml')
 
     def setUp(self):
         """Set up the unit test - this is run before every method that starts with test
         """
-        ossie.utils.testing.ScaComponentTestCase.setUp(self)
         self.src = sb.DataSource()
         self.sink = sb.DataSink()
         
@@ -50,7 +52,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         #do the connections
         self.src.connect(self.comp)        
         self.comp.connect(self.sink)
+        self.sampleRate = 1.0e6
         self.output=[]
+        self.ts = []
  
     def tearDown(self):
         """Finish the unit test - this is run after every method that starts with test
@@ -63,49 +67,14 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         self.src.stop()
         self.src.releaseObject()
         self.sink.releaseObject()  
-        ossie.utils.testing.ScaComponentTestCase.tearDown(self)
+        sb.stop()
         
 
     def setupComponent(self):
         #######################################################################
         # Launch the component with the default execparams
-        execparams = self.getPropertySet(kinds=("execparam",), modes=("readwrite", "writeonly"), includeNil=False)
-        execparams = dict([(x.id, any.from_any(x.value)) for x in execparams])
-        execparams['DEBUG_LEVEL']=4
-        self.launch(execparams, initialize=True)
-        
-        #######################################################################
-        # Verify the basic state of the component
-        self.assertNotEqual(self.comp, None)
-        self.assertEqual(self.comp.ref._non_existent(), False)
-        self.assertEqual(self.comp.ref._is_a("IDL:CF/Resource:1.0"), True)
-        
-        #######################################################################
-        # Validate that query returns all expected parameters
-        # Query of '[]' should return the following set of properties
-        expectedProps = []
-        expectedProps.extend(self.getPropertySet(kinds=("configure", "execparam"), modes=("readwrite", "readonly"), includeNil=True))
-        expectedProps.extend(self.getPropertySet(kinds=("allocate",), action="external", includeNil=True))
-        props = self.comp.query([])
-        props = dict((x.id, any.from_any(x.value)) for x in props)
-        # Query may return more than expected, but not less
-        for expectedProp in expectedProps:
-            self.assertEqual(expectedProp.id in props, True)
-        
-        #######################################################################
-        # Verify that all expected ports are available
-        for port in self.scd.get_componentfeatures().get_ports().get_uses():
-            port_obj = self.comp.getPort(str(port.get_usesname()))
-            self.assertNotEqual(port_obj, None)
-            self.assertEqual(port_obj._non_existent(), False)
-            self.assertEqual(port_obj._is_a("IDL:CF/Port:1.0"),  True)
-            
-        for port in self.scd.get_componentfeatures().get_ports().get_provides():
-            port_obj = self.comp.getPort(str(port.get_providesname()))
-            self.assertNotEqual(port_obj, None)
-            self.assertEqual(port_obj._non_existent(), False)
-            self.assertEqual(port_obj._is_a(port.get_repid()),  True)
-  
+        self.comp = sb.launch(self.spd_file,impl = self.impl)
+
     def testBadCfg1(self):
         """Set with multiple filterProp settings simultaniously and verify we get an error
         """
@@ -145,10 +114,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         dataPoints = 1024
         data = list(range(dataPoints))
         
-        self.src.push(data,complexData=False, sampleRate=1.0, EOS=False,streamID="someSRI")
+        self.src.push(data,complexData=False, EOS=False,streamID="someSRI")
         count = 0
         while True:
-            newData = self.sink.getData()
+            newData, newTSts = self.sink.getData(tstamps=True)
             if newData:
                 count = 0
                 self.output.extend(newData)
@@ -167,7 +136,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         dataPoints = 1024
         data = list(range(dataPoints))
         
-        self.src.push(data,complexData=False, sampleRate=1.0, EOS=False,streamID="someSRI")
+        self.src.push(data,complexData=False,sampleRate=self.sampleRate, EOS=False,streamID="someSRI")
         count = 0
         while True:
             newData = self.sink.getData()
@@ -180,83 +149,119 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
             count+=1
 
         self.assertFalse(self.sink.eos())
-        self.src.push([],complexData=False, sampleRate=1.0, EOS=True,streamID="someSRI")
+        self.src.push([],complexData=False, sampleRate=self.sampleRate, EOS=True,streamID="someSRI")
         time.sleep(.1)
         self.assertTrue(self.sink.eos())
-  
+
     def testReal(self):
         """ Real Filter real data
         """
-        filter = getSink(.2, 513)
-        self.comp.fftSize = 1024
-        self.comp.realFilterCoefficients = filter
-        dataA = getSin(.05, 4*513)
-        dataB = getSin(.0123, 4*513,phase0=.054)
-        #inData = [data[500*i:500*(i+1)] for i in xrange((len(data)+499)/500)]
-        inData=[[x+y for x,y in zip(dataA,dataB)]]
-        self.main(inData)
-        self.validateSRIPushing()
-        
-        outDataSS = self.output[(len(filter)-1)//2:]
-        
-        self.assertTrue(all([abs(x-y)<.1 for x,y in zip(outDataSS,inData[0])]))
+        self.runSinusoideTest()
+
+    def testRealSmallPackets(self):
+        """ Runs SinusoideTest with Small Packets of real data
+        """
+        self.runSinusoideTest(samplesPerPush=100)
+
+    def testRealBigPackets(self):
+        """ Runs SinusioideTest with big packets of real data 
+        """
+        self.runSinusoideTest(samplesPerPush = 4000, numSamples = 12000)
 
     def testCxFilt(self):
-        """ complex Filter complex data
+        """Runs SinusoideTest with complex data and a filter
         """
-        filter = getSink(.2, 513)
-        self.comp.fftSize = 1024
-        self.comp.filterComplex = True
-        self.comp.complexFilterCoefficients = filter
-        dataA = getSin(.05, 4*513)
-        dataB = getSin(.0123, 4*513,phase0=.054)
-        #inData = [data[500*i:500*(i+1)] for i in xrange((len(data)+499)/500)]
-        inData=[x+y for x,y in zip(dataA,dataB)]
-        cxInData = [muxZeros(inData)]
-        self.main(cxInData,dataCx=True)
-        self.validateSRIPushing()
-        
-        re,im = demux(self.output)
-        reSS = self.output = re[(len(filter)-1)//2:]
-        self.assertTrue(all([abs(x)<.01 for x in im]))
-        self.assertTrue(all([abs(x-y)<.1 for x,y in zip(reSS,inData)]))
+        self.runSinusoideTest(realData = False, realFilter = False)
+
+    def testCxSmallPackets(self):
+        """ Runs SinusoideTest with Small packets of complex data
+        """
+        self.runSinusoideTest(realData = False, realFilter = False, samplesPerPush = 100)
+
+    def testCxBigPackets(self):
+        """ Runs SinusoideTest with Big packets of complex data
+        """
+        self.runSinusoideTest(realData = False, realFilter = False, samplesPerPush = 4000, numSamples = 12000)
 
     def testCxRealFilt(self):
-        """real filter complex data
+        """Runs SinusoideTest with real filter complex data
         """
-        filter = getSink(.2, 513)
-        self.comp.fftSize = 1024
-        self.comp.realFilterCoefficients = filter
-        dataA = getSin(.05, 4*513)
-        dataB = getSin(.0123, 4*513,phase0=.054)
-        inData=[x+y for x,y in zip(dataA,dataB)]
-        cxInData = [muxZeros(inData)]
-        self.main(cxInData,dataCx=True)
-        self.validateSRIPushing()
-        
-        re,im = demux(self.output)
-        reSS = self.output = re[(len(filter)-1)//2:]
-        self.assertTrue(all([abs(x)<.01 for x in im]))
-        self.assertTrue(all([abs(x-y)<.1 for x,y in zip(reSS,inData)]))
-
+        self.runSinusoideTest(realData = False)
 
     def testRealCxFilt(self):
-        """complex filter real data
+        """Runs SinusoideTest with complex filter real data
         """
-        filter = getSink(.2, 513)
-        self.comp.fftSize = 1024
-        self.comp.complexFilterCoefficients = filter
-        dataA = getSin(.05, 4*513)
-        dataB = getSin(.0123, 4*513,phase0=.054)
-        #inData = [data[500*i:500*(i+1)] for i in xrange((len(data)+499)/500)]
-        inData=[[x+y for x,y in zip(dataA,dataB)]]
-        self.main(inData)
+        self.runSinusoideTest(realData = False)
+
+    def testNoFilterReal(self):
+        """Runs SinusoideTest without a filter and real data
+        """
+        self.runSinusoideTest(filter=[1])
+
+    def testNoFilterCx(self):
+        """Runs SinusoideTest without a filter and complex data
+        """
+        self.runSinusoideTest(realData = False, realFilter = False, filter = [1])
+
+    def runSinusoideTest(self, realData = True, realFilter = True, samplesPerPush = None, numSamples = 2052, filter = None):
+        """ Consolidate logic from other tests into one method
+            Create data within the passband of the filter so the steady state output from the filter
+            Should be identical to the input
+        """
+        if filter is None:
+                filter = getSink(.2,513)
+        self.comp.fftsize = 1024
+
+        if realFilter:
+                self.comp.realFilterCoefficients = filter
+        else:
+                self.comp.complexFilterCoefficients = filter
+        dataA = getSin(.05, numSamples)
+        dataB = getSin(.0123, numSamples, phase0 = .054)
+
+        inDataReal = [x+y for x,y in zip(dataA,dataB)]
+
+        if not realData:
+                inDataL = muxZeros(inDataReal)
+        else:
+                inDataL = inDataReal
+        if samplesPerPush:
+                if realData:
+                        elementsPerPush = samplesPerPush
+                else:
+                        elementsPerPush = samplesPerPush*2
+                inData = []
+                startI = 0
+                while True:
+                        stopI = startI + elementsPerPush
+                        thisData = inDataL[startI:stopI]
+                        if thisData:
+                                inData.append(thisData)
+                                startI = stopI
+                        else:
+                                break
+        else:
+                inData = [inDataL]
+        self.main(inData, dataCx = not realData)
         self.validateSRIPushing()
-        
-        re,im = demux(self.output)
-        reSS = self.output = re[(len(filter)-1)//2:]
-        self.assertTrue(all([abs(x)<.01 for x in im]))
-        self.assertTrue(all([abs(x-y)<.1 for x,y in zip(reSS,inData[0])]))
+        self.validateTC(not realData)
+
+        startTC = self.ts[0][1]
+        startSeconds = startTC.twsec + startTC.tfsec
+        sampleOffset = -startSeconds * self.sampleRate
+        sampleOffsetInt = int(round(sampleOffset))
+        assert(abs(sampleOffsetInt - sampleOffset) < 1.0e-3 )
+        self.assertEqual((len(filter)-1)/2.0, sampleOffsetInt)
+        realOutput = realData and realFilter
+        self.assertEqual(self.outputCmplx, not realOutput)
+        if realOutput:
+                output = self.output
+        else:
+                re,im = demux(self.output)
+                output = re
+                self.assertTrue(all([abs(x)<0.1 for x in im]))
+        outDataSS = output[int(sampleOffsetInt):]
+        self.assertTrue(all([abs(x-y)<.1 for x,y in zip(outDataSS, inDataReal)]))
 
     def testRealManualImpulse(self):
         """use manual configuration (real taps) and ensure that the impulse response matches the response
@@ -285,9 +290,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         outExpected = scipyCorl(filter,data)
         data.extend([0]*(self.comp.fftSize))
 
-        sampleRate = 1e6
-        self.main([data],False,sampleRate)
-        self.validateSRIPushing(sampleRate=sampleRate)
+        self.main([data],False)
+        self.validateSRIPushing()
         self.cmpList(outExpected,self.output[:len(outExpected)])
 
 
@@ -302,8 +306,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         dataCx = toCx(data)
         outExpected =  scipyCorl(filter,dataCx)
         data.extend([0]*(int(2*self.comp.fftSize)))
-        self.main([data],True,1e6)
-        self.validateSRIPushing(sampleRate=1e6)
+        self.main([data],True)
+        self.validateSRIPushing()
         self.cmpList(outExpected,self.output[:len(outExpected)])         
 
     def testCxRealCorrelation(self):
@@ -317,8 +321,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         dataCx = toCx(data)
         outExpected =  scipyCorl(filter,dataCx)
         data.extend([0]*(self.comp.fftSize))
-        self.main([data],True,1e6)
-        self.validateSRIPushing(sampleRate=1e6)
+        self.main([data],True)
+        self.validateSRIPushing()
         self.cmpList(outExpected,self.output[:len(outExpected)])
 
     def testRealCxCorrelationWithReconnecting(self):
@@ -334,8 +338,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         data.extend([0]*(self.comp.fftSize))
         self.comp.disconnect(self.sink)
         self.comp.connect(self.sink)
-        self.main([data],False,1e6)
-        self.validateSRIPushing(sampleRate=1e6)
+        self.main([data],False)
+        self.validateSRIPushing()
         self.cmpList(outExpected,self.output[:len(outExpected)])
     
     def makeCxCoefProps(self):
@@ -344,7 +348,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
     def makeRealCoefProps(self):
         return ossie.cf.CF.DataType(id='realFilterCoefficients', value=CORBA.Any(CORBA.TypeCode("IDL:omg.org/CORBA/FloatSeq:1.0"), []))
    
-    def validateSRIPushing(self, sampleRate=1.0, streamID='test_stream'):
+    def validateSRIPushing(self, sampleRate=None, streamID='test_stream'):
+        if sampleRate is None:
+                sampleRate = self.sampleRate
         self.assertEqual(self.sink.sri().streamID, streamID, "Component not pushing streamID properly")
         # Account for rounding error
         calcSR = 1/self.sink.sri().xdelta
@@ -352,23 +358,94 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase, ImpulseResponseMi
         tolerance = 1
         self.assertTrue(diffSR < tolerance, "Component not pushing samplerate properly")
 
-    def main(self, inData, dataCx=False, sampleRate=1.0, eos=False,streamID='test_stream'):    
+        #Activate bypassmode and check if output is the same as input
+    def testBypassMode(self):
+        ff=sb.launch('../fastfilter.spd.xml')
+        sg=sb.launch('../../SigGen/SigGen.spd.xml')
+        
+        sg.shape='square'
+        ff.bypassMode = True
+        ffOut=sb.DataSink()
+        sgOut=sb.DataSink()
+
+        ff.connect(ffOut)
+        sg.connect(sgOut,usesPortName='dataFloat_out')
+        sg.connect(ff,usesPortName='dataFloat_out')
+
+        sb.start()
+        ff_data=ffOut.getData(1000)
+        sg_data=sgOut.getData(1000)
+        ut=unittest.TestCase('run')
+
+        ut.assertEqual(ff_data,sg_data,'Data was not equal')
+        ffOut.reset()
+        sgOut.reset()
+        time.sleep(1)
+        sb.stop()
+
+        #Turn off bypassmode and check if filtering occurred
+    def testDeactivateBypassMode(self):
+        ff=sb.launch('../fastfilter.spd.xml')
+        sg=sb.launch('../../SigGen/SigGen.spd.xml')
+
+        sg.shape='square'
+        ff.bypassMode = False
+        ffOut=sb.DataSink()
+        sgOut=sb.DataSink()
+
+        ff.connect(ffOut)
+        sg.connect(sgOut,usesPortName='dataFloat_out')
+        sg.connect(ff,usesPortName='dataFloat_out')
+
+        sb.start()
+        ff_data=ffOut.getData(1000)
+        sg_data=sgOut.getData(1000)
+        ut=unittest.TestCase('run')
+        ut.assertNotEqual(ff_data,sg_data,'Data was equal')
+        ffOut.reset()
+        sgOut.reset()
+        time.sleep(1)
+        sb.stop()
+    
+    def validateTC(self, isComplex = False):
+        """Make sure there are no gaps in time codes for a given sample rate
+        """
+        last = self.ts[0]
+        xdelta = 1.0/self.sampleRate
+        for ts in self.ts[1:]:
+                tDelta = ts[1] - last[1]
+                numSamps = ts[0] - last[0]
+                if isComplex:
+                        numSamps/=2
+                expectedTDelta = numSamps*xdelta
+                self.assertTrue(abs(expectedTDelta - tDelta) < .5*xdelta)
+
+    def main(self, inData, dataCx=False, sampleRate=None, eos=False,streamID='test_stream'):    
+        if sampleRate is None:
+                sampleRate = self.sampleRate
+        ts = bulkio.timestamp.create(0,0)
         count=0
         lastPktIndex = len(inData)-1
         for i, data in enumerate(inData):
             #just to mix things up I'm going to push through in two stages
             #to ensure the filter is working properly with its state
             EOS = eos and i == lastPktIndex
-            self.src.push(data,complexData=dataCx, sampleRate=sampleRate, EOS=EOS,streamID=streamID)
+            self.src.push(data,complexData=dataCx, sampleRate=sampleRate, EOS=EOS,streamID=streamID, ts = ts)
+            ts = copy.copy(ts)
+            ts += len(data)/(1 + dataCx) / self.sampleRate
+        dataLen = None
         while True:
-            newData = self.sink.getData()
+            thisDataLen = len(self.sink._sink.data)
+            newData = thisDataLen != dataLen
+            dataLen = thisDataLen
             if newData:
                 count = 0
-                self.output.extend(newData)
             elif count==200:
                 break
             time.sleep(.01)
             count+=1
+        self.output, self.ts = self.sink.getData(tstamps = True)
+
         #convert the output to complex if necessary    
         self.outputCmplx = self.sink.sri().mode==1
         if self.outputCmplx:

@@ -132,6 +132,10 @@ unsigned short getBps(SDDSpacket* sdds_pkt) {
  */
 void mergeSddsSRI(SDDSpacket* sdds_pkt, BULKIO::StreamSRI &sri, bool &changed, bool non_conforming_device) {
 
+	if (sdds_pkt->get_rate() == 0) {
+		return;
+	}
+
 	CORBA::Double recXdelta = (CORBA::Double)(1.0 / sdds_pkt->get_rate());
 
 	if (non_conforming_device) {

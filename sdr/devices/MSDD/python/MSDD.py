@@ -424,23 +424,23 @@ class MSDD_i(MSDD_base):
 
                     #
                     # Determine network output rate based on tuners with
-                    # digitial output.
+                    # digital output.
                     #
                     for tuner in self.frontend_tuner_status:
                         pkt_bit_rate=0
                         inf=0
                         if tuner.rx_object.output_object and \
                             tuner.rx_object.output_object == out_module:
-                            pkt_bit_rate, inf = self.calcModuleBitRate(tuner.digitial_output_info,additional_rate)
+                            pkt_bit_rate, inf = self.calcModuleBitRate(tuner.digital_output_info,additional_rate)
                             enabled_modules+=1
 
                         if tuner.digital_output:
-                            pkt_bit_rate, inf = self.calcModuleBitRate(tuner.digitial_output_info)
+                            pkt_bit_rate, inf = self.calcModuleBitRate(tuner.digital_output_info)
                             enabled_modules+=1
                             
                         cid="--missing--"
-                        if tuner.digitial_output_info:
-                            cid=tuner.digitial_output_info.channel_number
+                        if tuner.digital_output_info:
+                            cid=tuner.digital_output_info.channel_number
                         
                         self.debug_msg("Check network output: " \
                                        "interface {} out module {} pkt_bit_rate {} total netstat {} ",
@@ -1068,7 +1068,7 @@ class MSDD_i(MSDD_base):
                                               self.tuner_output_configuration[tuner_num].mfp_flush)
 
                 # prefetch module info
-                self.frontend_tuner_status[tuner_num].digitial_output_info=_output_mod.getInfo()
+                self.frontend_tuner_status[tuner_num].digital_output_info=_output_mod.getInfo()
                 self.frontend_tuner_status[tuner_num].digital_output=False
 
                 success=True
@@ -2122,7 +2122,7 @@ class MSDD_i(MSDD_base):
 
 
                     # prefetch bitrate for each module
-                    self.frontend_tuner_status[tuner_num].digitial_output_info=_output_mod.getInfo()
+                    self.frontend_tuner_status[tuner_num].digital_output_info=_output_mod.getInfo()
 
                     # relink output module to source if it was lost
                     if self.MSDD.get_corresponding_output_module_object(_rx_object.digital_rx_object) == None:

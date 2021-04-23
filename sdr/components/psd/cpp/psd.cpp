@@ -358,13 +358,13 @@ void PsdProcessor::updateSRI(const bulkio::FloatDataBlock &block){
     //adjust the xstart for RF units if required
     if (params_cache.rfFreqUnits){
         const redhawk::PropertyMap& props = redhawk::PropertyMap::cast(block.sri().keywords);
-        long rfCenter;
+        long long rfCenter;
         bool validRF = false;
         if(props.find("CHAN_RF")!=props.end()){
-            rfCenter = props["CHAN_RF"].toLong();
+            rfCenter = props["CHAN_RF"].toLongLong();
             validRF = true;
         } else if(props.find("COL_RF")!=props.end()){
-            rfCenter = props["COL_RF"].toLong();
+            rfCenter = props["COL_RF"].toLongLong();
             validRF = true;
         }
         if (validRF){
