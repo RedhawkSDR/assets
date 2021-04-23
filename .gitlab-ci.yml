@@ -38,7 +38,6 @@ before_script:
       redhawk_repo_proj="redhawk/cf-and-deps"
       if [ -z "$CI_COMMIT_TAG" ];
       then
-        redhawk_version=${latest_version}
         rpm_release="0.$CI_PIPELINE_ID.rh${safe_version}";
       else
         if [[ $CI_COMMIT_TAG =~ ^[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?$ ]];
