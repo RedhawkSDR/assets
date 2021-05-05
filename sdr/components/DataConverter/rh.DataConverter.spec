@@ -30,7 +30,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.DataConverter
-Version:        5.0.1
+Version:        5.0.2
 Release:        1%{?dist}
 Summary:        Component %{name}
 
@@ -39,9 +39,9 @@ License:        GPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.1
-Requires:       redhawk >= 2.1
-Requires:       redhawk-sdrroot-dom-mgr >= 2.1
+BuildRequires:  redhawk-devel >= 3.0
+Requires:       redhawk >= 3.0
+Requires:       redhawk-sdrroot-dom-mgr >= 3.0
 
 BuildRequires:  rh.fftlib-devel >= 2.1
 Requires:       rh.fftlib >= 2.1
@@ -49,8 +49,8 @@ Requires:       rh.fftlib >= 2.1
 BuildRequires:  autoconf-archive
 
 # Interface requirements
-BuildRequires:  bulkioInterfaces >= 2.1
-Requires:       bulkioInterfaces >= 2.1
+BuildRequires:  bulkioInterfaces >= 3.0
+Requires:       bulkioInterfaces >= 3.0
 
 # C++ requirements
 BuildRequires:  fftw-devel >= 3.2

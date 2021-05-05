@@ -27,7 +27,7 @@
 %define _infodir       %{_prefix}/info
 
 Name:           rh.fftlib
-Version:        2.1.1
+Version:        2.1.2
 Release:        1%{?dist}
 Summary:        REDHAWK shared library %{name}
 
@@ -36,7 +36,7 @@ License:        GPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
+BuildRequires:  redhawk-devel >= 3.0
 BuildRequires:  fftw-devel >= 3
 BuildRequires:  autoconf automake libtool
 BuildRequires:  autoconf-archive

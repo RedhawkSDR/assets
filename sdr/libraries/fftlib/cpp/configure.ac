@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License along with this 
 # program.  If not, see http://www.gnu.org/licenses/.
 #
-AC_INIT(rh.fftlib, 2.1.0)
+AC_INIT(rh.fftlib, 2.1.2)
 AM_INIT_AUTOMAKE([nostdinc foreign])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -33,7 +33,7 @@ RH_SOFTPKG_PREFIX([rh.fftlib],[cpp])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Dependencies
-PKG_CHECK_MODULES([REDHAWK], [ossie >= 2.0])
+PKG_CHECK_MODULES([REDHAWK], [ossie >= 3.0])
 PKG_CHECK_MODULES([PROJECTDEPS],   [fftw3 >= 3.0 fftw3f >= 3.0])
 RH_SOFTPKG_CXX([/deps/rh/dsp/dsp.spd.xml],[cpp],[2.0])
 OSSIE_ENABLE_LOG4CXX

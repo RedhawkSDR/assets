@@ -28,7 +28,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.HardLimit
-Version:        2.0.1
+Version:        2.0.2
 Release:        1%{?dist}
 Summary:        Component %{name}
 
@@ -37,14 +37,14 @@ License:        LGPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
-Requires:       redhawk >= 2.0
+BuildRequires:  redhawk-devel >= 3.0
+Requires:       redhawk >= 3.0
 
 BuildRequires:  autoconf-archive
 
 # Interface requirements
-BuildRequires:  bulkioInterfaces >= 2.0
-Requires:       bulkioInterfaces >= 2.0
+BuildRequires:  bulkioInterfaces >= 3.0
+Requires:       bulkioInterfaces >= 3.0
 
 # Implementation java
 Requires: java >= 1.6

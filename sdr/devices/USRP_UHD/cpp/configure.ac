@@ -17,7 +17,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-AC_INIT(rh.USRP_UHD, 6.1.1)
+AC_INIT(rh.USRP_UHD, 6.1.2)
 AM_INIT_AUTOMAKE([nostdinc foreign])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -52,8 +52,8 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Dependencies
 export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig"
-PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 2.0 omniORB4 >= 4.1.0])
-PKG_CHECK_MODULES([INTERFACEDEPS], [frontend >= 2.2, bulkio >= 2.0])
+PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 3.0 omniORB4 >= 4.1.0])
+PKG_CHECK_MODULES([INTERFACEDEPS], [frontend >= 3.0, bulkio >= 3.0])
 PKG_CHECK_MODULES([LIBUHD], [uhd >= 3.5.3])
 PKG_CHECK_MODULES([LIBUUID], [uuid])
 OSSIE_ENABLE_LOG4CXX

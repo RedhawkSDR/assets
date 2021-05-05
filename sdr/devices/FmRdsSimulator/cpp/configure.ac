@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-AC_INIT(rh.FmRdsSimulator, 2.0.4)
+AC_INIT(rh.FmRdsSimulator, 2.0.5)
 AM_INIT_AUTOMAKE([nostdinc foreign])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -39,8 +39,8 @@ AC_SUBST(DOMAINNAME, $fmrdssim_node_domain)
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Dependencies
-PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 2.0 omniORB4 >= 4.1.0 librfsimulators >= 1.1])
-PKG_CHECK_MODULES([INTERFACEDEPS], [frontend >= 2.2, bulkio >= 2.0])
+PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 3.0 omniORB4 >= 4.1.0 librfsimulators >= 1.1])
+PKG_CHECK_MODULES([INTERFACEDEPS], [frontend >= 3.0, bulkio >= 3.0])
 OSSIE_ENABLE_LOG4CXX
 AX_BOOST_BASE([1.41])
 AX_BOOST_SYSTEM

@@ -30,7 +30,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.SourceSDDS
-Version:        2.0.2
+Version:        2.0.3
 Release:        1%{?dist}
 Summary:        Component %{name}
 
@@ -39,14 +39,14 @@ License:        None
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.1
-Requires:       redhawk >= 2.1
+BuildRequires:  redhawk-devel >= 3.0
+Requires:       redhawk >= 3.0
 
 BuildRequires:  autoconf-archive
 
 # Interface requirements
-BuildRequires:  bulkioInterfaces >= 2.1
-Requires:       bulkioInterfaces >= 2.1
+BuildRequires:  bulkioInterfaces >= 3.0
+Requires:       bulkioInterfaces >= 3.0
 
 # Allow upgrades from previous package name
 Obsoletes:      rh.SourceSDDS < 1.1.1

@@ -18,7 +18,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-AC_INIT(rh.VITA49, 5.0.1)
+AC_INIT(rh.VITA49, 5.0.2)
 AM_INIT_AUTOMAKE([nostdinc foreign])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -35,7 +35,7 @@ RH_SOFTPKG_PREFIX([rh.VITA49],[cpp])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Dependencies
-PKG_CHECK_MODULES([REDHAWK], [ossie >= 2.0])
+PKG_CHECK_MODULES([REDHAWK], [ossie >= 3.0])
 OSSIE_ENABLE_LOG4CXX
 AX_BOOST_BASE([1.41])
 AX_BOOST_SYSTEM

@@ -27,7 +27,7 @@
 %define _infodir       %{_prefix}/info
 
 Name:           rh.dsp
-Version:        2.0.1
+Version:        2.0.2
 Release:        1%{?dist}
 Summary:        REDHAWK shared library %{name}
 
@@ -36,7 +36,7 @@ License:        LGPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
+BuildRequires:  redhawk-devel >= 3.0
 BuildRequires:  autoconf automake libtool
 BuildRequires:  autoconf-archive
 
@@ -57,8 +57,8 @@ Obsoletes:      dsp-devel < 2.0.0
 
 %description devel
 Libraries and header files for REDHAWK shared library %{name}
- * Commit: __REVISION__
- * Source Date/Time: __DATETIME__
+* Commit: __REVISION__
+* Source Date/Time: __DATETIME__
 
 %prep
 %setup -q

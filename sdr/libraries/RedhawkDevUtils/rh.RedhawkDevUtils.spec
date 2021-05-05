@@ -29,7 +29,7 @@
 %define _infodir       %{_prefix}/info
 
 Name:           rh.RedhawkDevUtils
-Version:        5.0.0
+Version:        5.0.1
 Release:        1%{?dist}
 Summary:        REDHAWK shared library %{name}
 
@@ -38,8 +38,8 @@ License:        LGPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
-BuildRequires:  bulkioInterfaces >= 2.0
+BuildRequires:  redhawk-devel >= 3.0
+BuildRequires:  bulkioInterfaces >= 3.0
 
 BuildRequires:  autoconf-archive
 
