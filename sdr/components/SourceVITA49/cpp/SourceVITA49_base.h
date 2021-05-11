@@ -39,11 +39,23 @@ class SourceVITA49_base : public Resource_impl, protected ThreadedComponent
         SourceVITA49_base(const char *uuid, const char *label);
         ~SourceVITA49_base();
 
-        void start() throw (CF::Resource::StartError, CORBA::SystemException);
+        /**
+         * @throw CF::Resource::StartError
+         * @throw CORBA::SystemException
+         */
+        void start();
 
-        void stop() throw (CF::Resource::StopError, CORBA::SystemException);
+        /**
+         * @throw CF::Resource::StopError
+         * @throw CORBA::SystemException
+         */
+        void stop();
 
-        void releaseObject() throw (CF::LifeCycle::ReleaseError, CORBA::SystemException);
+        /**
+         * @throw CF::LIfeCycle::ReleaseError
+         * @throw CORBA::SystemException
+         */
+        void releaseObject();
 
         void loadProperties();
 

@@ -29,7 +29,10 @@
 extern "C" {
 #endif
 
-connection_t multicast_client (const char* iface, const char* group, int port) throw (BadParameterError);
+/**
+ * @throw BadParameterError
+ */
+connection_t multicast_client (const char* iface, const char* group, int port);
 ssize_t multicast_receive (connection_t client, void* buffer, size_t bytes);
 connection_t multicast_server (const char* iface, const char* group, int port);
 ssize_t multicast_transmit (connection_t server, const void* buffer, size_t bytes);

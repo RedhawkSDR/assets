@@ -119,7 +119,7 @@ static multicast_t multicast_open_ (const char* iface, const char* group, int po
 }
 
 
-multicast_t multicast_client (const char* iface, const char* group, int port, std::string& chosen_iface, LOGGER _log) throw (BadParameterError)
+multicast_t multicast_client (const char* iface, const char* group, int port, std::string& chosen_iface, LOGGER _log)
 {
   if (!_log) {
     _log = rh_logger::Logger::getLogger("SourceSDDS_utils");

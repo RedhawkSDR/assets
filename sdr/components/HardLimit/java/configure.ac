@@ -17,21 +17,21 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-AC_INIT(rh.HardLimit, 2.0.1)
+AC_INIT(rh.HardLimit, 2.0.2)
 AM_INIT_AUTOMAKE([nostdinc foreign])
 AC_CONFIG_MACRO_DIR([m4])
 
 OSSIE_CHECK_OSSIE
 OSSIE_SDRROOT_AS_PREFIX
 
-PKG_CHECK_MODULES([OSSIE], [ossie >= 2.0])
+PKG_CHECK_MODULES([OSSIE], [ossie >= 3.0])
 
 RH_JAVA_HOME
 RH_PROG_JAVAC([1.6])
 RH_PROG_JAR
 
 RH_PKG_CLASSPATH([REDHAWK], [ossie])
-PKG_CHECK_MODULES([INTERFACEDEPS], [bulkio >= 2.0])
+PKG_CHECK_MODULES([INTERFACEDEPS], [bulkio >= 3.0])
 
 AC_CONFIG_FILES([Makefile])
 AC_OUTPUT

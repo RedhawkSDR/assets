@@ -149,10 +149,11 @@ class RtlDevice
         // Device related data
         uint32_t m_channelNumber;
         rtlsdr_dev_t *m_device;
-        char m_deviceName[256];
-        char m_vendor[256];
-        char m_product[256];
-        char m_serial[256];
+        static constexpr size_t m_char_p_sz = 256;  // see rtl-sdr.h rtlsdr_get_device_usb_strings()
+        std::string m_deviceName;
+        char m_vendor[m_char_p_sz];
+        char m_product[m_char_p_sz];
+        char m_serial[m_char_p_sz];
         FrequencyRange m_frequencyRange;
         RateRange m_rateRange;
         GainRange m_gainRange;

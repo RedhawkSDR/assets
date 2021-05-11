@@ -62,7 +62,7 @@ public:
     void updateActions(bool psd, bool fft);
     void forceSRIUpdate();
     bool finished();
-    void stop() throw (CF::Resource::StopError, CORBA::SystemException);
+    void stop();
 
 private:
     int serviceFunction();
@@ -103,7 +103,7 @@ class psd_i : public psd_base
         ~psd_i();
         void constructor();
         int serviceFunction();
-        void stop() throw (CF::Resource::StopError, CORBA::SystemException);
+        void stop();
         void streamAdded(bulkio::InFloatStream stream);
     private:
         void fftSizeChanged(unsigned int oldValue, unsigned int newValue);

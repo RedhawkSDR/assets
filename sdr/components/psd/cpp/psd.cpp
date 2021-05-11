@@ -45,7 +45,7 @@ void copyVec(const bulkio::FloatDataBlock &block, RealFFTWVector &out){
 
 void copyVec(const bulkio::FloatDataBlock &block, ComplexFFTWVector &out){
     out.resize(block.cxsize());
-    memcpy(&out[0], block.data(), out.size()*sizeof(std::complex<float>));
+    memcpy((void*) &out[0], block.data(), out.size()*sizeof(std::complex<float>));
 }
 
 /****************************************************************
@@ -156,7 +156,7 @@ bool PsdProcessor::finished(){
     return eos;
 }
 
-void PsdProcessor::stop() throw (CORBA::SystemException, CF::Resource::StopError){
+void PsdProcessor::stop() {
     LOG_TRACE(PsdProcessor,__PRETTY_FUNCTION__);
     if (!ThreadedComponent::stopThread()) {
         throw CF::Resource::StopError(CF::CF_NOTSET, "PsdProcessor thread did not die");
@@ -608,7 +608,7 @@ void psd_i::streamAdded(bulkio::InFloatStream stream){
     }
 }
 
-void psd_i::stop() throw (CORBA::SystemException, CF::Resource::StopError){
+void psd_i::stop() {
     LOG_TRACE(psd_i,__PRETTY_FUNCTION__);
     clearThreads();
     psd_base::stop();

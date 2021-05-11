@@ -5,10 +5,10 @@ if [ "$1" = "rpm" ]; then
     if [ -e rh.MSDD_Controller.spec ]; then
         mydir=`dirname $0`
         tmpdir=`mktemp -d`
-        cp -Lr ${mydir} ${tmpdir}/rh.MSDD_Controller-1.0.0
-	find ${tmpdir}/rh.MSDD_Controller-1.0.0 -name "rh.MSDD.spec" -exec rm {} \;
-        tar czf ${tmpdir}/rh.MSDD_Controller-1.0.0.tar.gz --exclude=".svn" --exclude=".git" -C ${tmpdir} rh.MSDD_Controller-1.0.0
-        rpmbuild -ta ${tmpdir}/rh.MSDD_Controller-1.0.0.tar.gz
+        cp -Lr ${mydir} ${tmpdir}/rh.MSDD_Controller-1.0.1
+	find ${tmpdir}/rh.MSDD_Controller-1.0.1 -name "rh.MSDD.spec" -exec rm {} \;
+        tar czf ${tmpdir}/rh.MSDD_Controller-1.0.1.tar.gz --exclude=".svn" --exclude=".git" -C ${tmpdir} rh.MSDD_Controller-1.0.1
+        rpmbuild -ta ${tmpdir}/rh.MSDD_Controller-1.0.1.tar.gz
         #rm -rf $tmpdir
     else
         echo "Missing RPM spec file in" `pwd`

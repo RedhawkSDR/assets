@@ -28,7 +28,9 @@
 
 #include "FmRdsSimulator.h"
 #include <boost/thread.hpp>
+#define BOOST_NO_CXX11_SCOPED_ENUMS
 #include <boost/filesystem/path.hpp>
+#undef BOOST_NO_CXX11_SCOPED_ENUMS
 #include <math.h>
 
 #define DEFAULT_STREAM_ID "MyStreamID"
@@ -144,7 +146,7 @@ void FmRdsSimulator_i::noiseSigmaChanged(const float* old_value, const float* ne
 	}
 }
 
-void FmRdsSimulator_i::initialize() throw (CF::LifeCycle::InitializeError, CORBA::SystemException)
+void FmRdsSimulator_i::initialize()
 {
 	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
 	FmRdsSimulator_base::initialize();

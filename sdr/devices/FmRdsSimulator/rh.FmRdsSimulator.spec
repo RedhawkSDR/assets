@@ -30,7 +30,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.FmRdsSimulator
-Version:        2.0.4
+Version:        2.0.5
 Release:        2%{?dist}
 Summary:        Device %{name}
 
@@ -39,12 +39,14 @@ License:        GPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
-Requires:       redhawk >= 2.0
+BuildRequires:  redhawk-devel >= 3.0
+Requires:       redhawk >= 3.0
+
+BuildRequires:  autoconf-archive
 
 # Interface requirements
-BuildRequires:  frontendInterfaces >= 2.2 bulkioInterfaces >= 2.0
-Requires:       frontendInterfaces >= 2.2 bulkioInterfaces >= 2.0
+BuildRequires:  frontendInterfaces >= 3.0 bulkioInterfaces >= 3.0
+Requires:       frontendInterfaces >= 3.0 bulkioInterfaces >= 3.0
 
 # Library requires
 BuildRequires:  libRfSimulators-devel

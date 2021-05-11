@@ -17,12 +17,13 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-AC_INIT(rh.RedhawkDevUtils, 5.0.0)
+AC_INIT(rh.RedhawkDevUtils, 5.0.1)
 AM_INIT_AUTOMAKE([nostdinc foreign])
 AC_CONFIG_MACRO_DIR([m4])
 
 AC_PROG_CC
 AC_PROG_CXX
+AX_CXX_COMPILE_STDCXX(14, noext)
 AC_PROG_INSTALL
 LT_INIT([disable-static])
 
@@ -33,7 +34,7 @@ RH_SOFTPKG_PREFIX([rh.RedhawkDevUtils],[cpp])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Dependencies
-PKG_CHECK_MODULES([REDHAWK], [ossie >= 2.0])
+PKG_CHECK_MODULES([REDHAWK], [ossie >= 3.0])
 OSSIE_ENABLE_LOG4CXX
 AX_BOOST_BASE([1.41])
 AX_BOOST_SYSTEM

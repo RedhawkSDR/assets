@@ -308,7 +308,7 @@ struct status_struct SinkSDDS_i::get_status_struct() {
  * the individual processor has not had a stream set upon it. If everything goes well,
  * the base class' start method is called.
  */
-void SinkSDDS_i::start() throw (CORBA::SystemException, CF::Resource::StartError) {
+void SinkSDDS_i::start() {
 	std::stringstream errorText;
 	int socket;
 
@@ -359,7 +359,7 @@ void SinkSDDS_i::start() throw (CORBA::SystemException, CF::Resource::StartError
  * Will then call the base class stop to open up the ports and free any blocking port read calls.
  * Then the bulkio to sdds processors threads are joined and the socket closed.
  */
-void SinkSDDS_i::stop () throw (CF::Resource::StopError, CORBA::SystemException) {
+void SinkSDDS_i::stop () {
 	LOG_TRACE(SinkSDDS_i, "Entering stop method");
 	m_floatproc.shutdown();
 	m_shortproc.shutdown();

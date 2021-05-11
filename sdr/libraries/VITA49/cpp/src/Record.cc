@@ -65,8 +65,7 @@ bool Record::equals (const VRTObject &o) const {
     if (buf.size() != r.buf.size()) return false;
     return (memcmp(&buf[0], &r.buf[0], buf.size()) == 0);
   }
-  catch (bad_cast &e) {
-    UNUSED_VARIABLE(e);
+  catch (const bad_cast&) {
     return false;
   }
 }
@@ -74,8 +73,10 @@ bool Record::equals (const VRTObject &o) const {
 bool Record::unpackBit (int32_t off, int32_t bit) const {
   int32_t iByte = 3 - (bit / 8);
   int32_t iBit  = 0x1 << (bit % 8);
-  if ((buf[off+iByte] & iBit) != 0) return true;
-                                    return false;
+  if ((buf[off+iByte] & iBit) != 0) {
+    return true;
+  }
+  return false;
 }
 
 boolNull Record::getStateEventBit (int32_t off, int32_t enable, int32_t indicator) const {
@@ -84,9 +85,13 @@ boolNull Record::getStateEventBit (int32_t off, int32_t enable, int32_t indicato
   int32_t eBit  = 0x1 << (enable    % 8);
   int32_t iBit  = 0x1 << (indicator % 8);
 
-  if ((buf[off+eByte] & eBit) == 0) return _NULL;
-  if ((buf[off+iByte] & iBit) != 0) return _TRUE;
-                                    return _FALSE;
+  if ((buf[off+eByte] & eBit) == 0) {
+    return _NULL;
+  }
+  if ((buf[off+iByte] & iBit) != 0) {
+    return _TRUE;
+  }
+  return _FALSE;
 }
 
 int32_t Record::getFieldCount () const {

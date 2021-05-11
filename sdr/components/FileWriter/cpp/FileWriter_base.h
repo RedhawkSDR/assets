@@ -35,11 +35,22 @@ class FileWriter_base : public Component, protected ThreadedComponent
         FileWriter_base(const char *uuid, const char *label);
         ~FileWriter_base();
 
-        void start() throw (CF::Resource::StartError, CORBA::SystemException);
+        /**
+         * @throw CF::Resource::StartError
+         * @throw CORBA::SystemException
+         */
+        void start();
 
-        void stop() throw (CF::Resource::StopError, CORBA::SystemException);
+        /**
+         * @throw CF::Resource::StopError
+         * @throw CORBA::SystemException
+         */
+        void stop();
 
-        void releaseObject() throw (CF::LifeCycle::ReleaseError, CORBA::SystemException);
+        /**
+         * @throw std::logic_error
+         */
+        void releaseObject();
 
         void loadProperties();
 

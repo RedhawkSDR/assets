@@ -51,13 +51,13 @@ agc_base::~agc_base()
     Framework-level functions
     These functions are generally called by the framework to perform housekeeping.
 *******************************************************************************************/
-void agc_base::start() throw (CORBA::SystemException, CF::Resource::StartError)
+void agc_base::start()
 {
     Resource_impl::start();
     ThreadedComponent::startThread();
 }
 
-void agc_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
+void agc_base::stop()
 {
     Resource_impl::stop();
     if (!ThreadedComponent::stopThread()) {
@@ -65,7 +65,7 @@ void agc_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
     }
 }
 
-void agc_base::releaseObject() throw (CORBA::SystemException, CF::LifeCycle::ReleaseError)
+void agc_base::releaseObject()
 {
     // This function clears the component running condition so main shuts down everything
     try {

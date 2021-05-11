@@ -29,7 +29,7 @@
 %define _infodir       %{_prefix}/info
 
 Name:           rh.VITA49
-Version:        5.0.1
+Version:        5.0.2
 Release:        1%{?dist}
 Summary:        REDHAWK shared library %{name}
 
@@ -38,9 +38,10 @@ License:        LGPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
+BuildRequires:  redhawk-devel >= 3.0
 Obsoletes:      redhawk-libVITA49_v1 < 3.0.0
 
+BuildRequires:  autoconf-archive
 
 %description
 REDHAWK shared library %{name}. VITA 49 packet processing library for REDHAWK (uses VRT Library).

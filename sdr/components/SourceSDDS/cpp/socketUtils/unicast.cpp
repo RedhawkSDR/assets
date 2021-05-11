@@ -154,7 +154,7 @@ static unicast_t unicast_open_ (const char* iface, const char* ip, int port, std
 }
 
 
-unicast_t unicast_client (const char* iface, const char* group, int port, std::string& chosen_iface, LOGGER _log) throw (BadParameterError)
+unicast_t unicast_client (const char* iface, const char* group, int port, std::string& chosen_iface, LOGGER _log)
 {
   if (!_log) {
     _log = rh_logger::Logger::getLogger("SourceSDDS_utils");

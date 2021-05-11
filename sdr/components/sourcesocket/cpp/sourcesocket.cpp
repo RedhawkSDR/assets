@@ -79,7 +79,7 @@ sourcesocket_i::sourcesocket_i(const char *uuid, const char *label) :
     bytes_per_sec = 0;
 }
 
-void sourcesocket_i::start() throw (CF::Resource::StartError, CORBA::SystemException){
+void sourcesocket_i::start() {
     updateXferLen();
     updateSocket(true);
     sourcesocket_base::start();

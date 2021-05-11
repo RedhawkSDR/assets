@@ -49,7 +49,7 @@ SddsProcessor<DATA_TYPE>::SddsProcessor(bulkio::OutSDDSPort * dataSddsOut, size_
     m_pkt_template.msg_iovlen = 3; // We use three iov. One is the SDDS header and the second is the payload, the third for any zero padding if necessary.
     m_pkt_template.msg_control = NULL;
     m_pkt_template.msg_controllen = 0;
-    m_pkt_template.msg_flags = NULL;
+    m_pkt_template.msg_flags = 0;
 
     m_msg_iov[0].iov_base = &m_sdds_template;
     m_msg_iov[0].iov_len = SDDS_HEADER_SIZE;

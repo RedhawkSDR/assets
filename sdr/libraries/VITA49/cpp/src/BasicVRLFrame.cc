@@ -112,7 +112,7 @@ string BasicVRLFrame::toString () const {
     str << " FrameLength=" << getFrameLength();
     return str.str();
   }
-  catch (VRTException e) {
+  catch (const VRTException& e) {
     return getClassName()+": <Invalid VRLFrame: "+e.toString()+">";
   }
 }
@@ -131,8 +131,7 @@ bool BasicVRLFrame::equals (const BasicVRLFrame &f) const {
   try {
     return equals(*checked_dynamic_cast<const BasicVRLFrame*>(&o));
   }
-  catch (bad_cast &e) {
-    UNUSED_VARIABLE(e);
+  catch (const bad_cast&) {
     return false;
   }
 }
@@ -320,9 +319,8 @@ vector<vector<char>*> *BasicVRLFrame::getVRTPackets (const vector<char> &buffer,
       return list;
     }
   }
-  catch (VRTException e) {
+  catch (const VRTException&) {
     // ignore and just return null below
-    UNUSED_VARIABLE(e);
   }
 
   // Error condition, delete anything and return null

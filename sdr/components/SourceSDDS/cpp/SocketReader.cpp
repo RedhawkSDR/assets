@@ -100,7 +100,7 @@ size_t SocketReader::getPktsPerRead() {
  * setting up the socket a BadParameterError is thrown and the problem logged.
  * This method cannot be called after the socket reader has started.
  */
-void SocketReader::setConnectionInfo(std::string interface, std::string ip, uint16_t vlan, uint16_t port) throw (BadParameterError) {
+void SocketReader::setConnectionInfo(std::string interface, std::string ip, uint16_t vlan, uint16_t port) {
 	RH_DEBUG(_log, "Setting connection info to Interface: " << interface << " IP: " << ip << " Port: " << port);
 	if (m_running) {
 		RH_WARN(_log, "Cannot change the socket address while the socket reader thread is running");

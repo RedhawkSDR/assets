@@ -46,9 +46,11 @@
 #include <cerrno>
 #include <cstring>
 #include <ctime>
+#define BOOST_NO_CXX11_SCOPED_ENUMS
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/convenience.hpp>
+#undef BOOST_NO_CXX11_SCOPED_ENUMS
 #include <boost/smart_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/thread/thread.hpp>
@@ -166,8 +168,8 @@ public:
     ~FileWriter_i();
     int serviceFunction();
 
-    void start() throw (CF::Resource::StartError, CORBA::SystemException);
-    void stop() throw (CF::Resource::StopError, CORBA::SystemException);
+    void start();
+    void stop();
     void constructor ();
 private:
     /*property change listener methods*/
@@ -387,8 +389,10 @@ private:
             }
             return time;
         }
-
-    template <typename MYTYPE> MYTYPE getKeywordValueByID(BULKIO::StreamSRI *sri, CORBA::String_member id) throw(std::logic_error){
+    /**
+     * @throw std::logic_error
+     */
+    template <typename MYTYPE> MYTYPE getKeywordValueByID(BULKIO::StreamSRI *sri, CORBA::String_member id) {
         MYTYPE value;
         for (unsigned int i = 0; i < sri->keywords.length(); i++) {
             if (!strcmp(sri->keywords[i].id, id)) {
@@ -399,7 +403,10 @@ private:
         throw std::logic_error("KEYWORD NOT FOUND!");
     }
 
-    template <typename MYTYPE> bool updateIfFound_KeywordValueByID(BULKIO::StreamSRI *sri, CORBA::String_member id, MYTYPE& current) throw(std::logic_error){
+    /**
+     * @throw std::logic_error
+     */
+    template <typename MYTYPE> bool updateIfFound_KeywordValueByID(BULKIO::StreamSRI *sri, CORBA::String_member id, MYTYPE& current) {
         try {
             MYTYPE value = getKeywordValueByID<MYTYPE>(sri, id);
             current = value;

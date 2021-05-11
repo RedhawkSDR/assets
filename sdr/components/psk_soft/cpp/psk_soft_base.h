@@ -32,11 +32,23 @@ class psk_soft_base : public Component, protected ThreadedComponent
         psk_soft_base(const char *uuid, const char *label);
         ~psk_soft_base();
 
-        void start() throw (CF::Resource::StartError, CORBA::SystemException);
+        /**
+         * @throw CF::Resource::StartError
+         * @throw CORBA::SystemException
+         */
+        void start();
 
-        void stop() throw (CF::Resource::StopError, CORBA::SystemException);
+        /**
+         * @throw CF::Resource::StopError
+         * @throw CORBA::SystemException
+         */
+        void stop();
 
-        void releaseObject() throw (CF::LifeCycle::ReleaseError, CORBA::SystemException);
+        /**
+         * @throw CF::LIfeCycle::ReleaseError
+         * @throw CORBA::SystemException
+         */
+        void releaseObject();
 
         void loadProperties();
 

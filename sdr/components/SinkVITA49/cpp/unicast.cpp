@@ -29,17 +29,18 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <sstream>
 #include <string>
 #include "unicast.h"
 
 /* it is probably desirable to convert to C++ and throw exceptions instead. */
 static inline void verify_ (int condition, const char* message, const char* condtext, const char* file, int line) {
     if (!condition) {
-        char msg[100];
-        sprintf(msg, "Verify failed '%s' at line %d: %s (%s)\n", file, line, message, condtext);
-        fprintf(stderr, msg);
+        std::stringstream ss;
+        ss << "Verify failed '" << file << "' at line " << line << ": " << message << " (" << condtext << ")\n";
+        fprintf(stderr, ss.str().c_str());
         perror("perror");
-        throw(BadParameterError3(msg));
+        throw (BadParameterError3(ss.str()));
     }
 }
 #define verify(CONDITION, MESSAGE) verify_(CONDITION, MESSAGE, #CONDITION, __FILE__, __LINE__)

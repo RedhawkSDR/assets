@@ -195,8 +195,7 @@ namespace vrt {
       try {
         return _equals(checked_dynamic_cast<const Value*>(&o));
       }
-      catch (bad_cast &e) {
-        UNUSED_VARIABLE(e);
+      catch (const bad_cast&) {
         return false;
       }
     }
@@ -206,8 +205,7 @@ namespace vrt {
       try {
         return _equals(checked_dynamic_cast<const Value*>(o));
       }
-      catch (bad_cast &e) {
-        UNUSED_VARIABLE(e);
+      catch (const bad_cast&) {
         return false;
       }
     }

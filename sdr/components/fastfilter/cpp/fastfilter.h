@@ -79,9 +79,12 @@ class fastfilter_i : public fastfilter_base
         ~fastfilter_i();
         int serviceFunction();
 
-        void configure (const CF::Properties& configProperties)
-            throw (CF::PropertySet::PartialConfiguration,
-                   CF::PropertySet::InvalidConfiguration, CORBA::SystemException);
+        /**
+         * @throw CF::PropertySet::PartialConfiguration
+         * @throw CF::PropertySet::InvalidConfiguration
+		 * @throw CORBA::SystemException
+         */
+        void configure (const CF::Properties& configProperties);
 
     private:
 

@@ -242,12 +242,12 @@ void SinkVITA49_i::memoryManagement(int maxPacketLength) {
 
 }
 
-void SinkVITA49_i::start() throw (CF::Resource::StartError, CORBA::SystemException) {
+void SinkVITA49_i::start() {
     boost::mutex::scoped_lock runLock(startstop_lock);
     SinkVITA49_base::start();
 }
 
-void SinkVITA49_i::stop() throw (CF::Resource::StopError, CORBA::SystemException) {
+void SinkVITA49_i::stop() {
     boost::mutex::scoped_lock runLock(startstop_lock);
 
     SinkVITA49_base::stop();
@@ -642,6 +642,7 @@ int SinkVITA49_i::createPayload(int size, bool signed_v) {
         DataItemFormat format;
 
         int fieldSize = 0;
+        (void) fieldSize;  // Silence compiler warning for unused var.
 
         if (signed_v) {
             if (size == 1)
@@ -813,7 +814,7 @@ int SinkVITA49_i::createIFContextPacket(BULKIO::PrecisionUTCTime t, int index) {
         double value_d;
         float value_f;
         long value_l;
-        bool value_b;
+        bool value_b = false;
 
         unsigned long currSize = currSRI.keywords.length();
         for (unsigned long i = 0; i < currSize; ++i) {

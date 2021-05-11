@@ -44,9 +44,11 @@
 #include <sys/stat.h>
 #include <cerrno>
 #include <cstring>
+#define BOOST_NO_CXX11_SCOPED_ENUMS
 #include <boost/filesystem/operations.hpp>
 #include <boost/filesystem/fstream.hpp>
 #include <boost/filesystem/convenience.hpp>
+#undef BOOST_NO_CXX11_SCOPED_ENUMS
 #include <boost/smart_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/thread/thread.hpp>
@@ -216,11 +218,23 @@ class FileReader_i : public FileReader_base {
 public:
     FileReader_i(const char *uuid, const char *label);
     ~FileReader_i();
-    void start() throw (CF::Resource::StartError, CORBA::SystemException);
-    void stop() throw (CF::Resource::StopError, CORBA::SystemException);
+    /**
+     * @throw CF::Resource::StartError
+     * @throw CORBA::SystemException
+     */
+    void start();
+    /**
+     * @throw CF::Resource::StopError
+     * @throw CORBA::SystemException
+     */
+    void stop();
     //void configure(const CF::Properties&) throw (CORBA::SystemException, CF::PropertySet::InvalidConfiguration, CF::PropertySet::PartialConfiguration);
     void constructor();
-    void initialize() throw (CF::LifeCycle::InitializeError, CORBA::SystemException);
+    /**
+     * @throw CF::LifeCycle::InitializeError
+     * @throw CORBA::SystemException
+     */
+    void initialize();
 
 
     int serviceFunction();

@@ -67,8 +67,8 @@ public:
     void advancedConfigurationChanged(const advanced_configuration_struct *oldVal, const advanced_configuration_struct *newVal);
         
 	int serviceFunction();
-	void start() throw (CF::Resource::StartError, CORBA::SystemException);
-	void stop() throw (CF::Resource::StopError, CORBA::SystemException);
+	void start();
+	void stop();
 	template <class IN> bool singleService(IN *dataIn, bool value);
 	void TRANSMITTER();
 	void TRANSMITTER_M();

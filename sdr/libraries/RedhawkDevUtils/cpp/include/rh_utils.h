@@ -392,7 +392,7 @@ namespace BIO_HELPER {
 	}
 
     inline BULKIO::PrecisionUTCTime operator-(const BULKIO::PrecisionUTCTime& lhs, const double& rhs) {
-        BULKIO::PrecisionUTCTime(tmp);
+        BULKIO::PrecisionUTCTime tmp;
         tmp = lhs;
         tmp.tfsec -= rhs;
         if (tmp.tfsec < 0.0) {
@@ -412,7 +412,7 @@ namespace BIO_HELPER {
     };
 
     inline BULKIO::PrecisionUTCTime operator-(const BULKIO::PrecisionUTCTime& lhs, const BULKIO::PrecisionUTCTime& rhs) {
-        BULKIO::PrecisionUTCTime(tmp);
+        BULKIO::PrecisionUTCTime tmp;
         tmp = lhs;
         tmp.tfsec -= rhs.tfsec;
         tmp.twsec -= rhs.twsec;
