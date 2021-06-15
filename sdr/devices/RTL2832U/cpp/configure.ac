@@ -18,7 +18,7 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-AC_INIT(rh.RTL2832U, 2.1.2)
+AC_INIT(rh.RTL2832U, 2.2.0)
 AM_INIT_AUTOMAKE([nostdinc foreign])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -41,7 +41,7 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Dependencies
 export PKG_CONFIG_PATH="$PKG_CONFIG_PATH:/usr/local/lib/pkgconfig"
-PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 3.0.0 omniORB4 >= 4.1.0])
+PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 3.0 omniORB4 >= 4.2.3])
 PKG_CHECK_MODULES([INTERFACEDEPS], [frontend >= 3.0, bulkio >= 3.0])
 PKG_CHECK_MODULES([LIBRTLSDR], [librtlsdr = 0.5.2 libusb-1.0 >= 1.0.0 ])
 PKG_CHECK_MODULES([LIBUUID], [uuid])

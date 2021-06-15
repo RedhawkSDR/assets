@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -154,10 +154,10 @@ class fcalc_i(fcalc_base):
                         #"import math"
                         mod = __import__(module)
                         self.globals[module] = mod
-                    except ImportError, e:
+                    except ImportError as e:
                         self._log.error('Cannot import module "%s" due to ImportError',module)
                         raise CF.PropertySet.InvalidConfiguration('import "%s" is invalid; Cannot import module "%s" due to ImportError'%(newval,module), [newval])
-                    except TypeError, e:
+                    except TypeError as e:
                         self._log.error('Cannot import module "%s" due to TypeError. Module must be a string.',module)
                         raise CF.PropertySet.InvalidConfiguration('import "%s" is invalid; Cannot import module "%s" due to TypeError. Module must be a string.'%(newval,module), [newval])
                     except:
@@ -176,7 +176,7 @@ class fcalc_i(fcalc_base):
                                     self._log.warn("NOT overriding global namespace with %s from %s", name, module)
                                 else:    
                                     self.globals[name]=getattr(mod,name)
-        except CF.PropertySet.InvalidConfiguration, e:
+        except CF.PropertySet.InvalidConfiguration as e:
             raise e
         except TypeError:
             self._log.error('The value "%s" is not iterable; configure with a SEQUENCE of imports.',newval)
@@ -197,7 +197,7 @@ class fcalc_i(fcalc_base):
             #do a simple test to validate the equation 
             try:
                 self.evaluate(a=1,b=1)
-            except Exception, e:
+            except Exception as e:
                 self._log.error("Cannot validate equation %s", newval)
                 self._log.exception(e)
                 fcalc_i.equation.set(self,oldval)

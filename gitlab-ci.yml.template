@@ -183,7 +183,7 @@ before_script:
 
 
 .test: &test
-  image: ${docker_registry}redhawk/buildenv:${short_version}-$dist-$arch
+  image: ${docker_registry}redhawk/buildenv:${short_version}-py3-$dist-$arch
   stage: test
   tags:
     - redhawk
@@ -215,11 +215,11 @@ before_script:
     - comp_type=${arr[$count]}
     - cd tests
     - env | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
-    - pip list | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
-    - python test_$asset_name.py 2>&1 | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
+    - pip3 list | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
+    - python3 test_$asset_name.py 2>&1 | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
     - cd ..
     - if [ -d cpp ]; then
-        gcovr -r . --xml --exclude-directories=tests > gcovr.xml;
+        python3 /usr/local/bin/gcovr -r . --xml --exclude-directories=tests > gcovr.xml;
         cppcheck --enable=all --xml-version=2 -i tests . 2> cppcheck-results.xml;
       fi
     - cp tests/TEST*.xml ../../../results/${asset_name}-${dist}-${arch}

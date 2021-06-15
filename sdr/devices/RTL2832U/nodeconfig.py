@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file 
 # distributed with this source distribution.
@@ -19,11 +19,11 @@
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
 
-import os, sys, commands, logging, platform, shutil, socket
+import os, sys, subprocess, logging, platform, shutil, socket
 from ossie import parsers
 from ossie.utils.model import _uuidgen as uuidgen
 
-class ConfigurationError(StandardError):
+class ConfigurationError(Exception):
     pass
 
 class NodeConfig(object):
@@ -44,7 +44,7 @@ class NodeConfig(object):
                                    "prf": os.path.join(self.options.sdrroot, "dev", self.options.rtlpath[1:], "RTL2832U.prf.xml"),
                                    "scd": os.path.join(self.options.sdrroot, "dev", self.options.rtlpath[1:], "RTL2832U.scd.xml")}
 
-        for template in self.rtl2832U_templates.values():
+        for template in list(self.rtl2832U_templates.values()):
             if not os.path.exists(template):
                 raise ConfigurationError("%s missing" % template)
                 
@@ -115,7 +115,7 @@ class NodeConfig(object):
                     self._log.debug("Node directory already exists; skipping directory creation")
                 pass
         except OSError:
-            raise Exception, "Could not create device manager directory"
+            raise Exception("Could not create device manager directory")
 
         RTL2832U_componentfile = 'rh.RTL2832U_' + uuidgen()
         if self.options.inplace:
@@ -174,7 +174,7 @@ class NodeConfig(object):
         if not self.options.inplace:
             if not os.path.exists(self.rtl2832U_path):
                 os.mkdir(self.rtl2832U_path)
-            for f in self.rtl2832U_templates.values():
+            for f in list(self.rtl2832U_templates.values()):
                 shutil.copy(f, self.rtl2832U_path)
                 
         self._updateRTL2832USpd()
@@ -283,6 +283,6 @@ if __name__ == "__main__":
         dn.register()
         if not options.silent:
             _log.info("RTL2832U node registration is complete")
-    except ConfigurationError, e:
+    except ConfigurationError as e:
         _log.error("%s", e)
         sys.exit(1)

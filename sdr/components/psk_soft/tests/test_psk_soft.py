@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -47,10 +47,10 @@ def getDelay(first,second):
     c = signal.correlate(first[:numPts],second[:numPts],mode='full')
     cLen = len(c)
     if DISPLAY:
-        matplotlib.pyplot.plot(xrange(cLen), c)
+        matplotlib.pyplot.plot(range(cLen), c)
         matplotlib.pyplot.show()
     
-    z = zip(c,range(cLen))
+    z = list(zip(c,list(range(cLen))))
     z.sort()
     maxIndex =z[-1][1]
     delay = maxIndex+1-numPts
@@ -81,7 +81,7 @@ def toClipboard(data):
 
 def toCx(input):
     output =[]
-    for i in xrange(len(input)/2):
+    for i in range(len(input)//2):
         output.append(complex(input[2*i], input[2*i+1]))
     return output 
 
@@ -96,13 +96,13 @@ def roundCx(val):
     return complex(round(val.real), round(val.imag))                      
 
 def genPsk(numSymbols, sampPerBaud=8,numSyms=4,differential=False):
-    syms = range(numSyms)
+    syms = list(range(numSyms))
     phase = [2*math.pi*x/numSyms for x in syms]
     cx = [complex(math.cos(x),math.sin(x)) for x in phase]
     out=[]
     inputSymbols=[]
     last=1
-    for i in xrange(numSymbols):
+    for i in range(numSymbols):
         x = random.choice(syms)
         x_cx = cx[x]
         inputSymbols.append(x_cx)
@@ -112,7 +112,7 @@ def genPsk(numSymbols, sampPerBaud=8,numSyms=4,differential=False):
         else:
             val = x_cx
 
-        for j in xrange(sampPerBaud):
+        for j in range(sampPerBaud):
               out.append(val + .0001*random.random()) #add a little noise in make the plot happy 
     return out, inputSymbols
 
@@ -200,7 +200,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         #with the differential decoding when measuring the max error
         
         maxError = max([abs(x-y) for x, y in zip(outCx[1:],symsRotated[1:])])
-        print "found max error of %s" %maxError
+        print("found max error of %s" %maxError)
         assert(maxError < 1e-3)
 
     def NonDiffDecodeTest(self,numSyms):
@@ -234,7 +234,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             outCxRotated = [cxScaler*x for x in outCx]
             maxError = min(maxError, max([abs(x-y) for x, y in zip(outCxRotated[1:],syms[1:])]))
             
-        print "found max error of %s" %maxError
+        print("found max error of %s" %maxError)
         assert(maxError < 1e-3)        
 
 
@@ -291,7 +291,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         props = dict((x.id, any.from_any(x.value)) for x in props)
         # Query may return more than expected, but not less
         for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
+            self.assertEqual(expectedProp.id in props, True)
         
         #######################################################################
         # Verify that all expected ports are available

@@ -1,3 +1,3 @@
-from MSDD import *
-from CompositeMSDD import *
-import msddcontroller
+from .MSDD import *
+from .CompositeMSDD import *
+from . import msddcontroller

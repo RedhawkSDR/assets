@@ -32,7 +32,7 @@ OSSIE_SDRROOT_AS_PREFIX
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Dependencies
-PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 3.0 omniORB4 >= 4.1.0])
+PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 3.0 omniORB4 >= 4.2.3])
 PKG_CHECK_MODULES([INTERFACEDEPS], [bulkio >= 3.0])
 RH_SOFTPKG_CXX([/deps/rh/dsp/dsp.spd.xml],[cpp],[2.0])
 RH_SOFTPKG_CXX([/deps/rh/fftlib/fftlib.spd.xml],[cpp],[2.0])

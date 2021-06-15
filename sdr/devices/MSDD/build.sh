@@ -18,15 +18,15 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-
+asset_version="rh.MSDD-4.1.0"
 if [ "$1" = "rpm" ]; then
     # A very simplistic RPM build scenario
     if [ -e rh.MSDD.spec ]; then
         mydir=`dirname $0`
         tmpdir=`mktemp -d`
-        cp -r ${mydir} ${tmpdir}/rh.MSDD-4.0.1
-        tar czf ${tmpdir}/rh.MSDD-4.0.1.tar.gz --exclude=".svn" --exclude=".git" -C ${tmpdir} rh.MSDD-4.0.1
-        rpmbuild -ta ${tmpdir}/rh.MSDD-4.0.1.tar.gz
+        cp -r ${mydir} ${tmpdir}/rh.MSDD-4.1.0
+        tar czf ${tmpdir}/$asset_version.tar.gz --exclude=".svn" --exclude=".git" -C ${tmpdir} $asset_version
+        rpmbuild -ta ${tmpdir}/$asset_version.tar.gz
         rm -rf $tmpdir
     else
         echo "Missing RPM spec file in" `pwd`

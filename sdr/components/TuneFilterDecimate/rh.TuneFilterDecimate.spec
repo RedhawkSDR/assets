@@ -28,7 +28,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.TuneFilterDecimate
-Version:        2.0.3
+Version:        2.2.0
 Release:        1%{?dist}
 Summary:        Component %{name}
 

@@ -28,7 +28,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.agc
-Version:        2.0.2
+Version:        2.1.0
 Release:        1%{?dist}
 Summary:        Component %{name}
 

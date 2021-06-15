@@ -15,15 +15,15 @@
 # You should have received a copy of the GNU Lesser General Public License along with this 
 # program.  If not, see http://www.gnu.org/licenses/.
 #
-
+asset_version="rh.sourcesocket-2.2.0"
 if [ "$1" = "rpm" ]; then
     # A very simplistic RPM build scenario
     if [ -e rh.sourcesocket.spec ]; then
         mydir=`dirname $0`
         tmpdir=`mktemp -d`
-        cp -r ${mydir} ${tmpdir}/rh.sourcesocket-2.1.2
-        tar czf ${tmpdir}/rh.sourcesocket-2.1.2.tar.gz --exclude=".svn" -C ${tmpdir} rh.sourcesocket-2.1.2
-        rpmbuild -ta ${tmpdir}/rh.sourcesocket-2.1.2.tar.gz
+        cp -r ${mydir} ${tmpdir}/$asset_version
+        tar czf ${tmpdir}/$asset_version.tar.gz --exclude=".svn" -C ${tmpdir} $asset_version
+        rpmbuild -ta ${tmpdir}/$asset_version.tar.gz
         rm -rf $tmpdir
     else
         echo "Missing RPM spec file in" `pwd`

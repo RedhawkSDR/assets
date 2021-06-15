@@ -16,7 +16,7 @@ try:
         raise RuntimeError
 
 except RuntimeError:
-    import thread
+    import _thread
     import socket
     import re
 
@@ -46,7 +46,7 @@ except RuntimeError:
             timeout: default time in seconds to wait when receiving a messagec
             """
             self._debug=False
-            self.__mutexLock = thread.allocate_lock()
+            self.__mutexLock = _thread.allocate_lock()
             self.radioAddress = address
             self.radioSocket=None
             self.connect(timeout)
@@ -156,7 +156,7 @@ except RuntimeError:
                 self.radioSocket.settimeout(self.timeout)
                 _cmd=command.replace('\n',' ')
                 if self._debug:
-                    print "Sending to radio:", self.radioAddress, " command <"+ _cmd +">"
+                    print("Sending to radio:", self.radioAddress, " command <"+ _cmd +">")
 
                 # set exception message
                 except_msg="Socket timed out receiving echo from radio for command: " + _cmd
@@ -169,7 +169,7 @@ except RuntimeError:
                 if self._debug:
                     resp = re.sub(r'[^\x00-\x7F]+',' ', str(echoMsg))
                     resp = resp.replace('\n',' ')
-                    print "Echo from radio <", resp, "> (check for output=", check_for_output, ")"
+                    print("Echo from radio <", resp, "> (check for output=", check_for_output, ")")
 
                 # early return, do not look for error conditions or response messages
                 if not check_for_output:
@@ -186,13 +186,13 @@ except RuntimeError:
                 returnMsg = re.sub(r'[^\x00-\x7F]+',' ', str(returnMsg))
                 returnMsg = returnMsg.replace('\n',' ').rstrip()
                 if self._debug:
-                    print "Response from command : " + returnMsg, " (check for output:", check_for_output, ")"
+                    print("Response from command : " + returnMsg, " (check for output:", check_for_output, ")")
 
                 # check for unexpected output
                 if not expect_output and len(returnMsg) > 0:
                     err_str =  "Unexpected output received \"" + returnMsg + "\" from command: " + _cmd
                     if self._debug:
-                        print err_str
+                        print(err_str)
                     self._flush()
                     raise CommandException(err_str)
 
@@ -201,7 +201,7 @@ except RuntimeError:
             except socket.timeout:
                 if _expect_output:
                     if self._debug:
-                        print "Socket timed out when expecting a return message, radio may not be responsive"
+                        print("Socket timed out when expecting a return message, radio may not be responsive")
                     self._reconnect()
                     raise Exception(except_msg)
             finally:

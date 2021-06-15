@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -31,23 +31,23 @@ from datetime import datetime, timedelta
 from pprint import pprint as pp
 from omniORB import CORBA, any
 
-from MSDD_base import * 
+from .MSDD_base import * 
 from ossie.cf import ExtendedCF
 from bulkio.bulkioInterfaces import BULKIO 
 from ossie.device import start_device
 from frontend.fe_types import *
 from frontend.tuner_device import validateRequestVsRFInfo
 from ossie import properties
-from time_helpers import *
+from .time_helpers import *
 
 # MSDD helper files/packages
-from msddcontroller import InvalidValue
-from msddcontroller import CommandException
-from msddcontroller import ConnectionFailure
-from msddcontroller import TransmitFailure
-from msddcontroller import EchoFailure
-from msddcontroller import MSDDRadio
-from msddcontroller import create_csv
+from .msddcontroller import InvalidValue
+from .msddcontroller import CommandException
+from .msddcontroller import ConnectionFailure
+from .msddcontroller import TransmitFailure
+from .msddcontroller import EchoFailure
+from .msddcontroller import MSDDRadio
+from .msddcontroller import create_csv
 
 
 
@@ -634,9 +634,9 @@ class MSDD_i(MSDD_base):
         Called when RF Flow ID is passed to this device, update all the tuner_status objects
         """
         self.info_msg('Setting rf_flow_id to {0}',rf_flow_id)
-	self.device_rf_flow = rf_flow_id
-	for tuner_num in range(0,len(self.frontend_tuner_status)):
-	    self.frontend_tuner_status[tuner_num].rf_flow_id = self.device_rf_flow
+        self.device_rf_flow = rf_flow_id
+        for tuner_num in range(0,len(self.frontend_tuner_status)):
+            self.frontend_tuner_status[tuner_num].rf_flow_id = self.device_rf_flow
 
 
     def update_msdd_status(self):
@@ -834,7 +834,7 @@ class MSDD_i(MSDD_base):
 
         # Update list base on provide set of tuner or all of them
         if len(tuner_range) <= 0:
-            tuner_range = range(0,len(self.frontend_tuner_status))
+            tuner_range = list(range(0,len(self.frontend_tuner_status)))
             self.trace_msg("No tuner range provided, updating all {0} tuners",len(tuner_range))
 
         for tuner_num in tuner_range:
@@ -927,7 +927,7 @@ class MSDD_i(MSDD_base):
                 self.SRIchanged(tuner_num, data_port, fft_port )
                 self.trace_msg("update_tuner_status, completed tuner status update for tuner {0}",
                                tuner_num)
-            except Exception, e:
+            except Exception as e:
                 self.error_msg("Error updating Tuner status {0}, exception {1}", tuner_num,e)
             _etime=time.time()-_stime
             self.trace_msg("Updated tuner {} status, {:.7f}",tuner_num, _etime)            
@@ -1031,7 +1031,7 @@ class MSDD_i(MSDD_base):
                 try:
                     # disable the output module for the rx_channel
                     _rx_object.set_output_enable(False)
-                except Exception, e:
+                except Exception as e:
                     self.error_msg("Unable to disable output for Tuner {}, reason {}",tuner_num, e, no_id=True)
                     raise e
 
@@ -1041,7 +1041,7 @@ class MSDD_i(MSDD_base):
                 _output_mod = _rx_object.output_object.object
                 
                 # if there is no configuration provided then skip that tuner
-                if not self.tuner_output_configuration.has_key(tuner_num):
+                if tuner_num not in self.tuner_output_configuration:
                     continue
 
                 if self.tuner_output_configuration[tuner_num].protocol=="UDP_VITA49":                
@@ -1088,7 +1088,7 @@ class MSDD_i(MSDD_base):
                                    " configuration values: {1} ",
                                    tuner_num, 
                                    self.tuner_output_configuration[tuner_num])
-            except Exception, e:
+            except Exception as e:
                 self.error_msg("ERROR UPDATING OUTPUT CONFIGURATION FOR TUNER: {} reason {} ", tuner_num, e, no_id=True)
 
 
@@ -1146,7 +1146,7 @@ class MSDD_i(MSDD_base):
             try:
                 fft_chan_num=fft_channel.channel_number()
                 fft_channel.setEnable(False)
-                if not self.psd_output_configuration.has_key(fft_chan_num): continue
+                if fft_chan_num not in self.psd_output_configuration: continue
 
                 _output_mod=fft_channel.output.object
                 output_cfg=self.psd_output_configuration[fft_chan_num]
@@ -1207,7 +1207,7 @@ class MSDD_i(MSDD_base):
                 try:
                     valid_gain = self.frontend_tuner_status[tuner_num].rx_object.analog_rx_object.object.get_valid_gain(self.gain_configuration.rcvr_gain)
                     self.frontend_tuner_status[tuner_num].rx_object.analog_rx_object.object.setGain(valid_gain)
-                except Exception, e:
+                except Exception as e:
                     self.warn_msg('Could not set gain {} for analog tuner tuner {}, reason {}',valid_gain,tuner_num, e, no_id=True)
 
                 valid_gain = self.frontend_tuner_status[tuner_num].rx_object.digital_rx_object.object.get_valid_gain(self.gain_configuration.wb_ddc_gain)
@@ -1215,7 +1215,7 @@ class MSDD_i(MSDD_base):
             elif msdd_type_string == MSDDRadio.MSDDRXTYPE_HW_DDC:
                 valid_gain = self.frontend_tuner_status[tuner_num].rx_object.digital_rx_object.object.get_valid_gain(self.gain_configuration.hw_ddc_gain)
                 self.frontend_tuner_status[tuner_num].rx_object.digital_rx_object.object.setGain(valid_gain)
-        except Exception, e :
+        except Exception as e :
             self.warn_msg('Could not set gain of {} for tuner {}, reason {}',valid_gain,tuner_num, e, no_id=True)
 
             
@@ -1334,7 +1334,7 @@ class MSDD_i(MSDD_base):
                            'BULKIO_SRI_PRIORITY':True,
                            'FRONTEND::DEVICE_ID':self._id}
     
-            for key, val in keywordDict.items():
+            for key, val in list(keywordDict.items()):
                 H.keywords.append(CF.DataType(id=key, value=any.to_any(val)))
             
             #
@@ -1366,7 +1366,7 @@ class MSDD_i(MSDD_base):
                                  xstart=xs, #no offset provided
                                  xdelta=binFreq,
                                  xunits=3, #for time data
-                                 subsize=long(num_bins), #1-d data
+                                 subsize=int(num_bins), #1-d data
                                  ystart=0.0, #n/a
                                  ydelta=0.001, #n/a
                                  yunits=1, #n/a
@@ -1382,7 +1382,7 @@ class MSDD_i(MSDD_base):
                            'DATA_REF_STR':"1234",
                            'BULKIO_SRI_PRIORITY':True}
     
-            for key, val in keywordDict.items():
+            for key, val in list(keywordDict.items()):
                 H.keywords.append(CF.DataType(id=key, value=any.to_any(val)))
             
             #use system time for timestamp...
@@ -1463,7 +1463,7 @@ class MSDD_i(MSDD_base):
                         
         if fft_port:
             if self.frontend_tuner_status[tuner_num].output_enabled:
-                if self.psd_output_configuration.has_key(tuner_num) and self.psd_output_configuration[tuner_num].enabled:
+                if tuner_num in self.psd_output_configuration and self.psd_output_configuration[tuner_num].enabled:
                     num_bins = self.frontend_tuner_status[tuner_num].psd_output_bin_size
                     if num_bins <= 0:
                         num_bins = self.frontend_tuner_status[tuner_num].psd_fft_size
@@ -1557,7 +1557,7 @@ class MSDD_i(MSDD_base):
             
             protocol=None
             enable=False
-            if self.psd_output_configuration.has_key(fft_channel.channel_number()):
+            if fft_channel.channel_number() in self.psd_output_configuration:
                 protocol=self.psd_output_configuration[fft_channel.channel_number()].protocol
                 enable=self.psd_output_configuration[fft_channel.channel_number()].enabled
                 self.info_msg("PSD output configuration tuner {0} enabled = {1} protocol {2} ",
@@ -1744,7 +1744,7 @@ class MSDD_i(MSDD_base):
                 if self.device_rf_info_pkt:
                     try:
                         validateRequestVsRFInfo(frontend_tuner_allocation,self.device_rf_info_pkt,1)
-                    except FRONTEND.BadParameterException , e:
+                    except FRONTEND.BadParameterException as e:
                         emsg="RF Info allocation failure, reason {0}".format(e)
                         self.info_msg("ValidateRequestVsRFInfo Failed: reason {0}",e)
                         raise
@@ -1911,7 +1911,7 @@ class MSDD_i(MSDD_base):
                                        valid_sr,
                                        valid_bw)
 
-                    except (CommandException, InvalidValue), e:
+                    except (CommandException, InvalidValue) as e:
                         if logging.NOTSET < self._baseLog.level < logging.INFO:
                             traceback.print_exc()
                         success = False
@@ -1941,14 +1941,14 @@ class MSDD_i(MSDD_base):
                                    tuner_num, 
                                    srate)
                     protocol=None
-                    if self.tuner_output_configuration.has_key(tuner_num):
+                    if tuner_num in self.tuner_output_configuration:
                         protocol = self.tuner_output_configuration[tuner_num].protocol
                         self.debug_msg("Checking additional network utilization for tuner: {0} sample rate: {1} enabled: {2} protocol {3}",
                                        tuner_num, 
                                        srate, 
                                        self.tuner_output_configuration[tuner_num].enabled,
                                        protocol)
-                    if self.tuner_output_configuration.has_key(tuner_num) and \
+                    if tuner_num in self.tuner_output_configuration and \
                        self.tuner_output_configuration[tuner_num].enabled:
                         if not self.checkNetworkOutput(additional_rate=srate,
                                                                out_module=self.frontend_tuner_status[tuner_num].rx_object.output_object):
@@ -1956,7 +1956,7 @@ class MSDD_i(MSDD_base):
                                                             tuner_num,
                                                             srate))
 
-                    if self.tuner_output_configuration.has_key(tuner_num) and \
+                    if tuner_num in self.tuner_output_configuration and \
                        not self.tuner_output_configuration[tuner_num].enabled:
                         self.warn_msg("Tuner {0} is allocated but output is disabled",
                                       tuner_num)
@@ -2012,10 +2012,10 @@ class MSDD_i(MSDD_base):
                         if frontend_tuner_allocation.device_control:
                             self.enableFFT(self.frontend_tuner_status[tuner_num].allocation_id_control)
 
-                    except BusyException, e:
+                    except BusyException as e:
                         raise e
                             
-                    except Exception,e:
+                    except Exception as e:
                         if logging.NOTSET < self._baseLog.level < logging.INFO:
                             traceback.print_exc()
                         raise AllocationFailure("Error completing allocation {0}".format(frontend_tuner_allocation.allocation_id))
@@ -2030,12 +2030,12 @@ class MSDD_i(MSDD_base):
                     # Successfull allocation return
                     return True
 
-                except (AllocationFailure, BusyException, FRONTEND.BadParameterException), e:
+                except (AllocationFailure, BusyException, FRONTEND.BadParameterException) as e:
                     emsg = "{}".format(e)
                     self.warn_msg("Allocation failure request {0} reason {1}", frontend_tuner_allocation,e)
                     raise
                                   
-                except Exception,e:
+                except Exception as e:
                     if logging.NOTSET < self._baseLog.level < logging.INFO:
                         traceback.print_exc()
                     self.frontend_tuner_status[tuner_num].rx_object.setEnable(False)
@@ -2090,7 +2090,7 @@ class MSDD_i(MSDD_base):
             if not _rx_object.has_streaming_output():
                 self.trace_msg("Tuner {0} does not have digital output", tuner_num)
                 return
-            if not self.tuner_output_configuration.has_key(tuner_num):
+            if tuner_num not in self.tuner_output_configuration:
                 self.warn_msg("Missing output configuration for tuner {0} disabling output", tuner_num)
                 return
 
@@ -2213,7 +2213,7 @@ class MSDD_i(MSDD_base):
         enable=False
         try:
             # enable output port for the tuner
-            if self.tuner_output_configuration.has_key(tuner_id):
+            if tuner_id in self.tuner_output_configuration:
                 self.enableDigitalOutput(tuner_id)
 
             # enable tuner
@@ -2260,7 +2260,7 @@ class MSDD_i(MSDD_base):
             # if so, we can disable the parent's hardware tuner
             # Can't check allocated or allocation_id of tuner_num because it is reset in deviceDeleteTuning
             parent_rx_channel = self.frontend_tuner_status[tuner_id].rx_object.rx_parent_object
-            if self.rx_channel_tuner_status.has_key(parent_rx_channel):
+            if parent_rx_channel in self.rx_channel_tuner_status:
                 parent_idx=self.rx_channel_tuner_status[parent_rx_channel]
                 allocated = self.frontend_tuner_status[parent_idx].allocated
                 allocs=self.countSecondaryAllocations(parent_idx)
@@ -2317,7 +2317,7 @@ class MSDD_i(MSDD_base):
         retval = False
         for child in self.frontend_tuner_status[tuner_id].rx_object.rx_child_objects:
             # reverse lookup tuner
-            if self.rx_channel_tuner_status.has_key(child):
+            if child in self.rx_channel_tuner_status:
                 child_idx=self.rx_channel_tuner_status[child]
                 if self.frontend_tuner_status[child_idx].allocated:
                     return True
@@ -2336,7 +2336,7 @@ class MSDD_i(MSDD_base):
         """
         count = 0
         for child in self.frontend_tuner_status[tuner_id].rx_object.rx_child_objects:
-            if self.rx_channel_tuner_status.has_key(child):
+            if child in self.rx_channel_tuner_status:
                 child_idx=self.rx_channel_tuner_status[child]
                 if self.frontend_tuner_status[child_idx].allocated:
                     count += 1
@@ -2356,7 +2356,7 @@ class MSDD_i(MSDD_base):
         """
         allocs=[]
         for child in self.frontend_tuner_status[tuner_id].rx_object.rx_child_objects:
-            if self.rx_channel_tuner_status.has_key(child):
+            if child in self.rx_channel_tuner_status:
                 child_idx=self.rx_channel_tuner_status[child]
                 if self.frontend_tuner_status[child_idx].allocated:
                     allocs.append(self.frontend_tuner_status[child_idx].allocation_id_control)
@@ -2379,7 +2379,7 @@ class MSDD_i(MSDD_base):
         """
         aid = self.frontend_tuner_status[child_tuner_id].allocation_id_control
         parent_rx_channel = self.frontend_tuner_status[child_tuner_id].rx_object.rx_parent_object
-        if self.rx_channel_tuner_status.has_key(parent_rx_channel):
+        if parent_rx_channel in self.rx_channel_tuner_status:
             parent_idx=self.rx_channel_tuner_status[parent_rx_channel]
             allocated = self.frontend_tuner_status[parent_idx].allocated
             if not allocated:
@@ -2495,7 +2495,7 @@ class MSDD_i(MSDD_base):
             try:
                 for child in self.frontend_tuner_status[tuner_num].rx_object.getChildChannels():
                     child_tuner_id=None
-                    if self.rx_channel_tuner_status.has_key(child):
+                    if child in self.rx_channel_tuner_status:
                         child_tuner_id=self.rx_channel_tuner_status[child]
                         if self.frontend_tuner_status[child_tuner_id].allocated:
                             self.debug_msg("setTunerCenterFrequency Allocation ID: {0}"\
@@ -2509,7 +2509,7 @@ class MSDD_i(MSDD_base):
                                 changed_child_numbers.append(child_tuner_id)
                         else:
                             child.updateRFFrequencyOffset(valid_cf)
-            except Exception, e:
+            except Exception as e:
                 if logging.NOTSET < self._baseLog.level < logging.INFO:
                     traceback.print_exc()
                 self.warn_msg("Exception setting tuner's frequency to {0} for Allocation ID {1}, reason: {2} ", 
@@ -2548,7 +2548,7 @@ class MSDD_i(MSDD_base):
                            tuner_num,
                            allocation_id)
             self.frontend_tuner_status[tuner_num].rx_object.setBandwidth_Hz(bw)
-        except Exception, e:
+        except Exception as e:
             error_string = "Error setting tuner's bandwidth to {0} for Allocation ID {1}, reason: {2}".format(
                 bw,
                 allocation_id,
@@ -2587,7 +2587,7 @@ class MSDD_i(MSDD_base):
                 self.frontend_tuner_status[tuner_num].rx_object.digital_rx_object.object.setGain(valid_gain)
             if valid_gain == None:
                 raise Exception("")
-        except Exception, e:
+        except Exception as e:
             error_string = "Error setting gain to {0} for Allocation ID {1}, reason: {2}".format(gain,allocation_id,e)
             self.exception_msg(error_string)
             raise FRONTEND.BadParameterException(error_string)
@@ -2615,7 +2615,7 @@ class MSDD_i(MSDD_base):
         try:
             self.frontend_tuner_status[tuner_num].enabled=enable
             self.frontend_tuner_status[tuner_num].rx_object.setEnable(enable)
-        except Exception, e:
+        except Exception as e:
             msg="Exception when modifing tuner's enable state for Allocation ID {0}, reason {1} ".format(allocation_id,e)
             self.exception_msg(msg)
         self.update_tuner_status([tuner_num])
@@ -2637,7 +2637,7 @@ class MSDD_i(MSDD_base):
             self.frontend_tuner_status[tuner_num].rx_object.validate_sample_rate(sr)
             self.debug_msg("Setting sample rate to {0} for tuner {1}", sr, tuner_num)
             self.frontend_tuner_status[tuner_num].rx_object.setSampleRate(sr)
-        except Exception, e:
+        except Exception as e:
             error_string = "Error setting tuner's sample rate to {0} for Allocation ID {1}, reason: {2}".format(sr,allocation_id,e)
             self.exception_msg(error_string)
             raise FRONTEND.BadParameterException(error_string)

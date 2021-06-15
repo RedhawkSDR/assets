@@ -19,6 +19,7 @@
 # You can override this at install time using --prefix /new/sdr/root when invoking rpm (preferred method, if you must)
 %{!?_sdrroot: %define _sdrroot /var/redhawk/sdr}
 %define _prefix %{_sdrroot}
+ %global __python %{__python3}
 Prefix:         %{_prefix}
 
 # Point install paths to locations within our target SDR root
@@ -28,7 +29,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.fcalc
-Version:        2.0.3
+Version:        2.1.0
 Release:        1%{?dist}
 Summary:        Component %{name}
 

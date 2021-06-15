@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -95,8 +95,8 @@ class MyDataSink(sb.DataSink):
             else:
                 return None
             pass
-        except Exception, e:
-            print self.className + ":getPort(): failed " + str(e)
+        except Exception as e:
+            print(self.className + ":getPort(): failed " + str(e))
         return None
 
 class MyDataSource(sb.DataSource):
@@ -202,8 +202,8 @@ class MyDataSource(sb.DataSource):
                 else:
                     currentSampleTime+=len(data)/float(sampleRate)
                 streamSampleTimes[streamID]=currentSampleTime
-            except Exception, e:
-                print self.className + ":pushData() failed " + str(e)
+            except Exception as e:
+                print(self.className + ":pushData() failed " + str(e))
         self.threadExited = True
 
 #a few utility functions to pack and unpack complex data to send it to REDHAWK appropriately
@@ -247,7 +247,7 @@ class FunctionGenerator(object):
         delta = 1.0/sampleRate
         out=[]
         time=[]
-        for _ in xrange(numSamples):
+        for _ in range(numSamples):
             out.append(self.f(t))
             time.append(t)
             t+=delta
@@ -258,7 +258,7 @@ def cmpSignals(s1,s2):
     """
     maxDif=0
     totalDif=0
-    z = zip(s1,s2)
+    z = list(zip(s1,s2))
     for x1,x2 in z:
         d = abs(x1-x2)
         totalDif+=d
@@ -306,7 +306,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         props = dict((x.id, any.from_any(x.value)) for x in props)
         # Query may return more than expected, but not less
         for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
+            self.assertEqual(expectedProp.id in props, True)
         
         #######################################################################
         # Verify that all expected ports are available
@@ -361,7 +361,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             time.sleep(.01)
             count+=1
 
-        print "Datat Output " , len(output)
+        print("Datat Output " , len(output))
         self.assertFalse(self.sink.eos())
         self.src.push([],complexData=False, sampleRate=inputRate, EOS=True,streamID="someSRI")
         time.sleep(.1)
@@ -458,11 +458,11 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
         streamName = 'myStream'
         
-        self.src.push(inData[:len(inData)/3],complexData = False, sampleRate=inputRate, streamID=streamName)
+        self.src.push(inData[:len(inData)//3],complexData = False, sampleRate=inputRate, streamID=streamName)
         self.comp.a=10
-        self.src.push(inData[len(inData)/3:len(inData)/3*2],complexData = False, sampleRate=inputRate, streamID=streamName)
+        self.src.push(inData[len(inData)//3:len(inData)//3*2],complexData = False, sampleRate=inputRate, streamID=streamName)
         self.comp.a=5
-        self.src.push(inData[len(inData)/3*2:],complexData = False, sampleRate=inputRate, streamID=streamName)
+        self.src.push(inData[len(inData)//3*2:],complexData = False, sampleRate=inputRate, streamID=streamName)
         outData = self.getOutput()
         
         assert(len(outData)==1)
@@ -483,9 +483,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
         streamName = 'myStream'
         
-        self.src.push(inData[:len(inData)/2],complexData = False, sampleRate=inputRate, streamID=streamName)
+        self.src.push(inData[:len(inData)//2],complexData = False, sampleRate=inputRate, streamID=streamName)
         self.comp.quantization=0
-        self.src.push(inData[len(inData)/2:],complexData = False, sampleRate=inputRate, streamID=streamName)
+        self.src.push(inData[len(inData)//2:],complexData = False, sampleRate=inputRate, streamID=streamName)
         outData = self.getOutput()
         
         assert(len(outData)==1)
@@ -506,9 +506,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
         streamName = 'myStream'
         
-        self.src.push(inData[:len(inData)/2],complexData = False, sampleRate=inputRate, streamID=streamName)
+        self.src.push(inData[:len(inData)//2],complexData = False, sampleRate=inputRate, streamID=streamName)
         self.comp.outputRate=9876.543
-        self.src.push(inData[len(inData)/2:],complexData = False, sampleRate=inputRate, streamID=streamName)
+        self.src.push(inData[len(inData)//2:],complexData = False, sampleRate=inputRate, streamID=streamName)
         outData = self.getOutput()
         
         assert(len(outData)==1)
@@ -561,10 +561,10 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
         #push some from stream A and some from stream B
         
-        self.src.push(inDataA[:len(inDataA)/2],complexData = False, sampleRate=inputRateA, streamID=streamNameA)
-        self.src.push(inDataB[:len(inDataB)/2],complexData = True, sampleRate=inputRateB, streamID=streamNameB)
-        self.src.push(inDataA[len(inDataA)/2:],complexData = False, sampleRate=inputRateA, streamID=streamNameA)
-        self.src.push(inDataB[len(inDataB)/2:],complexData = True, sampleRate=inputRateB, streamID=streamNameB)
+        self.src.push(inDataA[:len(inDataA)//2],complexData = False, sampleRate=inputRateA, streamID=streamNameA)
+        self.src.push(inDataB[:len(inDataB)//2],complexData = True, sampleRate=inputRateB, streamID=streamNameB)
+        self.src.push(inDataA[len(inDataA)//2:],complexData = False, sampleRate=inputRateA, streamID=streamNameA)
+        self.src.push(inDataB[len(inDataB)//2:],complexData = True, sampleRate=inputRateB, streamID=streamNameB)
 
         
         outData = self.getOutput()
@@ -697,8 +697,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
            As applicable
         """
         inSample=0
-        samplesPerPush = len(inData)/numPushes
-        for i in xrange(numPushes):
+        samplesPerPush = len(inData)//numPushes
+        for i in range(numPushes):
             outSample = inSample+samplesPerPush
             self.src.push(inData[inSample:outSample],complexData = cmplx, sampleRate=sampleRate, streamID=streamID)
             inSample=outSample
@@ -711,7 +711,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         while True:
             packets = self.sink.getPackets()
             if packets:
-                for key, value in packets.items():
+                for key, value in list(packets.items()):
                     l = output.setdefault(key,[])
                     l.extend(value)
             elif time.time() - self.sink._sink.lastTime > 1.0:

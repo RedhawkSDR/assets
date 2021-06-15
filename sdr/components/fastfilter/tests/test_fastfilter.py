@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -112,7 +112,7 @@ class ComponentTests(ossie.utils.testing.RHTestCase, ImpulseResponseMixIn):
         """ Test that default configuration is a working allpass filter
         """
         dataPoints = 1024
-        data = range(dataPoints)
+        data = list(range(dataPoints))
         
         self.src.push(data,complexData=False, EOS=False,streamID="someSRI")
         count = 0
@@ -134,7 +134,7 @@ class ComponentTests(ossie.utils.testing.RHTestCase, ImpulseResponseMixIn):
         """ Test EOS
         """
         dataPoints = 1024
-        data = range(dataPoints)
+        data = list(range(dataPoints))
         
         self.src.push(data,complexData=False,sampleRate=self.sampleRate, EOS=False,streamID="someSRI")
         count = 0
@@ -266,7 +266,7 @@ class ComponentTests(ossie.utils.testing.RHTestCase, ImpulseResponseMixIn):
     def testRealManualImpulse(self):
         """use manual configuration (real taps) and ensure that the impulse response matches the response
         """
-        filter = [random.random() for _ in xrange(513)]
+        filter = [random.random() for _ in range(513)]
         self.comp.fftSize = 1024
         self.comp.realFilterCoefficients = filter
         self.doImpulseResponse(1e6,filter)    
@@ -274,7 +274,7 @@ class ComponentTests(ossie.utils.testing.RHTestCase, ImpulseResponseMixIn):
     def testCxManualImpulse(self):
         """use manual configuration (complex taps) and ensure that the impulse response matches the response
         """
-        filter = [complex(random.random(), random.random()) for _ in xrange(513)]
+        filter = [complex(random.random(), random.random()) for _ in range(513)]
         self.comp.fftSize = 1024
         self.comp.complexFilterCoefficients = filter
         self.doImpulseResponse(1e6,filter) 
@@ -282,11 +282,11 @@ class ComponentTests(ossie.utils.testing.RHTestCase, ImpulseResponseMixIn):
     def testRealCorrelation(self):
         """Put the filter into correlation mode and ensure that it correlates
         """
-        filter = [random.random() for _ in xrange(513)]
+        filter = [random.random() for _ in range(513)]
         self.comp.correlationMode=True
         self.comp.fftSize = 1024
         self.comp.realFilterCoefficients = filter
-        data = [random.random() for _ in range(int(self.comp.fftSize)/2)]
+        data = [random.random() for _ in range(int(self.comp.fftSize)//2)]
         outExpected = scipyCorl(filter,data)
         data.extend([0]*(self.comp.fftSize))
 
@@ -298,7 +298,7 @@ class ComponentTests(ossie.utils.testing.RHTestCase, ImpulseResponseMixIn):
     def testCxCorrelation(self):
         """Put the filter into correlation mode and ensure that it correlates with cx data and coeficients
         """
-        filter = [complex(random.random(),random.random()) for _ in xrange(513)]
+        filter = [complex(random.random(),random.random()) for _ in range(513)]
         self.comp.correlationMode=True
         self.comp.fftSize = 1024
         self.comp.complexFilterCoefficients = filter
@@ -313,7 +313,7 @@ class ComponentTests(ossie.utils.testing.RHTestCase, ImpulseResponseMixIn):
     def testCxRealCorrelation(self):
         """real filter complex data for correlation
         """
-        filter = [random.random() for _ in xrange(513)]
+        filter = [random.random() for _ in range(513)]
         self.comp.correlationMode=True
         self.comp.fftSize = 1024
         self.comp.realFilterCoefficients = filter
@@ -328,12 +328,12 @@ class ComponentTests(ossie.utils.testing.RHTestCase, ImpulseResponseMixIn):
     def testRealCxCorrelationWithReconnecting(self):
         """complex filter real data
         """
-        filter = [complex(random.random(),random.random()) for _ in xrange(513)]
+        filter = [complex(random.random(),random.random()) for _ in range(513)]
         self.comp.correlationMode=True
         self.comp.fftSize = 1024
         self.comp.complexFilterCoefficients = filter
         
-        data = [random.random() for _ in range(int(self.comp.fftSize)/2)]
+        data = [random.random() for _ in range(int(self.comp.fftSize)//2)]
         outExpected = scipyCorl(filter,data)
         data.extend([0]*(self.comp.fftSize))
         self.comp.disconnect(self.sink)

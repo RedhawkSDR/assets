@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 """
 Find the MSDD identification string an print out the results. The resulting string is used to index into the test configurations for test_MSDD.py and dut.py
@@ -41,4 +41,4 @@ def id_msdd( ip_addr):
 
 
 if __name__ == '__main__':
-    print id_msdd(sys.argv[1])
+    print(id_msdd(sys.argv[1]))

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -98,7 +98,7 @@ class SigGen_i(SigGen_base):
             self.sri.xdelta = self.sample_time_delta
             self.sriUpdate = True
             
-        if self.sriUpdate or not self.port_dataFloat_out.sriDict.has_key(self.cached_stream_id) or not self.port_dataShort_out.sriDict.has_key(self.cached_stream_id):
+        if self.sriUpdate or self.cached_stream_id not in self.port_dataFloat_out.sriDict or self.cached_stream_id not in self.port_dataShort_out.sriDict:
             self.sriUpdate = False
             
             # Send EOS if necessary

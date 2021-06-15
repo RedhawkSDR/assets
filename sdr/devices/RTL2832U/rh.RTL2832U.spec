@@ -31,8 +31,8 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.RTL2832U
-Version:        2.1.2
-Release:        2%{?dist}
+Version:        2.2.0
+Release:        1%{?dist}
 Summary:        Device %{name}
 
 Group:          REDHAWK/Devices
@@ -40,10 +40,8 @@ License:        GPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 3.0.0
-Requires:       redhawk >= 3.0.0
-
-BuildRequires:  autoconf-archive
+BuildRequires:  redhawk-devel >= 3.0
+Requires:       redhawk >= 3.0
 
 # Interface requirements
 BuildRequires:  frontendInterfaces >= 3.0 bulkioInterfaces >= 3.0

@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-
+set -x
 if [ "$1" = "rpm" ]; then
     # A very simplistic RPM build scenario
     if [ -e rh.blueFileLib.spec ]; then

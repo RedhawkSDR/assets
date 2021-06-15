@@ -30,7 +30,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.SourceSDDS
-Version:        2.0.3
+Version:        2.1.0
 Release:        1%{?dist}
 Summary:        Component %{name}
 

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import sys
 import time
@@ -24,7 +24,7 @@ def get_tod(c=None):
         # strip off command echo
         return float(tod.split('GET')[-1].lstrip())
     except:
-        print traceback.print_exc()
+        print(traceback.print_exc())
         pass
 
 
@@ -39,7 +39,7 @@ def set_tod(seconds, c=None):
         cmd='tod set '+str(seconds)
         tod=c.sendStringCommand(cmd+'\n', expect_output=False)
     except:
-        print traceback.print_exc()
+        print(traceback.print_exc())
         pass
 
 
@@ -54,7 +54,7 @@ def get_tod_bit(c=None):
         # strip off command echo
         return int(tod.split('BIT')[-1].lstrip())
     except:
-        print traceback.print_exc()
+        print(traceback.print_exc())
         pass
 
 def get_brd_bit(c=None):
@@ -68,7 +68,7 @@ def get_brd_bit(c=None):
         # strip off command echo
         return int(tod.split('BIT')[-1].lstrip())
     except:
-        print traceback.print_exc()
+        print(traceback.print_exc())
         pass
 
 
@@ -83,9 +83,9 @@ def run_test(ip_addr, t):
         set_tod(t,c)
         time.sleep(2.2)
         tod=get_tod(c)
-        print " start ", pre_tod, " set ", t , " == ", tod
+        print(" start ", pre_tod, " set ", t , " == ", tod)
         n -=1
 
 if __name__ == '__main__':
     c=Connection((sys.argv[1],23))
-    print get_tod(c)
+    print(get_tod(c))

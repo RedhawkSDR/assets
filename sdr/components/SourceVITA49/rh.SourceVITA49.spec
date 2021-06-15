@@ -30,7 +30,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.SourceVITA49
-Version:        3.1.2
+Version:        3.2.0
 Release:        1%{?dist}
 Summary:        Component %{name}
 

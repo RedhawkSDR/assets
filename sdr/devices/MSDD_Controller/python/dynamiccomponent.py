@@ -13,7 +13,7 @@ class DynamicComponentRegistry:
     def __init__(self):
         self.__components = {}
     def register(self, component, parent):
-        if self.__components.has_key(component):
+        if component in self.__components:
             return
         self.__components[component] = parent
     def unregister(self, component):
@@ -38,12 +38,12 @@ class DynamicComponent:
         try:
             self._dynamicComponentDeploymentLock.acquire()
             with ossie.device.envState():
-                if isinstance(instance, basestring):
+                if isinstance(instance, str):
                     device_name = instance
                 else:
                     device_name = instance.__name__
                 parameters = []
-                if not self._dynamicComponentCount.has_key(device_name):
+                if device_name not in self._dynamicComponentCount:
                     self._dynamicComponentCount[device_name] = 0
                 self._dynamicComponentCount[device_name] += 1
                 device_name_count = device_name+'_'+str(self._dynamicComponentCount[device_name])

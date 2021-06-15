@@ -19,6 +19,7 @@
 #
 import array
 import struct
+from functools import reduce
 
 
 class SddsHeader:
@@ -258,5 +259,5 @@ if __name__ == '__main__':
     p = SddsPacket(h.header, fakeData)
     p.encode()
 
-    print len(p.encodedPacket)
-    print struct.unpack('540H', p.encodedPacket)
+    print(len(p.encodedPacket))
+    print(struct.unpack('540H', p.encodedPacket))

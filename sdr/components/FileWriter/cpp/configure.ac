@@ -16,7 +16,7 @@
 # program.  If not, see http://www.gnu.org/licenses/.
 #
 
-AC_INIT(rh.FileWriter, 5.0.1)
+AC_INIT(rh.FileWriter, 5.1.0)
 AM_INIT_AUTOMAKE([nostdinc foreign])
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -32,7 +32,7 @@ OSSIE_SDRROOT_AS_PREFIX
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Dependencies
-PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 3.0 omniORB4 >= 4.1.0])
+PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 3.0 omniORB4 >= 4.2.3])
 PKG_CHECK_MODULES([INTERFACEDEPS], [bulkio >= 3.0])
 RH_SOFTPKG_CXX([/deps/rh/RedhawkDevUtils/RedhawkDevUtils.spd.xml],[cpp],[4.0])
 RH_SOFTPKG_CXX([/deps/rh/blueFileLib/blueFileLib.spd.xml],[cpp],[2.1.0])

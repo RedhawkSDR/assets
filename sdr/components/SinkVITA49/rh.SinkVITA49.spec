@@ -30,8 +30,8 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.SinkVITA49
-Version:        3.1.1
-Release:        3%{?dist}
+Version:        3.2.0
+Release:        0%{?dist}
 Summary:        Component %{name}
 
 Group:          REDHAWK/Components

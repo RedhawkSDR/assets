@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import ossie.utils.testing
 from ossie.utils import sb
@@ -176,7 +176,7 @@ class _BaseMSDDControllerTest(ossie.utils.testing.RHTestCase):
 
         try:
                 self.alloc_params = getAllocationParams(IP_ADDRESS)
-        except Exception, e:
+        except Exception as e:
                 self.fail("Unable to identify MSDD, " + str(IP_ADDRESS) + " reason:" + str(e))
 
         self.preConfigure()
@@ -239,7 +239,7 @@ class _BaseMSDDControllerTest(ossie.utils.testing.RHTestCase):
         return {}
 
     def getOutputConfiguration(self, tuner_output_cfg, block_output_cfg):
-        for rcv_id, alloc_params in self.alloc_params.iteritems():
+        for rcv_id, alloc_params in self.alloc_params.items():
             tuner_output_cfg.append( {
                      "tuner_output::receiver_identifier": rcv_id,
                      "tuner_output::tuner_number": alloc_params['wbddc_tuner'],
@@ -322,11 +322,11 @@ class DeviceTests(_BaseMSDDControllerTest):
         
         try:
             retval = self.fei_dev.allocateCapacity(alloc)
-        except Exception, e:
-            print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-            print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-            print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-            print str(e)
+        except Exception as e:
+            print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+            print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+            print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+            print(str(e))
             self.assertFalse("Exception thrown on allocateCapactiy %s" % str(e))
         if not retval:
             self.assertFalse("Allocation Failed")
@@ -349,8 +349,8 @@ class DeviceTests(_BaseMSDDControllerTest):
 
         try:
             retval = self.fei_dev.allocateCapacity(alloc)
-        except Exception, e:
-            print str(e)
+        except Exception as e:
+            print(str(e))
             self.fail("Exception thrown on allocateCapactiy %s" % str(e))
 
         if not retval:
@@ -365,12 +365,12 @@ class DeviceTests(_BaseMSDDControllerTest):
         if "," in _avail_bw:
                 avail_bw = [ float(x) for x in _avail_bw.split(',')]
                 self.assertEqual( (bw in avail_bw), True, msg="Checking for correct available bandwidth")
-                print srate, avail_bw, (srate in avail_bw)
-                self.assertEquals( (srate not in avail_bw), True, msg="Checking sample rate not equal to available bandwidth")
+                print(srate, avail_bw, (srate in avail_bw))
+                self.assertEqual( (srate not in avail_bw), True, msg="Checking sample rate not equal to available bandwidth")
         else:
                 avail_bw=float(_avail_bw)
                 self.assertAlmostEqual(bw,avail_bw, msg="Checking for correct available bandwidth")
-                self.assertNotAlmostEquals(srate, avail_bw, msg="Checking sample rate not equal to available bandwidth")
+                self.assertNotAlmostEqual(srate, avail_bw, msg="Checking sample rate not equal to available bandwidth")
 
     def _generateAlloc(self,tuner_type='RX_DIGITIZER', cf=100e6,sr=25e6,bw=20e6,rf_flow_id=''):
         
@@ -527,7 +527,7 @@ class MsddDeviceTests(_BaseMSDDControllerTest):
 class RFInfoTest(_BaseMSDDControllerTest):
 
     def getOutputConfiguration(self, tuner_output_cfg, block_output_cfg):
-        for rcv_id, alloc_params in self.alloc_params.iteritems():
+        for rcv_id, alloc_params in self.alloc_params.items():
             tuner_output_cfg.append( {
                      "tuner_output::receiver_identifier": rcv_id,
                      "tuner_output::tuner_number": alloc_params['wbddc_tuner'],
@@ -728,7 +728,7 @@ class OnePpsTests(_BaseMSDDControllerTest):
         self.temp_files=[]
 
     def getOutputConfiguration(self, tuner_output_cfg, block_output_cfg):
-        for rcv_id, alloc_params in self.alloc_params.iteritems():
+        for rcv_id, alloc_params in self.alloc_params.items():
             tuner_output_cfg.append( {
                      "tuner_output::receiver_identifier": rcv_id,
                      "tuner_output::tuner_number": alloc_params['wbddc_tuner'],
@@ -768,7 +768,7 @@ class OnePpsTests(_BaseMSDDControllerTest):
         self.assertEqual(mode, 'ONEPPS', msg='tod_module.mode must be ONEPPS for this test.')
 
         # for scenario 2, unplug 1PPS cable here.
-        raw_input('press ENTER to continue: ')
+        input('press ENTER to continue: ')
 
         log_contents = ''
         try:
@@ -794,7 +794,7 @@ class OnePpsTests(_BaseMSDDControllerTest):
 
         deltas = []
         num_reads = 30
-        for _ in xrange(num_reads):
+        for _ in range(num_reads):
             host_time = get_seconds_from_start_of_year()
             tod_time = get_tod(IP_ADDRESS)
             if not tod_time: continue
@@ -894,10 +894,10 @@ class IPPInterfaceTest(_BaseMSDDControllerTest):
         msg="*** Application firmware: " + \
                 msdd.console.filename_app + \
                 " Output Module: "+omsg+ " interface numbers ***"
-        print>>sys.stderr, "\n",msg
+        print("\n",msg, file=sys.stderr)
 
     def getOutputConfiguration(self, tuner_output_cfg, block_output_cfg):
-        for rcv_id, alloc_params in self.alloc_params.iteritems():
+        for rcv_id, alloc_params in self.alloc_params.items():
             tuner_output_cfg.append( {
                      "tuner_output::receiver_identifier": rcv_id,
                      "tuner_output::tuner_number": alloc_params['wbddc_tuner'],
