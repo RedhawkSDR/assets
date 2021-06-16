@@ -11,7 +11,7 @@ variables:
   asset_name: none
   lowercase_asset_name: None
   latest_version: 'develop'
-  redhawk_version: 'feature-cf-2276-py3-rh-base'
+  redhawk_version: 'develop'
   release_version: $rh_develop_release
   short_version: '3.0'
   arch: x86_64
