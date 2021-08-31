@@ -44,15 +44,4 @@ program.  If not, see http://www.gnu.org/licenses/.
       <generatedFileCRCs crc="1942573142" file="struct_props.h"/>
     </value>
   </implSettings>
-  <implSettings key="java">
-    <value outputDir="java" template="redhawk.codegen.jinja.java.component.pull" generatorId="gov.redhawk.ide.codegen.jinja.java.JavaGenerator">
-      <properties id="java_package" value="SigGen.java"/>
-      <properties id="use_jni" value="TRUE"/>
-      <generatedFileCRCs crc="1472578726" file="../SigGen.spec"/>
-      <generatedFileCRCs crc="178754956" file="Makefile.am"/>
-      <generatedFileCRCs crc="1096532929" file="configure.ac"/>
-      <generatedFileCRCs crc="1746641546" file="reconf"/>
-      <generatedFileCRCs crc="3616294830" file="startJava.sh"/>
-    </value>
-  </implSettings>
 </codegen:WaveDevSettings>
