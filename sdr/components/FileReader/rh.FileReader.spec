@@ -52,8 +52,8 @@ Requires:       expat >= 1.95.8
 BuildRequires:  autoconf-archive
 
 # Interface requirements
-BuildRequires:  bulkioInterfaces >= 3.0
-Requires:       bulkioInterfaces >= 3.0
+BuildRequires:  bulkioInterfaces
+Requires:       bulkioInterfaces
 
 # Allow upgrades from previous package name
 Obsoletes:      FileReader < 4.0.0

@@ -47,8 +47,8 @@ BuildRequires:  rh.dsp-devel >= 2.0
 Requires:       rh.dsp >= 2.0
 
 # Interface requirements
-BuildRequires:  bulkioInterfaces >= 3.0
-Requires:       bulkioInterfaces >= 3.0
+BuildRequires:  bulkioInterfaces
+Requires:       bulkioInterfaces
 
 # Allow upgrades from previous package name
 Obsoletes:      ArbitraryRateResampler < 2.0.0

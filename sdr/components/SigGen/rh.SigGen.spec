@@ -46,8 +46,8 @@ BuildRequires:  libuuid-devel
 BuildRequires:  autoconf-archive
 
 # Interface requirements
-BuildRequires:  bulkioInterfaces >= 3.0
-Requires:       bulkioInterfaces >= 3.0
+BuildRequires:  bulkioInterfaces
+Requires:       bulkioInterfaces
 
 # Implementation java
 BuildRequires:  java-devel >= 1.6

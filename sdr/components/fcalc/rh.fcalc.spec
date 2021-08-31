@@ -42,8 +42,8 @@ BuildRequires:  redhawk-devel >= 3.0
 Requires:       redhawk >= 3.0
 
 # Interface requirements
-BuildRequires:  bulkioInterfaces >= 3.0
-Requires:       bulkioInterfaces >= 3.0
+BuildRequires:  bulkioInterfaces
+Requires:       bulkioInterfaces
 
 # Allow upgrades from previous package name
 Obsoletes:      fcalc < 2.0.0

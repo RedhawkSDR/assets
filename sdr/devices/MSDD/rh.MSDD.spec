@@ -46,8 +46,8 @@ Requires:       redhawk >= 3.0
 
 
 # Interface requirements
-BuildRequires:  frontendInterfaces >= 3.0 bulkioInterfaces >= 3.0
-Requires:       frontendInterfaces >= 3.0 bulkioInterfaces >= 3.0
+BuildRequires:  frontendInterfaces bulkioInterfaces
+Requires:       frontendInterfaces bulkioInterfaces
 
 BuildArch: noarch
 

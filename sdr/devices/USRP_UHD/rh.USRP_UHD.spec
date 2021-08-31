@@ -48,8 +48,8 @@ BuildRequires:  libuuid-devel
 BuildRequires:  autoconf-archive
 
 # Interface requirements
-BuildRequires:  frontendInterfaces >= 3.0 bulkioInterfaces >= 3.0
-Requires:       frontendInterfaces >= 3.0 bulkioInterfaces >= 3.0
+BuildRequires:  frontendInterfaces bulkioInterfaces
+Requires:       frontendInterfaces bulkioInterfaces
 
 BuildRequires:  uhd-devel
 
