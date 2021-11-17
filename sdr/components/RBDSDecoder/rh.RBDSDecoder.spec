@@ -45,8 +45,8 @@ Requires:       redhawk >= 3.0
 BuildRequires:  autoconf-archive
 
 # Interface requirements
-BuildRequires:  bulkioInterfaces >= 3.0
-Requires:       bulkioInterfaces >= 3.0
+BuildRequires:  bulkioInterfaces
+Requires:       bulkioInterfaces
 
 # Allow upgrades from previous package name
 Obsoletes:      RBDSDecoder < 1.1.0

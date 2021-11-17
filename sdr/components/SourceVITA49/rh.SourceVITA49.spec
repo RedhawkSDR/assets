@@ -49,8 +49,8 @@ BuildRequires:  rh.VITA49-devel >= 4.0
 Requires:       rh.VITA49 >= 4.0
 
 # Interface requirements
-BuildRequires:  bulkioInterfaces >= 3.0
-Requires:       bulkioInterfaces >= 3.0
+BuildRequires:  bulkioInterfaces
+Requires:       bulkioInterfaces
 
 # Allow upgrades from previous package name
 Obsoletes:      SourceVITA49 < 3.0.0

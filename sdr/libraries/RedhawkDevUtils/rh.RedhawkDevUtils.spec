@@ -39,7 +39,7 @@ Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  redhawk-devel >= 3.0
-BuildRequires:  bulkioInterfaces >= 3.0
+BuildRequires:  bulkioInterfaces
 
 BuildRequires:  autoconf-archive
 

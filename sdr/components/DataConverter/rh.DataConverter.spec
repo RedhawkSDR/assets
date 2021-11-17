@@ -49,8 +49,8 @@ Requires:       rh.fftlib >= 2.1
 BuildRequires:  autoconf-archive
 
 # Interface requirements
-BuildRequires:  bulkioInterfaces >= 3.0
-Requires:       bulkioInterfaces >= 3.0
+BuildRequires:  bulkioInterfaces
+Requires:       bulkioInterfaces
 
 # C++ requirements
 BuildRequires:  fftw-devel >= 3.2
