@@ -31,7 +31,7 @@ if [ "$1" = "rpm" ]; then
         exit 1
     fi
 else
-    for impl in cpp python java ; do
+    for impl in cpp python ; do
         if [ ! -d "$impl" ]; then
             echo "Directory '$impl' does not exist...continuing"
             continue

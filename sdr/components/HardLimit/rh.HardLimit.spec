@@ -46,10 +46,6 @@ BuildRequires:  autoconf-archive
 BuildRequires:  bulkioInterfaces
 Requires:       bulkioInterfaces
 
-# Implementation java
-Requires: java >= 1.6
-BuildRequires: java-devel >= 1.6
-
 # Allow upgrades from previous package name
 Obsoletes:      HardLimit < 2.0.0
 
@@ -79,13 +75,6 @@ pushd python
 %configure
 make %{?_smp_mflags}
 popd
-# Implementation java
-pushd java
-./reconf
-%define _bindir %{_prefix}/dom/components/rh/HardLimit/java
-%configure
-make %{?_smp_mflags}
-popd
 
 
 %install
@@ -98,11 +87,6 @@ popd
 # Implementation python
 pushd python
 %define _bindir %{_prefix}/dom/components/rh/HardLimit/python
-make install DESTDIR=$RPM_BUILD_ROOT
-popd
-# Implementation java
-pushd java
-%define _bindir %{_prefix}/dom/components/rh/HardLimit/java
 make install DESTDIR=$RPM_BUILD_ROOT
 popd
 
@@ -119,7 +103,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/dom/components/rh/HardLimit/HardLimit.spd.xml
 %{_prefix}/dom/components/rh/HardLimit/cpp
 %{_prefix}/dom/components/rh/HardLimit/python
-%{_prefix}/dom/components/rh/HardLimit/java
 
 %changelog
 * Wed Jun 21 2017 Ryan Bauman <rbauman@lgsinnovations.com> - 2.0.0-2

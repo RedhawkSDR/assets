@@ -43,14 +43,4 @@ program.  If not, see http://www.gnu.org/licenses/.
       <generatedFileCRCs crc="1746641546" file="reconf"/>
     </value>
   </implSettings>
-  <implSettings key="java">
-    <value outputDir="java" template="redhawk.codegen.jinja.java.component.pull" generatorId="gov.redhawk.ide.codegen.jinja.java.JavaGenerator">
-      <properties id="java_package" value="HardLimit.java"/>
-      <generatedFileCRCs crc="2307858501" file="../HardLimit.spec"/>
-      <generatedFileCRCs crc="1470235827" file="Makefile.am"/>
-      <generatedFileCRCs crc="1829984105" file="configure.ac"/>
-      <generatedFileCRCs crc="1746641546" file="reconf"/>
-      <generatedFileCRCs crc="3973493146" file="startJava.sh"/>
-    </value>
-  </implSettings>
 </codegen:WaveDevSettings>
