@@ -1,22 +1,3 @@
-/*
- * This file is protected by Copyright. Please refer to the COPYRIGHT file
- * distributed with this source distribution.
- *
- * This file is part of REDHAWK FmRdsSimulator.
- *
- * REDHAWK FmRdsSimulator is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or (at your
- * option) any later version.
- *
- * REDHAWK FmRdsSimulator is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/.
- */
 #ifndef STRUCTPROPS_H
 #define STRUCTPROPS_H
 
@@ -35,11 +16,15 @@
 struct frontend_tuner_status_struct_struct : public frontend::default_frontend_tuner_status_struct_struct {
     frontend_tuner_status_struct_struct () : frontend::default_frontend_tuner_status_struct_struct()
     {
-    };
+    }
 
     static std::string getId() {
         return std::string("FRONTEND::tuner_status_struct");
-    };
+    }
+
+    static const char* getFormat() {
+        return "sddbdssdss";
+    }
 
     double gain;
     std::string stream_id;

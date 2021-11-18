@@ -43,4 +43,9 @@ with this program.  If not, see http://www.gnu.org/licenses/.
     <processor name="x86"/>
     <processor name="x86_64"/>
   </implementation>
+  <child name="RDC">
+    <childSoftwarePackageFile>
+        <localfile name="RDC.spd.xml"/>
+    </childSoftwarePackageFile>
+  </child>
 </softpkg>

@@ -1,31 +1,29 @@
-#ifndef FMRDSSIMULATOR_BASE_IMPL_BASE_H
-#define FMRDSSIMULATOR_BASE_IMPL_BASE_H
+#ifndef RDC_BASE_IMPL_BASE_H
+#define RDC_BASE_IMPL_BASE_H
 
 #include <boost/thread.hpp>
 #include <frontend/frontend.h>
-#include <CF/AggregateDevices.h>
-#include <ossie/AggregateDevice_impl.h>
 #include <ossie/ThreadedComponent.h>
 #include <ossie/DynamicComponent.h>
 
 #include <frontend/frontend.h>
-#include "port_impl.h"
+#include "RDC_port_impl.h"
 #include <bulkio/bulkio.h>
-#include "struct_props.h"
-#include "RDC/RDC.h"
+#include "RDC_struct_props.h"
 
 #define BOOL_VALUE_HERE 0
 
-class FmRdsSimulator_base : public frontend::FrontendTunerDevice<frontend_tuner_status_struct_struct>, public virtual POA_CF::AggregatePlainDevice, public AggregateDevice_impl, public virtual frontend::digital_tuner_delegation, public virtual frontend::rfinfo_delegation, protected ThreadedComponent, public virtual DynamicComponent
+namespace RDC_ns {
+class RDC_base : public frontend::FrontendTunerDevice<frontend_tuner_status_struct_struct>, public virtual frontend::digital_tuner_delegation, public virtual frontend::rfinfo_delegation, protected ThreadedComponent, public virtual DynamicComponent
 {
     friend class CF_DeviceStatus_Out_i;
 
     public:
-        FmRdsSimulator_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl);
-        FmRdsSimulator_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, char *compDev);
-        FmRdsSimulator_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities);
-        FmRdsSimulator_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities, char *compDev);
-        ~FmRdsSimulator_base();
+        RDC_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl);
+        RDC_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, char *compDev);
+        RDC_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities);
+        RDC_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities, char *compDev);
+        ~RDC_base();
 
         /**
          * @throw CF::Resource::StartError
@@ -54,6 +52,27 @@ class FmRdsSimulator_base : public frontend::FrontendTunerDevice<frontend_tuner_
         void frontendTunerStatusChanged(const std::vector<frontend_tuner_status_struct_struct>* oldValue, const std::vector<frontend_tuner_status_struct_struct>* newValue);
 
     protected:
+        // Member variables exposed as properties
+        /// Property: rx_autogain_on_tune
+        bool rx_autogain_on_tune;
+        /// Property: trigger_rx_autogain
+        bool trigger_rx_autogain;
+        /// Property: rx_autogain_guard_bits
+        unsigned short rx_autogain_guard_bits;
+        /// Property: device_gain
+        float device_gain;
+        /// Property: rdc_only_property
+        float rdc_only_property;
+        /// Property: device_mode
+        std::string device_mode;
+        /// Property: PathToConfiguration
+        std::string PathToConfiguration;
+        /// Property: noiseSigma
+        float noiseSigma;
+        /// Property: addAWGN
+        bool addAWGN;
+        /// Property: device_characteristics
+        device_characteristics_struct device_characteristics;
 
         // Ports
         /// Port: RFInfo_in
@@ -70,4 +89,5 @@ class FmRdsSimulator_base : public frontend::FrontendTunerDevice<frontend_tuner_
     private:
         void construct();
 };
-#endif // FMRDSSIMULATOR_BASE_IMPL_BASE_H
+};
+#endif // RDC_BASE_IMPL_BASE_H
