@@ -1,22 +1,3 @@
-#
-# This file is protected by Copyright. Please refer to the COPYRIGHT file
-# distributed with this source distribution.
-#
-# This file is part of REDHAWK USRP_UHD.
-#
-# REDHAWK USRP_UHD is free software: you can redistribute it and/or modify it under
-# the terms of the GNU Lesser General Public License as published by the Free
-# Software Foundation, either version 3 of the License, or (at your option) any
-# later version.
-#
-# REDHAWK USRP_UHD is distributed in the hope that it will be useful, but WITHOUT
-# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-# FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
-# details.
-#
-# You should have received a copy of the GNU Lesser General Public License
-# along with this program.  If not, see http://www.gnu.org/licenses/.
-#
 # By default, the RPM will install to the standard REDHAWK SDR root location (/var/redhawk/sdr)
 # You can override this at install time using --prefix /new/sdr/root when invoking rpm (preferred method, if you must)
 %{!?_sdrroot: %global _sdrroot /var/redhawk/sdr}
@@ -30,28 +11,23 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.USRP_UHD
-Version:        6.1.1
+Version:        7.0.0
 Release:        1%{?dist}
 Summary:        Device %{name}
 
 Group:          REDHAWK/Devices
-License:        LGPLv3+
+License:        None
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
-Requires:       redhawk >= 2.0
+BuildRequires:  redhawk-devel >= 3.0
+Requires:       redhawk >= 3.0
 
-Requires:       libuuid-devel
-BuildRequires:  libuuid-devel
 
 # Interface requirements
-BuildRequires:  frontendInterfaces >= 2.2 bulkioInterfaces >= 2.0
-Requires:       frontendInterfaces >= 2.2 bulkioInterfaces >= 2.0
+BuildRequires:  frontendInterfaces >= 3.0 bulkioInterfaces >= 3.0
+Requires:       frontendInterfaces >= 3.0 bulkioInterfaces >= 3.0
 
-BuildRequires:  uhd-devel
-
-Obsoletes:      USRP_UHD < 4.0.0
 
 %description
 Device %{name}
@@ -67,7 +43,7 @@ Device %{name}
 # Implementation cpp
 pushd cpp
 ./reconf
-%define _bindir %{_prefix}/dev/devices/rh/USRP_UHD/cpp
+%define _bindir %{_prefix}/dev/devices/USRP/cpp
 %configure
 make %{?_smp_mflags}
 popd
@@ -77,7 +53,7 @@ popd
 rm -rf $RPM_BUILD_ROOT
 # Implementation cpp
 pushd cpp
-%define _bindir %{_prefix}/dev/devices/rh/USRP_UHD/cpp
+%define _bindir %{_prefix}/dev/devices/USRP/cpp
 make install DESTDIR=$RPM_BUILD_ROOT
 popd
 
@@ -88,17 +64,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,redhawk,redhawk,-)
-%dir %{_sdrroot}/dev/devices/rh
-%dir %{_sdrroot}/dev/devices/rh/USRP_UHD
-%{_prefix}/dev/devices/rh/USRP_UHD/nodeconfig.py
-%{_prefix}/dev/devices/rh/USRP_UHD/nodeconfig.pyc
-%{_prefix}/dev/devices/rh/USRP_UHD/nodeconfig.pyo
-%{_prefix}/dev/devices/rh/USRP_UHD/USRP_UHD.scd.xml
-%{_prefix}/dev/devices/rh/USRP_UHD/USRP_UHD.prf.xml
-%{_prefix}/dev/devices/rh/USRP_UHD/USRP_UHD.spd.xml
-%{_prefix}/dev/devices/rh/USRP_UHD/cpp
-
-%changelog
-* Wed Jun 21 2017 Ryan Bauman <rbauman@lgsinnovations.com> - 5.0.0-7
-- Mass rebuild for REDHAWK 2.1.1
+%dir %{_sdrroot}/dev/devices/USRP
+%{_prefix}/dev/devices/USRP/USRP.scd.xml
+%{_prefix}/dev/devices/USRP/USRP.prf.xml
+%{_prefix}/dev/devices/USRP/USRP.spd.xml
+%{_prefix}/dev/devices/USRP/cpp
 

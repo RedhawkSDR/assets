@@ -58,12 +58,6 @@ with this program.  If not, see http://www.gnu.org/licenses/.
         <description>Current sample rate in samples per second.</description>
         <units>sps</units>
       </simple>
-      <simple id="FRONTEND::tuner_status::scan_mode_enabled" name="scan_mode_enabled" type="boolean">
-        <description>True if scan mode is enabled. False if Manual Tune is enabled</description>
-      </simple>
-      <simple id="FRONTEND::tuner_status::supports_scan" name="supports_scan" type="boolean">
-        <description>True if scan is supported</description>
-      </simple>
       <simple id="FRONTEND::tuner_status::tuner_type" name="tuner_type" type="string">
         <description>Example Tuner Types: TX, RX, CHANNELIZER, DDC, RX_DIGITIZER, RX_DIGITIZIER_CHANNELIZER</description>
       </simple>
@@ -91,7 +85,7 @@ with this program.  If not, see http://www.gnu.org/licenses/.
   <struct id="FRONTEND::tuner_allocation" mode="writeonly" name="frontend_tuner_allocation">
     <description>Allocation structure to acquire capability on a tuner based off tuner settings</description>
     <simple id="FRONTEND::tuner_allocation::tuner_type" name="tuner_type" type="string">
-      <description>Example Tuner Types: TDC, RDC, RX, RX_ARRAY, TX, TX_ARRAY, RX_DIGITIZER</description>
+      <description>Example Tuner Types: TX, RX, CHANNELIZER, DDC, RX_DIGITIZER, RX_DIGTIZIER_CHANNELIZER</description>
     </simple>
     <simple id="FRONTEND::tuner_allocation::allocation_id" name="allocation_id" type="string">
       <description>The allocation_id set by the caller. Used by the caller to reference the allocation uniquely</description>
@@ -128,58 +122,37 @@ False: Does not need control and can just attach to any currently tasked device 
     </simple>
     <configurationkind kindtype="allocation"/>
   </struct>
-  <struct id="FRONTEND::scanner_allocation" mode="writeonly" name="frontend_scanner_allocation">
-    <simple id="FRONTEND::scanner_allocation::min_freq" name="min_freq" type="double">
-      <description>Requested lower edge of the scanning band</description>
-      <units>Hz</units>
-    </simple>
-    <simple id="FRONTEND::scanner_allocation::max_freq" name="max_freq" type="double">
-      <description>Requested upper edge of the scanning band</description>
-      <units>Hz</units>
-    </simple>
-    <simple id="FRONTEND::scanner_allocation::mode" name="mode" type="string">
-      <description>SPAN_SCAN or DISCRETE_SCAN</description>
-      <enumerations>
-        <enumeration label="SPAN_SCAN" value="SPAN_SCAN"/>
-        <enumeration label="DISCRETE_SCAN" value="DISCRETE_SCAN"/>
-      </enumerations>
-    </simple>
-    <simple id="FRONTEND::scanner_allocation::control_mode" name="control_mode" type="string">
-      <description>TIME_BASED or SAMPLE_BASED</description>
-      <enumerations>
-        <enumeration label="TIME_BASED" value="TIME_BASED"/>
-        <enumeration label="SAMPLE_BASED" value="SAMPLE_BASED"/>
-      </enumerations>
-    </simple>
-    <simple id="FRONTEND::scanner_allocation::control_limit" name="control_limit" type="double">
-      <description>Either the fastest hop rate (TIME_BASED) or shortest set of samples (SAMPLE_BASED) that the scanner is expected to support. In samples, the number that will be needed before the next retune, equivalent to control_limit >= sample_rate/(max_settle_time+min_dwell_time) is met before the next retune.</description>
-    </simple>
-    <configurationkind kindtype="allocation"/>
-  </struct>
-  <simplesequence id="FRONTEND::coherent_feeds" mode="readwrite" name="frontend_coherent_feeds" type="string">
-    <kind kindtype="allocation"/>
-    <action type="external"/>
-  </simplesequence>
-  <simple id="device_reference_source_global" mode="readwrite" name="device_reference_source_global" type="string">
-    <value>INTERNAL</value>
-    <enumerations>
-      <enumeration label="INTERNAL" value="INTERNAL"/>
-      <enumeration label="EXTERNAL" value="EXTERNAL"/>
-      <enumeration label="MIMO" value="MIMO"/>
-      <enumeration label="GPSDO" value="GPSDO"/>
-    </enumerations>
-    <kind kindtype="property"/>
-  </simple>
-  <simple id="clock_sync" mode="readonly" type="boolean">
-    <description>Indicates whether the clock source is synchronized with the USRP.</description>
+  <simple id="rx_autogain_on_tune" mode="readwrite" name="rx_autogain_on_tune" type="boolean">
+    <description>If true the device will check in the input receive levels and set the hardware device gain appropriately when a new tuner is allocated or adjusted. </description>
     <value>false</value>
     <kind kindtype="property"/>
     <action type="external"/>
   </simple>
-  <simple id="ip_address" mode="readwrite" type="string">
-    <description>USRP IP address (leave empty to search for available devices)</description>
-    <value></value>
+  <simple id="trigger_rx_autogain" mode="readwrite" name="trigger_rx_autogain" type="boolean">
+    <description>Setting to true will trigger an auto gain calculation where the input levels will be monitored and the hardware gain will be adjusted. After this operation the property will be set back to false. </description>
+    <value>false</value>
     <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="rx_autogain_guard_bits" mode="readwrite" name="rx_autogain_guard_bits" type="ushort">
+    <description>The number of bits in the sample that are not used to express the value. This allows the signal strength to change without saturating the ADC, and prevents clipping.</description>
+    <value>1</value>
+    <units>bits</units>
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="device_gain" mode="readwrite" name="device_gain" type="float">
+    <description>gain value</description>
+    <value>0</value>
+    <units>dB</units>
+    <kind kindtype="property"/>
+    <action type="external"/>
+  </simple>
+  <simple id="device_mode" mode="readwrite" name="device_mode" type="string">
+    <description>16bit or 8bit</description>
+    <value>16bit</value>
+    <kind kindtype="property"/>
+    <action type="external"/>
   </simple>
   <struct id="device_characteristics" mode="readonly" name="device_characteristics">
     <description>Describes the daughtercards and channels found in the USRP</description>
@@ -243,10 +216,4 @@ False: Does not need control and can just attach to any currently tasked device 
       </simple>
     <configurationkind kindtype="property"/>
   </struct>
-  <simple id="device_mode" mode="readwrite" name="device_mode" type="string">
-    <description>16bit or 8bit</description>
-    <value>16bit</value>
-    <kind kindtype="property"/>
-    <action type="external"/>
-  </simple>
 </properties>
