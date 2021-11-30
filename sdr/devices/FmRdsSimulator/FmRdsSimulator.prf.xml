@@ -127,19 +127,4 @@ False: Does not need control and can just attach to any currently tasked device 
     </simple>
     <configurationkind kindtype="allocation"/>
   </struct>
-  <!--simple id="PathToConfiguration" mode="readwrite" name="PathToConfiguration" type="string">
-    <value>/usr/share/libFmRdsSimulator/examples</value>
-    <kind kindtype="property"/>
-    <action type="external"/>
-  </simple>
-  <simple id="noiseSigma" mode="readwrite" name="noiseSigma" type="float">
-    <value>0.01</value>
-    <kind kindtype="property"/>
-    <action type="external"/>
-  </simple>
-  <simple id="addAWGN" mode="readwrite" name="addAWGN" type="boolean">
-    <value>true</value>
-    <kind kindtype="property"/>
-    <action type="external"/>
-  </simple-->
 </properties>

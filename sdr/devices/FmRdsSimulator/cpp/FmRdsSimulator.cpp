@@ -1,3 +1,22 @@
+/*
+ * This file is protected by Copyright. Please refer to the COPYRIGHT file
+ * distributed with this source distribution.
+ *
+ * This file is part of REDHAWK FmRdsSimulator.
+ *
+ * REDHAWK FmRdsSimulator is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or (at your
+ * option) any later version.
+ *
+ * REDHAWK FmRdsSimulator is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see http://www.gnu.org/licenses/.
+ */
 /**************************************************************************
 
     This is the device code. This file contains the child class where
@@ -56,15 +75,6 @@ void FmRdsSimulator_i::constructor()
     RDC_ns::RDC_i* tmp = this->addChild<RDC_ns::RDC_i>(rds_name);
     RDCs.push_back(tmp);
 }
-
-// CF::Device::Allocations* FmRdsSimulator_i::allocate (const CF::Properties& capacities) {
-//     CF::Device::Allocations_var result = new CF::Device::Allocations();
-//     result = FmRdsSimulator_base::allocate(capacities);
-//     /*
-//      * Add data and control ports to response if length is greater than 0
-//      */
-//     return result._retn();
-// }
 
 CORBA::Boolean FmRdsSimulator_i::allocateCapacity(const CF::Properties & capacities) {
 
@@ -149,21 +159,6 @@ CF::Device::Allocations* FmRdsSimulator_i::allocate(const CF::Properties& capaci
     redhawk::PropertyMap& local_props = redhawk::PropertyMap::cast(local_capacities);
     local_props = props;
 
-    if (local_props.find("FRONTEND::coherent_feeds") != local_props.end()) {
-        /*redhawk::PropertyMap& tuner_alloc = redhawk::PropertyMap::cast(local_props["FRONTEND::tuner_allocation"].asProperties());
-        if (tuner_alloc.find("FRONTEND::tuner_allocation::allocation_id") != tuner_alloc.end()) {
-            std::string requested_alloc = tuner_alloc["FRONTEND::tuner_allocation::allocation_id"].toString();
-            if (not requested_alloc.empty()) {
-                if (_delegatedAllocations.find(requested_alloc) == _delegatedAllocations.end()) {
-                    allocation_id = requested_alloc;
-                } else {
-                    allocation_id = "_"+allocation_id;
-                    allocation_id = requested_alloc+allocation_id;
-                }
-                tuner_alloc["FRONTEND::tuner_allocation::allocation_id"] = allocation_id;
-            }
-        }*/
-    }
     if (local_props.find("FRONTEND::tuner_allocation") != local_props.end()) {
         redhawk::PropertyMap& tuner_alloc = redhawk::PropertyMap::cast(local_props["FRONTEND::tuner_allocation"].asProperties());
         if (tuner_alloc.find("FRONTEND::tuner_allocation::allocation_id") != tuner_alloc.end()) {
@@ -178,21 +173,6 @@ CF::Device::Allocations* FmRdsSimulator_i::allocate(const CF::Properties& capaci
             }
         }
     }
-    /*if (local_props.find("FRONTEND::tuner_allocation") != local_props.end()) {
-        redhawk::PropertyMap& tuner_alloc = redhawk::PropertyMap::cast(local_props["FRONTEND::tuner_allocation"].asProperties());
-        if (tuner_alloc.find("FRONTEND::tuner_allocation::tuner_type") != tuner_alloc.end()) {
-            std::string requested_device = tuner_alloc["FRONTEND::tuner_allocation::tuner_type"].toString();
-            if (not requested_alloc.empty()) {
-                if (_delegatedAllocations.find(requested_alloc) == _delegatedAllocations.end()) {
-                    allocation_id = requested_alloc;
-                } else {
-                    allocation_id = "_"+allocation_id;
-                    allocation_id = requested_alloc+allocation_id;
-                }
-                tuner_alloc["FRONTEND::tuner_allocation::allocation_id"] = allocation_id;
-            }
-        }
-    }*/
 
     // Verify that the device is in a valid state
     if (!isUnlocked() || isDisabled() || isError()) {
