@@ -45,8 +45,8 @@ Requires:       redhawk >= 3.0
 BuildRequires:  autoconf-archive
 
 # Interface requirements
-BuildRequires:  frontendInterfaces >= 3.0 bulkioInterfaces >= 3.0
-Requires:       frontendInterfaces >= 3.0 bulkioInterfaces >= 3.0
+BuildRequires:  frontendInterfaces bulkioInterfaces
+Requires:       frontendInterfaces bulkioInterfaces
 
 # Library requires
 BuildRequires:  libRfSimulators-devel
