@@ -616,9 +616,13 @@ boolNull VRTMath::unpackBoolNull (const void *ptr, int32_t off) {
     }
   }
   else {
-    if (b == 0) return _NULL;
-    if (b <  0) return _FALSE;
-                return _TRUE;
+    if (b == 0) {
+      return _NULL;
+    }
+    if (b <  0) {
+      return _FALSE;
+    }
+    return _TRUE;
   }
 }
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # AUTO-GENERATED CODE.  DO NOT MODIFY!
 #
@@ -18,7 +18,7 @@ from ossie.properties import simpleseq_property
 from ossie.properties import struct_property
 from ossie.properties import structseq_property
 
-import Queue, copy, time, threading
+import queue, copy, time, threading
 
 class enums:
     # Enumerated values for msdd
@@ -230,10 +230,10 @@ class MSDD_Controller_base(CF__POA.AggregatePlainDevice, Device, AggregateDevice
         
             def __init__(self, **kw):
                 """Construct an initialized instance of this struct definition"""
-                for classattr in type(self).__dict__.itervalues():
+                for classattr in type(self).__dict__.values():
                     if isinstance(classattr, (simple_property, simpleseq_property)):
                         classattr.initialize(self)
-                for k,v in kw.items():
+                for k,v in list(kw.items()):
                     setattr(self,k,v)
         
             def __str__(self):
@@ -286,15 +286,7 @@ class MSDD_Controller_base(CF__POA.AggregatePlainDevice, Device, AggregateDevice
                                           type_="short",
                                           defvalue=5
                                           )
-        
-            enable_inline_swddc = simple_property(
-                                                  id_="advanced::enable_inline_swddc",
-                                                  
-                                                  name="enable_inline_swddc",
-                                                  type_="boolean",
-                                                  defvalue=False
-                                                  )
-        
+                
             enable_fft_channels = simple_property(
                                                   id_="advanced::enable_fft_channels",
                                                   
@@ -329,10 +321,10 @@ class MSDD_Controller_base(CF__POA.AggregatePlainDevice, Device, AggregateDevice
         
             def __init__(self, **kw):
                 """Construct an initialized instance of this struct definition"""
-                for classattr in type(self).__dict__.itervalues():
+                for classattr in type(self).__dict__.values():
                     if isinstance(classattr, (simple_property, simpleseq_property)):
                         classattr.initialize(self)
-                for k,v in kw.items():
+                for k,v in list(kw.items()):
                     setattr(self,k,v)
         
             def __str__(self):
@@ -341,7 +333,6 @@ class MSDD_Controller_base(CF__POA.AggregatePlainDevice, Device, AggregateDevice
                 d["rcvr_mode"] = self.rcvr_mode
                 d["wb_ddc_mode"] = self.wb_ddc_mode
                 d["hw_ddc_mode"] = self.hw_ddc_mode
-                d["enable_inline_swddc"] = self.enable_inline_swddc
                 d["enable_fft_channels"] = self.enable_fft_channels
                 d["max_cpu_load"] = self.max_cpu_load
                 d["max_nic_percentage"] = self.max_nic_percentage
@@ -357,7 +348,7 @@ class MSDD_Controller_base(CF__POA.AggregatePlainDevice, Device, AggregateDevice
                 return True
         
             def getMembers(self):
-                return [("rcvr_mode",self.rcvr_mode),("wb_ddc_mode",self.wb_ddc_mode),("hw_ddc_mode",self.hw_ddc_mode),("enable_inline_swddc",self.enable_inline_swddc),("enable_fft_channels",self.enable_fft_channels),("max_cpu_load",self.max_cpu_load),("max_nic_percentage",self.max_nic_percentage),("minimum_connected_nic_rate",self.minimum_connected_nic_rate)]
+                return [("rcvr_mode",self.rcvr_mode),("wb_ddc_mode",self.wb_ddc_mode),("hw_ddc_mode",self.hw_ddc_mode),("enable_fft_channels",self.enable_fft_channels),("max_cpu_load",self.max_cpu_load),("max_nic_percentage",self.max_nic_percentage),("minimum_connected_nic_rate",self.minimum_connected_nic_rate)]
 
         advanced = struct_property(id_="advanced",
                                    name="advanced",
@@ -417,10 +408,10 @@ class MSDD_Controller_base(CF__POA.AggregatePlainDevice, Device, AggregateDevice
         
             def __init__(self, **kw):
                 """Construct an initialized instance of this struct definition"""
-                for classattr in type(self).__dict__.itervalues():
+                for classattr in type(self).__dict__.values():
                     if isinstance(classattr, (simple_property, simpleseq_property)):
                         classattr.initialize(self)
-                for k,v in kw.items():
+                for k,v in list(kw.items()):
                     setattr(self,k,v)
         
             def __str__(self):
@@ -479,10 +470,10 @@ class MSDD_Controller_base(CF__POA.AggregatePlainDevice, Device, AggregateDevice
         
             def __init__(self, **kw):
                 """Construct an initialized instance of this struct definition"""
-                for classattr in type(self).__dict__.itervalues():
+                for classattr in type(self).__dict__.values():
                     if isinstance(classattr, (simple_property, simpleseq_property)):
                         classattr.initialize(self)
-                for k,v in kw.items():
+                for k,v in list(kw.items()):
                     setattr(self,k,v)
         
             def __str__(self):
@@ -748,10 +739,10 @@ class MSDD_Controller_base(CF__POA.AggregatePlainDevice, Device, AggregateDevice
         
             def __init__(self, **kw):
                 """Construct an initialized instance of this struct definition"""
-                for classattr in type(self).__dict__.itervalues():
+                for classattr in type(self).__dict__.values():
                     if isinstance(classattr, (simple_property, simpleseq_property)):
                         classattr.initialize(self)
-                for k,v in kw.items():
+                for k,v in list(kw.items()):
                     setattr(self,k,v)
         
             def __str__(self):
@@ -848,13 +839,20 @@ class MSDD_Controller_base(CF__POA.AggregatePlainDevice, Device, AggregateDevice
                                   type_="short",
                                   defvalue=0
                                   )
+            tracking_interval = simple_property(
+                                                id_="time_of_day::tracking_interval",
+                                                
+                                                name="tracking_interval",
+                                                type_="double",
+                                                defvalue=0.0
+                                                )
         
             def __init__(self, **kw):
                 """Construct an initialized instance of this struct definition"""
-                for classattr in type(self).__dict__.itervalues():
+                for classattr in type(self).__dict__.values():
                     if isinstance(classattr, (simple_property, simpleseq_property)):
                         classattr.initialize(self)
-                for k,v in kw.items():
+                for k,v in list(kw.items()):
                     setattr(self,k,v)
         
             def __str__(self):
@@ -864,6 +862,7 @@ class MSDD_Controller_base(CF__POA.AggregatePlainDevice, Device, AggregateDevice
                 d["reference_adjust"] = self.reference_adjust
                 d["reference_track"] = self.reference_track
                 d["toy"] = self.toy
+                d["tracking_interval"] = self.tracking_interval
                 return str(d)
         
             @classmethod
@@ -875,7 +874,7 @@ class MSDD_Controller_base(CF__POA.AggregatePlainDevice, Device, AggregateDevice
                 return True
         
             def getMembers(self):
-                return [("mode",self.mode),("reference_adjust",self.reference_adjust),("reference_track",self.reference_track),("toy",self.toy)]
+                return [("mode",self.mode),("reference_adjust",self.reference_adjust),("reference_track",self.reference_track),("toy",self.toy),("tracking_interval",self.tracking_interval)]
 
         time_of_day = struct_property(id_="time_of_day",
                                       name="time_of_day",

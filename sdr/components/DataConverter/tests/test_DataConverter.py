@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -25,7 +25,6 @@ from ossie.utils.bulkio import bulkio_data_helpers
 import sys
 import time
 import threading
-from new import classobj
 from omniORB import any, CORBA
 from bulkio.bulkioInterfaces import BULKIO, BULKIO__POA
 import bulkio
@@ -180,7 +179,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         input_port.pushSRI(self.sri)
         wsec = 123456.0
         fsec = 0.654321
-        data = range(1024)
+        data = list(range(1024))
         T = bulkio.timestamp.create(wsec, fsec)
         input_port.pushPacket(data,T,True,"dataConvTest") 
         time.sleep(.5)
@@ -192,7 +191,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         # Test invalid timecode. A warning should be produced but the timecode is still passed on.
         wsec = 987654.0
         fsec = 0.456789
-        data = range(1024)
+        data = list(range(1024))
         #T = BULKIO.PrecisionUTCTime(BULKIO.TCM_CPU, BULKIO.TCS_INVALID, 0, wsec, fsec)
         T = bulkio.timestamp.create(wsec, fsec)
         T.tcstatus = BULKIO.TCS_INVALID
@@ -234,7 +233,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         streamdata = snk.read(timeout=5)     
         if not(streamdata):
               self.assertTrue(False, "No Data Stream Received")
-        print "Got Data of length " , len(streamdata.data), len(inData) , len(expectedData)
+        print("Got Data of length " , len(streamdata.data), len(inData) , len(expectedData))
         result = streamdata.data
         tstamps = streamdata.timestamps
         sb.stop()
@@ -243,11 +242,11 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
         debug =0
         if debug:
-            print inData
-            print "&&&&&&&&&&&&&&&&&&&&&&&&&"
-            print expectedData
-            print "&&&&&&&&&&&&&&&&&&&&&&&&&"
-            print result
+            print(inData)
+            print("&&&&&&&&&&&&&&&&&&&&&&&&&")
+            print(expectedData)
+            print("&&&&&&&&&&&&&&&&&&&&&&&&&")
+            print(result)
         
         # since there is a fraction involved and rounding can be different, we will check for == =+1 or =-1        
         for i in range(0,len(result)):
@@ -794,9 +793,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.assertNotEqual(len(result), 0, "Did not receive pushed data!")
         
         nans = [1 for x in sint if x != x]
-        print 'len sint, len nans:', len(sint), len(nans)
+        print('len sint, len nans:', len(sint), len(nans))
         nans = [1 for x in result if x != x]
-        print 'len result, len nans:', len(result), len(nans)
+        print('len result, len nans:', len(result), len(nans))
         
         res = np.array([np.complex(result[i]) for i in range(0,len(result))])
         
@@ -809,13 +808,13 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         avgKnown = np.mean(h)
         stdDeviation = np.std(h)
         
-        print 'avg res, avg h, stddev h:', avgOut, avgKnown, stdDeviation
+        print('avg res, avg h, stddev h:', avgOut, avgKnown, stdDeviation)
 
         corr = signal.correlate(h,res)
         elementer = corr.argmax() # index of max correlation
         should = int((len(h) + len(res))/2 - 1) # average length of expected and actual output, minus 1
         
-        print 'len h, len res, should, elementer, should-elementer, corr:',len(h), len(res), should, elementer, should-elementer, corr
+        print('len h, len res, should, elementer, should-elementer, corr:',len(h), len(res), should, elementer, should-elementer, corr)
         
         self.assertNotEqual(elementer, 0, 'No correlation found between expected and actual result!')
 
@@ -825,11 +824,11 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         error = np.array([np.complex(error_real[ii], error_imag[ii]) for ii in np.arange(len(error_imag))])
         jj = 0
         # calculate absolute error relative to the standard deviation
-        print 'ii, jj, error_mag, h.real, res.real, h.imag, res.imag, stddev'
+        print('ii, jj, error_mag, h.real, res.real, h.imag, res.imag, stddev')
         for ii in np.arange(should-elementer, len(h) + should-elementer):
             error[jj] = np.complex((h.real[jj] - res.real[ii]), (h.imag[jj] - res.imag[ii]))
             error_mag[jj] = np.abs(np.complex((h.real[jj] - res.real[ii]), (h.imag[jj] - res.imag[ii]))) / stdDeviation
-            if jj%4096 == 0: print ii, jj, error_mag[jj], h.real[jj], res.real[ii], h.imag[jj], res.imag[ii], stdDeviation
+            if jj%4096 == 0: print(ii, jj, error_mag[jj], h.real[jj], res.real[ii], h.imag[jj], res.imag[ii], stdDeviation)
             jj+=1
         
         
@@ -854,8 +853,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             plt.plot(error_mag)            
             plt.show()
                 
-        print 'avg res - avg h =', avgOut-avgKnown
-        print 'max(abs(error_mag)):', np.max(np.abs(error_mag))
+        print('avg res - avg h =', avgOut-avgKnown)
+        print('max(abs(error_mag)):', np.max(np.abs(error_mag)))
         
         self.assertEqual((0.01>avgOut-avgKnown),True)
         self.assertEqual((0.1>np.max(np.abs(error_mag))),True)
@@ -1066,9 +1065,9 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.assertNotEqual(len(result), 0, "Did not receive pushed data!")
         
         nans = [1 for x in sintS if x != x]
-        print 'len sintS, len nans:', len(sintS), len(nans)
+        print('len sintS, len nans:', len(sintS), len(nans))
         nans = [1 for x in result if x != x]
-        print 'len result, len nans:', len(result), len(nans)
+        print('len result, len nans:', len(result), len(nans))
 
         res = np.array([np.complex(result[i]) for i in range(0,len(result))])
         
@@ -1079,7 +1078,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         avgKnown = np.mean(h)
         stdDeviation = np.std(h)
         
-        print 'avg res, avg h, stddev h:', avgOut, avgKnown, stdDeviation
+        print('avg res, avg h, stddev h:', avgOut, avgKnown, stdDeviation)
         
         self.assertNotEqual(np.std(res), 0, 'Invalid output from DataConverter (likely due to NaN values in fftw processing chain)')
 
@@ -1087,7 +1086,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         elementer = corr.argmax()
         should = int((len(h) + len(res))/2 - 1)
         
-        print 'len h, len res, should, elementer, should-elementer, corr:',len(h), len(res), should, elementer, should-elementer, corr
+        print('len h, len res, should, elementer, should-elementer, corr:',len(h), len(res), should, elementer, should-elementer, corr)
         
         self.assertNotEqual(elementer, 0, 'No correlation found between expected and actual result!')
 
@@ -1100,11 +1099,11 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
         jj = 0
         # calculate absolute error relative to the standard deviation
-        print 'ii, jj, error_mag, h.real, res.real, h.imag, res.imag, stddev'
+        print('ii, jj, error_mag, h.real, res.real, h.imag, res.imag, stddev')
         for ii in np.arange(should-elementer, len(h) + should-elementer):
             error[jj] = np.complex((h.real[jj] - res.real[ii]), (h.imag[jj] - res.imag[ii]))
             error_mag[jj] = np.abs(np.complex((h.real[jj] - res.real[ii]), (h.imag[jj] - res.imag[ii]))) / stdDeviation
-            if jj%1024 == 0: print ii, jj, error_mag[jj], h.real[jj], res.real[ii], h.imag[jj], res.imag[ii], stdDeviation
+            if jj%1024 == 0: print(ii, jj, error_mag[jj], h.real[jj], res.real[ii], h.imag[jj], res.imag[ii], stdDeviation)
             jj+=1
         
         
@@ -1129,8 +1128,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             plt.plot(error_mag)            
             plt.show()
                 
-        print 'avg res - avg h =', avgOut-avgKnown
-        print 'max(abs(error_mag)):', np.max(np.abs(error_mag))
+        print('avg res - avg h =', avgOut-avgKnown)
+        print('max(abs(error_mag)):', np.max(np.abs(error_mag)))
                 
         self.assertEqual((0.01>avgOut-avgKnown),True)
         self.assertEqual((0.2>np.max(np.abs(error_mag))),True)
@@ -1284,7 +1283,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
             src_port = src.getPort()
             compInPort = self.inputPorts[compInType]
             src_port.connectPort(compInPort,"inputData")
-            print "\n\n" + str(compInType)
+            print("\n\n" + str(compInType))
             
             for compOutType in self.types:
                 sink = bulkio_data_helpers     
@@ -1292,7 +1291,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
                 compOutPort = self.outputPorts[compOutType]
                 compOutPort.connectPort(sink_port,'outputData')
                 
-                print "-->" + str(compOutType)
+                print("-->" + str(compOutType))
                 
                 src.run(self.inputFiles[compInType], self.sri,200000)
                 time.sleep(0.2)
@@ -1301,225 +1300,225 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
                     pickle.dump(sink.data, standardsFile)
                 else:
                     stdLine = pickle.load(standardsFile)
-                print "\t" + str(sink.data)
+                print("\t" + str(sink.data))
                 
                 if (justPrint == False):
                     count = 0
                     for stdVal in stdLine:
-                        print count
-                        print "data:\t\t" + str(sink.data[count])
-                        print "standard:\t" + str(stdVal)
+                        print(count)
+                        print("data:\t\t" + str(sink.data[count]))
+                        print("standard:\t" + str(stdVal))
                         if compOutType == 'Float':
                             self.assertAlmostEqual(sink.data[count],stdVal,5)
                         else:
                             self.assertEqual(sink.data[count],stdVal)
                         count+=1
-                    print "\tPASS"
+                    print("\tPASS")
         standardsFile.close()
 
     
     def testScaledChar2octet(self):      
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.char2octet(scale=True)
     
     def testChar2short(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.char2short(scale=False)           
     
     def testScaledChar2short(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.char2short(scale=True)
     
     def testScaledChar2ushort(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.char2ushort(scale=True)
 
     def testChar2float(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.char2float(scale=False)
     
     def testScaledChar2float(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.char2float(scale=True)
 
     def testChar2double(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.char2double(scale=False)
         
     def testScaledChar2double(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.char2double(scale=True)
     
     def testChar2char(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.char2char(scale=True)        
     
     def testScaledChar2char(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.char2char(scale=True)
         
     def testScaledOctet2char(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.octet2char(scale=True)
         
     def testScaledOctet2short(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.octet2short(scale=True)
         
     def testOctet2ushort(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.octet2ushort(scale=False)
 
     def testScaledOctet2ushort(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.octet2ushort(scale=True)
 
     def testOctet2float(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.octet2float(scale=False)
 
     def testScaledOctet2float(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.octet2float(scale=True)
         
     def testOctet2double(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.octet2double(scale=False)
 
     def testScaledOctet2double(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.octet2double(scale=True)
         
     def testScaledShort2char(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.short2char(scale=True)
         
     def testScaledShort2octet(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.short2octet(scale=True)
         
     def testScaledShort2ushort(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.short2ushort(scale=True)
 
     def testShort2float(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.short2float(scale=False)
         
     def testScaledShort2float(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.short2float(scale=True)
 
     def testShort2double(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.short2double(scale=False)
         
     def testScaledShort2double(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.short2double(scale=True)
         
     def testScaledUshort2char(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.ushort2char(scale=True)
         
     def testScaledUshort2octet(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.ushort2octet(scale=True)
         
     def testScaledUshort2short(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.ushort2short(scale=True)
 
     def testUshort2float(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.ushort2float(scale=False) 
         
     def testScaledUshort2float(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.ushort2float(scale=True)
         
     def testScaledFloat2char(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.float2char(scale=True)
         
     def testScaledFloat2octet(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.float2octet(scale=True)
         
     def testScaledFloat2short(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.float2short(scale=True)
         
     def testScaledFloat2ushort(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.float2ushort(scale=True)
 
     def testFloat2float(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.float2float(scale=False)
 
     def testScaledFloat2float(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.float2float(scale=True)
 
     def testFloat2double(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.float2double(scale=False)
         
     def testScaledFloat2double(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.float2double(scale=True)
         
     def testScaledDouble2char(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.double2char(scale=True)
         
     def testScaledDouble2octet(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.double2octet(scale=True)
         
     def testScaledDouble2short(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.double2short(scale=True)
         
     def testScaledDouble2ushort(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.double2ushort(scale=True)
         
     def testDouble2float(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.double2float(scale=False)
 
     def testScaledDouble2float(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.double2float(scale=True)
     
     def testDouble2double(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.double2double(scale=False)
 
     def testScaledDouble2double(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.double2double(scale=True) 
         
     def testScaledRealToComplex(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.realToComplex(scale=True)
         
     def testScaledRealToComplexShort2Short(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.realToComplexShort2Short(scale=True)
         
     def testScaledComplexToReal(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.complexToReal(scale=True)
         
     def testScaledComplexToRealShort2Short(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         self.complexToRealShort2Short(scale=True)
 
     def testModeChangeR2CUpdatesSRI(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         comp = sb.launch('../DataConverter.spd.xml')
         
         streamID = "someSRI"
@@ -1532,7 +1531,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         comp.transformProperties.fftSize = 512
         
         sb.start()
-        data = range(10000)
+        data = list(range(10000))
 
         src.setKeyword('kw1',1000)
         src.xdelta = 1 
@@ -1568,7 +1567,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         comp.releaseObject()
     
     def testModeChangeC2RUpdatesSRI(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         LOG_LEVEL = CF.LogLevels.TRACE
         comp = sb.launch('../DataConverter.spd.xml')
         #comp.log_level(LOG_LEVEL)
@@ -1582,7 +1581,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         comp.transformProperties.fftSize = 512
         
         sb.start()
-        data = range(1024)*2
+        data = list(range(1024))*2
 
         src.xdelta = 1.0 
         src.complex = 1
@@ -1613,7 +1612,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         comp.releaseObject()
 
     def testTwoInstances(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         LOG_LEVEL = CF.LogLevels.TRACE
         
         # first instance
@@ -1640,7 +1639,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
         sb.start()
         
-        data = range(1024)*4
+        data = list(range(1024))*4
 
         src.xdelta = 1.0 
         src.complex = 1
@@ -1670,7 +1669,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         comp2.releaseObject()
 
     def testSRIandStreamBehavior(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         comp = sb.launch('../DataConverter.spd.xml')
 
         streamID = "myStream"
@@ -1685,7 +1684,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
         sb.start()
 
-        data = range(1024)
+        data = list(range(1024))
 
         src.setKeyword('kw1',1000)
         src.xdelta = 1
@@ -1796,7 +1795,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
          
 
     def testScaBasicBehavior(self):
-        print(sys._getframe().f_code.co_name)
+        print((sys._getframe().f_code.co_name))
         #######################################################################
         # Launch the component with the default execparams
         execparams = self.getPropertySet(kinds=("execparam",), modes=("readwrite", "writeonly"), includeNil=False)
@@ -1826,7 +1825,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         props = dict((x.id, any.from_any(x.value)) for x in props)
         # Query may return more than expected, but not less
         for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
+            self.assertEqual(expectedProp.id in props, True)
         
         #######################################################################
         # Verify that all expected ports are available

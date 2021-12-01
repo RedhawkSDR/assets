@@ -22,7 +22,6 @@ from ossie.cf import CF, CF__POA
 import time
 from ossie.utils import uuid
 import threading
-from new import classobj
 import bulkio
 
 def create_cputime_stamp():
@@ -94,9 +93,9 @@ class ArraySource:
         self.sri = H
         try:
             try:
-                for connId, port in self.outPorts.items():
+                for connId, port in list(self.outPorts.items()):
                     if port != None: port.pushSRI(H)
-            except Exception, e:
+            except Exception as e:
                 msg = "The call to pushSRI failed with %s " % e
                 msg += "connection %s instance %s" % (connId, port)
                 print(msg)
@@ -110,9 +109,9 @@ class ArraySource:
         self.port_lock.acquire()
         try:
             try:
-                for connId, port in self.outPorts.items():
+                for connId, port in list(self.outPorts.items()):
                     if port != None: port.pushPacket(data, T, EOS, streamID)
-            except Exception, e:
+            except Exception as e:
                 msg = "The call to pushPacket failed with %s " % e
                 msg += "connection %s instance %s" % (connId, port)
                 print(msg)
@@ -129,7 +128,7 @@ class ArraySource:
         #    bases:       A tuple containing all the base classes to use
         #    dct:         A dictionary containing all the attributes such as
         #                 functions, and class variables
-        PortClass = classobj('PortClass',
+        PortClass = type('PortClass',
                              (CF__POA.Port,),
                              {'connectPort':self.connectPort,
                               'disconnectPort':self.disconnectPort})
@@ -263,7 +262,7 @@ class ArraySink:
         #    bases:       A tuple containing all the base classes to use
         #    dct:         A dictionary containing all the attributes such as
         #                 functions, and class variables
-        PortClass = classobj('PortClass',
+        PortClass = type('PortClass',
                              (self.port_type,),
                              {'pushPacket':self.pushPacket,
                               'pushSRI':self.pushSRI})
@@ -318,9 +317,9 @@ class XmlArraySource(ArraySource):
         self.port_lock.acquire()
         try:
             try:
-                for connId, port in self.outPorts.items():
+                for connId, port in list(self.outPorts.items()):
                     if port != None: port.pushPacket(data, EOS, streamID)
-            except Exception, e:
+            except Exception as e:
                 msg = "The call to pushPacket failed with %s " % e
                 msg += "connection %s instance %s" % (connId, port)
                 print(msg)
@@ -381,10 +380,10 @@ class SddsArraySource(ArraySource):
         self.port_lock.acquire()
         try:
             try:
-                for connId, port in self.outPorts.items():
+                for connId, port in list(self.outPorts.items()):
                     if port != None: r = port.attach(stream, userid)
                     return r
-            except Exception, e:
+            except Exception as e:
                 msg = "The call to attach failed with %s " % e
                 msg += "connection %s instance %s" % (connId, port)
                 print(msg)
@@ -395,9 +394,9 @@ class SddsArraySource(ArraySource):
         self.port_lock.acquire()
         try:
             try:
-                for connId, port in self.outPorts.items():
+                for connId, port in list(self.outPorts.items()):
                     if port != None: port.detach(attachId)
-            except Exception, e:
+            except Exception as e:
                 msg = "The call to detach failed with %s " % e
                 msg += "connection %s instance %s" % (connId, port)
                 print(msg)

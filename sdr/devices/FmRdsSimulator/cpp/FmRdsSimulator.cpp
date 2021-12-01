@@ -27,575 +27,590 @@
 **************************************************************************/
 
 #include "FmRdsSimulator.h"
-#include <boost/thread.hpp>
-#include <boost/filesystem/path.hpp>
-#include <math.h>
-
-#define DEFAULT_STREAM_ID "MyStreamID"
-#define MAX_SAMPLE_RATE 2280000.0
-#define MIN_SAMPLE_RATE (MAX_SAMPLE_RATE / 1000.0)
-
-// From the FM Bandwidth
-#define MIN_FREQ_RANGE 88000000
-#define MAX_FREQ_RANGE 108000000
-
-// Totally arbitrary gain limitations.
-#define MIN_GAIN_RANGE -100
-#define MAX_GAIN_RANGE 100
 
 PREPARE_LOGGING(FmRdsSimulator_i)
 
 FmRdsSimulator_i::FmRdsSimulator_i(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl) :
     FmRdsSimulator_base(devMgr_ior, id, lbl, sftwrPrfl)
 {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    construct();
 }
 
 FmRdsSimulator_i::FmRdsSimulator_i(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, char *compDev) :
     FmRdsSimulator_base(devMgr_ior, id, lbl, sftwrPrfl, compDev)
 {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    construct();
 }
 
 FmRdsSimulator_i::FmRdsSimulator_i(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities) :
     FmRdsSimulator_base(devMgr_ior, id, lbl, sftwrPrfl, capacities)
 {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    construct();
 }
 
 FmRdsSimulator_i::FmRdsSimulator_i(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities, char *compDev) :
     FmRdsSimulator_base(devMgr_ior, id, lbl, sftwrPrfl, capacities, compDev)
 {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    construct();
 }
 
 FmRdsSimulator_i::~FmRdsSimulator_i()
 {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-	if (digiSim) {
-		delete(digiSim);
-		digiSim = NULL;
-	}
-
-	if (cb) {
-		delete(cb);
-		cb = NULL;
-	}
 }
 
-/**
- * Service function not used, instead the callback is used for data pushes.
- */
+void FmRdsSimulator_i::constructor()
+{
+    /***********************************************************************************
+     This is the RH constructor. All properties are properly initialized before this function is called 
+
+     For a tuner device, the structure frontend_tuner_status needs to match the number
+     of tuners that this device controls and what kind of device it is.
+     The options for devices are: ANTENNA, RX, RX_ARRAY, DBOT, ABOT, ARDC, RDC, SRDC, DRDC, TX, TX_ARRAY, TDC
+     
+     An example of setting up this device as an ABOT would look like this:
+
+     this->addChannels(1, "ABOT");
+     
+     The incoming request for tuning contains a string describing the requested tuner
+     type. The string for the request must match the string in the tuner status.
+    ***********************************************************************************/
+    this->addChannels(1, "ABOT");
+    std::string rds_name("RDC_1");
+    RDC_ns::RDC_i* tmp = this->addChild<RDC_ns::RDC_i>(rds_name);
+    RDCs.push_back(tmp);
+}
+
+CORBA::Boolean FmRdsSimulator_i::allocateCapacity(const CF::Properties & capacities) {
+
+    std::string allocation_id;
+
+    const redhawk::PropertyMap& props = redhawk::PropertyMap::cast(capacities);
+    CF::Properties local_capacities;
+    redhawk::PropertyMap& local_props = redhawk::PropertyMap::cast(local_capacities);
+    local_props = props;
+
+    if (local_props.find("FRONTEND::tuner_allocation") != local_props.end()) {
+        redhawk::PropertyMap& tuner_alloc = redhawk::PropertyMap::cast(local_props["FRONTEND::tuner_allocation"].asProperties());
+        if (tuner_alloc.find("FRONTEND::tuner_allocation::allocation_id") != tuner_alloc.end()) {
+            std::string requested_alloc = tuner_alloc["FRONTEND::tuner_allocation::allocation_id"].toString();
+            if (not requested_alloc.empty()) {
+                if (_delegatedAllocations.find(requested_alloc) == _delegatedAllocations.end()) {
+                    allocation_id = requested_alloc;
+                } else {
+                    throw frontend::AllocationAlreadyExists("ALLOCATION_ID ALREADY IN USE", capacities);
+                }
+                tuner_alloc["FRONTEND::tuner_allocation::allocation_id"] = allocation_id;
+            }
+        }
+    }
+
+    for (std::vector<RDC_ns::RDC_i*>::iterator it=RDCs.begin(); it!=RDCs.end(); it++) {
+        bool result = (*it)->allocateCapacity(capacities);
+        if (result) {
+            CF::Device::Allocations_var alloc_response = new CF::Device::Allocations();
+            alloc_response->length(1);
+            alloc_response[0].device_ref = CF::Device::_duplicate((*it)->_this());
+            _delegatedAllocations[allocation_id] = alloc_response;
+            _usageState = updateUsageState();
+            return true;
+        }
+    }
+    
+    return FmRdsSimulator_base::allocateCapacity(capacities);
+}
+
+void FmRdsSimulator_i::deallocateCapacity (const CF::Properties& capacities) {
+    std::string allocation_id;
+
+    const redhawk::PropertyMap& props = redhawk::PropertyMap::cast(capacities);
+    CF::Properties local_capacities;
+    redhawk::PropertyMap& local_props = redhawk::PropertyMap::cast(local_capacities);
+    local_props = props;
+
+    if (local_props.find("FRONTEND::tuner_allocation") != local_props.end()) {
+        redhawk::PropertyMap& tuner_alloc = redhawk::PropertyMap::cast(local_props["FRONTEND::tuner_allocation"].asProperties());
+        if (tuner_alloc.find("FRONTEND::tuner_allocation::allocation_id") != tuner_alloc.end()) {
+            std::string requested_alloc = tuner_alloc["FRONTEND::tuner_allocation::allocation_id"].toString();
+            if (not requested_alloc.empty()) {
+                allocation_id = requested_alloc;
+            }
+        }
+    }
+    if (_delegatedAllocations.find(allocation_id) != _delegatedAllocations.end()) {
+        _delegatedAllocations[allocation_id][0].device_ref->deallocateCapacity(capacities);
+        _delegatedAllocations.erase(allocation_id);
+        _usageState = updateUsageState();
+        return;
+    }
+    
+    FmRdsSimulator_base::deallocateCapacity(capacities);
+    return;
+}
+
+CF::Device::Allocations* FmRdsSimulator_i::allocate(const CF::Properties& capacities) {
+    CF::Device::Allocations_var result = new CF::Device::Allocations();
+
+    if (capacities.length() == 0) {
+        RH_TRACE(this->_baseLog, "no capacities to configure.");
+        return result._retn();
+    }
+
+    std::string allocation_id = ossie::generateUUID();
+    const redhawk::PropertyMap& props = redhawk::PropertyMap::cast(capacities);
+
+    // copy the const properties to something that is modifiable
+    CF::Properties local_capacities;
+    redhawk::PropertyMap& local_props = redhawk::PropertyMap::cast(local_capacities);
+    local_props = props;
+
+    if (local_props.find("FRONTEND::tuner_allocation") != local_props.end()) {
+        redhawk::PropertyMap& tuner_alloc = redhawk::PropertyMap::cast(local_props["FRONTEND::tuner_allocation"].asProperties());
+        if (tuner_alloc.find("FRONTEND::tuner_allocation::allocation_id") != tuner_alloc.end()) {
+            std::string requested_alloc = tuner_alloc["FRONTEND::tuner_allocation::allocation_id"].toString();
+            if (not requested_alloc.empty()) {
+                if (_delegatedAllocations.find(requested_alloc) == _delegatedAllocations.end()) {
+                    allocation_id = requested_alloc;
+                } else {
+                    throw frontend::AllocationAlreadyExists("ALLOCATION_ID ALREADY IN USE", capacities);
+                }
+                tuner_alloc["FRONTEND::tuner_allocation::allocation_id"] = allocation_id;
+            }
+        }
+    }
+
+    // Verify that the device is in a valid state
+    if (!isUnlocked() || isDisabled() || isError()) {
+        const char* invalidState;
+        if (isLocked()) {
+            invalidState = "LOCKED";
+        } else if (isDisabled()) {
+            invalidState = "DISABLED";
+        } else if (isError()) {
+            invalidState = "ERROR";
+        } else {
+            invalidState = "SHUTTING_DOWN";
+        }
+        throw CF::Device::InvalidState(invalidState);
+    }
+    
+    for (std::vector<RDC_ns::RDC_i*>::iterator it=RDCs.begin(); it!=RDCs.end(); it++) {
+        result = (*it)->allocate(local_capacities);
+        if (result->length() > 0) {
+            _delegatedAllocations[allocation_id] = result;
+            _usageState = updateUsageState();
+            return result._retn();
+        }
+    }
+    
+    result = FmRdsSimulator_base::allocate(capacities);
+
+    return result._retn();
+}
+
+void FmRdsSimulator_i::deallocate (const char* alloc_id) {
+    std::string _alloc_id = ossie::corba::returnString(alloc_id);
+    if (_delegatedAllocations.find(_alloc_id) != _delegatedAllocations.end()) {
+        for (size_t i=0; i<_delegatedAllocations[_alloc_id]->length(); i++) {
+            CF::Device_ptr dev = _delegatedAllocations[_alloc_id][i].device_ref;
+            dev->deallocate(alloc_id);
+            _usageState = updateUsageState();
+            return;
+        }
+    }
+    _usageState = updateUsageState();
+    CF::Properties invalidProps;
+    throw CF::Device::InvalidCapacity("Capacities do not match allocated ones in the child devices", invalidProps);
+}
+
+/***********************************************************************************************
+
+    Basic functionality:
+
+        The service function is called by the serviceThread object (of type ProcessThread).
+        This call happens immediately after the previous call if the return value for
+        the previous call was NORMAL.
+        If the return value for the previous call was NOOP, then the serviceThread waits
+        an amount of time defined in the serviceThread's constructor.
+        
+    SRI:
+        To create a StreamSRI object, use the following code:
+                std::string stream_id = "testStream";
+                BULKIO::StreamSRI sri = bulkio::sri::create(stream_id);
+
+        To create a StreamSRI object based on tuner status structure index 'idx' and collector center frequency of 100:
+                std::string stream_id = "my_stream_id";
+                BULKIO::StreamSRI sri = this->create(stream_id, this->frontend_tuner_status[idx], 100);
+
+    Time:
+        To create a PrecisionUTCTime object, use the following code:
+                BULKIO::PrecisionUTCTime tstamp = bulkio::time::utils::now();
+
+        
+    Ports:
+
+        Data is passed to the serviceFunction through by reading from input streams
+        (BulkIO only). The input stream class is a port-specific class, so each port
+        implementing the BulkIO interface will have its own type-specific input stream.
+        UDP multicast (dataSDDS and dataVITA49) ports do not support streams.
+
+        The input stream from which to read can be requested with the getCurrentStream()
+        method. The optional argument to getCurrentStream() is a floating point number that
+        specifies the time to wait in seconds. A zero value is non-blocking. A negative value
+        is blocking.  Constants have been defined for these values, bulkio::Const::BLOCKING and
+        bulkio::Const::NON_BLOCKING.
+
+        More advanced uses of input streams are possible; refer to the REDHAWK documentation
+        for more details.
+
+        Input streams return data blocks that automatically manage the memory for the data
+        and include the SRI that was in effect at the time the data was received. It is not
+        necessary to delete the block; it will be cleaned up when it goes out of scope.
+
+        To send data using a BulkIO interface, create an output stream and write the
+        data to it. When done with the output stream, the close() method sends and end-of-
+        stream flag and cleans up.
+
+        NOTE: If you have a BULKIO dataSDDS or dataVITA49  port, you must manually call 
+              "port->updateStats()" to update the port statistics when appropriate.
+
+        Example:
+            // This example assumes that the device has two ports:
+            //  An input (provides) port of type bulkio::InShortPort called dataShort_in
+            //  An output (uses) port of type bulkio::OutFloatPort called dataFloat_out
+            // The mapping between the port and the class is found
+            // in the device base class header file
+
+            bulkio::InShortStream inputStream = dataShort_in->getCurrentStream();
+            if (!inputStream) { // No streams are available
+                return NOOP;
+            }
+
+            // Get the output stream, creating it if it doesn't exist yet
+            bulkio::OutFloatStream outputStream = dataFloat_out->getStream(inputStream.streamID());
+            if (!outputStream) {
+                outputStream = dataFloat_out->createStream(inputStream.sri());
+            }
+
+            bulkio::ShortDataBlock block = inputStream.read();
+            if (!block) { // No data available
+                // Propagate end-of-stream
+                if (inputStream.eos()) {
+                   outputStream.close();
+                }
+                return NOOP;
+            }
+
+            if (block.sriChanged()) {
+                // Update output SRI
+                outputStream.sri(block.sri());
+            }
+
+            // Get read-only access to the input data
+            redhawk::shared_buffer<short> inputData = block.buffer();
+
+            // Acquire a new buffer to hold the output data
+            redhawk::buffer<float> outputData(inputData.size());
+
+            // Transform input data into output data
+            for (size_t index = 0; index < inputData.size(); ++index) {
+                outputData[index] = (float) inputData[index];
+            }
+
+            // Write to the output stream; outputData must not be modified after
+            // this method call
+            outputStream.write(outputData, block.getStartTime());
+
+            return NORMAL;
+
+        If working with complex data (i.e., the "mode" on the SRI is set to
+        true), the data block's complex() method will return true. Data blocks
+        provide a cxbuffer() method that returns a complex interpretation of the
+        buffer without making a copy:
+
+            if (block.complex()) {
+                redhawk::shared_buffer<std::complex<short> > inData = block.cxbuffer();
+                redhawk::buffer<std::complex<float> > outData(inData.size());
+                for (size_t index = 0; index < inData.size(); ++index) {
+                    outData[index] = inData[index];
+                }
+                outputStream.write(outData, block.getStartTime());
+            }
+
+        Interactions with non-BULKIO ports are left up to the device developer's discretion
+        
+    Messages:
+    
+        To receive a message, you need (1) an input port of type MessageEvent, (2) a message prototype described
+        as a structure property of kind message, (3) a callback to service the message, and (4) to register the callback
+        with the input port.
+        
+        Assuming a property of type message is declared called "my_msg", an input port called "msg_input" is declared of
+        type MessageEvent, create the following code:
+        
+        void FmRdsSimulator_i::my_message_callback(const std::string& id, const my_msg_struct &msg){
+        }
+        
+        Register the message callback onto the input port with the following form:
+        this->msg_input->registerMessage("my_msg", this, &FmRdsSimulator_i::my_message_callback);
+        
+        To send a message, you need to (1) create a message structure, (2) a message prototype described
+        as a structure property of kind message, and (3) send the message over the port.
+        
+        Assuming a property of type message is declared called "my_msg", an output port called "msg_output" is declared of
+        type MessageEvent, create the following code:
+        
+        ::my_msg_struct msg_out;
+        this->msg_output->sendMessage(msg_out);
+
+    Accessing the Device Manager and Domain Manager:
+    
+        Both the Device Manager hosting this Device and the Domain Manager hosting
+        the Device Manager are available to the Device.
+        
+        To access the Domain Manager:
+            CF::DomainManager_ptr dommgr = this->getDomainManager()->getRef();
+        To access the Device Manager:
+            CF::DeviceManager_ptr devmgr = this->getDeviceManager()->getRef();
+    
+    Properties:
+        
+        Properties are accessed directly as member variables. For example, if the
+        property name is "baudRate", it may be accessed within member functions as
+        "baudRate". Unnamed properties are given the property id as its name.
+        Property types are mapped to the nearest C++ type, (e.g. "string" becomes
+        "std::string"). All generated properties are declared in the base class
+        (FmRdsSimulator_base).
+    
+        Simple sequence properties are mapped to "std::vector" of the simple type.
+        Struct properties, if used, are mapped to C++ structs defined in the
+        generated file "struct_props.h". Field names are taken from the name in
+        the properties file; if no name is given, a generated name of the form
+        "field_n" is used, where "n" is the ordinal number of the field.
+        
+        Example:
+            // This example makes use of the following Properties:
+            //  - A float value called scaleValue
+            //  - A boolean called scaleInput
+              
+            if (scaleInput) {
+                dataOut[i] = dataIn[i] * scaleValue;
+            } else {
+                dataOut[i] = dataIn[i];
+            }
+            
+        Callback methods can be associated with a property so that the methods are
+        called each time the property value changes.  This is done by calling 
+        addPropertyListener(<property>, this, &FmRdsSimulator_i::<callback method>)
+        in the constructor.
+
+        The callback method receives two arguments, the old and new values, and
+        should return nothing (void). The arguments can be passed by value,
+        receiving a copy (preferred for primitive types), or by const reference
+        (preferred for strings, structs and vectors).
+
+        Example:
+            // This example makes use of the following Properties:
+            //  - A float value called scaleValue
+            //  - A struct property called status
+            
+        //Add to FmRdsSimulator.cpp
+        FmRdsSimulator_i::FmRdsSimulator_i(const char *uuid, const char *label) :
+            FmRdsSimulator_base(uuid, label)
+        {
+            addPropertyListener(scaleValue, this, &FmRdsSimulator_i::scaleChanged);
+            addPropertyListener(status, this, &FmRdsSimulator_i::statusChanged);
+        }
+
+        void FmRdsSimulator_i::scaleChanged(float oldValue, float newValue)
+        {
+            RH_DEBUG(this->_baseLog, "scaleValue changed from" << oldValue << " to " << newValue);
+        }
+            
+        void FmRdsSimulator_i::statusChanged(const status_struct& oldValue, const status_struct& newValue)
+        {
+            RH_DEBUG(this->_baseLog, "status changed");
+        }
+            
+        //Add to FmRdsSimulator.h
+        void scaleChanged(float oldValue, float newValue);
+        void statusChanged(const status_struct& oldValue, const status_struct& newValue);
+
+    Logging:
+
+        The member _baseLog is a logger whose base name is the component (or device) instance name.
+        New logs should be created based on this logger name.
+
+        To create a new logger,
+            rh_logger::LoggerPtr my_logger = this->_baseLog->getChildLogger("foo");
+
+        Assuming component instance name abc_1, my_logger will then be created with the 
+        name "abc_1.user.foo".
+
+    Allocation:
+    
+        Allocation callbacks are available to customize the Device's response to 
+        allocation requests. For example, if the Device contains the allocation 
+        property "my_alloc" of type string, the allocation and deallocation
+        callbacks follow the pattern (with arbitrary function names
+        my_alloc_fn and my_dealloc_fn):
+        
+        bool FmRdsSimulator_i::my_alloc_fn(const std::string &value)
+        {
+            // perform logic
+            return true; // successful allocation
+        }
+        void FmRdsSimulator_i::my_dealloc_fn(const std::string &value)
+        {
+            // perform logic
+        }
+        
+        The allocation and deallocation functions are then registered with the Device
+        base class with the setAllocationImpl call. Note that the variable for the property is used rather
+        than its id:
+        
+        this->setAllocationImpl(my_alloc, this, &FmRdsSimulator_i::my_alloc_fn, &FmRdsSimulator_i::my_dealloc_fn);
+        
+        
+
+************************************************************************************************/
 int FmRdsSimulator_i::serviceFunction()
 {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    return FINISH;
-}
-
-void FmRdsSimulator_i::construct()
-{
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-	digiSim = NULL;
-	cb = NULL;
-
-	/** Register callbacks **/
-	addPropertyChangeListener("addAWGN", this, &FmRdsSimulator_i::addAWGNChanged);
-	addPropertyChangeListener("noiseSigma", this, &FmRdsSimulator_i::noiseSigmaChanged);
-
-	// 0.5 because of cast truncation.
-	unsigned int maxSampleRateInt = (unsigned int) (MAX_SAMPLE_RATE + 0.5);
-	int iterator = 2;
-	unsigned int tmpSampleRate = maxSampleRateInt;
-	availableSampleRates.push_back(tmpSampleRate);
-
-	while (tmpSampleRate >= MIN_SAMPLE_RATE) {
-		if (maxSampleRateInt % iterator == 0) {
-			tmpSampleRate = maxSampleRateInt / iterator;
-
-			if (tmpSampleRate >= MIN_SAMPLE_RATE) {
-				availableSampleRates.push_back(tmpSampleRate);
-			}
-		}
-		++iterator;
-	}
-
-	std::sort (availableSampleRates.begin(), availableSampleRates.end());
-
-	// Initialize rfinfo packet
-	rfinfo_pkt.if_center_freq =0;
-	rfinfo_pkt.rf_flow_id = "";
-}
-
-void FmRdsSimulator_i::addAWGNChanged(const bool* old_value, const bool* new_value) {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-	if (digiSim) {
-		digiSim->addNoise(*new_value);
-	}
-}
-
-void FmRdsSimulator_i::noiseSigmaChanged(const float* old_value, const float* new_value) {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-	if (digiSim) {
-		digiSim->setNoiseSigma(*new_value);
-	}
-}
-
-void FmRdsSimulator_i::initialize() throw (CF::LifeCycle::InitializeError, CORBA::SystemException)
-{
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-	FmRdsSimulator_base::initialize();
-
-	initDigitizer();
-
-    /** As of the REDHAWK 1.8.3 release, device are not started automatically by the node. Therefore
-     *  the device must start itself. */
-    if(!started()){
-        start();
-    }
-}
-
-void FmRdsSimulator_i::initDigitizer() {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-	setNumChannels(0);
-
-	if (cb) {
-		delete(cb);
-		cb = NULL;
-	}
-
-	if (digiSim) {
-		delete(digiSim);
-		digiSim = NULL;
-	}
-
-	cb = new MyCallBackClass(dataFloat_out, &frontend_tuner_status,this->identifier() );
-
-
-	digiSim = RfSimulators::RfSimulatorFactory::createFmRdsSimulator();
-	digiSim->setCenterFrequencyRange(MIN_FREQ_RANGE, MAX_FREQ_RANGE);
-	digiSim->setGainRange(MIN_GAIN_RANGE, MAX_GAIN_RANGE);
-	digiSim->addNoise(addAWGN);
-	digiSim->setNoiseSigma(noiseSigma);
-
-	switch (this->log_level())
-	{
-	case 5:
-		digiSim->init(PathToConfiguration, cb, RfSimulators::TRACE);
-		break;
-	case 4:
-		digiSim->init(PathToConfiguration, cb, RfSimulators::DEBUG);
-		break;
-	case 3:
-		digiSim->init(PathToConfiguration, cb, RfSimulators::INFO);
-		break;
-	case 2:
-		digiSim->init(PathToConfiguration, cb, RfSimulators::WARN);
-		break;
-	case 1:
-		digiSim->init(PathToConfiguration, cb, RfSimulators::ERROR);
-		break;
-	default:
-		digiSim->init(PathToConfiguration, cb, RfSimulators::WARN);
-		break;
-	}
-
-
-	setNumChannels(1);
-
-    // Initialize status vector
-    // this device only has a single tuner
-
-    frontend_tuner_status[0].allocation_id_csv = "";
-    frontend_tuner_status[0].tuner_type = "RX_DIGITIZER";
-    frontend_tuner_status[0].center_frequency = digiSim->getCenterFrequency();
-    frontend_tuner_status[0].sample_rate = digiSim->getSampleRate();
-    // set bandwidth to the max sample rate.
-    frontend_tuner_status[0].bandwidth = MAX_SAMPLE_RATE;
-    frontend_tuner_status[0].rf_flow_id = "";
-    frontend_tuner_status[0].gain = digiSim->getGain();
-    frontend_tuner_status[0].group_id = "";
-    frontend_tuner_status[0].enabled = false;
-    frontend_tuner_status[0].stream_id.clear();
-
+    RH_TRACE(this->_baseLog, "serviceFunction() example log message");
+    
+    return NOOP;
 }
 
 /*************************************************************
 Functions supporting tuning allocation
 *************************************************************/
 void FmRdsSimulator_i::deviceEnable(frontend_tuner_status_struct_struct &fts, size_t tuner_id){
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
     /************************************************************
     modify fts, which corresponds to this->frontend_tuner_status[tuner_id]
     Make sure to set the 'enabled' member of fts to indicate that tuner as enabled
     ************************************************************/
-
-	if (not digiSim) {
-		LOG_ERROR(FmRdsSimulator_i, "Tried to enable the device before it was initialized!");
-		return;
-	}
-
-	digiSim->start();
-
-	fts.center_frequency = digiSim->getCenterFrequency();
-	fts.sample_rate = digiSim->getSampleRate();
-	fts.bandwidth = MAX_SAMPLE_RATE;
-	fts.stream_id = DEFAULT_STREAM_ID;
-	fts.enabled = true;
-
+    fts.enabled = true;
     return;
 }
 void FmRdsSimulator_i::deviceDisable(frontend_tuner_status_struct_struct &fts, size_t tuner_id){
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
     /************************************************************
     modify fts, which corresponds to this->frontend_tuner_status[tuner_id]
     Make sure to reset the 'enabled' member of fts to indicate that tuner as disabled
     ************************************************************/
-	if (digiSim) {
-		digiSim->stop();
-	}
-
-	fts.enabled = false;
+    fts.enabled = false;
     return;
 }
 bool FmRdsSimulator_i::deviceSetTuning(const frontend::frontend_tuner_allocation_struct &request, frontend_tuner_status_struct_struct &fts, size_t tuner_id){
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-
-	bool sriChanged = false;
-
-	/************************************************************
+    /************************************************************
     modify fts, which corresponds to this->frontend_tuner_status[tuner_id]
+      At a minimum, bandwidth, center frequency, and sample_rate have to be set
+      If the device is tuned to exactly what the request was, the code should be:
+        fts.bandwidth = request.bandwidth;
+        fts.center_frequency = request.center_frequency;
+        fts.sample_rate = request.sample_rate;
+
     return true if the tuning succeeded, and false if it failed
     ************************************************************/
-	LOG_INFO(FmRdsSimulator_i, "Received a request: ");
-	LOG_INFO(FmRdsSimulator_i, "Allocation ID: " << request.allocation_id);
-	LOG_INFO(FmRdsSimulator_i, "Bandwidth: " << request.bandwidth);
-	LOG_INFO(FmRdsSimulator_i, "Bandwidth Tolerance: " << request.bandwidth_tolerance);
-	LOG_INFO(FmRdsSimulator_i, "Center Frequency: " << request.center_frequency);
-	LOG_INFO(FmRdsSimulator_i, "Device Control: " << request.device_control);
-	LOG_INFO(FmRdsSimulator_i, "Group ID: " << request.group_id);
-	LOG_INFO(FmRdsSimulator_i, "RF Flow ID: " << request.rf_flow_id);
-	LOG_INFO(FmRdsSimulator_i, "Sample Rate: " << request.sample_rate);
-	LOG_INFO(FmRdsSimulator_i, "Sample Rate Tolerance: " << request.sample_rate_tolerance);
-	LOG_INFO(FmRdsSimulator_i, "Tuner Type: " << request.tuner_type);
-
-	if (not digiSim) {
-		LOG_WARN(FmRdsSimulator_i, "deviceSetTuning called when Simulator has not been created.  This is not expected");
-		return false;
-	}
-
-	if (request.tuner_type != "RX_DIGITIZER") {
-		LOG_WARN(FmRdsSimulator_i, "Tuner type does not equal RX_DIGITIZER.  Request denied.");
-		return false;
-	}
-
-    // check request against RTL specs and analog input
-    const bool complex = true; // RTL operates using complex data
-    // Note: since samples are complex, assume BW == SR (rather than BW == SR/2 for Real samples)
-    if (rfinfo_pkt.if_center_freq !=0)	{
-		try {
-			validateRequestVsRFInfo(request,rfinfo_pkt, complex);
-		} catch(FRONTEND::BadParameterException& e){
-			LOG_INFO(FmRdsSimulator_i," Failed to Validate against rfInfo_Pkt. deviceSetTuning|BadParameterException - " << e.msg);
-			throw;
-		}
-	}
-    double if_offset = 0.0;
-    // calculate if_offset according to rx rfinfo packet
-    if(frontend::floatingPointCompare(rfinfo_pkt.if_center_freq,0) > 0){
-        if_offset = rfinfo_pkt.rf_center_freq-rfinfo_pkt.if_center_freq;
-		LOG_DEBUG(FmRdsSimulator_i, "Set IF offset to : " << if_offset);
-
-    }
-
-	unsigned int sampleRateToSet = 0;
-
-	// User cares about sample rate
-	if (request.sample_rate != 0.0) {
-
-		// For FEI tolerance, it is not a +/- it's give me this or better.
-		float minAcceptableSampleRate = request.sample_rate;
-		float maxAcceptableSampleRate = (1 + request.sample_rate_tolerance/100.0) * request.sample_rate;
-
-
-		LOG_INFO(FmRdsSimulator_i, "Based on request, minimum acceptable sample rate: " << minAcceptableSampleRate);
-		LOG_INFO(FmRdsSimulator_i, "Based on request, maximum acceptable sample rate: " << maxAcceptableSampleRate);
-
-		// if the request isn't in the sample rate range return false
-		if (minAcceptableSampleRate >= MAX_SAMPLE_RATE || maxAcceptableSampleRate <= MIN_SAMPLE_RATE) {
-			LOG_WARN(FmRdsSimulator_i, "Requested sample rate is outside of range");
-			return false;
-		}
-
-		std::vector<unsigned int>::iterator closestIterator;
-		closestIterator = std::lower_bound(availableSampleRates.begin(), availableSampleRates.end(), (unsigned int) (minAcceptableSampleRate+0.5));
-
-		if (closestIterator == availableSampleRates.end()) {
-			LOG_ERROR(FmRdsSimulator_i, "Did not find sample rate in available list...this should not happen");
-		}
-
-		unsigned int closestSampleRate = *closestIterator;
-
-		if (closestSampleRate > maxAcceptableSampleRate) {
-			LOG_WARN(FmRdsSimulator_i, "Cannot deliver sample rate within the requested tolerance");
-			return false;
-		}
-
-		sampleRateToSet = closestSampleRate;
-	}
-
-	// User cares about bandwidth...they shouldn't though.  It's not setable.
-	if (request.bandwidth != 0.0) {
-		float minAcceptableBandwidth = request.bandwidth;
-		float maxAcceptableBandwidth = (1 + request.bandwidth_tolerance/100.0) * request.bandwidth;
-
-		LOG_INFO(FmRdsSimulator_i, "Based on request, minimum acceptable bandwidth: " << minAcceptableBandwidth);
-		LOG_INFO(FmRdsSimulator_i, "Based on request, maximum acceptable bandwidth: " << maxAcceptableBandwidth);
-
-
-		// if MAX_SAMPLE_RATE < minAcceptable or MAX_SAMPLE_RATE > maxAcceptable we return an error.
-		if (frontend::floatingPointCompare(MAX_SAMPLE_RATE, minAcceptableBandwidth) < 0
-				|| frontend::floatingPointCompare(MAX_SAMPLE_RATE, maxAcceptableBandwidth) > 0) {
-			LOG_WARN(FmRdsSimulator_i, "Bandwidth cannot be accommodated.  Set bandwidth to: " << MAX_SAMPLE_RATE);
-			return false;
-		}
-
-	}
-
-	try {
-		digiSim->setCenterFrequency((float) request.center_frequency-if_offset);
-		fts.center_frequency = digiSim->getCenterFrequency()+if_offset;
-		sriChanged = true; // The COL and CHAN RF likely changed.
-	} catch (OutOfRangeException &ex) {
-		LOG_WARN(FmRdsSimulator_i, "Tried to tune to " << request.center_frequency-if_offset << " but request was rejected by simulator.");
-		return false;
-	}
-
-	if (request.sample_rate > 0 && sampleRateToSet > 0) {
-		LOG_INFO(FmRdsSimulator_i, "Setting the sample rate to: " << sampleRateToSet);
-		digiSim->setSampleRate(sampleRateToSet);
-		fts.sample_rate = digiSim->getSampleRate();
-		sriChanged = true;
-	}
-
-	fts.bandwidth = MAX_SAMPLE_RATE;
-
-	if (sriChanged) {
-		cb->pushUpdatedSRI();
-	}
-
     return true;
 }
 bool FmRdsSimulator_i::deviceDeleteTuning(frontend_tuner_status_struct_struct &fts, size_t tuner_id) {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
     /************************************************************
     modify fts, which corresponds to this->frontend_tuner_status[tuner_id]
     return true if the tune deletion succeeded, and false if it failed
     ************************************************************/
-
-
-	if (digiSim) {
-		digiSim->stop();
-	}
-	cb->pushEOS();
-
-    fts.center_frequency = 0.0;
-    fts.sample_rate = 0.0;
-    fts.bandwidth = 0.0;
-    fts.stream_id.clear();
-
     return true;
 }
-
 /*************************************************************
 Functions servicing the tuner control port
 *************************************************************/
 std::string FmRdsSimulator_i::getTunerType(const std::string& allocation_id) {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    long idx = getTunerMapping(allocation_id);
-    if (idx < 0) throw FRONTEND::FrontendException("Invalid allocation id");
-    return frontend_tuner_status[idx].tuner_type;
+    return frontend_tuner_status[0].tuner_type;
 }
 
 bool FmRdsSimulator_i::getTunerDeviceControl(const std::string& allocation_id) {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    long idx = getTunerMapping(allocation_id);
-    if (idx < 0) throw FRONTEND::FrontendException("Invalid allocation id");
-    if (getControlAllocationId(idx) == allocation_id)
-        return true;
-    return false;
+    return true;
 }
 
 std::string FmRdsSimulator_i::getTunerGroupId(const std::string& allocation_id) {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    long idx = getTunerMapping(allocation_id);
-    if (idx < 0) throw FRONTEND::FrontendException("Invalid allocation id");
-    return frontend_tuner_status[idx].group_id;
+    return frontend_tuner_status[0].group_id;
 }
 
 std::string FmRdsSimulator_i::getTunerRfFlowId(const std::string& allocation_id) {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    long idx = getTunerMapping(allocation_id);
-    if (idx < 0) throw FRONTEND::FrontendException("Invalid allocation id");
-    return frontend_tuner_status[idx].rf_flow_id;
+    return frontend_tuner_status[0].rf_flow_id;
 }
 
 void FmRdsSimulator_i::setTunerCenterFrequency(const std::string& allocation_id, double freq) {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    long idx = getTunerMapping(allocation_id);
-    if (idx < 0) throw FRONTEND::FrontendException("Invalid allocation id");
-    if(allocation_id != getControlAllocationId(idx))
-        throw FRONTEND::FrontendException(("ID "+allocation_id+" does not have authorization to modify the tuner").c_str());
-    if (freq<0) throw FRONTEND::BadParameterException();
-
-    try {
-		digiSim->setCenterFrequency((float) freq);
-		this->frontend_tuner_status[idx].center_frequency = freq;
-		// The COL_RF and CHAN_RF has changed
-		cb->pushUpdatedSRI();
-    } catch (OutOfRangeException &ex) {
-    	throw FRONTEND::BadParameterException();
-    }
-
+    if (freq<0) throw FRONTEND::BadParameterException("Center frequency cannot be less than 0");
+    // set hardware to new value. Raise an exception if it's not possible
+    this->frontend_tuner_status[0].center_frequency = freq;
 }
 
 double FmRdsSimulator_i::getTunerCenterFrequency(const std::string& allocation_id) {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    long idx = getTunerMapping(allocation_id);
-    if (idx < 0) throw FRONTEND::FrontendException("Invalid allocation id");
-
-    return frontend_tuner_status[idx].center_frequency;
+    return frontend_tuner_status[0].center_frequency;
 }
 
 void FmRdsSimulator_i::setTunerBandwidth(const std::string& allocation_id, double bw) {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    long idx = getTunerMapping(allocation_id);
-    if (idx < 0) throw FRONTEND::FrontendException("Invalid allocation id");
-    if(allocation_id != getControlAllocationId(idx))
-        throw FRONTEND::FrontendException(("ID "+allocation_id+" does not have authorization to modify the tuner").c_str());
-    if (bw<0) throw FRONTEND::BadParameterException();
-
-    if (bw != MAX_SAMPLE_RATE) {
-    	LOG_WARN(FmRdsSimulator_i, "User tried to set bandwidth to: " << bw);
-    	LOG_WARN(FmRdsSimulator_i, "Only acceptable bw is " << MAX_SAMPLE_RATE);
-    	throw FRONTEND::BadParameterException();
-    }
-
-    this->frontend_tuner_status[idx].bandwidth = MAX_SAMPLE_RATE;
+    if (bw<0) throw FRONTEND::BadParameterException("Bandwidth cannot be less than 0");
+    // set hardware to new value. Raise an exception if it's not possible
+    this->frontend_tuner_status[0].bandwidth = bw;
 }
 
 double FmRdsSimulator_i::getTunerBandwidth(const std::string& allocation_id) {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    long idx = getTunerMapping(allocation_id);
-    if (idx < 0) throw FRONTEND::FrontendException("Invalid allocation id");
-    return frontend_tuner_status[idx].bandwidth;
+    return frontend_tuner_status[0].bandwidth;
 }
 
 void FmRdsSimulator_i::setTunerAgcEnable(const std::string& allocation_id, bool enable)
 {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
     throw FRONTEND::NotSupportedException("setTunerAgcEnable not supported");
 }
 
 bool FmRdsSimulator_i::getTunerAgcEnable(const std::string& allocation_id)
 {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
     throw FRONTEND::NotSupportedException("getTunerAgcEnable not supported");
 }
 
 void FmRdsSimulator_i::setTunerGain(const std::string& allocation_id, float gain)
 {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-	long idx = getTunerMapping(allocation_id);
-	if (idx < 0) throw FRONTEND::FrontendException("Invalid allocation id");
-	if(allocation_id != getControlAllocationId(idx))
-		throw FRONTEND::FrontendException(("ID "+allocation_id+" does not have authorization to modify the tuner").c_str());
-
-	if (digiSim) {
-		try {
-			digiSim->setGain(gain);
-		} catch (OutOfRangeException &ex) {
-			throw FRONTEND::BadParameterException();
-		}
-		this->frontend_tuner_status[0].gain = gain;
-	}
+    throw FRONTEND::NotSupportedException("setTunerGain not supported");
 }
 
 float FmRdsSimulator_i::getTunerGain(const std::string& allocation_id)
 {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-	long idx = getTunerMapping(allocation_id);
-	    if (idx < 0) throw FRONTEND::FrontendException("Invalid allocation id");
-
-	if (digiSim) {
-		return digiSim->getGain();
-	}
-
-	return -1;
+    throw FRONTEND::NotSupportedException("getTunerGain not supported");
 }
 
 void FmRdsSimulator_i::setTunerReferenceSource(const std::string& allocation_id, long source)
 {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
     throw FRONTEND::NotSupportedException("setTunerReferenceSource not supported");
 }
 
 long FmRdsSimulator_i::getTunerReferenceSource(const std::string& allocation_id)
 {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
     throw FRONTEND::NotSupportedException("getTunerReferenceSource not supported");
 }
 
 void FmRdsSimulator_i::setTunerEnable(const std::string& allocation_id, bool enable) {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    long idx = getTunerMapping(allocation_id);
-    if (idx < 0) throw FRONTEND::FrontendException("Invalid allocation id");
-    if(allocation_id != getControlAllocationId(idx))
-        throw FRONTEND::FrontendException(("ID "+allocation_id+" does not have authorization to modify the tuner").c_str());
-
-    if (enable) {
-    	digiSim->start();
-    } else {
-    	digiSim->stop();
-    }
-
-    this->frontend_tuner_status[idx].enabled = enable;
+    // set hardware to new value. Raise an exception if it's not possible
+    this->frontend_tuner_status[0].enabled = enable;
 }
 
 bool FmRdsSimulator_i::getTunerEnable(const std::string& allocation_id) {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    long idx = getTunerMapping(allocation_id);
-    if (idx < 0) throw FRONTEND::FrontendException("Invalid allocation id");
-    return frontend_tuner_status[idx].enabled;
+    return frontend_tuner_status[0].enabled;
 }
 
 void FmRdsSimulator_i::setTunerOutputSampleRate(const std::string& allocation_id, double sr) {
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    long idx = getTunerMapping(allocation_id);
-    if (idx < 0) throw FRONTEND::FrontendException("Invalid allocation id");
-    if(allocation_id != getControlAllocationId(idx))
-        throw FRONTEND::FrontendException(("ID "+allocation_id+" does not have authorization to modify the tuner").c_str());
-    if (sr<0) throw FRONTEND::BadParameterException();
-
-    try {
-		digiSim->setSampleRate((float) sr);
-    } catch (InvalidValue &ex) {
-    	throw FRONTEND::BadParameterException();
-    	return;
-    }
-
-    this->frontend_tuner_status[idx].sample_rate = digiSim->getSampleRate();
-    cb->pushUpdatedSRI();
+    if (sr<0) throw FRONTEND::BadParameterException("Sample rate cannot be less than 0");
+    // set hardware to new value. Raise an exception if it's not possible
+    this->frontend_tuner_status[0].sample_rate = sr;
 }
 
 double FmRdsSimulator_i::getTunerOutputSampleRate(const std::string& allocation_id){
-	LOG_TRACE(FmRdsSimulator_i, "Entering Method");
-    long idx = getTunerMapping(allocation_id);
-    if (idx < 0) throw FRONTEND::FrontendException("Invalid allocation id");
-    return frontend_tuner_status[idx].sample_rate;
+    return frontend_tuner_status[0].sample_rate;
+}
+
+void FmRdsSimulator_i::configureTuner(const std::string& allocation_id, const CF::Properties& tunerSettings){
+    // set the appropriate tuner settings
+}
+
+CF::Properties* FmRdsSimulator_i::getTunerSettings(const std::string& allocation_id){
+    // return the tuner settings
+    redhawk::PropertyMap* tuner_settings = new redhawk::PropertyMap();
+    return tuner_settings;
 }
 
 /*************************************************************
@@ -604,94 +619,20 @@ Functions servicing the RFInfo port(s)
 *************************************************************/
 std::string FmRdsSimulator_i::get_rf_flow_id(const std::string& port_name)
 {
-	LOG_TRACE(FmRdsSimulator_i,__PRETTY_FUNCTION__ << " port_name=" << port_name);
-
-    if( port_name == "RFInfo_in"){
-        return rfinfo_pkt.rf_flow_id;
-    } else {
-        LOG_WARN(FmRdsSimulator_i, "get_rf_flow_id|Unknown port name: " << port_name);
-        return std::string("none");
-    }
+    return std::string("none");
 }
 
 void FmRdsSimulator_i::set_rf_flow_id(const std::string& port_name, const std::string& id)
 {
-	LOG_TRACE(FmRdsSimulator_i,__PRETTY_FUNCTION__ << " port_name=" << port_name << " id=" << id);
-
-    if( port_name == "RFInfo_in"){
-        rfinfo_pkt.rf_flow_id = id;
-        frontend_tuner_status[0].rf_flow_id = id;
-        cb->pushUpdatedSRI();
-    } else {
-        LOG_WARN(FmRdsSimulator_i, "set_rf_flow_id|Unknown port name: " << port_name);
-    }
 }
 
 frontend::RFInfoPkt FmRdsSimulator_i::get_rfinfo_pkt(const std::string& port_name)
 {
-    LOG_TRACE(FmRdsSimulator_i,__PRETTY_FUNCTION__ << " port_name=" << port_name);
-
     frontend::RFInfoPkt pkt;
-    if( port_name != "RFInfo_in"){
-        LOG_WARN(FmRdsSimulator_i, "get_rfinfo_pkt|Unknown port name: " << port_name);
-        return pkt;
-    }
-    pkt.rf_flow_id = rfinfo_pkt.rf_flow_id;
-    pkt.rf_center_freq = rfinfo_pkt.rf_center_freq;
-    pkt.rf_bandwidth = rfinfo_pkt.rf_bandwidth;
-    pkt.if_center_freq = rfinfo_pkt.if_center_freq;
-    pkt.spectrum_inverted = rfinfo_pkt.spectrum_inverted;
-    pkt.sensor.collector = rfinfo_pkt.sensor.collector;
-    pkt.sensor.mission = rfinfo_pkt.sensor.mission;
-    pkt.sensor.rx = rfinfo_pkt.sensor.rx;
-    pkt.sensor.antenna.description = rfinfo_pkt.sensor.antenna.description;
-    pkt.sensor.antenna.name = rfinfo_pkt.sensor.antenna.name;
-    pkt.sensor.antenna.size = rfinfo_pkt.sensor.antenna.size;
-    pkt.sensor.antenna.type = rfinfo_pkt.sensor.antenna.type;
-    pkt.sensor.feed.name = rfinfo_pkt.sensor.feed.name;
-    pkt.sensor.feed.polarization = rfinfo_pkt.sensor.feed.polarization;
-    pkt.sensor.feed.freq_range.max_val = rfinfo_pkt.sensor.feed.freq_range.max_val;
-    pkt.sensor.feed.freq_range.min_val = rfinfo_pkt.sensor.feed.freq_range.min_val;
-    pkt.sensor.feed.freq_range.values.resize(rfinfo_pkt.sensor.feed.freq_range.values.size());
-    for (unsigned int i=0; i<rfinfo_pkt.sensor.feed.freq_range.values.size(); i++) {
-        pkt.sensor.feed.freq_range.values[i] = rfinfo_pkt.sensor.feed.freq_range.values[i];
-    }
     return pkt;
 }
 
 void FmRdsSimulator_i::set_rfinfo_pkt(const std::string& port_name, const frontend::RFInfoPkt &pkt)
 {
-    LOG_DEBUG(FmRdsSimulator_i, "set_rfinfo_pkt|port_name=" << port_name << " pkt.rf_flow_id=" << pkt.rf_flow_id);
-    LOG_DEBUG(FmRdsSimulator_i, "set_rfinfo_pkt|rf_center_freq=" << pkt.rf_center_freq );
-    LOG_DEBUG(FmRdsSimulator_i, "set_rfinfo_pkt|rf_bandwidth=" << pkt.rf_bandwidth );
-    LOG_DEBUG(FmRdsSimulator_i, "set_rfinfo_pkt|if_center_freq=" << pkt.if_center_freq );
-
-    if( port_name == "RFInfo_in"){
-        rfinfo_pkt.rf_flow_id = pkt.rf_flow_id;
-        rfinfo_pkt.rf_center_freq = pkt.rf_center_freq;
-        rfinfo_pkt.rf_bandwidth = pkt.rf_bandwidth;
-        rfinfo_pkt.if_center_freq = pkt.if_center_freq;
-        rfinfo_pkt.spectrum_inverted = pkt.spectrum_inverted;
-        rfinfo_pkt.sensor.collector = pkt.sensor.collector;
-        rfinfo_pkt.sensor.mission = pkt.sensor.mission;
-        rfinfo_pkt.sensor.rx = pkt.sensor.rx;
-        rfinfo_pkt.sensor.antenna.description = pkt.sensor.antenna.description;
-        rfinfo_pkt.sensor.antenna.name = pkt.sensor.antenna.name;
-        rfinfo_pkt.sensor.antenna.size = pkt.sensor.antenna.size;
-        rfinfo_pkt.sensor.antenna.type = pkt.sensor.antenna.type;
-        rfinfo_pkt.sensor.feed.name = pkt.sensor.feed.name;
-        rfinfo_pkt.sensor.feed.polarization = pkt.sensor.feed.polarization;
-        rfinfo_pkt.sensor.feed.freq_range.max_val = pkt.sensor.feed.freq_range.max_val;
-        rfinfo_pkt.sensor.feed.freq_range.min_val = pkt.sensor.feed.freq_range.min_val;
-        rfinfo_pkt.sensor.feed.freq_range.values.resize(pkt.sensor.feed.freq_range.values.size());
-        for (unsigned int i=0; i<pkt.sensor.feed.freq_range.values.size(); i++) {
-            rfinfo_pkt.sensor.feed.freq_range.values[i] = pkt.sensor.feed.freq_range.values[i];
-        }
-        frontend_tuner_status[0].rf_flow_id = pkt.rf_flow_id;
-        cb->pushUpdatedSRI();
-    } else {
-        LOG_WARN(FmRdsSimulator_i, "set_rfinfo_pkt|Unknown port name: " + port_name);
-    }
-
 }
 

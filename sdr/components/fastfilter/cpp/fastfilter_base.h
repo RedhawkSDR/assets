@@ -32,11 +32,23 @@ class fastfilter_base : public Resource_impl, protected ThreadedComponent
         fastfilter_base(const char *uuid, const char *label);
         ~fastfilter_base();
 
-        void start() throw (CF::Resource::StartError, CORBA::SystemException);
+        /**
+         * @throw CF::Resource::StartError
+         * @throw CORBA::SystemException
+         */
+        void start();
 
-        void stop() throw (CF::Resource::StopError, CORBA::SystemException);
+        /**
+         * @throw CF::Resource::StopError
+         * @throw CORBA::SystemException
+         */
+        void stop();
 
-        void releaseObject() throw (CF::LifeCycle::ReleaseError, CORBA::SystemException);
+        /**
+         * @throw CF::LIfeCycle::ReleaseError
+         * @throw CORBA::SystemException
+         */
+        void releaseObject();
 
         void loadProperties();
 
@@ -44,6 +56,7 @@ class fastfilter_base : public Resource_impl, protected ThreadedComponent
         // Member variables exposed as properties
         CORBA::ULong fftSize;
         bool correlationMode;
+        bool bypassMode;
         std::vector<float> realFilterCoefficients;
         std::vector<std::complex<float> > complexFilterCoefficients;
         filterProps_struct filterProps;

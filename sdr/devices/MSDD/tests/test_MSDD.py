@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -168,7 +168,7 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
 
         try:
                 self.alloc_params, self.msdd_id = getAllocationParams(IP_ADDRESS)
-        except Exception, e:
+        except Exception as e:
                 self.fail("Unable to identify MSDD, " + str(IP_ADDRESS) + " reason:" + str(e))
 
         # Launch the device, using the selected implementation
@@ -231,11 +231,11 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
         
         try:
             retval = self.comp.allocateCapacity(alloc)
-        except Exception, e:
-            print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-            print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-            print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-            print str(e)
+        except Exception as e:
+            print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+            print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+            print("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
+            print(str(e))
             self.assertFalse("Exception thrown on allocateCapactiy %s" % str(e))
         if not retval:
             self.assertFalse("Allocation Failed")
@@ -261,8 +261,8 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
 
         try:
             retval = self.comp.allocateCapacity(alloc)
-        except Exception, e:
-            print str(e)
+        except Exception as e:
+            print(str(e))
             self.fail("Exception thrown on allocateCapactiy %s" % str(e))
 
         if not retval:
@@ -276,12 +276,12 @@ class DeviceTests(ossie.utils.testing.RHTestCase):
         if "," in _avail_bw:
                 avail_bw = [ float(x) for x in _avail_bw.split(',')]
                 self.assertEqual( (bw in avail_bw), True, msg="Checking for correct available bandwidth")
-                print srate, avail_bw, (srate in avail_bw)
-                self.assertEquals( (srate not in avail_bw), True, msg="Checking sample rate not equal to available bandwidth")
+                print(srate, avail_bw, (srate in avail_bw))
+                self.assertEqual( (srate not in avail_bw), True, msg="Checking sample rate not equal to available bandwidth")
         else:
                 avail_bw=float(_avail_bw)
                 self.assertAlmostEqual(bw,avail_bw, msg="Checking for correct available bandwidth")
-                self.assertNotAlmostEquals(srate, avail_bw, msg="Checking sample rate not equal to available bandwidth")
+                self.assertNotAlmostEqual(srate, avail_bw, msg="Checking sample rate not equal to available bandwidth")
 
         self.comp.deallocateCapacity(alloc)
 
@@ -326,7 +326,7 @@ class MsddDeviceTests(ossie.utils.testing.RHTestCase):
 
         try:
                 self.alloc_params, self.msdd_id = getAllocationParams(IP_ADDRESS)
-        except Exception, e:
+        except Exception as e:
                 self.fail("Unable to identify MSDD, " + str(IP_ADDRESS) + " reason:" + str(e))
 
 
@@ -495,7 +495,7 @@ class RFInfoTest(ossie.utils.testing.RHTestCase):
 
         try:
                 self.alloc_params, self.msdd_id = getAllocationParams(IP_ADDRESS)
-        except Exception, e:
+        except Exception as e:
                 self.fail("Unable to identify MSDD, " + str(IP_ADDRESS) + " reason:" + str(e))
 
         self.alloc1=None
@@ -780,7 +780,7 @@ class OnePpsTests(ossie.utils.testing.RHTestCase):
         self.assertEqual(mode, 'ONEPPS', msg='tod_module.mode must be ONEPPS for this test.')
 
         # for scenario 2, unplug 1PPS cable here.
-        raw_input('press ENTER to continue: ')
+        input('press ENTER to continue: ')
 
         log_contents = ''
         try:
@@ -809,7 +809,7 @@ class OnePpsTests(ossie.utils.testing.RHTestCase):
 
         deltas = []
         num_reads = 30
-        for _ in xrange(num_reads):
+        for _ in range(num_reads):
             host_time = get_seconds_from_start_of_year()
             tod_time = get_tod(IP_ADDRESS)
             if not tod_time: continue
@@ -902,7 +902,7 @@ class IPPInterfaceTest(ossie.utils.testing.RHTestCase):
 
         try:
             self.alloc_params, self.msdd_id = getAllocationParams(IP_ADDRESS)
-        except Exception, e:
+        except Exception as e:
                 self.fail("Unable to identify MSDD, " + str(IP_ADDRESS) + " reason:" + str(e))
 
 	import sys
@@ -921,7 +921,7 @@ class IPPInterfaceTest(ossie.utils.testing.RHTestCase):
         msg="*** Application firmware: " + \
                 msdd.console.filename_app + \
                 " Output Module: "+omsg+ " interface numbers ***"
-        print>>sys.stderr, "\n",msg
+        print("\n",msg, file=sys.stderr)
 
 
         self.alloc1=None

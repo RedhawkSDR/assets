@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -138,7 +138,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testNoChangeInData(self):
         """Test No Change in Data 
         """
-        testdata = [float(x) for x in xrange(5)]
+        testdata = [float(x) for x in range(5)]
         outdata,sri = self.myTestCase(testdata,100.0,-100.0)
         self.assertEqual(outdata,testdata)
         self.checkSRI(sri)
@@ -146,36 +146,36 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testUpperLimit(self):
         """Test Upper Limit 
         """
-        testdata = [float(x) for x in xrange(20)]
+        testdata = [float(x) for x in range(20)]
         outdata,sri = self.myTestCase(testdata,10.0,-10.0)
-        expectedoutput = [float(x) for x in xrange(10)]+[10.0 for x in xrange(10)]
+        expectedoutput = [float(x) for x in range(10)]+[10.0 for x in range(10)]
         self.assertEqual(outdata,expectedoutput)
         self.checkSRI(sri)
 
     def testLowerLimit(self):
         """Test Lower Limit 
         """
-        testdata = [float(x) for x in xrange(-20,0)]
+        testdata = [float(x) for x in range(-20,0)]
         outdata,sri = self.myTestCase(testdata,10.0,-10.0)
-        expectedoutput = [-10.0 for x in xrange(10)]+[float(x) for x in xrange(-10,0)]
+        expectedoutput = [-10.0 for x in range(10)]+[float(x) for x in range(-10,0)]
         self.assertEqual(outdata,expectedoutput)
         self.checkSRI(sri)
     
     def testUpperAndLowerLimit(self):
         """Test Upper and Lower Limit 
         """
-        testdata = [float(x) for x in xrange(-20,20)]
+        testdata = [float(x) for x in range(-20,20)]
         outdata,sri = self.myTestCase(testdata,10.0,-10.0)
-        expectedoutput = [-10.0 for x in xrange(10)]+[float(x) for x in xrange(-10,10)] +[10.0 for x in xrange(10)]
+        expectedoutput = [-10.0 for x in range(10)]+[float(x) for x in range(-10,10)] +[10.0 for x in range(10)]
         self.assertEqual(outdata,expectedoutput)
         self.checkSRI(sri)
     
     def testMultiPush(self):
         """Test Two pushes
         """
-        testdata = [float(x) for x in xrange(-20,20)]
+        testdata = [float(x) for x in range(-20,20)]
         outdata,sri = self.myTestCase(testdata,10.0,-10.0)
-        expectedoutput = [-10.0 for x in xrange(10)]+[float(x) for x in xrange(-10,10)] +[10.0 for x in xrange(10)]
+        expectedoutput = [-10.0 for x in range(10)]+[float(x) for x in range(-10,10)] +[10.0 for x in range(10)]
         self.assertEqual(outdata,expectedoutput)
         outdata,sri = self.myTestCase(testdata,10.0,-10.0)
         self.assertEqual(outdata,expectedoutput)

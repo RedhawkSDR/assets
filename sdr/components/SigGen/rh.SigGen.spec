@@ -28,7 +28,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.SigGen
-Version:        2.0.2
+Version:        2.1.0
 Release:        1%{?dist}
 Summary:        Component %{name}
 
@@ -37,19 +37,17 @@ License:        LGPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
-Requires:       redhawk >= 2.0
+BuildRequires:  redhawk-devel >= 3.0
+Requires:       redhawk >= 3.0
 
 Requires:       libuuid
 BuildRequires:  libuuid-devel
 
-# Interface requirements
-BuildRequires:  bulkioInterfaces >= 2.0
-Requires:       bulkioInterfaces >= 2.0
+BuildRequires:  autoconf-archive
 
-# Implementation java
-BuildRequires:  java-devel >= 1.6
-Requires:       java >= 1.6
+# Interface requirements
+BuildRequires:  bulkioInterfaces
+Requires:       bulkioInterfaces
 
 # Allow upgrades from previous package name
 Obsoletes:      SigGen < 2.0.0
@@ -79,13 +77,6 @@ pushd python
 %configure
 make %{?_smp_mflags}
 popd
-# Implementation java
-pushd java
-./reconf
-%define _bindir %{_prefix}/dom/components/rh/SigGen/java
-%configure
-make %{?_smp_mflags}
-popd
 
 
 %install
@@ -98,11 +89,6 @@ popd
 # Implementation python
 pushd python
 %define _bindir %{_prefix}/dom/components/rh/SigGen/python
-make install DESTDIR=$RPM_BUILD_ROOT
-popd
-# Implementation java
-pushd java
-%define _bindir %{_prefix}/dom/components/rh/SigGen/java
 make install DESTDIR=$RPM_BUILD_ROOT
 popd
 
@@ -119,7 +105,6 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/dom/components/rh/SigGen/SigGen.spd.xml
 %{_prefix}/dom/components/rh/SigGen/cpp
 %{_prefix}/dom/components/rh/SigGen/python
-%{_prefix}/dom/components/rh/SigGen/java
 
 %changelog
 * Wed Jun 21 2017 Ryan Bauman <rbauman@lgsinnovations.com> - 2.0.1-2

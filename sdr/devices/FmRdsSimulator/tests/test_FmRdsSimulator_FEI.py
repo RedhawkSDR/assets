@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -70,8 +70,8 @@ dut_config['custom'] = {
     'configure'   : {},         # {'prop_name': value}
     'properties'  : {},         # {'prop_name': value}
     'capabilities': [           # entry for each tuner; single entry if all tuners are the same
-        {                       # include entry for each tuner type (i.e. RX, TX, RX_DIGITIZER, etc.)
-            'RX_DIGITIZER': {   # include ranges for CF, BW, SR, and GAIN
+        {                       # include entry for each tuner type (i.e. RX, TX, DDC, etc.)
+            'DDC': {   # include ranges for CF, BW, SR, and GAIN
                 'COMPLEX' : True,
                 # To specify a range from 0 to 10 with a gap from 3 to 5: [0, 3, 5, 10]
                 'CF'      : [100e6, 500e6], # enter center frequency range in Hz
@@ -101,7 +101,7 @@ dut_config['FmRdsSim'] = {
     'properties'  : {},
     'capabilities': [
         {
-            'RX_DIGITIZER': {
+            'DDC': {
                 'COMPLEX' : True,
                 'CF'      : [88e6, 108e6],
                 'BW'      : [2.28e6, 2.28e6],
@@ -192,7 +192,7 @@ dut_config['RTL'] = {
     'properties'  : {},
     'capabilities': [
         {
-            'RX_DIGITIZER': {
+            'DDC': {
                 'COMPLEX' : True,
                 'CF'      : [24e3, 1.766e9],
                 'BW'      : [28.126e3, 2.56e3],
@@ -205,20 +205,20 @@ dut_config['RTL'] = {
 
 # rh.RTL2832U with Elonics E4000 tuner chip
 dut_config['RTL|E4000'] = copy.deepcopy(dut_config['RTL'])
-dut_config['RTL|E4000']['capabilities'][0]['RX_DIGITIZER']['CF'] = [52e6, 1.1e9, 1.25e9, 2.2e9] # gap from 1100 to 1250 MHz
-dut_config['RTL|E4000']['capabilities'][0]['RX_DIGITIZER']['GAIN'] = [-1.0, 49.0]
+dut_config['RTL|E4000']['capabilities'][0]['DDC']['CF'] = [52e6, 1.1e9, 1.25e9, 2.2e9] # gap from 1100 to 1250 MHz
+dut_config['RTL|E4000']['capabilities'][0]['DDC']['GAIN'] = [-1.0, 49.0]
 
 # rh.RTL2832U with FC0013 tuner chip
 dut_config['RTL|FC13'] = copy.deepcopy(dut_config['RTL'])
-dut_config['RTL|FC13']['capabilities'][0]['RX_DIGITIZER']['CF'] = [22e6, 1.1e9]
-dut_config['RTL|FC13']['capabilities'][0]['RX_DIGITIZER']['GAIN'] = [-9.9, 19.7]
+dut_config['RTL|FC13']['capabilities'][0]['DDC']['CF'] = [22e6, 1.1e9]
+dut_config['RTL|FC13']['capabilities'][0]['DDC']['GAIN'] = [-9.9, 19.7]
 
 # rh.RTL2832U with FC0012 tuner chip
-dut_config['RTL|FC13']['capabilities'][0]['RX_DIGITIZER']['CF'] = [22e6, 948.6e6]
+dut_config['RTL|FC13']['capabilities'][0]['DDC']['CF'] = [22e6, 948.6e6]
 
 # rh.RTL2832U with FC2580 tuner chip
 dut_config['RTL|FC2580'] = copy.deepcopy(dut_config['RTL|FC13'])
-dut_config['RTL|FC2580']['capabilities'][0]['RX_DIGITIZER']['CF'] = [146e6, 308e6, 438e6, 924e6] # gap from 308 to 438 MHz
+dut_config['RTL|FC2580']['capabilities'][0]['DDC']['CF'] = [146e6, 308e6, 438e6, 924e6] # gap from 308 to 438 MHz
 
 
 
@@ -293,14 +293,14 @@ dut_config['MSDD'] = {
     # The below capabilities are based on an MSDD-6000 with a freq range from 30 - 6000 MHz. It also assumes a 100 MSPS ADC clock which creates a max SR of 25 MSPS. For MSDD 3000 models the max frequency would need to be adjusted to 3000 MHz. For models that have the 98 MSPS clock (s98 FPGA loads) the max sample rate should be set to 24.576e6. 
     'capabilities': [
         {
-            'RX_DIGITIZER': {
+            'DDC': {
                 'COMPLEX' : True,
                 'CF'      : [30e6, 6e9],
                 'BW'      : [20e6, 20e6],
                 'SR'      : [25e6, 25e6],
                 'GAIN'    : [-48.0, 12.0]
             },
-            'RX_DIGITIZER_CHANNELIZER': {
+            'DDC': {
                 'COMPLEX' : True,
                 'CF'      : [30e6, 6e9],
                 'BW'      : [20e6, 20e6],
@@ -341,7 +341,7 @@ dut_config['MSDD|Dreamin'] = {
     'properties'  : {},
     'capabilities': [
         {
-            'RX_DIGITIZER': {
+            'DDC': {
                 'COMPLEX' : True,
                 'CF'      : [30e6, 3e9],
                 'BW'      : [20e6, 20e6],
@@ -370,22 +370,22 @@ def customGenerateTunerRequest(idx=0):
     #Pick a random set for CF,BW,SR and return
     value = {}
     value['ALLOC_ID'] = str(uuid.uuid4())
-    value['TYPE'] = 'RX_DIGITIZER'
+    value['TYPE'] = 'DDC'
     value['BW_TOLERANCE'] = 100.0
     value['SR_TOLERANCE'] = 100.0
     value['RF_FLOW_ID'] = ''
     value['GROUP_ID'] = ''
     value['CONTROL'] = True
 
-    value['CF'] = getValueInRange(DEVICE_INFO['capabilities'][idx]['RX_DIGITIZER']['CF'])
-    sr_subrange = DEVICE_INFO['capabilities'][idx]['RX_DIGITIZER']['SR']
+    value['CF'] = getValueInRange(DEVICE_INFO['capabilities'][idx]['DDC']['CF'])
+    sr_subrange = DEVICE_INFO['capabilities'][idx]['DDC']['SR']
     if 'sr_limit' in DEVICE_INFO and DEVICE_INFO['sr_limit'] > 0:
-        sr_subrange = getSubranges([0,DEVICE_INFO['sr_limit']], DEVICE_INFO['capabilities'][idx]['RX_DIGITIZER']['SR'])
+        sr_subrange = getSubranges([0,DEVICE_INFO['sr_limit']], DEVICE_INFO['capabilities'][idx]['DDC']['SR'])
     value['SR'] = getValueInRange(sr_subrange)
     # Usable BW is typically equal to SR if complex samples, otherwise half of SR
-    BW_MULT = 1.0 if DEVICE_INFO['capabilities'][idx]['RX_DIGITIZER']['COMPLEX'] else 0.5
+    BW_MULT = 1.0 if DEVICE_INFO['capabilities'][idx]['DDC']['COMPLEX'] else 0.5
     value['BW'] = 0.8*value['SR']*BW_MULT # Try 80% of SR
-    if isValueInRange(value['BW'], DEVICE_INFO['capabilities'][idx]['RX_DIGITIZER']['BW']):
+    if isValueInRange(value['BW'], DEVICE_INFO['capabilities'][idx]['DDC']['BW']):
         # success! all done, return value
         return value
 
@@ -393,14 +393,14 @@ def customGenerateTunerRequest(idx=0):
     bw_min = value['SR']*BW_MULT
     bw_max = value['SR']*(1.0+(value['SR_TOLERANCE']/100.0))*BW_MULT
     tolerance_range = [bw_min,bw_max]
-    bw_subrange = getSubranges(tolerance_range, DEVICE_INFO['capabilities'][idx]['RX_DIGITIZER']['BW'])
+    bw_subrange = getSubranges(tolerance_range, DEVICE_INFO['capabilities'][idx]['DDC']['BW'])
     if len(bw_subrange) > 0:
         # success! get BW value and return
         value['BW'] = getValueInRange(bw_subrange)
         return value
 
     # last resort
-    value['BW'] = getValueInRange(DEVICE_INFO['capabilities'][idx]['RX_DIGITIZER']['BW'])
+    value['BW'] = getValueInRange(DEVICE_INFO['capabilities'][idx]['DDC']['BW'])
     return value
 #dut_config['custom']['tuner_gen']=customGenerateTunerRequest # TODO - uncomment this line to use custom
                                                               #        function for custom DUT
@@ -440,11 +440,11 @@ class FrontendTunerTests(fe.FrontendTunerTests):
             device_channels = cls._query( ('device_channels',) )['device_channels']
             if DEBUG_LEVEL >= 4:
                 from pprint import pprint as pp
-                print 'device channel: '
+                print('device channel: ')
                 pp(device_channels)
 
             for chan in device_channels:
-                if chan['device_channels::tuner_type'] != 'RX_DIGITIZER':
+                if chan['device_channels::tuner_type'] != 'DDC':
                     continue
                 chan_capabilities = {
                     chan['device_channels::tuner_type']: {

@@ -88,13 +88,13 @@ sinksocket_base::~sinksocket_base()
     Framework-level functions
     These functions are generally called by the framework to perform housekeeping.
 *******************************************************************************************/
-void sinksocket_base::start() throw (CORBA::SystemException, CF::Resource::StartError)
+void sinksocket_base::start()
 {
     Component::start();
     ThreadedComponent::startThread();
 }
 
-void sinksocket_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
+void sinksocket_base::stop()
 {
     Component::stop();
     if (!ThreadedComponent::stopThread()) {
@@ -102,7 +102,7 @@ void sinksocket_base::stop() throw (CORBA::SystemException, CF::Resource::StopEr
     }
 }
 
-void sinksocket_base::releaseObject() throw (CORBA::SystemException, CF::LifeCycle::ReleaseError)
+void sinksocket_base::releaseObject()
 {
     // This function clears the component running condition so main shuts down everything
     try {

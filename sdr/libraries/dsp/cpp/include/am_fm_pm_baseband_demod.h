@@ -35,7 +35,7 @@ private:
     RealArray *_am;
     RealArray *_fm;
     RealArray *_pm;
-    static const Real oneOver2Pi=1.0/(2*M_PI);
+    static constexpr Real oneOver2Pi=1.0/(2*M_PI);
     Real freqGain;
     Real phaseGain;
     Real phaseA;

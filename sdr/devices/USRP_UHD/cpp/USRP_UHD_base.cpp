@@ -92,13 +92,13 @@ void USRP_UHD_base::construct()
     Framework-level functions
     These functions are generally called by the framework to perform housekeeping.
 *******************************************************************************************/
-void USRP_UHD_base::start() throw (CORBA::SystemException, CF::Resource::StartError)
+void USRP_UHD_base::start()
 {
     frontend::FrontendScanningTunerDevice<frontend_tuner_status_struct_struct>::start();
     ThreadedComponent::startThread();
 }
 
-void USRP_UHD_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
+void USRP_UHD_base::stop()
 {
     frontend::FrontendScanningTunerDevice<frontend_tuner_status_struct_struct>::stop();
     if (!ThreadedComponent::stopThread()) {
@@ -106,7 +106,7 @@ void USRP_UHD_base::stop() throw (CORBA::SystemException, CF::Resource::StopErro
     }
 }
 
-void USRP_UHD_base::releaseObject() throw (CORBA::SystemException, CF::LifeCycle::ReleaseError)
+void USRP_UHD_base::releaseObject()
 {
     // This function clears the device running condition so main shuts down everything
     try {

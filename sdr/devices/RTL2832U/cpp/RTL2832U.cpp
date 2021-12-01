@@ -28,6 +28,7 @@
 **************************************************************************/
 
 #include "RTL2832U.h"
+#include <sstream>
 
 PREPARE_LOGGING(RTL2832U_i)
 
@@ -457,7 +458,10 @@ bool RTL2832U_i::deviceSetTuning(const frontend::frontend_tuner_allocation_struc
     return true;
 }
 
-bool RTL2832U_i::deviceSetTuningScan(const frontend::frontend_tuner_allocation_struct &request, const frontend::frontend_scanner_allocation_struct &scan_request, frontend_tuner_status_struct_struct &fts, size_t tuner_id){
+bool RTL2832U_i::deviceSetTuningScan(const frontend::frontend_tuner_allocation_struct &request,
+                                     const frontend::frontend_scanner_allocation_struct &scan_request,
+                                     frontend_tuner_status_struct_struct &fts,
+                                     size_t tuner_id){
     /************************************************************
 
     This function is called when the allocation request contains a scanner allocation
@@ -486,13 +490,23 @@ bool RTL2832U_i::deviceSetTuningScan(const frontend::frontend_tuner_allocation_s
     double bw_sr = std::max(request.bandwidth,request.sample_rate);
 
 	//Check Scanner Options
+    CF::Properties props;
+    redhawk::PropertyMap &pMap = redhawk::PropertyMap::cast(props);
+    std::stringstream ss;
 	// Check Min Freq high enough
-    if (scan_request.min_freq< minFreq)
-    	throw CF::Device::InvalidCapacity("Scanner Minimum Frequency out of range",NULL);
+    if (scan_request.min_freq< minFreq) {
+        pMap["min_freq"] = scan_request.min_freq;
+        ss << "Requested minimum frequency below minimum acceptable value of " << minFreq;
+    	throw CF::Device::InvalidCapacity(ss.str().c_str(), props);
+    }
 
 	//Check Max Freq is low enough
-    if (scan_request.max_freq> maxFreq)
-    	throw CF::Device::InvalidCapacity("Scanner Minimum Frequency out of range",NULL);
+    if (scan_request.max_freq> maxFreq) {
+        pMap["max_freq"] = scan_request.max_freq;
+    	ss.clear();
+    	ss << "Requested maximum frequency above maximum acceptable value of " << maxFreq;
+    	throw CF::Device::InvalidCapacity(ss.str().c_str(), props);
+    }
 
     double numSamples = 0;
 	// Check Control Limit
@@ -503,8 +517,10 @@ bool RTL2832U_i::deviceSetTuningScan(const frontend::frontend_tuner_allocation_s
     	numSamples = scan_request.control_limit;
     }
 
-	if (numSamples > rtl_tuner.buffer_capacity/2)
-		throw CF::Device::InvalidCapacity("Requested Scan duration is too large",NULL);
+	if (numSamples > rtl_tuner.buffer_capacity/2) {
+        pMap["control_limit"] = scan_request.control_limit;
+		throw CF::Device::InvalidCapacity("Requested scan duration is too large", props);
+    }
 
     bool retval = false;
 	// Allocate like regular RX_DIGITIZER if tuner 0 is not allocated
@@ -532,7 +548,10 @@ bool RTL2832U_i::deviceDeleteTuning(frontend_tuner_status_struct_struct &fts, si
     scoped_tuner_lock tuner_lock(rtl_tuner.lock);
 
     if (fts.allocation_id_csv == "Allocated_Scanner_in_use") {
-    	throw CF::Device::InvalidCapacity("Cannot Deallocate Internal Allocation",NULL);
+        CF::Properties props;
+        redhawk::PropertyMap &pMap = redhawk::PropertyMap::cast(props);
+        pMap["allocation_id_csv"] = fts.allocation_id_csv;
+    	throw CF::Device::InvalidCapacity("Cannot Deallocate Internal Allocation", props);
     }
 
 
@@ -1152,7 +1171,7 @@ void RTL2832U_i::updateAvailableDevices(){
 
 /* acquire prop_lock prior to calling this function */
 /* acquires the rtl_tuner.lock */
-void RTL2832U_i::initRtl() throw (CF::PropertySet::InvalidConfiguration) {
+void RTL2832U_i::initRtl() {
     LOG_TRACE(RTL2832U_i,__PRETTY_FUNCTION__);
     try {
         // clear current configuration

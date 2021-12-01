@@ -25,7 +25,7 @@
     </simple>
     <simple id="msdd::timeout" name="timeout" type="double">
       <description>Timeout to receive data after a command is sent</description>
-      <value>0.2</value>
+      <value>0.1</value>
       <units>seconds</units>
     </simple>
     <simple id="msdd::clock_ref" mode="readwrite" name="clock_ref" type="short">
@@ -62,10 +62,6 @@
         <enumeration label="RX_DIGITIZER Only" value="4"/>
         <enumeration label="RX_DIGITIZER or DDC" value="5"/>
       </enumerations>
-    </simple>
-    <simple id="advanced::enable_inline_swddc" name="enable_inline_swddc" type="boolean">
-      <description>Attach a SWDDC module to a NBDDC module on startup.  Allows for narrow bandwidths from the NBDDC modules.</description>
-      <value>False</value>
     </simple>
     <simple id="advanced::enable_fft_channels" name="enable_fft_channels" type="boolean">
       <description>Enable FFT modules to be dynamically assigned to controlling allocations.</description>
@@ -190,6 +186,7 @@
     <configurationkind kindtype="property"/>
   </struct>
   <struct id="time_of_day" mode="readonly" name="time_of_day">
+    <description>The Time of Day (TOD) module  configuration properties.  The TOD module is configured after the connection is established during device startup.</description>
     <simple id="time_of_day::mode" mode="readwrite" name="mode" type="string">
       <value>SIM</value>
       <enumerations>
@@ -202,12 +199,13 @@
       <action type="external"/>
     </simple>
     <simple id="time_of_day::reference_adjust" mode="readwrite" name="reference_adjust" type="short">
+      <description>Sets the timing reference adjustment (RFA).</description>
       <value>0</value>
       <units>ns/sec drift</units>
       <action type="external"/>
     </simple>
     <simple id="time_of_day::reference_track" mode="readwrite" name="reference_track" type="short">
-      <description></description>
+      <description>Sets the timing reference tracking mode (RTK).</description>
       <value>0</value>
       <enumerations>
         <enumeration label="OFF" value="0"/>
@@ -217,12 +215,18 @@
       <action type="external"/>
     </simple>
     <simple id="time_of_day::toy" mode="readwrite" name="toy" type="short">
-      <description>Time of year offset</description>
+      <description>Time of year offset (TOY)</description>
       <value>0</value>
       <enumerations>
         <enumeration label="24 Hour offset from IRIGB" value="0"/>
         <enumeration label="Direct from IRIGB" value="1"/>
       </enumerations>
+      <action type="external"/>
+    </simple>
+    <simple id="time_of_day::tracking_interval" mode="readwrite" name="tracking_interval" type="double">
+      <description>the number of seconds to wait between checking TOD state and host clock settings</description>
+      <value>0.0</value>
+      <kind kindtype="property"/>
       <action type="external"/>
     </simple>
     <configurationkind kindtype="property"/>

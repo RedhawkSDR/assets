@@ -11,7 +11,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.MSDD_Controller
-Version:        1.0.0
+Version:        1.1.0
 Release:        1%{?dist}
 Summary:        Device %{name}
 
@@ -20,8 +20,8 @@ License:        None
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.2
-Requires:       redhawk >= 2.2
+BuildRequires:  redhawk-devel >= 3.0
+Requires:       redhawk >= 3.0
 
 
 BuildArch: noarch

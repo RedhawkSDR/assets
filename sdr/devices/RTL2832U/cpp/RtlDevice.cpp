@@ -59,9 +59,15 @@ RtlDevice::RtlDevice(uint32_t channelNumber)
                 LOG_INFO(RtlDevice, "Unable to get device USB strings of index " << m_channelNumber);
             }
 
-            strncpy(m_deviceName, rtlsdr_get_device_name(m_channelNumber), 256);
+            // see rtl-sdr.h
+            // API does not specify sz limit to return value of rtlsdr_get_device_name().
+            std::string tmp(rtlsdr_get_device_name(m_channelNumber));
+            if (tmp.size() >= m_char_p_sz) {
+                tmp.resize(m_char_p_sz - 1);
+            }
+            m_deviceName = tmp;
 
-            if (m_deviceName) {
+            if (m_deviceName.size()) {
                 LOG_INFO(RtlDevice, "Using device " << m_deviceName << " at index " << m_channelNumber);
             } else {
                 LOG_INFO(RtlDevice, "Unable to get device name of index " << m_channelNumber);
@@ -592,35 +598,35 @@ int RtlDevice::getFreqCorrection(){
     return 0;
 }
 
-/* Copy the usb strings into the given pointers.  It's up
- * to the user to guarantee at least 256 characters for each
+/* Copy the usb char strings to the pointer args.
+ * Caller must ensure each arg can hold at least m_char_p_sz=256 chars.
  */
 void RtlDevice::getUsbStrings(char *vendor, char *product, char *serial)
 {
     LOG_TRACE(RtlDevice, __PRETTY_FUNCTION__);
 
     if (vendor) {
-        strncpy(vendor, m_vendor, 256);
+        strncpy(vendor, m_vendor, m_char_p_sz);
     }
 
     if (product) {
-        strncpy(product, m_product, 256);
+        strncpy(product, m_product, m_char_p_sz);
     }
 
     if (serial) {
-        strncpy(serial, m_serial, 256);
+        strncpy(serial, m_serial, m_char_p_sz);
     }
 }
 
-/* Copy the device name into the given pointer.  It's up
- * to the user to guarantee at least 256 characters
+/* Copy the usb char strings to the pointer arg.
+ * Caller must ensure the arg can hold at least m_char_p_sz=256 chars.
  */
 void RtlDevice::getName(char *name)
 {
     LOG_TRACE(RtlDevice, __PRETTY_FUNCTION__);
 
     if (name) {
-        strncpy(name, m_deviceName, 256);
+        strncpy(name, m_deviceName.c_str(), m_char_p_sz);
     }
 }
 

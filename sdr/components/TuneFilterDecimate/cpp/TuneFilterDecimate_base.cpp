@@ -51,13 +51,13 @@ TuneFilterDecimate_base::~TuneFilterDecimate_base()
     Framework-level functions
     These functions are generally called by the framework to perform housekeeping.
 *******************************************************************************************/
-void TuneFilterDecimate_base::start() throw (CORBA::SystemException, CF::Resource::StartError)
+void TuneFilterDecimate_base::start()
 {
     Resource_impl::start();
     ThreadedComponent::startThread();
 }
 
-void TuneFilterDecimate_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
+void TuneFilterDecimate_base::stop()
 {
     Resource_impl::stop();
     if (!ThreadedComponent::stopThread()) {
@@ -65,7 +65,7 @@ void TuneFilterDecimate_base::stop() throw (CORBA::SystemException, CF::Resource
     }
 }
 
-void TuneFilterDecimate_base::releaseObject() throw (CORBA::SystemException, CF::LifeCycle::ReleaseError)
+void TuneFilterDecimate_base::releaseObject()
 {
     // This function clears the component running condition so main shuts down everything
     try {

@@ -95,16 +95,16 @@ class FrontendTunerTests(unittest.TestCase):
                                   'FRONTEND::tuner_status::available_bandwidth':[str],
                                   'FRONTEND::tuner_status::available_gain':[str],
                                   'FRONTEND::tuner_status::available_sample_rate':[str],
-                                  'FRONTEND::tuner_status::reference_source':[int,long],
+                                  'FRONTEND::tuner_status::reference_source':[int,int],
                                   'FRONTEND::tuner_status::output_format':[str],
                                   'FRONTEND::tuner_status::output_multicast':[str],
-                                  'FRONTEND::tuner_status::output_vlan':[int,long],
-                                  'FRONTEND::tuner_status::output_port':[int,long],
-                                  'FRONTEND::tuner_status::decimation':[int,long],
-                                  'FRONTEND::tuner_status::tuner_number':[int,long]}
+                                  'FRONTEND::tuner_status::output_vlan':[int,int],
+                                  'FRONTEND::tuner_status::output_port':[int,int],
+                                  'FRONTEND::tuner_status::decimation':[int,int],
+                                  'FRONTEND::tuner_status::tuner_number':[int,int]}
     
     # get lists of all methods/functions defined in digital tuner idl
-    digital_tuner_idl = filter(lambda x: x[0]!='_', dir(TunerControl_idl._0_FRONTEND._objref_DigitalTuner))
+    digital_tuner_idl = [x for x in dir(TunerControl_idl._0_FRONTEND._objref_DigitalTuner) if x[0]!='_']
     # In future, could also do this:
     #import frontend
     #digital_tuner_idl = filter(lambda x: x[0]!='_', dir(frontend.InDigitalTunerPort))
@@ -161,20 +161,20 @@ class FrontendTunerTests(unittest.TestCase):
             execparams = dict([(x.id, any.from_any(x.value)) for x in execparams])
             execparams['DEBUG_LEVEL'] = DEBUG_LEVEL
             #Add custom execparams here
-            for param,val in DEVICE_INFO['execparams'].items():
+            for param,val in list(DEVICE_INFO['execparams'].items()):
                 execparams[param] = val
         
         #Add custom configure here
-        for param,val in DEVICE_INFO['configure'].items():
+        for param,val in list(DEVICE_INFO['configure'].items()):
             configure[param] = val
                 
         ### device-specific pre-launch commands
         self.devicePreLaunch()
         
-        print 'Launching device --',DEVICE_INFO['spd']
-        print '\texecparams:',str(execparams)
-        print '\tconfigure:',str(configure)
-        print '\tinitialize:',str(initialize)
+        print('Launching device --',DEVICE_INFO['spd'])
+        print('\texecparams:',str(execparams))
+        print('\tconfigure:',str(configure))
+        print('\tinitialize:',str(initialize))
 
         try:
             # new method, use in versions >= 1.9
@@ -237,12 +237,12 @@ class FrontendTunerTests(unittest.TestCase):
         props = self.dut.query([])
         props = properties.props_to_dict(props)
         for tuner in props['FRONTEND::tuner_status']:
-            if tuner['FRONTEND::tuner_status::tuner_type'] in self.device_discovery.keys():
+            if tuner['FRONTEND::tuner_status::tuner_type'] in list(self.device_discovery.keys()):
                 self.device_discovery[tuner['FRONTEND::tuner_status::tuner_type']] += 1
             else:
                 self.device_discovery['UNKNOWN'] += 1
                 
-        for k,v in self.device_discovery.items():
+        for k,v in list(self.device_discovery.items()):
             if v > 0:
                 self.testReport.append('  Found %s %s'%(v,k))
                 
@@ -270,9 +270,9 @@ class FrontendTunerTests(unittest.TestCase):
     def tearDownClass(self):
         self.testReport.append('\nFRONTEND Test - Completed')
         for line in self.testReport:
-            print >> sys.stderr, line
+            print(line, file=sys.stderr)
             
-        print >> sys.stderr, '\nReport Statistics:'
+        print('\nReport Statistics:', file=sys.stderr)
         MAX_LHS_WIDTH=40
         MIN_SEPARATION=5
         total_nonsilent_checks=0
@@ -280,14 +280,14 @@ class FrontendTunerTests(unittest.TestCase):
             if key == 'Total checks made':
                 continue
             total_nonsilent_checks+=self.testReportStats[key]
-            print >> sys.stderr, '  ',key[:MAX_LHS_WIDTH], '.'*(MIN_SEPARATION+MAX_LHS_WIDTH-len(key[:MAX_LHS_WIDTH])), self.testReportStats[key]
+            print('  ',key[:MAX_LHS_WIDTH], '.'*(MIN_SEPARATION+MAX_LHS_WIDTH-len(key[:MAX_LHS_WIDTH])), self.testReportStats[key], file=sys.stderr)
         if 'Total checks made' not in self.testReportStats:
             self.testReportStats['Total checks made'] = 0
         key='Checks with silent results'
         total_silent_checks=self.testReportStats['Total checks made']-total_nonsilent_checks
-        print >> sys.stderr, '  ',key[:MAX_LHS_WIDTH], '.'*(MIN_SEPARATION+MAX_LHS_WIDTH-len(key[:MAX_LHS_WIDTH])), total_silent_checks
+        print('  ',key[:MAX_LHS_WIDTH], '.'*(MIN_SEPARATION+MAX_LHS_WIDTH-len(key[:MAX_LHS_WIDTH])), total_silent_checks, file=sys.stderr)
         key='Total checks made'
-        print >> sys.stderr, '  ',key[:MAX_LHS_WIDTH], '.'*(MIN_SEPARATION+MAX_LHS_WIDTH-len(key[:MAX_LHS_WIDTH])), self.testReportStats[key]
+        print('  ',key[:MAX_LHS_WIDTH], '.'*(MIN_SEPARATION+MAX_LHS_WIDTH-len(key[:MAX_LHS_WIDTH])), self.testReportStats[key], file=sys.stderr)
         
         #self.printTestReport() 
         
@@ -317,7 +317,7 @@ class FrontendTunerTests(unittest.TestCase):
         props = self.dut.query([])
         props = properties.props_to_dict(props)
         #pp(props)
-        self.check(props.has_key('DCE:cdc5ee18-7ceb-4ae6-bf4c-31f983179b4d'), True, 'Has device_kind property')
+        self.check('DCE:cdc5ee18-7ceb-4ae6-bf4c-31f983179b4d' in props, True, 'Has device_kind property')
         self.check(props['DCE:cdc5ee18-7ceb-4ae6-bf4c-31f983179b4d'], 'FRONTEND::TUNER', 'device_kind = FRONTEND::TUNER')
         
     def testFRONTEND_1_2(self):
@@ -325,23 +325,23 @@ class FrontendTunerTests(unittest.TestCase):
         '''
         props = self.dut.query([])
         props = properties.props_to_dict(props)
-        self.check(props.has_key('DCE:0f99b2e4-9903-4631-9846-ff349d18ecfb'), True, 'Has device_model property')
+        self.check('DCE:0f99b2e4-9903-4631-9846-ff349d18ecfb' in props, True, 'Has device_model property')
         
     def testFRONTEND_1_3(self):
         ''' ALL 1.3 Verify that there is a FRONTEND Status property
         '''
         props = self.dut.query([])
         props = properties.props_to_dict(props)
-        self.check(props.has_key('FRONTEND::tuner_status'), True, 'Has tuner_status property')
+        self.check('FRONTEND::tuner_status' in props, True, 'Has tuner_status property')
         # check for required fields
         #pp(props['FRONTEND::tuner_status'])
         if (len(props['FRONTEND::tuner_status']) == 0):
-                print '\nERROR - tuner_status is empty. Check that the unit test is configured to reach the target device hardware.\n'
+                print('\nERROR - tuner_status is empty. Check that the unit test is configured to reach the target device hardware.\n')
                 self.check(False,True,'\nERROR - tuner_status is empty. Check that the unit test is configured to reach the target device hardware.')
                 
         success = True
         for field in self.FE_tuner_status_fields_req:
-            if not self.check(props['FRONTEND::tuner_status'][-1].has_key(field), True, 'tuner_status has %s required field'%field):
+            if not self.check(field in props['FRONTEND::tuner_status'][-1], True, 'tuner_status has %s required field'%field):
                 success = False
         if not success:
             self.check(False,True,'\nERROR - tuner_status does not have all required fields.')
@@ -375,7 +375,7 @@ class FrontendTunerTests(unittest.TestCase):
         t1Alloc = generateTunerAlloc(t1)
         if not self.check(self.dut_ref.allocateCapacity(t1Alloc), True, 'Can allocate single RX_DIGITIZER') and DEBUG_LEVEL >= 4:
             # Do some DEBUG
-            print 'RX_DIG 1.1a FAILURE - Can allocate single RX_DIGITIZER'
+            print('RX_DIG 1.1a FAILURE - Can allocate single RX_DIGITIZER')
             pp(t1)
             pp(t1Alloc)
         
@@ -394,7 +394,7 @@ class FrontendTunerTests(unittest.TestCase):
         t1Alloc = generateTunerAlloc(t1)
         if not self.check(self.dut_ref.allocateCapacity(t1Alloc), True, 'Can allocate single RX_DIGITIZER') and DEBUG_LEVEL >= 4:
             # Do some DEBUG
-            print 'RX_DIG 1.1b FAILURE - Can allocate single RX_DIGITIZER'
+            print('RX_DIG 1.1b FAILURE - Can allocate single RX_DIGITIZER')
             pp(t1)
             pp(t1Alloc)
         
@@ -415,7 +415,7 @@ class FrontendTunerTests(unittest.TestCase):
             tAlloc = generateTunerAlloc(ts[-1])
             if not self.check(self.dut_ref.allocateCapacity(tAlloc), True, 'Allocating RX_DIGITIZER number: %s'%(t), silentSuccess=True) and DEBUG_LEVEL >= 4:
                 # Do some DEBUG
-                print 'RX_DIG 1.2 FAILURE - Allocating RX_DIGITIZER number: %s'%(t)
+                print('RX_DIG 1.2 FAILURE - Allocating RX_DIGITIZER number: %s'%(t))
                 pp(ts)
                 pp(tAlloc)
         self.check(True, True, 'Allocated to max RX_DIGITIZERs')
@@ -441,7 +441,7 @@ class FrontendTunerTests(unittest.TestCase):
             tAlloc = generateTunerAlloc(ts[-1])
             if not self.check(self.dut_ref.allocateCapacity(tAlloc), True, 'Allocating RX_DIGITIZER number: %s'%(t), silentSuccess=True) and DEBUG_LEVEL >= 4:
                 # Do some DEBUG
-                print 'RX_DIG 1.3 FAILURE - Allocating RX_DIGITIZER number: %s'%(t)
+                print('RX_DIG 1.3 FAILURE - Allocating RX_DIGITIZER number: %s'%(t))
                 pp(ts)
                 pp(tAlloc)
         self.check(True, True, 'Allocated to max RX_DIGITIZERs')
@@ -451,7 +451,7 @@ class FrontendTunerTests(unittest.TestCase):
         over_tAlloc = generateTunerAlloc(over_t)
         if not self.check(self.dut_ref.allocateCapacity(over_tAlloc), False, 'Over-allocate RX_DIGITIZER check') and DEBUG_LEVEL >= 4:
             # Do some DEBUG
-            print 'RX_DIG 1.3 FAILURE - Over-allocate RX_DIGITIZER check'
+            print('RX_DIG 1.3 FAILURE - Over-allocate RX_DIGITIZER check')
             pp(ts)
             pp(over_t)
             pp(over_tAlloc)
@@ -481,14 +481,14 @@ class FrontendTunerTests(unittest.TestCase):
         tAlloc = generateTunerAlloc(tuner)
         if not self.check(self.dut_ref.allocateCapacity(tAlloc), True, 'Allocate single %s with alloc id: %s'%(ttype,alloc_id)) and DEBUG_LEVEL >= 4:
             # Do some DEBUG
-            print 'RX_DIG 2.1 FAILURE - Allocate single %s with alloc id: %s'%(ttype,alloc_id)
+            print('RX_DIG 2.1 FAILURE - Allocate single %s with alloc id: %s'%(ttype,alloc_id))
             pp(tuner)
             pp(tAlloc)
         try:
             retval = self.dut_ref.allocateCapacity(tAlloc)
         except CF.Device.InvalidCapacity:
             self.check(True, True, 'Allocate second %s with same alloc id check (produces InvalidCapacity exception)'%(ttype))
-        except Exception, e:
+        except Exception as e:
             self.check(False, True, 'Allocate second %s with same alloc id check (produces %s exception, should produce InvalidCapacity exception)'%(ttype,e.__class__.__name__))
         else:
             self.check(False, True, 'Allocate second %s with same alloc id check (returns %s, should produce InvalidCapacity exception)'%(ttype,retval))
@@ -512,7 +512,7 @@ class FrontendTunerTests(unittest.TestCase):
             retval = self.dut_ref.allocateCapacity(tAlloc)
         except CF.Device.InvalidCapacity:
             self.check(True, True, 'Allocate %s with malformed request (alloc_id="") check (produces InvalidCapcity exception)'%(ttype))
-        except Exception, e:
+        except Exception as e:
             self.check(False, True, 'Allocate %s with malformed request (alloc_id="") check (produces %s exception, should produce InvalidCapacity exception)'%(ttype,e.__class__.__name__))
         else:
             self.check(False, True, 'Allocate %s with malformed request (alloc_id="") check (returns %s, should produce InvalidCapacity exception)'%(ttype,retval))
@@ -529,7 +529,7 @@ class FrontendTunerTests(unittest.TestCase):
             retval = self.dut_ref.allocateCapacity(tAlloc)
         except CF.Device.InvalidCapacity:
             self.check(True, True, 'Allocate %s with malformed request (alloc_id=None) check (produces InvalidCapcity exception)'%(ttype))
-        except Exception, e:
+        except Exception as e:
             self.check(False, True, 'Allocate %s with malformed request (alloc_id=None) check (produces %s exception, should produce InvalidCapacity exception)'%(ttype,e.__class__.__name__))
         else:
             self.check(False, True, 'Allocate %s with malformed request (alloc_id=None) check (returns %s, should produce InvalidCapacity exception)'%(ttype,retval))
@@ -543,7 +543,7 @@ class FrontendTunerTests(unittest.TestCase):
         tAlloc = generateTunerAlloc(tuner)
         try:
             retval = self.dut_ref.allocateCapacity(tAlloc)
-        except Exception, e:
+        except Exception as e:
             self.check(False, True, 'Allocate %s with invalid GROUP_ID check (produces %s exception, should return False)'%(ttype,e.__class__.__name__))
         else:
             self.check(False, retval, 'Allocate %s with invalid GROUP_ID check'%(ttype))
@@ -557,7 +557,7 @@ class FrontendTunerTests(unittest.TestCase):
         tAlloc = generateTunerAlloc(tuner)
         try:
             retval = self.dut_ref.allocateCapacity(tAlloc)
-        except Exception, e:
+        except Exception as e:
             self.check(False, True, 'Allocate %s with invalid RF_FLOW_ID check (produces %s exception, should return False)'%(ttype,e.__class__.__name__))
         else:
             self.check(False, retval, 'Allocate %s with invalid RF_FLOW_ID check'%(ttype))
@@ -571,7 +571,7 @@ class FrontendTunerTests(unittest.TestCase):
         #self.dut_ref.allocateCapacity(tAlloc)
         if not self.check(self.dut_ref.allocateCapacity(tAlloc), True, 'Allocate controller %s'%(ttype)) and DEBUG_LEVEL >= 4:
             # Do some DEBUG
-            print 'RX_DIG 2.6 FAILURE - Allocate controller %s'%(ttype)
+            print('RX_DIG 2.6 FAILURE - Allocate controller %s'%(ttype))
             pp(tuner)
             pp(tAlloc)
         
@@ -579,18 +579,18 @@ class FrontendTunerTests(unittest.TestCase):
         tListenerAlloc = generateListenerAlloc(tListener)
         if not self.check(self.dut_ref.allocateCapacity(tListenerAlloc), True, 'Allocate listener %s using listener allocation struct'%(ttype)) and DEBUG_LEVEL >= 4:
             # Do some DEBUG
-            print 'RX_DIG 2.6 FAILURE - Allocate listener %s using listener allocation struct'%(ttype)
+            print('RX_DIG 2.6 FAILURE - Allocate listener %s using listener allocation struct'%(ttype))
             pp(tuner)
             pp(tAlloc)
             pp(tListener)
             pp(tListenerAlloc)
         
-        print "DEBUG -- done with allocations, now time to deallocate"
+        print("DEBUG -- done with allocations, now time to deallocate")
         
         # Deallocate listener using listener allocation struct
         try:
             self.dut_ref.deallocateCapacity(tListenerAlloc)
-        except Exception,e:
+        except Exception as e:
             self.check(False, True, 'Deallocated listener %s using listener allocation struct without error'%(ttype))
         else:
             self.check(True, True, 'Deallocated listener %s using listener allocation struct without error'%(ttype))
@@ -598,7 +598,7 @@ class FrontendTunerTests(unittest.TestCase):
         #print "DEBUG -- done with deallocation of listener, now time to deallocate the controller"
         try:
             self.dut_ref.deallocateCapacity(tAlloc)
-        except Exception,e:
+        except Exception as e:
             self.check(False, True, 'Deallocated controller %s using controller allocation struct without error'%(ttype))
         else:
             self.check(True, True, 'Deallocated controller %s using controller allocation struct without error'%(ttype))
@@ -611,7 +611,7 @@ class FrontendTunerTests(unittest.TestCase):
         tAlloc = generateTunerAlloc(tuner)
         if not self.dut_ref.allocateCapacity(tAlloc) and DEBUG_LEVEL >= 4:
             # Do some DEBUG
-            print 'RX_DIG 2.7 FAILURE - Allocate controller %s'%(ttype)
+            print('RX_DIG 2.7 FAILURE - Allocate controller %s'%(ttype))
             pp(tuner)
             pp(tAlloc)
         
@@ -625,7 +625,7 @@ class FrontendTunerTests(unittest.TestCase):
 
         if not self.check(self.dut_ref.allocateCapacity(tListenerAlloc), True, 'Allocate listener %s using tuner allocation struct'%(ttype)) and DEBUG_LEVEL >= 4:
             # Do some DEBUG
-            print 'RX_DIG 2.7 FAILURE - Allocate listener %s using tuner allocation struct'%(ttype)
+            print('RX_DIG 2.7 FAILURE - Allocate listener %s using tuner allocation struct'%(ttype))
             pp(tuner)
             pp(tAlloc)
             pp(tListener)
@@ -634,13 +634,13 @@ class FrontendTunerTests(unittest.TestCase):
         # Deallocate listener using tuner allocation struct
         try:
             self.dut_ref.deallocateCapacity(tListenerAlloc)
-        except Exception,e:
+        except Exception as e:
             self.check(False, True, 'Deallocated listener %s using tuner allocation struct without error'%(ttype))
         else:
             self.check(True, True, 'Deallocated listener %s using tuner allocation struct without error'%(ttype))
         try:
             self.dut_ref.deallocateCapacity(tAlloc)
-        except Exception,e:
+        except Exception as e:
             self.check(False, True, 'Deallocated controller %s using controller allocation struct without error'%(ttype))
         else:
             self.check(True, True, 'Deallocated controller %s using controller allocation struct without error'%(ttype))
@@ -653,7 +653,7 @@ class FrontendTunerTests(unittest.TestCase):
         tAlloc = generateTunerAlloc(tuner)
         if not self.dut_ref.allocateCapacity(tAlloc) and DEBUG_LEVEL >= 4:
             # Do some DEBUG
-            print 'RX_DIG 2.8 FAILURE - Controller allocation'
+            print('RX_DIG 2.8 FAILURE - Controller allocation')
             pp(tuner)
             pp(tAlloc)
         tListener = generateListenerRequest(tuner)
@@ -661,7 +661,7 @@ class FrontendTunerTests(unittest.TestCase):
         tListenerAlloc = generateListenerAlloc(tListener)
         if not self.check(self.dut_ref.allocateCapacity(tListenerAlloc), False, 'Allocate listener %s using listener allocation struct with bad allocation id check'%(ttype)) and DEBUG_LEVEL >= 4:
             # Do some DEBUG
-            print 'RX_DIG 2.8 FAILURE - Allocate listener %s using listener allocation struct with bad allocation id check'%(ttype)
+            print('RX_DIG 2.8 FAILURE - Allocate listener %s using listener allocation struct with bad allocation id check'%(ttype))
             pp(tuner)
             pp(tAlloc)
             pp(tListener)
@@ -706,7 +706,7 @@ class FrontendTunerTests(unittest.TestCase):
         self.check(self.dut_ref.allocateCapacity(tListenerAlloc), True, 'Allocate listener %s using listener allocation struct'%(ttype))
         try:
             self.dut_ref.deallocateCapacity(tAlloc)
-        except Exception, e:
+        except Exception as e:
             self.check(False, True, 'Deallocated controller %s which has a listener allocation'%(ttype))
         else:
             self.check(True, True, 'Deallocated controller %s which has a listener allocation'%(ttype))
@@ -746,7 +746,7 @@ class FrontendTunerTests(unittest.TestCase):
         tAlloc = generateTunerAlloc(tuner)
         if not self.check(self.dut_ref.allocateCapacity(tAlloc), True, 'Allocate %s at lowest center frequency in range (%s)'%(ttype,low)) and DEBUG_LEVEL >= 4:
             # Do some DEBUG
-            print 'RX_DIG 2.13a FAILURE'
+            print('RX_DIG 2.13a FAILURE')
             pp(tuner)
             pp(tAlloc)
         
@@ -769,7 +769,7 @@ class FrontendTunerTests(unittest.TestCase):
         tAlloc = generateTunerAlloc(tuner)
         if not self.check(self.dut_ref.allocateCapacity(tAlloc), False, 'Check failure when allocating partially covered %s channel at lowest frequency in range (%s)'%(ttype,low)) and DEBUG_LEVEL >= 4:
             # Do some DEBUG
-            print 'RX_DIG 2.13b FAILURE'
+            print('RX_DIG 2.13b FAILURE')
             pp(tuner)
             pp(tAlloc)
 
@@ -784,7 +784,7 @@ class FrontendTunerTests(unittest.TestCase):
         tAlloc = generateTunerAlloc(tuner)
         if not self.check(self.dut_ref.allocateCapacity(tAlloc), True, 'Allocate %s at highest center frequency in range(%s)'%(ttype,high)) and DEBUG_LEVEL >= 4:
             # Do some DEBUG
-            print 'RX_DIG 2.14a FAILURE'
+            print('RX_DIG 2.14a FAILURE')
             pp(tuner)
             pp(tAlloc)
 
@@ -807,7 +807,7 @@ class FrontendTunerTests(unittest.TestCase):
         tAlloc = generateTunerAlloc(tuner)
         if not self.check(self.dut_ref.allocateCapacity(tAlloc), False, 'Check failure when allocating partially covered %s channel at highest frequency in range (%s)'%(ttype,high)) and DEBUG_LEVEL >= 4:
             # Do some DEBUG
-            print 'RX_DIG 2.14b FAILURE'
+            print('RX_DIG 2.14b FAILURE')
             pp(tuner)
             pp(tAlloc)
 
@@ -963,7 +963,7 @@ class FrontendTunerTests(unittest.TestCase):
         for attr in function_list:
             try:
                 self.check(callable(getattr(tuner_control,attr)), True, '%s port has function %s'%(port_name,attr))
-            except AttributeError, e:
+            except AttributeError as e:
                 self.check(False, True, '%s port has function %s'%(port_name,attr))
                 
     def testFRONTEND_3_3_03(self):
@@ -988,7 +988,7 @@ class FrontendTunerTests(unittest.TestCase):
             resp = tuner_control.getTunerType(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerType produces NotSupportedException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(True,False,'%s.getTunerType produces exception %s'%(port_name,e))
         else:
             self.check(type(resp), str, '%s.getTunerType has correct return type'%(port_name))
@@ -1015,7 +1015,7 @@ class FrontendTunerTests(unittest.TestCase):
             resp = tuner_control.getTunerDeviceControl(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerDeviceControl(controller_id) produces NotSupportedException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(True,False,'%s.getTunerDeviceControl(controller_id) produces exception %s'%(port_name,e))
         else:
             self.check(type(resp), bool, '%s.getTunerDeviceControl(controller_id) has correct return type'%(port_name))
@@ -1046,7 +1046,7 @@ class FrontendTunerTests(unittest.TestCase):
             resp = tuner_control.getTunerDeviceControl(listener_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerDeviceControl(listener_id) produces NotSupportedException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(True,False,'%s.getTunerDeviceControl(listener_id) produces exception %s'%(port_name,e))
         else:
             self.check(type(resp), bool, '%s.getTunerDeviceControl(listener_id) has correct return type'%(port_name))
@@ -1076,7 +1076,7 @@ class FrontendTunerTests(unittest.TestCase):
             resp = tuner_control.getTunerGroupId(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerGroupId produces NotSupportedException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(True,False,'%s.getTunerGroupId produces exception %s'%(port_name,e))
         else:
             self.check(type(resp), str, '%s.getTunerGroupId has correct return type'%(port_name))
@@ -1107,7 +1107,7 @@ class FrontendTunerTests(unittest.TestCase):
             resp = tuner_control.getTunerRfFlowId(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerRfFlowId produces NotSupportedException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(True,False,'%s.getTunerRfFlowId produces exception %s'%(port_name,e))
         else:
             self.check(type(resp), str, '%s.getTunerRfFlowId has correct return type'%(port_name))
@@ -1138,7 +1138,7 @@ class FrontendTunerTests(unittest.TestCase):
             resp = tuner_control.getTunerCenterFrequency(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerCenterFrequency produces NotSupportedException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(True,False,'%s.getTunerCenterFrequency produces exception %s'%(port_name,e))
         else:
             self.check(type(resp), float, '%s.getTunerCenterFrequency has correct return type'%(port_name))
@@ -1171,7 +1171,7 @@ class FrontendTunerTests(unittest.TestCase):
             resp = tuner_control.getTunerBandwidth(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerBandwidth produces NotSupportedException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(True,False,'%s.getTunerBandwidth produces exception %s'%(port_name,e))
         else:
             self.check(type(resp), float, '%s.getTunerBandwidth has correct return type'%(port_name))
@@ -1202,7 +1202,7 @@ class FrontendTunerTests(unittest.TestCase):
             resp = tuner_control.getTunerOutputSampleRate(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerOutputSampleRate produces NotSupportedException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(True,False,'%s.getTunerOutputSampleRate produces exception %s'%(port_name,e))
         else:
             self.check(type(resp), float, '%s.getTunerOutputSampleRate has correct return type'%(port_name))
@@ -1233,7 +1233,7 @@ class FrontendTunerTests(unittest.TestCase):
             resp = tuner_control.getTunerAgcEnable(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerAgcEnable produces NotSupportedException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(True,False,'%s.getTunerAgcEnable produces exception %s'%(port_name,e))
         else:
             self.check(type(resp), bool, '%s.getTunerAgcEnable has correct return type'%(port_name))
@@ -1264,7 +1264,7 @@ class FrontendTunerTests(unittest.TestCase):
             resp = tuner_control.getTunerGain(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerGain produces NotSupportedException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(True,False,'%s.getTunerGain produces exception %s'%(port_name,e))
         else:
             self.check(type(resp), float, '%s.getTunerGain has correct return type'%(port_name))
@@ -1295,10 +1295,10 @@ class FrontendTunerTests(unittest.TestCase):
             resp = tuner_control.getTunerReferenceSource(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerReferenceSource produces NotSupportedException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(True,False,'%s.getTunerReferenceSource produces exception %s'%(port_name,e))
         else:
-            self.check(type(resp) in [int,long], True, '%s.getTunerReferenceSource returns correct type'%(port_name))
+            self.check(type(resp) in [int,int], True, '%s.getTunerReferenceSource returns correct type'%(port_name))
             self.check(resp in [0,1], True, '%s.getTunerReferenceSource return value within expected results'%(port_name))
             if status_val!=None:
                 self.check(resp, status_val, '%s.getTunerReferenceSource matches frontend tuner status prop'%(port_name))
@@ -1326,7 +1326,7 @@ class FrontendTunerTests(unittest.TestCase):
             resp = tuner_control.getTunerEnable(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerEnable produces NotSupportedException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(True,False,'%s.getTunerEnable produces exception %s'%(port_name,e))
         else:
             self.check(type(resp), bool, '%s.getTunerEnable has correct return type'%(port_name))
@@ -1358,7 +1358,7 @@ class FrontendTunerTests(unittest.TestCase):
             resp = tuner_control.getTunerStatus(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerStatus produces NotSupportedException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(True,False,'%s.getTunerStatus produces exception %s'%(port_name,e))
         else:
             self.check(type(resp), props_type, '%s.getTunerStatus has correct return type'%(port_name))
@@ -1403,7 +1403,7 @@ class FrontendTunerTests(unittest.TestCase):
                 self.check(True,True,'%s.setTunerCenterFrequency produces NotSupportedException'%(port_name))
             else:
                 self.check(True,True,'%s.setTunerCenterFrequency executes without throwing exception'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(False, True,'%s.getTunerCenterFrequency produces Exception -- cannot verify setTunerCenterFrequency function',failureMsg='WARN')
             try:
                 tuner_control.setTunerCenterFrequency(controller_id, getMinCenterFreq(idx=0))
@@ -1416,13 +1416,13 @@ class FrontendTunerTests(unittest.TestCase):
                 tuner_control.setTunerCenterFrequency(controller_id, getMinCenterFreq(idx=0))
             except FRONTEND.NotSupportedException:
                 self.check(True,True,'%s.setTunerCenterFrequency produces NotSupportedException'%(port_name))
-            except FRONTEND.BadParameterException, e:
+            except FRONTEND.BadParameterException as e:
                 self.check(False, True,'In-bounds setting of frequency - set to minimum CF (%s) produces BadParameterException'%getMinCenterFreq(idx=0) )
                 raise
-            except FRONTEND.FrontendException, e:
+            except FRONTEND.FrontendException as e:
                 self.check(False, True,'In-bounds setting of frequency - set to minimum CF (%s) produces FrontendException'%getMinCenterFreq(idx=0) )
                 raise
-            except Exception, e:
+            except Exception as e:
                 self.check(False, True,'In-bounds setting of frequency - set to minimum CF (%s) produces Exception'%getMinCenterFreq(idx=0))
                 raise
             else:
@@ -1457,7 +1457,7 @@ class FrontendTunerTests(unittest.TestCase):
                 self.check(True,True,'%s.setTunerBandwidth produces NotSupportedException'%(port_name))
             else:
                 self.check(True,True,'%s.setTunerBandwidth executes without throwing exception'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(False, True,'%s.getTunerBandwidth produces Exception -- cannot verify setTunerBandwidth function',failureMsg='WARN')
             try:
                 tuner_control.setTunerBandwidth(controller_id, getMinBandwidth(idx=0))
@@ -1470,13 +1470,13 @@ class FrontendTunerTests(unittest.TestCase):
                 tuner_control.setTunerBandwidth(controller_id, getMinBandwidth(idx=0))
             except FRONTEND.NotSupportedException:
                 self.check(True,True,'%s.setTunerBandwidth produces NotSupportedException'%(port_name))
-            except FRONTEND.BadParameterException, e:
+            except FRONTEND.BadParameterException as e:
                 self.check(False, True,'In-bounds setting of bandwidth - set to minimum BW (%s) produces BadParameterException'%getMinBandwidth(idx=0) )
                 raise
-            except FRONTEND.FrontendException, e:
+            except FRONTEND.FrontendException as e:
                 self.check(False, True,'In-bounds setting of bandwidth - set to minimum BW (%s) produces FrontendException'%getMinBandwidth(idx=0) )
                 raise
-            except Exception, e:
+            except Exception as e:
                 self.check(False, True,'In-bounds setting of bandwidth - set to minimum BW (%s) produces Exception'%getMinBandwidth(idx=0))
                 raise
             else:
@@ -1512,7 +1512,7 @@ class FrontendTunerTests(unittest.TestCase):
                 self.check(True,True,'%s.setTunerOutputSampleRate produces NotSupportedException'%(port_name))
             else:
                 self.check(True,True,'%s.setTunerOutputSampleRate executes without throwing exception'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(False, True,'%s.getTunerOutputSampleRate produces Exception -- cannot verify setTunerOutputSampleRate function',failureMsg='WARN')
             try:
                 tuner_control.setTunerOutputSampleRate(controller_id, getMinSampleRate(idx=0))
@@ -1525,13 +1525,13 @@ class FrontendTunerTests(unittest.TestCase):
                 tuner_control.setTunerOutputSampleRate(controller_id, getMinSampleRate(idx=0))
             except FRONTEND.NotSupportedException:
                 self.check(True,True,'%s.setTunerOutputSampleRate produces NotSupportedException'%(port_name))
-            except FRONTEND.BadParameterException, e:
+            except FRONTEND.BadParameterException as e:
                 self.check(False, True,'In-bounds setting of sample rate - set to minimum SR (%s) produces BadParameterException'%getMinSampleRate(idx=0) )
                 raise
-            except FRONTEND.FrontendException, e:
+            except FRONTEND.FrontendException as e:
                 self.check(False, True,'In-bounds setting of sample rate - set to minimum SR (%s) produces FrontendException'%getMinSampleRate(idx=0) )
                 raise
-            except Exception, e:
+            except Exception as e:
                 self.check(False, True,'In-bounds setting of sample rate - set to minimum SR (%s) produces Exception'%getMinSampleRate(idx=0))
                 raise
             else:
@@ -1567,7 +1567,7 @@ class FrontendTunerTests(unittest.TestCase):
                 self.check(True,True,'%s.setTunerGain produces NotSupportedException'%(port_name))
             else:
                 self.check(True,True,'%s.setTunerGain executes without throwing exception'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(False, True,'%s.getTunerGain produces Exception -- cannot verify setTunerGain function',failureMsg='WARN')
             try:
                 tuner_control.setTunerGain(controller_id, getMinGain(idx=0))
@@ -1580,13 +1580,13 @@ class FrontendTunerTests(unittest.TestCase):
                 tuner_control.setTunerGain(controller_id, getMinGain(idx=0))
             except FRONTEND.NotSupportedException:
                 self.check(True,True,'%s.setTunerGain produces NotSupportedException'%(port_name))
-            except FRONTEND.BadParameterException, e:
+            except FRONTEND.BadParameterException as e:
                 self.check(False, True,'In-bounds setting of gain - set to minimum gain (%s) produces BadParameterException'%getMinGain(idx=0))
                 raise
-            except FRONTEND.FrontendException, e:
+            except FRONTEND.FrontendException as e:
                 self.check(False, True,'In-bounds setting of gain - set to minimum gain (%s) produces FrontendException'%getMinGain(idx=0))
                 raise
-            except Exception, e:
+            except Exception as e:
                 self.check(False, True,'In-bounds setting of gain - set to minimum gain (%s) produces Exception'%getMinGain(idx=0))
                 raise
             else:
@@ -1617,19 +1617,19 @@ class FrontendTunerTests(unittest.TestCase):
             cf = tuner_control.getTunerCenterFrequency(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerCenterFrequency produces NotSupportedException -- cannot verify out-of-bounds frequency tuning'%(port_name), successMsg='info')
-        except Exception, e:
+        except Exception as e:
             self.check(False, True,'%s.getTunerCenterFrequency produces Exception -- cannot verify out-of-bounds frequency tuning',failureMsg='WARN')
         else:
             try:
                 tuner_control.setTunerCenterFrequency(controller_id, getMaxCenterFreq(idx=0) + cf)
             except FRONTEND.NotSupportedException:
                 self.check(True,True,'%s.setTunerCenterFrequency produces NotSupportedException -- cannot verify out-of-bounds frequency tuning'%(port_name))
-            except FRONTEND.BadParameterException, e:
+            except FRONTEND.BadParameterException as e:
                 self.check(True, True,'Out-of-bounds re-tune of frequency produces BadParameterException')
-            except FRONTEND.FrontendException, e:
+            except FRONTEND.FrontendException as e:
                 self.check(False, True,'Out-of-bounds re-tune of frequency produces BadParameterException (produces FrontendException instead)')
                 raise
-            except Exception, e:
+            except Exception as e:
                 self.check(False, True,'Out-of-bounds re-tune of frequency produces BadParameterException (produces another Exception instead)')
                 raise
             else:
@@ -1660,19 +1660,19 @@ class FrontendTunerTests(unittest.TestCase):
             bw = tuner_control.getTunerBandwidth(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerBandwidth produces NotSupportedException -- cannot verify out-of-bounds bandwidth tuning'%(port_name), successMsg='info')
-        except Exception, e:
+        except Exception as e:
             self.check(False, True,'%s.getTunerBandwidth produces Exception -- cannot verify out-of-bounds bandwidth tuning',failureMsg='WARN')
         else:
             try:
                 tuner_control.setTunerBandwidth(controller_id, getMaxBandwidth(idx=0) + bw)
             except FRONTEND.NotSupportedException:
                 self.check(True,True,'%s.setTunerBandwidth produces NotSupportedException -- cannot verify out-of-bounds bandwidth tuning'%(port_name))
-            except FRONTEND.BadParameterException, e:
+            except FRONTEND.BadParameterException as e:
                 self.check(True, True,'Out-of-bounds re-tune of bandwidth produces BadParameterException')
-            except FRONTEND.FrontendException, e:
+            except FRONTEND.FrontendException as e:
                 self.check(False, True,'Out-of-bounds re-tune of bandwidth produces BadParameterException (produces FrontendException instead)')
                 raise
-            except Exception, e:
+            except Exception as e:
                 self.check(False, True,'Out-of-bounds re-tune of bandwidth produces BadParameterException (produces another Exception instead)')
                 raise
             else:
@@ -1717,19 +1717,19 @@ class FrontendTunerTests(unittest.TestCase):
             sr = tuner_control.getTunerOutputSampleRate(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerOutputSampleRate produces NotSupportedException -- cannot verify out-of-bounds sample rate tuning'%(port_name), successMsg='info')
-        except Exception, e:
+        except Exception as e:
             self.check(False, True,'%s.getTunerOutputSampleRate produces Exception -- cannot verify out-of-bounds sample rate tuning',failureMsg='WARN')
         else:
             try:
                 tuner_control.setTunerOutputSampleRate(controller_id, getMaxSampleRate(idx=0, cap=False) + sr)
             except FRONTEND.NotSupportedException:
                 self.check(True,True,'%s.setTunerOutputSampleRate produces NotSupportedException -- cannot verify out-of-bounds sample rate tuning'%(port_name))
-            except FRONTEND.BadParameterException, e:
+            except FRONTEND.BadParameterException as e:
                 self.check(True, True,'Out-of-bounds re-tune of sample rate produces BadParameterException')
-            except FRONTEND.FrontendException, e:
+            except FRONTEND.FrontendException as e:
                 self.check(False, True,'Out-of-bounds re-tune of sample rate produces BadParameterException (produces FrontendException instead)')
                 raise
-            except Exception, e:
+            except Exception as e:
                 self.check(False, True,'Out-of-bounds re-tune of sample rate produces BadParameterException (produces another Exception instead)')
                 raise
             else:
@@ -1767,19 +1767,19 @@ class FrontendTunerTests(unittest.TestCase):
             gain = tuner_control.getTunerGain(controller_id)
         except FRONTEND.NotSupportedException:
             self.check(True,True,'%s.getTunerGain produces NotSupportedException -- cannot verify out-of-bounds gain setting'%(port_name), successMsg='info')
-        except Exception, e:
+        except Exception as e:
             self.check(False, True,'%s.getTunerGain produces Exception -- cannot verify out-of-bounds gain tuning',failureMsg='WARN')
         else:
             try:
                 tuner_control.setTunerGain(controller_id, getMaxGain(idx=0) + abs(getMaxGain(idx=0)-getMinGain(idx=0)) + 1)
             except FRONTEND.NotSupportedException:
                 self.check(True,True,'%s.setTunerGain produces NotSupportedException -- cannot verify out-of-bounds gain setting'%(port_name))
-            except FRONTEND.BadParameterException, e:
+            except FRONTEND.BadParameterException as e:
                 self.check(True, True,'Out-of-bounds setting of gain produces BadParameterException')
-            except FRONTEND.FrontendException, e:
+            except FRONTEND.FrontendException as e:
                 self.check(False, True,'Out-of-bounds setting of gain produces BadParameterException (produces FrontendException instead)')
                 raise
-            except Exception, e:
+            except Exception as e:
                 self.check(False, True,'Out-of-bounds re-tune of gain produces BadParameterException (produces another Exception instead)')
                 raise
             else:
@@ -1924,7 +1924,7 @@ class FrontendTunerTests(unittest.TestCase):
             
         # verify invalid alloc_id -> FrontendException
         bad_id = str(uuid.uuid4())
-        for attr in filter(lambda x: x.startswith('get'),function_list):
+        for attr in [x for x in function_list if x.startswith('get')]:
             f = getattr(tuner_control,attr)
             try:
                 resp = f(bad_id)
@@ -1932,7 +1932,7 @@ class FrontendTunerTests(unittest.TestCase):
                 self.check(True,True,'%s.%s called with bad alloc_id produces NotSupportedException'%(port_name,attr))
             except FRONTEND.FrontendException:
                 self.check(True,True,'%s.%s called with bad alloc_id (should produce FrontendException)'%(port_name,attr))
-            except Exception, e:
+            except Exception as e:
                 self.check(False,True,'%s.%s called with bad alloc_id (produces %s exception, should produce FrontendException)'%(port_name,attr,e.__class__.__name__))
             else:
                 self.check(False,True,'%s.%s called with bad alloc_id (does not produce exception, should produce FrontendException)'%(port_name,attr))
@@ -1960,7 +1960,7 @@ class FrontendTunerTests(unittest.TestCase):
             self.check(True,True,'%s.setTunerCenterFrequency called with bad alloc_id produces NotSupportedException'%(port_name))
         except FRONTEND.FrontendException:
             self.check(True,True,'%s.setTunerCenterFrequency called with bad alloc_id produces FrontendException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(False,True,'%s.setTunerCenterFrequency called with bad alloc_id (produces %s exception, should produce FrontendException)'%(port_name,e.__class__.__name__))
         else:
             self.check(False,True,'%s.setTunerCenterFrequency called with bad alloc_id produces FrontendException (no exception)'%(port_name))
@@ -1988,7 +1988,7 @@ class FrontendTunerTests(unittest.TestCase):
             self.check(True,True,'%s.setTunerBandwidth called with bad alloc_id produces NotSupportedException'%(port_name))
         except FRONTEND.FrontendException:
             self.check(True,True,'%s.setTunerBandwidth called with bad alloc_id produces FrontendException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(False,True,'%s.setTunerBandwidth called with bad alloc_id (produces %s exception, should produce FrontendException)'%(port_name,e.__class__.__name__))
         else:
             self.check(False,True,'%s.setTunerBandwidth called with bad alloc_id produces FrontendException (no exception)'%(port_name))
@@ -2016,7 +2016,7 @@ class FrontendTunerTests(unittest.TestCase):
             self.check(True,True,'%s.setTunerOutputSampleRate called with bad alloc_id produces NotSupportedException'%(port_name))
         except FRONTEND.FrontendException:
             self.check(True,True,'%s.setTunerOutputSampleRate called with bad alloc_id produces FrontendException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(False,True,'%s.setTunerOutputSampleRate called with bad alloc_id (produces %s exception, should produce FrontendException)'%(port_name,e.__class__.__name__))
         else:
             self.check(False,True,'%s.setTunerOutputSampleRate called with bad alloc_id produces FrontendException (no exception)'%(port_name))
@@ -2044,7 +2044,7 @@ class FrontendTunerTests(unittest.TestCase):
             self.check(True,True,'%s.setTunerGain called with bad alloc_id produces NotSupportedException'%(port_name))
         except FRONTEND.FrontendException:
             self.check(True,True,'%s.setTunerGain called with bad alloc_id produces FrontendException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(False,True,'%s.setTunerGain called with bad alloc_id (produces %s exception, should produce FrontendException)'%(port_name,e.__class__.__name__))
         else:
             self.check(False,True,'%s.setTunerGain called with bad alloc_id produces FrontendException (no exception)'%(port_name))
@@ -2072,7 +2072,7 @@ class FrontendTunerTests(unittest.TestCase):
             self.check(True,True,'%s.setTunerAgcEnable called with bad alloc_id produces NotSupportedException'%(port_name))
         except FRONTEND.FrontendException:
             self.check(True,True,'%s.setTunerAgcEnable called with bad alloc_id produces FrontendException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(False,True,'%s.setTunerAgcEnable called with bad alloc_id (produces %s exception, should produce FrontendException)'%(port_name,e.__class__.__name__))
         else:
             self.check(False,True,'%s.setTunerAgcEnable called with bad alloc_id produces FrontendException (no exception)'%(port_name))
@@ -2100,7 +2100,7 @@ class FrontendTunerTests(unittest.TestCase):
             self.check(True,True,'%s.setTunerReferenceSource called with bad alloc_id produces NotSupportedException'%(port_name))
         except FRONTEND.FrontendException:
             self.check(True,True,'%s.setTunerReferenceSource called with bad alloc_id produces FrontendException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(False,True,'%s.setTunerReferenceSource called with bad alloc_id (produces %s exception, should produce FrontendException)'%(port_name,e.__class__.__name__))
         else:
             self.check(False,True,'%s.setTunerReferenceSource called with bad alloc_id produces FrontendException (no exception)'%(port_name))
@@ -2128,7 +2128,7 @@ class FrontendTunerTests(unittest.TestCase):
             self.check(True,True,'%s.setTunerEnable called with bad alloc_id produces NotSupportedException'%(port_name))
         except FRONTEND.FrontendException:
             self.check(True,True,'%s.setTunerEnable called with bad alloc_id produces FrontendException'%(port_name))
-        except Exception, e:
+        except Exception as e:
             self.check(False,True,'%s.setTunerEnable called with bad alloc_id (produces %s exception, should produce FrontendException)'%(port_name,e.__class__.__name__))
         else:
             self.check(False,True,'%s.setTunerEnable called with bad alloc_id produces FrontendException (no exception)'%(port_name))
@@ -2182,13 +2182,13 @@ class FrontendTunerTests(unittest.TestCase):
                 if count == port_num:
                     self._testSDDS(tuner_control,comp_port_name,comp_port_type,ttype,controller,listener1,listener2)
             else:
-                print 'WARNING - skipping %s port named %s, not supported BULKIO port type'%(comp_port_type,comp_port_name)
+                print('WARNING - skipping %s port named %s, not supported BULKIO port type'%(comp_port_type,comp_port_name))
                 continue
 
     def _testBULKIO(self,tuner_control,comp_port_name,comp_port_type,ttype,controller,listener1=None,listener2=None):
         if comp_port_type == 'dataSDDS':
             return self._testSDDS(tuner_control,comp_port_name,comp_port_type,ttype,controller,listener1,listener2)
-        print 'Testing data flow on port:',comp_port_type,comp_port_name
+        print('Testing data flow on port:',comp_port_type,comp_port_name)
         pp(controller)
         comp_port_obj = self.dut.getPort(str(comp_port_name))
         dataSink1 = sb.DataSink()
@@ -2211,11 +2211,11 @@ class FrontendTunerTests(unittest.TestCase):
         self.dut_ref.allocateCapacity(tAlloc)
         
         # verify basic data flow
-        print >> sys.stderr,'attempting to get data from tuner'
-        for attempt in xrange(10):
+        print('attempting to get data from tuner', file=sys.stderr)
+        for attempt in range(10):
             time.sleep(1.0)
             data1 = dataSink1.getData()
-            print >> sys.stderr,'attempt',attempt,'len(data1)=',len(data1)
+            print('attempt',attempt,'len(data1)=',len(data1), file=sys.stderr)
             if len(data1)>0:
                 break
         self.check(len(data1)>0,True,'%s: Received data from tuner allocation'%(comp_port_name))
@@ -2223,7 +2223,7 @@ class FrontendTunerTests(unittest.TestCase):
         # verify SRI
         try:
             status = properties.props_to_dict(tuner_control.getTunerStatus(controller['ALLOC_ID']))
-        except FRONTEND.NotSupportedException, e:
+        except FRONTEND.NotSupportedException as e:
             status = self._getTunerStatusProp(controller['ALLOC_ID'])
         pp(status)
         
@@ -2234,7 +2234,7 @@ class FrontendTunerTests(unittest.TestCase):
         # verify multi-out port
         bad_conn_id = "bad:"+str(uuid.uuid4())
         comp_port_obj.connectPort(dataSink2_port_obj, bad_conn_id)
-        for attempt in xrange(5):
+        for attempt in range(5):
             time.sleep(1.0)
             data2 = dataSink2.getData()
             #print >> sys.stderr,'attempt',attempt,'len(data2)=',len(data2)
@@ -2244,7 +2244,7 @@ class FrontendTunerTests(unittest.TestCase):
         self.check(len(data2)>0,False,'%s: Did not receive data from tuner allocation with wrong alloc_id (multiport test)'%(comp_port_name))
         sri1 = dataSink1.sri()
         sri2 = dataSink2.sri()
-        print 'sri2',sri2
+        print('sri2',sri2)
         self.check(sri1.streamID==sri2.streamID,False,'%s: Did not receive correct SRI from tuner allocation with wrong alloc_id (multiport test)'%(comp_port_name))
         
         if self.device_discovery[ttype] < 2:
@@ -2260,7 +2260,7 @@ class FrontendTunerTests(unittest.TestCase):
             comp_port_obj.connectPort(dataSink3_port_obj, listener1['LISTENER_ID'])
             self.dut_ref.allocateCapacity(listenerAlloc1)
             
-            for attempt in xrange(5):
+            for attempt in range(5):
                 time.sleep(1.0)
                 data3 = dataSink3.getData()
                 #print >> sys.stderr,'attempt',attempt,'len(data3)=',len(data3)
@@ -2270,7 +2270,7 @@ class FrontendTunerTests(unittest.TestCase):
             self.check(len(data3)>0,True,'%s: Received data from listener allocation'%(comp_port_name))
             sri1 = dataSink1.sri()
             sri3 = dataSink3.sri()
-            print 'sri3',sri3
+            print('sri3',sri3)
             self.check(sri1.streamID==sri3.streamID,True,'%s: Received correct SRI from listener allocation'%(comp_port_name))
             
             # verify EOS
@@ -2292,7 +2292,7 @@ class FrontendTunerTests(unittest.TestCase):
                 self.check(dataSink4.eos(),True,'%s: Listener received EOS after deallocation of tuner'%(comp_port_name))
     
     def _testSDDS(self,tuner_control,comp_port_name,comp_port_type,ttype,controller,listener1=None,listener2=None):
-        print 'Testing SDDS port Behavior'
+        print('Testing SDDS port Behavior')
         comp_port_obj = self.dut.getPort(str(comp_port_name))
         dataSink1 = sb.DataSinkSDDS()
         dataSink2 = sb.DataSinkSDDS()
@@ -2318,7 +2318,7 @@ class FrontendTunerTests(unittest.TestCase):
             return
         try:
             status = properties.props_to_dict(tuner_control.getTunerStatus(controller['ALLOC_ID']))
-        except FRONTEND.NotSupportedException, e:
+        except FRONTEND.NotSupportedException as e:
             status = self._getTunerStatusProp(controller['ALLOC_ID'])
         
         #verify SRI
@@ -2330,7 +2330,7 @@ class FrontendTunerTests(unittest.TestCase):
         # verify multi-out port
         bad_conn_id = "bad:"+str(uuid.uuid4())
         comp_port_obj.connectPort(dataSink2_port_obj, bad_conn_id)
-        for attempt in xrange(5):
+        for attempt in range(5):
             time.sleep(1.0)
             attachments2 = dataSink2._sink.attachments
             sri2 = dataSink2._sink.sri
@@ -2376,12 +2376,12 @@ class FrontendTunerTests(unittest.TestCase):
         self.check(not(attachments1), True,'%s: Detach Data on deallocation'%(comp_port_name))
 
     def _compareAttach(self,attachments1,attachments2,comp_port_name=""):
-        attachmentIDs1 = attachments1.keys()
+        attachmentIDs1 = list(attachments1.keys())
         self.check(1,len(attachmentIDs1), "%s: Received Correct Number of Attachments on Listener"%(comp_port_name))
         attachmentID1 = attachmentIDs1[0]
         sddsStreamDef1 = attachments1[attachmentID1][0]
               
-        attachmentIDs2 = attachments2.keys()
+        attachmentIDs2 = list(attachments2.keys())
         self.check(1,len(attachmentIDs2), "%s: Received Correct Number of Attachments on Listener"%(comp_port_name))
         attachmentID2 = attachmentIDs2[0]
         sddsStreamDef2 = attachments2[attachmentID2][0]
@@ -2389,7 +2389,7 @@ class FrontendTunerTests(unittest.TestCase):
 
 
     def _verifyAttach(self,attachments,status,comp_port_name=""):
-        attachmentIDs = attachments.keys()
+        attachmentIDs = list(attachments.keys())
         self.check(1,len(attachmentIDs), "%s: Received Correct Number of Attachments"%(comp_port_name))
         attachmentID = attachmentIDs[0]
         sddsStreamDef1 = attachments[attachmentID][0]
@@ -2400,9 +2400,9 @@ class FrontendTunerTests(unittest.TestCase):
         # Due to precision and rounding issues, especially on 32-bit systems,
         # a difference < 1.0 is considered correct.
         if DEBUG_LEVEL >= 4:
-            print 'srate: fts:',  repr(status['FRONTEND::tuner_status::sample_rate']), ' fts rounded:', repr(round(status['FRONTEND::tuner_status::sample_rate']))
-            print 'srate: sdds:', repr(sddsStreamDef1.sampleRate)
-            print 'srate: diff:', repr(sddsStreamDef1.sampleRate-status['FRONTEND::tuner_status::sample_rate']), ' diff truncated:', repr(int(sddsStreamDef1.sampleRate-status['FRONTEND::tuner_status::sample_rate']))
+            print('srate: fts:',  repr(status['FRONTEND::tuner_status::sample_rate']), ' fts rounded:', repr(round(status['FRONTEND::tuner_status::sample_rate'])))
+            print('srate: sdds:', repr(sddsStreamDef1.sampleRate))
+            print('srate: diff:', repr(sddsStreamDef1.sampleRate-status['FRONTEND::tuner_status::sample_rate']), ' diff truncated:', repr(int(sddsStreamDef1.sampleRate-status['FRONTEND::tuner_status::sample_rate'])))
         self.check(int(sddsStreamDef1.sampleRate-status['FRONTEND::tuner_status::sample_rate']), 0, '%s: Attach SampleRate has correct value'%(comp_port_name))
         self.check(status['FRONTEND::tuner_status::output_multicast'], sddsStreamDef1.multicastAddress, '%s: Attach multicast Address has correct value'%(comp_port_name))
         self.check(status['FRONTEND::tuner_status::output_vlan'], sddsStreamDef1.vlan, '%s: Attach vlan has correct value'%(comp_port_name))
@@ -2499,20 +2499,20 @@ class FrontendTunerTests(unittest.TestCase):
                 self.check(False, True, 'Device has FRONTEND::tuner_status property (failure, cannot complete test)')
             else:
                 self.check(True, True, 'Device has FRONTEND::tuner_status property')
-                for name,dtype in self.FE_tuner_status_fields_req.items():
-                    if status.has_key(name):
+                for name,dtype in list(self.FE_tuner_status_fields_req.items()):
+                    if name in status:
                         self.check(True, True, 'tuner_status has required field %s'%name)
                         self.check(type(status[name]) in dtype, True, 'value has correct data type for %s'%(name))
                     else:
                         self.check(False, True, 'tuner_status has required field %s'%name)
-                for name,dtype in self.FE_tuner_status_fields_opt.items():
-                    if status.has_key(name):
+                for name,dtype in list(self.FE_tuner_status_fields_opt.items()):
+                    if name in status:
                         self.check(True, True, 'tuner_status has OPTIONAL field %s'%name)#, successMsg='yes')
                         self.check(type(status[name]) in dtype, True, 'value has correct data type for %s'%(name))
                     else:
                         self.check(False, True, 'tuner_status has OPTIONAL field %s'%name, failureMsg='no')
-                all_names = self.FE_tuner_status_fields_req.keys()+self.FE_tuner_status_fields_opt.keys()
-                for name in filter(lambda x: x not in all_names,status.keys()):
+                all_names = list(self.FE_tuner_status_fields_req.keys())+list(self.FE_tuner_status_fields_opt.keys())
+                for name in [x for x in list(status.keys()) if x not in all_names]:
                     self.check(False, True, 'tuner_status has UNKNOWN field %s'%name, failureMsg='WARN')
     
         # Verify alloc_id_csv is populated after controller allocation
@@ -2553,7 +2553,7 @@ class FrontendTunerTests(unittest.TestCase):
             # Verify frequency prop
             try:
                 val = tuner_control.getTunerCenterFrequency(controller_id)
-            except FRONTEND.NotSupportedException, e:
+            except FRONTEND.NotSupportedException as e:
                  pass
             else:
                 try:
@@ -2567,7 +2567,7 @@ class FrontendTunerTests(unittest.TestCase):
             # Verify bandwidth prop
             try:
                 val = tuner_control.getTunerBandwidth(controller_id)
-            except FRONTEND.NotSupportedException, e:
+            except FRONTEND.NotSupportedException as e:
                  pass
             else:
                 try:
@@ -2581,7 +2581,7 @@ class FrontendTunerTests(unittest.TestCase):
             # Verify sample rate prop
             try:
                 val = tuner_control.getTunerOutputSampleRate(controller_id)
-            except FRONTEND.NotSupportedException, e:
+            except FRONTEND.NotSupportedException as e:
                  pass
             else:
                 try:
@@ -2595,7 +2595,7 @@ class FrontendTunerTests(unittest.TestCase):
             # Verify group id prop
             try:
                 val = tuner_control.getTunerGroupId(controller_id)
-            except FRONTEND.NotSupportedException, e:
+            except FRONTEND.NotSupportedException as e:
                  pass
             else:
                 try:
@@ -2608,7 +2608,7 @@ class FrontendTunerTests(unittest.TestCase):
             # Verify rf flow id prop
             try:
                 val = tuner_control.getTunerRfFlowId(controller_id)
-            except FRONTEND.NotSupportedException, e:
+            except FRONTEND.NotSupportedException as e:
                  pass
             else:
                 try:
@@ -2656,7 +2656,7 @@ class FrontendTunerTests(unittest.TestCase):
             result = self.dut_ref.query([tuner_allocation])
         except CF.UnknownProperties:
             self.check(True, True, 'Query of Tuner Allocation Property throws expected exception')
-        except Exception, e:
+        except Exception as e:
             self.check(False, True, 'Query of Tuner Allocation Property throws unexpected exception')
         else:
             self.check(False, True, 'Query of Tuner Allocation Property does not throw expected exception')
@@ -2665,7 +2665,7 @@ class FrontendTunerTests(unittest.TestCase):
             result = self.dut_ref.query([listener_allocation])
         except CF.UnknownProperties:
             self.check(True, True, 'Query of Listener Allocation Property throws expected exception')
-        except Exception, e:
+        except Exception as e:
             self.check(False, True, 'Query of Listener Allocation Property throws unexpected exception')
         else:
             self.check(False, True, 'Query of Listener Allocation Property does not throw expected exception')
@@ -2769,14 +2769,14 @@ class FrontendTunerTests(unittest.TestCase):
         props = self.dut.query([])
         props = properties.props_to_dict(props)
         tuners = copy.deepcopy(props['FRONTEND::tuner_status'])
-        for k,v in match.items():
+        for k,v in list(match.items()):
             bad = []
             for tuner in tuners:
                 if tuner[k] != v:
                     bad.append(tuner)
             tuners = [x for x in tuners if x not in bad]
             #tuners = filter(lambda x: x not in bad, tuners)
-        for k,v in notmatch.items():
+        for k,v in list(notmatch.items()):
             bad = []
             for tuner in tuners:
                 if tuner[k] == v:

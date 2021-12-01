@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -445,7 +445,7 @@ f.write( '*********************************\n\n')
 
 # This unit test relies on rhSourceVITA49 component for end-to-end testing
 if "rh.SourceVITA49" not in sb.catalog():
-    print "ERROR - cannot run tests without rh.SourceVITA49. Install in $SDRROOT and try again."
+    print("ERROR - cannot run tests without rh.SourceVITA49. Install in $SDRROOT and try again.")
     sys.exit(1)
 
 f.write('********** Creating components and connections **********\n')
@@ -607,7 +607,7 @@ value3 = sb.SRIKeyword('EPHEMERIS_RELATIVE',properties.props_to_any(list), 'IDL:
 
 
 keywords = [kw, kw1, kw2, kw3, kw5, kw6, kw7, kw8, kw9, kw10, kw11, kw12, kw13, value, value1, value2, value3]
-data = range(30000)
+data = list(range(30000))
 #do not run push data a second time. An invalid time will be sent as a second push will push a time tag of twsec = 0 tfsec = 0
 #resulting in a error and test failure
 
@@ -625,7 +625,7 @@ received_data = outputS.getData()
 passed = True
 if len(received_data) == 0 :
     passed = False
-    print "NO DATA SENT"
+    print("NO DATA SENT")
     f.write('\n********************* NO DATA SENT ***************')
 for i in range(len(received_data)):
     if received_data[i] != data[i]:
@@ -641,11 +641,11 @@ sink.stop()
 f.write('Components stopped\n')
 
 if passed:
-    print "\nUnit Test 5 ....................",u'\u2714'
-    f.write("\nUnit Test 5 .................... "+u'\u2714'.encode('utf8'))
+    print("\nUnit Test 5 ....................",'\u2714')
+    f.write("\nUnit Test 5 .................... "+'\u2714'.encode('utf8'))
 else:
-    print "\nUnit Test 5 ....................",u'\u2716'
-    f.write("\nUnit Test 5 .................... "+u'\u2718'.encode('utf8'))
+    print("\nUnit Test 5 ....................",'\u2716')
+    f.write("\nUnit Test 5 .................... "+'\u2718'.encode('utf8'))
 f.write('\n\n')
 
 f.close()

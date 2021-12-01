@@ -78,13 +78,13 @@ SinkVITA49_base::~SinkVITA49_base()
     Framework-level functions
     These functions are generally called by the framework to perform housekeeping.
 *******************************************************************************************/
-void SinkVITA49_base::start() throw (CORBA::SystemException, CF::Resource::StartError)
+void SinkVITA49_base::start()
 {
     Resource_impl::start();
     ThreadedComponent::startThread();
 }
 
-void SinkVITA49_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
+void SinkVITA49_base::stop()
 {
     Resource_impl::stop();
     if (!ThreadedComponent::stopThread()) {
@@ -92,7 +92,7 @@ void SinkVITA49_base::stop() throw (CORBA::SystemException, CF::Resource::StopEr
     }
 }
 
-void SinkVITA49_base::releaseObject() throw (CORBA::SystemException, CF::LifeCycle::ReleaseError)
+void SinkVITA49_base::releaseObject()
 {
     // This function clears the component running condition so main shuts down everything
     try {

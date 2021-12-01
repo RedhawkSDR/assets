@@ -29,7 +29,7 @@ def display_return_packets(packet_list, count, source_name):
         ret_str += "%s\n\t\t" % format_packet_display(packet)
     if packet_list == []:
         ret_str += "%s\n\t\t" % '[]'
-    print ret_str[:-3]
+    print(ret_str[:-3])
 
 def format_packet_display(packet):
     ret_str = "{"
@@ -147,7 +147,7 @@ class MyDataSource(sb.DataSource):
                   complexData != None or \
                   len(SRIKeywords) > 0:
                     keywords = []
-                    for key, value in self._SRIKeywords.items():
+                    for key, value in list(self._SRIKeywords.items()):
                         keywords.append(_CF.DataType(id=key, value=any.to_any(value)))
                     candidateSri = _BULKIO.StreamSRI(1, 0.0, 1, 0, 0, 0.0, 0, 0, 0,
                                                 streamID, True, keywords)
@@ -187,8 +187,8 @@ class MyDataSource(sb.DataSource):
                                                            streamID)
                 else:
                     self.pushPacket([])
-            except Exception, e:
-                print self.className + ":pushData() failed " + str(e)
+            except Exception as e:
+                print(self.className + ":pushData() failed " + str(e))
         self.threadExited = True
 
 

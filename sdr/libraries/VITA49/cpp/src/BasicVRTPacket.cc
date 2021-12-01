@@ -334,7 +334,7 @@ string BasicVRTPacket::toString () const {
     toStringStream(str);
     return str.str();
   }
-  catch (VRTException e) {
+  catch (const VRTException& e) {
     return getClassName()+": <Invalid VRTPacket: "+e.toString()+">";
   }
 }
@@ -440,9 +440,13 @@ boolNull BasicVRTPacket::getStateEventBit (const vector<char> &buf, int32_t off,
   int32_t eBit  = 0x1 << (enable    % 8);
   int32_t iBit  = 0x1 << (indicator % 8);
 
-  if ((buf[off+eByte] & eBit) == 0) return _NULL;
-  if ((buf[off+iByte] & iBit) != 0) return _TRUE;
-                                    return _FALSE;
+  if ((buf[off+eByte] & eBit) == 0) {
+    return _NULL;
+  }
+  if ((buf[off+iByte] & iBit) != 0) {
+    return _TRUE;
+  }
+  return _FALSE;
 }
 
 void BasicVRTPacket::setStateEventBit (vector<char> &buf, int32_t off, int32_t enable, int32_t indicator, boolNull value) {

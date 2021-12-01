@@ -18,15 +18,15 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see http://www.gnu.org/licenses/.
 #
-
+set -x
 if [ "$1" = "rpm" ]; then
     # A very simplistic RPM build scenario
     if [ -e rh.blueFileLib.spec ]; then
         mydir=`dirname $0`
         tmpdir=`mktemp -d`
-        cp -r ${mydir} ${tmpdir}/rh.blueFileLib-2.1.0
-        tar czf ${tmpdir}/rh.blueFileLib-2.1.0.tar.gz --exclude=".svn" -C ${tmpdir} rh.blueFileLib-2.1.0
-        rpmbuild -ta ${tmpdir}/rh.blueFileLib-2.1.0.tar.gz
+        cp -r ${mydir} ${tmpdir}/rh.blueFileLib-2.1.2
+        tar czf ${tmpdir}/rh.blueFileLib-2.1.2.tar.gz --exclude=".svn" -C ${tmpdir} rh.blueFileLib-2.1.2
+        rpmbuild -ta ${tmpdir}/rh.blueFileLib-2.1.2.tar.gz
         rm -rf $tmpdir
     else
         echo "Missing RPM spec file in" `pwd`

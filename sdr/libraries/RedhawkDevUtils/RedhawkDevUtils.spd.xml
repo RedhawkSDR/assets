@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
-<softpkg id="DCE:c94d6d37-3f80-4772-b50e-4bc684cefe1c" name="rh.RedhawkDevUtils" type="2.0.0" version="5.0.0">
+<softpkg id="DCE:c94d6d37-3f80-4772-b50e-4bc684cefe1c" name="rh.RedhawkDevUtils" type="2.0.0" version="5.0.1">
   <author/>
   <description>This is the rh.RedhawkDevUtils shared library.</description>
   <implementation id="cpp">

@@ -42,6 +42,12 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  redhawk-devel >= 3.0
 Requires:       redhawk >= 3.0
 
+BuildRequires:  autoconf-archive
+
+# Interface requirements
+BuildRequires:  frontendInterfaces bulkioInterfaces
+Requires:       frontendInterfaces bulkioInterfaces
+
 %description
 Device %{name}
  * Commit: __REVISION__

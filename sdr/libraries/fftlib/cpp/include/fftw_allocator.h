@@ -27,7 +27,7 @@
 #include <vector>
 
    template <typename Tp>
-   class fftwf_allocator : public std::allocator<Tp>
+   class fftwf_allocator
 
    {
 
@@ -56,11 +56,11 @@
 typedef std::complex<float> complex_float;
 
 template <> inline
-fftwf_allocator<float>::fftwf_allocator() : std::allocator<float>()
+fftwf_allocator<float>::fftwf_allocator()
 {};
 
 template <> inline
-fftwf_allocator<complex_float>::fftwf_allocator() : std::allocator<complex_float>()
+fftwf_allocator<complex_float>::fftwf_allocator()
 {};
 
 typedef std::vector<float, fftwf_allocator<float> > RealFFTWVector;

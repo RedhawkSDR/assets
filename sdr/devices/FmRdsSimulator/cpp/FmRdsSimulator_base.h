@@ -22,16 +22,23 @@
 
 #include <boost/thread.hpp>
 #include <frontend/frontend.h>
+#include <CF/AggregateDevices.h>
+#include <ossie/AggregateDevice_impl.h>
 #include <ossie/ThreadedComponent.h>
+#include <ossie/DynamicComponent.h>
 
 #include <frontend/frontend.h>
+#include "port_impl.h"
 #include <bulkio/bulkio.h>
 #include "struct_props.h"
+#include "RDC/RDC.h"
 
 #define BOOL_VALUE_HERE 0
 
-class FmRdsSimulator_base : public frontend::FrontendTunerDevice<frontend_tuner_status_struct_struct>, public virtual frontend::digital_tuner_delegation, public virtual frontend::rfinfo_delegation, protected ThreadedComponent
+class FmRdsSimulator_base : public frontend::FrontendTunerDevice<frontend_tuner_status_struct_struct>, public virtual POA_CF::AggregatePlainDevice, public AggregateDevice_impl, public virtual frontend::digital_tuner_delegation, public virtual frontend::rfinfo_delegation, protected ThreadedComponent, public virtual DynamicComponent
 {
+    friend class CF_DeviceStatus_Out_i;
+
     public:
         FmRdsSimulator_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl);
         FmRdsSimulator_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, char *compDev);
@@ -39,11 +46,23 @@ class FmRdsSimulator_base : public frontend::FrontendTunerDevice<frontend_tuner_
         FmRdsSimulator_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities, char *compDev);
         ~FmRdsSimulator_base();
 
-        void start() throw (CF::Resource::StartError, CORBA::SystemException);
+        /**
+         * @throw CF::Resource::StartError
+         * @throw CORBA::SystemException
+         */
+        void start();
 
-        void stop() throw (CF::Resource::StopError, CORBA::SystemException);
+        /**
+         * @throw CF::Resource::StopError
+         * @throw CORBA::SystemException
+         */
+        void stop();
 
-        void releaseObject() throw (CF::LifeCycle::ReleaseError, CORBA::SystemException);
+        /**
+         * @throw CF::LifeCycle::ReleaseError
+         * @throw CORBA::SystemException
+         */
+        void releaseObject();
 
         void loadProperties();
         void removeAllocationIdRouting(const size_t tuner_id);
@@ -54,26 +73,18 @@ class FmRdsSimulator_base : public frontend::FrontendTunerDevice<frontend_tuner_
         void frontendTunerStatusChanged(const std::vector<frontend_tuner_status_struct_struct>* oldValue, const std::vector<frontend_tuner_status_struct_struct>* newValue);
 
     protected:
-        // Member variables exposed as properties
-        /// Property: PathToConfiguration
-        std::string PathToConfiguration;
-        /// Property: noiseSigma
-        float noiseSigma;
-        /// Property: addAWGN
-        bool addAWGN;
 
         // Ports
         /// Port: RFInfo_in
         frontend::InRFInfoPort *RFInfo_in;
         /// Port: DigitalTuner_in
         frontend::InDigitalTunerPort *DigitalTuner_in;
+        /// Port: DeviceStatus_out
+        CF_DeviceStatus_Out_i *DeviceStatus_out;
         /// Port: dataFloat_out
         bulkio::OutFloatPort *dataFloat_out;
 
         std::map<std::string, std::string> listeners;
-
-        virtual void setNumChannels(size_t num);
-        virtual void setNumChannels(size_t num, std::string tuner_type);
 
     private:
         void construct();

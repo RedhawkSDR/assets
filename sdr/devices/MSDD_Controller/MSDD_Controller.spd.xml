@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE softpkg PUBLIC "-//JTRS//DTD SCA V2.2.2 SPD//EN" "softpkg.dtd">
-<softpkg id="DCE:2cc604df-c4df-47e0-8458-ad99b41baa41" name="rh.MSDD_Controller" type="2.2.6" version="1.0.0">
+<softpkg id="DCE:2cc604df-c4df-47e0-8458-ad99b41baa41" name="rh.MSDD_Controller" type="2.2.6" version="1.0.1">
   <title></title>
   <author>
     <name>null</name>

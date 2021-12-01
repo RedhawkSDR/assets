@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -398,11 +398,11 @@ class FrontendTunerTests(fe.FrontendTunerTests):
             device_channels = cls._query( ('device_channels',) )['device_channels']
             if DEBUG_LEVEL >= 4:
                 from pprint import pprint as pp
-                print 'device channel: '
+                print('device channel: ')
                 pp(device_channels)
 
             if len(device_channels) == 0:
-                print 'ERROR - Unable to populate device capabilities struct with data from USRP device.'
+                print('ERROR - Unable to populate device capabilities struct with data from USRP device.')
                 #raise Exception('Unable to populate device capabilities struct with data from USRP device.')
 
             for chan in device_channels:

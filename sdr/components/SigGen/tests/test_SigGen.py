@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -52,7 +52,7 @@ def isclose(a, b, rel_tol=1e-09, abs_tol=0.0,debug=False):
         _abs=abs(a-b)
         _tol=max(rel_tol * max(abs(a), abs(b)), abs_tol)
         _rel=rel_tol * max(abs(a), abs(b))
-        print '.' if retval else 'F', repr(a), repr(b), repr(_abs), repr(_tol), repr(_rel), repr(abs_tol)
+        print('.' if retval else 'F', repr(a), repr(b), repr(_abs), repr(_tol), repr(_rel), repr(abs_tol))
 
     return retval
     #return abs(a-b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
@@ -91,7 +91,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         props = dict((x.id, any.from_any(x.value)) for x in props)
         # Query may return more than expected, but not less
         for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
+            self.assertEqual(expectedProp.id in props, True)
         
         #######################################################################
         # Verify that all expected ports are available
@@ -158,7 +158,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     ##################
     
     def test_configure_latency(self):
-        print "\n... Starting Test Configure latency"
+        print("\n... Starting Test Configure latency")
         self._generate_config()
         self.config_params["shape"] = "constant"
         self.comp_obj.configure(props_from_dict(self.config_params))
@@ -168,7 +168,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         MAX_LATENCY = 0.1
         ITERATIONS = 10
         total_time = 0.0
-        for i in xrange(ITERATIONS):
+        for i in range(ITERATIONS):
             start_time = time.time()
             self.comp_obj.configure(props_from_dict({"stream_id":test_stream_id%i}))
             stop_time = time.time()
@@ -178,115 +178,115 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.assertTrue(total_time < ITERATIONS*MAX_LATENCY, "Average latency (%s) of configure call exceeds max allowed (%s)"%(total_time/ITERATIONS,MAX_LATENCY))
 
     def test_constant_float(self):
-        print "\n... Starting Test Constant with dataFloat_out"
+        print("\n... Starting Test Constant with dataFloat_out")
         self._test_constant(self.floatSink, np.float32)
 
     def test_constant_short(self):
-        print "\n... Starting Test Constant with dataShort_out"
+        print("\n... Starting Test Constant with dataShort_out")
         self._test_constant(self.shortSink, np.int16)
 
     def test_throttle_float(self):
-        print "\n... Starting Throttle Test for dataFloat_out"
+        print("\n... Starting Throttle Test for dataFloat_out")
         self._test_throttle(self.floatSink)
 
     def test_throttle_short(self):
-        print "\n... Starting Throttle Test for dataShort_out"
+        print("\n... Starting Throttle Test for dataShort_out")
         self._test_throttle(self.shortSink)
 
     def test_pulse_float(self):
-        print "\n... Starting Test Pulse with dataFloat_out"
+        print("\n... Starting Test Pulse with dataFloat_out")
         self._test_pulse(self.floatSink, np.float32)
 
     def test_pulse_short(self):
-        print "\n... Starting Test Pulse with dataShort_out"
+        print("\n... Starting Test Pulse with dataShort_out")
         self._test_pulse(self.shortSink, np.int16)
     
     def test_stream_id_float(self):
-        print "\n... Starting Test Stream ID for dataFloat_out"
+        print("\n... Starting Test Stream ID for dataFloat_out")
         self._test_stream_id(self.floatSink)
     
     def test_stream_id_short(self):
-        print "\n... Starting Test Stream ID for dataShort_out"
+        print("\n... Starting Test Stream ID for dataShort_out")
         self._test_stream_id(self.shortSink)
     
     def test_stream_id_eos_float(self):
-        print "\n... Starting Test Stream ID EOS for dataFloat_out"
+        print("\n... Starting Test Stream ID EOS for dataFloat_out")
         self._test_stream_id_eos(self.floatSink)
     
     def test_stream_id_eos_short(self):
-        print "\n... Starting Test Stream ID EOS for dataShort_out"
+        print("\n... Starting Test Stream ID EOS for dataShort_out")
         self._test_stream_id_eos(self.shortSink)
     
     def test_double_start_float(self):
-        print "\n... Starting Test Double Start for dataFloat_out"
+        print("\n... Starting Test Double Start for dataFloat_out")
         self._test_double_start(self.floatSink)
     
     def test_double_start_short(self):
-        print "\n... Starting Test Double Start for dataShort_out"
+        print("\n... Starting Test Double Start for dataShort_out")
         self._test_double_start(self.shortSink)
         
     def test_lrs_float(self):
-        print "\n... Starting Test lrs with dataFloat_out"
+        print("\n... Starting Test lrs with dataFloat_out")
         self._test_lrs(self.floatSink, self._convert_float_2_float32)
         
     def test_lrs_short(self):
-        print "\n... Starting Test lrs with dataShort_out"
+        print("\n... Starting Test lrs with dataShort_out")
         self._test_lrs(self.shortSink, self._convert_float_2_short)
     
     def test_sine_float(self):
-        print "\n... Starting Test sine with dataFloat_out"
+        print("\n... Starting Test sine with dataFloat_out")
         self._test_signal_with_phase("sine", self.floatSink, self.waveforms.generate_sine, self._convert_float_2_float32)
     
     def test_sine_short(self):
-        print "\n... Starting Test sine with dataShort_out"
+        print("\n... Starting Test sine with dataShort_out")
         self._test_signal_with_phase("sine", self.shortSink, self.waveforms.generate_sine, self._convert_float_2_short)
     
     def test_sawtooth_float(self):
-        print "\n... Starting Test sawtooth with dataFloat_out"
+        print("\n... Starting Test sawtooth with dataFloat_out")
         self._test_signal_with_phase("sawtooth", self.floatSink, self.waveforms.generate_sawtooth, self._convert_float_2_float32)
     
     def test_sawtooth_short(self):
-        print "\n... Starting Test sawtooth with dataShort_out"
+        print("\n... Starting Test sawtooth with dataShort_out")
         self._test_signal_with_phase("sawtooth", self.shortSink, self.waveforms.generate_sawtooth, self._convert_float_2_short)
     
     def test_square_float(self):
-        print "\n... Starting Test square with dataFloat_out"
+        print("\n... Starting Test square with dataFloat_out")
         self._test_signal_with_phase("square", self.floatSink, self.waveforms.generate_square, self._convert_float_2_float32)
     
     def test_square_short(self):
-        print "\n... Starting Test square with dataShort_out"
+        print("\n... Starting Test square with dataShort_out")
         self._test_signal_with_phase("square", self.shortSink, self.waveforms.generate_square, self._convert_float_2_short)
         
     def test_triangle_float(self):
-        print "\n... Starting Test triangle with dataFloat_out"
+        print("\n... Starting Test triangle with dataFloat_out")
         self._test_signal_with_phase("triangle", self.floatSink, self.waveforms.generate_triangle, self._convert_float_2_float32)
         
     def test_triangle_short(self):
-        print "\n... Starting Test triangle with dataShort_out"
+        print("\n... Starting Test triangle with dataShort_out")
         self._test_signal_with_phase("triangle", self.shortSink, self.waveforms.generate_triangle, self._convert_float_2_short)
         
     def test_push_sri_float(self):
-        print "\n...Starting Test push sri with dataFloat_out"
+        print("\n...Starting Test push sri with dataFloat_out")
         self._test_push_sri(self.floatSink)
         
     def test_push_sri_short(self):
-        print "\n...Starting Test push sri with dataShort_out"
+        print("\n...Starting Test push sri with dataShort_out")
         self._test_push_sri(self.shortSink)
 
     def test_no_configure_float(self):
-        print "\n...Starting Test no configure with dataFloat_out"
+        print("\n...Starting Test no configure with dataFloat_out")
         self._test_no_configure(self.floatSink, self._convert_float_2_float32)
 
     def test_no_configure_short(self):
-        print "\n...Starting Test no configure with dataShort_out"
+        print("\n...Starting Test no configure with dataShort_out")
         self._test_no_configure(self.shortSink, self._convert_float_2_short)
                 
     def test_frequency_float(self):
-        print "\n...Starting Test frequency for dataFloat_out"
+        print("\n...Starting Test frequency for dataFloat_out")
         self._test_frequency(self.floatSink)
                 
     def test_frequency_short(self):
-        print "\n...Starting Test frequency for dataShort_out"
+        print("\n...Starting Test frequency for dataShort_out")
         self._test_frequency(self.shortSink)
         
     ####################
@@ -432,8 +432,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         n_packets = len(rx_data)/self.config_params["xfer_len"]
         
         
-        print "Received %d Packets" % n_packets
-        print "Expected %d Packets (tolerance is +/- 1)" % expected_num_packets
+        print("Received %d Packets" % n_packets)
+        print("Expected %d Packets (tolerance is +/- 1)" % expected_num_packets)
 
         # Allow for +/- packet tolerance due to how we're getting the data
         self.assertTrue(n_packets >= expected_num_packets-1)
@@ -490,7 +490,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         time.sleep(1.) # Ensure SigGen is sending out the desired signal before continuing
         
         self.comp_obj.configure(props_from_dict({"stream_id":test_stream_id}))
-        print "\nConfigured with new stream id:",test_stream_id
+        print("\nConfigured with new stream id:",test_stream_id)
         
         received_packets = self._get_until_eos(10, sink)
         self.assertTrue(len(received_packets)>0, "No packets received.")
@@ -612,7 +612,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
         data = rx_data[:self.config_params["xfer_len"]]
         if abs(data[0]) <= 10**(-1*NUM_PLACES): data[0]=0.0 #same as (but less math): if isclose(data[0], 0, PRECISION, NUM_PLACES): data[0]=0.0
-        for i in xrange(len(data)-1):
+        for i in range(len(data)-1):
             if abs(data[i+1]) <= 10**(-1*NUM_PLACES): data[i+1]=0.0
             if (data[i] <= 0 and data[i+1] > 0) or (data[i] >= 0 and data[i+1] < 0):
                 zero_crossings += 1

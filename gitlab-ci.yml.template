@@ -78,7 +78,7 @@ before_script:
      - echo "redhawk_repo => $redhawk_repo"
      - echo "rtl_repo => $rtl_repo"
      - cd $(find -maxdepth 3 -name ${asset_name})
-     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild" > Dockerfile
+     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild-cpp14" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user_redhawk} -p ${docker_password_redhawk}
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
@@ -114,7 +114,7 @@ before_script:
      - cd $(find -maxdepth 3 -name ${asset_name})
      - cp -R ../../../output local_yumrepo
      - rm -rf ../../../output/*
-     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild" > Dockerfile
+     - printf "FROM ${docker_registry}redhawk/rpmbuild:$dist-$arch-onbuild-cpp14" > Dockerfile
      - docker login ${docker_registry} -u ${docker_user_redhawk} -p ${docker_password_redhawk}
      - docker image build --pull
                           --tag=$CI_PROJECT_PATH_SLUG-components-${lowercase_asset_name}-$safe_ref-$dist-$arch-rh${safe_version}
@@ -183,7 +183,7 @@ before_script:
 
 
 .test: &test
-  image: ${docker_registry}redhawk/buildenv:${short_version}-$dist-$arch
+  image: ${docker_registry}redhawk/buildenv:${short_version}-py3-$dist-$arch
   stage: test
   tags:
     - redhawk
@@ -207,7 +207,7 @@ before_script:
         export CXXFLAGS='-g -Og -fprofile-arcs -ftest-coverage' V=1;
       fi
     - yum install --nogpgcheck -y redhawk-sdrroot-dom-mgr
-    - ./build.sh
+    - scl enable devtoolset-9 ./build.sh
     - IFS='/'; currdir=("$(pwd)")
     - arr=($currdir)
     - arr_length=${#arr[@]}
@@ -215,11 +215,11 @@ before_script:
     - comp_type=${arr[$count]}
     - cd tests
     - env | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
-    - pip list | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
-    - python test_$asset_name.py 2>&1 | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
+    - pip3 list | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
+    - python3 test_$asset_name.py 2>&1 | tee -a ../$asset_name-$CI_COMMIT_SHA-tests.log
     - cd ..
     - if [ -d cpp ]; then
-        gcovr -r . --xml --exclude-directories=tests > gcovr.xml;
+        python3 /usr/local/bin/gcovr -r . --xml --exclude-directories=tests > gcovr.xml;
         cppcheck --enable=all --xml-version=2 -i tests . 2> cppcheck-results.xml;
       fi
     - cp tests/TEST*.xml ../../../results/${asset_name}-${dist}-${arch}

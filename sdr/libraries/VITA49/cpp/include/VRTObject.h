@@ -412,10 +412,10 @@ namespace vrt {
  */
 #define END_SYNCHRONIZED(n) \
     MutexLock_TEMP_LOCK_ ## n .unlock(); \
-  } catch (VRTException e) { \
+  } catch (const VRTException e) { \
     MutexLock_TEMP_LOCK_ ## n .unlock(); \
     throw e; \
-  } catch (exception e) { \
+  } catch (const exception e) { \
     MutexLock_TEMP_LOCK_ ## n .unlock(); \
     throw e; \
   }
@@ -589,8 +589,7 @@ namespace vrt {
     try {
       return dynamic_cast<T&>(ref);
     }
-    catch (bad_cast e) {
-      UNUSED_VARIABLE(e);
+    catch (const bad_cast&) {
       const char* srcName  = typeid(C&).name();
       const char* destName = typeid(T&).name();
       string msg  = VRTObject_private::getClassName(srcName)+" can not be cast to "
@@ -612,8 +611,7 @@ namespace vrt {
     try {
       p = dynamic_cast<T>(ptr);
     }
-    catch (bad_cast e) {
-      UNUSED_VARIABLE(e);
+    catch (const bad_cast&) {
       p = NULL;
     }
 
