@@ -19,33 +19,15 @@ details.
 You should have received a copy of the GNU General Public License along
 with this program.  If not, see http://www.gnu.org/licenses/.
 -->
-<softpkg id="DCE:59a7d548-1a3a-11e5-85d9-3417ebc4aab5" name="rh.FmRdsSimulator" type="2.0.0" version="2.0.5">
+<softpkg id="DCE:6aa85696-88b7-44cb-a08d-6ef45133f21a" name="RDC" type="3.0.0">
   <title></title>
   <author>
     <name>null</name>
   </author>
   <propertyfile type="PRF">
-    <localfile name="FmRdsSimulator.prf.xml"/>
+    <localfile name="RDC.prf.xml"/>
   </propertyfile>
   <descriptor>
-    <localfile name="FmRdsSimulator.scd.xml"/>
+    <localfile name="RDC.scd.xml"/>
   </descriptor>
-  <implementation id="cpp">
-    <description>The implementation contains descriptive information about the template for a software component.</description>
-    <code type="Executable">
-      <localfile name="cpp/FmRdsSimulator"/>
-      <entrypoint>cpp/FmRdsSimulator</entrypoint>
-    </code>
-    <compiler name="/usr/bin/gcc" version="4.1.2"/>
-    <programminglanguage name="C++"/>
-    <humanlanguage name="EN"/>
-    <os name="Linux"/>
-    <processor name="x86"/>
-    <processor name="x86_64"/>
-  </implementation>
-  <child name="RDC">
-    <childSoftwarePackageFile>
-        <localfile name="RDC.spd.xml"/>
-    </childSoftwarePackageFile>
-  </child>
 </softpkg>

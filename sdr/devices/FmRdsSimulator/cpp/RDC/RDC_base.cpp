@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-#include "FmRdsSimulator_base.h"
+#include "RDC_base.h"
 
 /*******************************************************************************************
 
@@ -29,39 +29,37 @@
 
 ******************************************************************************************/
 
-FmRdsSimulator_base::FmRdsSimulator_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl) :
+using namespace RDC_ns;
+
+RDC_base::RDC_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl) :
     frontend::FrontendTunerDevice<frontend_tuner_status_struct_struct>(devMgr_ior, id, lbl, sftwrPrfl),
-    AggregateDevice_impl(),
     ThreadedComponent()
 {
     construct();
 }
 
-FmRdsSimulator_base::FmRdsSimulator_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, char *compDev) :
+RDC_base::RDC_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, char *compDev) :
     frontend::FrontendTunerDevice<frontend_tuner_status_struct_struct>(devMgr_ior, id, lbl, sftwrPrfl, compDev),
-    AggregateDevice_impl(),
     ThreadedComponent()
 {
     construct();
 }
 
-FmRdsSimulator_base::FmRdsSimulator_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities) :
+RDC_base::RDC_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities) :
     frontend::FrontendTunerDevice<frontend_tuner_status_struct_struct>(devMgr_ior, id, lbl, sftwrPrfl, capacities),
-    AggregateDevice_impl(),
     ThreadedComponent()
 {
     construct();
 }
 
-FmRdsSimulator_base::FmRdsSimulator_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities, char *compDev) :
+RDC_base::RDC_base(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities, char *compDev) :
     frontend::FrontendTunerDevice<frontend_tuner_status_struct_struct>(devMgr_ior, id, lbl, sftwrPrfl, capacities, compDev),
-    AggregateDevice_impl(),
     ThreadedComponent()
 {
     construct();
 }
 
-FmRdsSimulator_base::~FmRdsSimulator_base()
+RDC_base::~RDC_base()
 {
     RFInfo_in->_remove_ref();
     RFInfo_in = 0;
@@ -73,7 +71,7 @@ FmRdsSimulator_base::~FmRdsSimulator_base()
     dataFloat_out = 0;
 }
 
-void FmRdsSimulator_base::construct()
+void RDC_base::construct()
 {
     loadProperties();
 
@@ -97,13 +95,13 @@ void FmRdsSimulator_base::construct()
     Framework-level functions
     These functions are generally called by the framework to perform housekeeping.
 *******************************************************************************************/
-void FmRdsSimulator_base::start()
+void RDC_base::start()
 {
     frontend::FrontendTunerDevice<frontend_tuner_status_struct_struct>::start();
     ThreadedComponent::startThread();
 }
 
-void FmRdsSimulator_base::stop()
+void RDC_base::stop()
 {
     frontend::FrontendTunerDevice<frontend_tuner_status_struct_struct>::stop();
     if (!ThreadedComponent::stopThread()) {
@@ -111,7 +109,7 @@ void FmRdsSimulator_base::stop()
     }
 }
 
-void FmRdsSimulator_base::releaseObject()
+void RDC_base::releaseObject()
 {
     // This function clears the device running condition so main shuts down everything
     try {
@@ -123,14 +121,104 @@ void FmRdsSimulator_base::releaseObject()
     frontend::FrontendTunerDevice<frontend_tuner_status_struct_struct>::releaseObject();
 }
 
-void FmRdsSimulator_base::loadProperties()
+void RDC_base::loadProperties()
 {
     device_kind = "FRONTEND::TUNER";
+    addProperty(rx_autogain_on_tune,
+                false,
+                "rx_autogain_on_tune",
+                "rx_autogain_on_tune",
+                "readwrite",
+                "",
+                "external",
+                "property");
+
+    addProperty(trigger_rx_autogain,
+                false,
+                "trigger_rx_autogain",
+                "trigger_rx_autogain",
+                "readwrite",
+                "",
+                "external",
+                "property");
+
+    addProperty(rx_autogain_guard_bits,
+                1,
+                "rx_autogain_guard_bits",
+                "rx_autogain_guard_bits",
+                "readwrite",
+                "bits",
+                "external",
+                "property");
+
+    addProperty(device_gain,
+                0,
+                "device_gain",
+                "device_gain",
+                "readwrite",
+                "dB",
+                "external",
+                "property");
+
+    addProperty(rdc_only_property,
+                0,
+                "rdc_only_property",
+                "rdc_only_property",
+                "readwrite",
+                "dB",
+                "external",
+                "property");
+
+    addProperty(device_mode,
+                "16bit",
+                "device_mode",
+                "device_mode",
+                "readwrite",
+                "",
+                "external",
+                "property");
+
+    addProperty(PathToConfiguration,
+                "/usr/share/libFmRdsSimulator/examples",
+                "PathToConfiguration",
+                "PathToConfiguration",
+                "readwrite",
+                "",
+                "external",
+                "property");
+
+    addProperty(noiseSigma,
+                0.01,
+                "noiseSigma",
+                "noiseSigma",
+                "readwrite",
+                "",
+                "external",
+                "property");
+
+    addProperty(addAWGN,
+                true,
+                "addAWGN",
+                "addAWGN",
+                "readwrite",
+                "",
+                "external",
+                "property");
+
     frontend_listener_allocation = frontend::frontend_listener_allocation_struct();
     frontend_tuner_allocation = frontend::frontend_tuner_allocation_struct();
+    addProperty(device_characteristics,
+                device_characteristics_struct(),
+                "device_characteristics",
+                "device_characteristics",
+                "readonly",
+                "",
+                "external",
+                "property");
+
 }
 
-CF::Properties* FmRdsSimulator_base::getTunerStatus(const std::string& allocation_id)
+CF::Properties* RDC_base::getTunerStatus(const std::string& allocation_id)
 {
     CF::Properties* tmpVal = new CF::Properties();
     long tuner_id = getTunerMapping(allocation_id);
@@ -144,12 +232,12 @@ CF::Properties* FmRdsSimulator_base::getTunerStatus(const std::string& allocatio
     return tmp._retn();
 }
 
-void FmRdsSimulator_base::frontendTunerStatusChanged(const std::vector<frontend_tuner_status_struct_struct>* oldValue, const std::vector<frontend_tuner_status_struct_struct>* newValue)
+void RDC_base::frontendTunerStatusChanged(const std::vector<frontend_tuner_status_struct_struct>* oldValue, const std::vector<frontend_tuner_status_struct_struct>* newValue)
 {
     this->tuner_allocation_ids.resize(this->frontend_tuner_status.size());
 }
 
-void FmRdsSimulator_base::assignListener(const std::string& listen_alloc_id, const std::string& allocation_id)
+void RDC_base::assignListener(const std::string& listen_alloc_id, const std::string& allocation_id)
 {
     // find control allocation_id
     std::string existing_alloc_id = allocation_id;
@@ -160,12 +248,12 @@ void FmRdsSimulator_base::assignListener(const std::string& listen_alloc_id, con
 
 }
 
-void FmRdsSimulator_base::removeListener(const std::string& listen_alloc_id)
+void RDC_base::removeListener(const std::string& listen_alloc_id)
 {
     if (listeners.find(listen_alloc_id) != listeners.end()) {
         listeners.erase(listen_alloc_id);
     }
 }
-void FmRdsSimulator_base::removeAllocationIdRouting(const size_t tuner_id) {
+void RDC_base::removeAllocationIdRouting(const size_t tuner_id) {
 }
 

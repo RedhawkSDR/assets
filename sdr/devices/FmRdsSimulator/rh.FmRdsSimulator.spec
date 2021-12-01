@@ -30,7 +30,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.FmRdsSimulator
-Version:        2.1.0
+Version:        3.0.0
 Release:        1%{?dist}
 Summary:        Device %{name}
 

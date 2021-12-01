@@ -17,32 +17,34 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-AC_INIT(rh.FmRdsSimulator, 3.0.0)
-AM_INIT_AUTOMAKE([nostdinc foreign])
-AC_CONFIG_MACRO_DIR([m4])
+/*
+ * MyCallBackClass.h
+ *
+ *  Created on: Dec 1, 2014
+ */
 
-AC_PROG_CC
-AC_PROG_CXX
-AC_MSG_NOTICE([A C++14 compiler can be installed with `sudo yum install devtoolset-9-gcc-c++`])
-AX_CXX_COMPILE_STDCXX(14, noext)
-AC_PROG_INSTALL
+#ifndef MYCALLBACKCLASS_H_
+#define MYCALLBACKCLASS_H_
 
-AC_CORBA_ORB
-OSSIE_CHECK_OSSIE
-OSSIE_SDRROOT_AS_PREFIX
+#include <RfSimulators/CallbackInterface.h>
+#include <bulkio/bulkio.h>
+#include <frontend/frontend.h>
+#include "RDC_struct_props.h"
 
-m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
+class MyCallBackClass: public RfSimulators::CallbackInterface {
+public:
+	MyCallBackClass(bulkio::OutFloatPort * outputPort, std::vector<RDC_ns::frontend_tuner_status_struct_struct> *fts,char* identifier);
+	virtual ~MyCallBackClass();
+	void pushEOS();
+	void dataDelivery(std::valarray< std::complex<float> > &samples);
+	void pushUpdatedSRI();
 
-# Dependencies
-PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 3.0 omniORB4 >= 4.2.3 librfsimulators >= 1.1])
-PKG_CHECK_MODULES([INTERFACEDEPS], [frontend >= 3.0, bulkio >= 3.0])
-OSSIE_ENABLE_LOG4CXX
-AX_BOOST_BASE([1.53])
-AX_BOOST_FILESYSTEM
-AX_BOOST_SYSTEM
-AX_BOOST_THREAD
-AX_BOOST_REGEX
+private:
+	char* identifier;
+	bulkio::OutFloatPort * outputPort;
+	bool pushSRI;
+	std::vector<RDC_ns::frontend_tuner_status_struct_struct> *fts;
 
-AC_CONFIG_FILES([Makefile])
-AC_OUTPUT
+};
 
+#endif /* MYCALLBACKCLASS_H_ */

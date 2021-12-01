@@ -17,20 +17,38 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-#ifndef FMRDSSIMULATOR_I_IMPL_H
-#define FMRDSSIMULATOR_I_IMPL_H
+#ifndef RDC_I_IMPL_H
+#define RDC_I_IMPL_H
 
-#include "FmRdsSimulator_base.h"
+#include "RDC_base.h"
 
-class FmRdsSimulator_i : public FmRdsSimulator_base
+#include "RfSimulators/RfSimulatorFactory.h"
+#include "RfSimulators/RfSimulator.h"
+#include "RfSimulators/Exceptions.h"
+#include "MyCallBackClass.h"
+
+#define DEFAULT_STREAM_ID "MyStreamID"
+#define MAX_SAMPLE_RATE 2280000.0
+#define MIN_SAMPLE_RATE (MAX_SAMPLE_RATE / 1000.0)
+
+// From the FM Bandwidth
+#define MIN_FREQ_RANGE 88000000
+#define MAX_FREQ_RANGE 108000000
+
+// Totally arbitrary gain limitations.
+#define MIN_GAIN_RANGE -100
+#define MAX_GAIN_RANGE 100
+
+namespace RDC_ns {
+class RDC_i : public RDC_base
 {
     ENABLE_LOGGING
     public:
-        FmRdsSimulator_i(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl);
-        FmRdsSimulator_i(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, char *compDev);
-        FmRdsSimulator_i(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities);
-        FmRdsSimulator_i(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities, char *compDev);
-        ~FmRdsSimulator_i();
+        RDC_i(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl);
+        RDC_i(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, char *compDev);
+        RDC_i(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities);
+        RDC_i(char *devMgr_ior, char *id, char *lbl, char *sftwrPrfl, CF::Properties capacities, char *compDev);
+        ~RDC_i();
 
         void constructor();
 
@@ -64,23 +82,28 @@ class FmRdsSimulator_i : public FmRdsSimulator_base
         frontend::RFInfoPkt get_rfinfo_pkt(const std::string& port_name);
         void set_rfinfo_pkt(const std::string& port_name, const frontend::RFInfoPkt& pkt);
 
-        void deallocate (const char* alloc_id);
-        CORBA::Boolean allocateCapacity(const CF::Properties & capacities);
-        void deallocateCapacity (const CF::Properties& capacities);
-        std::vector<RDC_ns::RDC_i*> RDCs;
-        std::map<std::string, CF::Device::Allocations_var> _delegatedAllocations;
+        void initDigitizer();
 
     private:
         ////////////////////////////////////////
         // Required device specific functions // -- to be implemented by device developer
         ////////////////////////////////////////
 
+        RfSimulators::RfSimulator* digiSim;
+        MyCallBackClass *cb;
+        void addAWGNChanged(const bool* old_value, const bool* new_value);
+        void noiseSigmaChanged(const float* old_value, const float* new_value);
+
         // these are pure virtual, must be implemented here
         void deviceEnable(frontend_tuner_status_struct_struct &fts, size_t tuner_id);
         void deviceDisable(frontend_tuner_status_struct_struct &fts, size_t tuner_id);
         bool deviceSetTuning(const frontend::frontend_tuner_allocation_struct &request, frontend_tuner_status_struct_struct &fts, size_t tuner_id);
         bool deviceDeleteTuning(frontend_tuner_status_struct_struct &fts, size_t tuner_id);
+        std::vector<unsigned int> availableSampleRates;
+        // keep track of RFInfoPkt from RFInfo_in port
+        frontend::RFInfoPkt rfinfo_pkt;
 
 };
+};
 
-#endif // FMRDSSIMULATOR_I_IMPL_H
+#endif // RDC_I_IMPL_H
