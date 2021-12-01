@@ -30,7 +30,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.USRP_UHD
-Version:        6.2.0
+Version:        7.0.0
 Release:        1%{?dist}
 Summary:        Device %{name}
 
@@ -42,18 +42,11 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  redhawk-devel >= 3.0
 Requires:       redhawk >= 3.0
 
-Requires:       libuuid-devel
-BuildRequires:  libuuid-devel
-
 BuildRequires:  autoconf-archive
 
 # Interface requirements
 BuildRequires:  frontendInterfaces bulkioInterfaces
 Requires:       frontendInterfaces bulkioInterfaces
-
-BuildRequires:  uhd-devel
-
-Obsoletes:      USRP_UHD < 4.0.0
 
 %description
 Device %{name}
@@ -69,7 +62,7 @@ Device %{name}
 # Implementation cpp
 pushd cpp
 ./reconf
-%define _bindir %{_prefix}/dev/devices/rh/USRP_UHD/cpp
+%define _bindir %{_prefix}/dev/devices/USRP/cpp
 %configure
 make %{?_smp_mflags}
 popd
@@ -79,7 +72,7 @@ popd
 rm -rf $RPM_BUILD_ROOT
 # Implementation cpp
 pushd cpp
-%define _bindir %{_prefix}/dev/devices/rh/USRP_UHD/cpp
+%define _bindir %{_prefix}/dev/devices/USRP/cpp
 make install DESTDIR=$RPM_BUILD_ROOT
 popd
 
@@ -90,17 +83,9 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,redhawk,redhawk,-)
-%dir %{_sdrroot}/dev/devices/rh
-%dir %{_sdrroot}/dev/devices/rh/USRP_UHD
-%{_prefix}/dev/devices/rh/USRP_UHD/nodeconfig.py
-%{_prefix}/dev/devices/rh/USRP_UHD/nodeconfig.pyc
-%{_prefix}/dev/devices/rh/USRP_UHD/nodeconfig.pyo
-%{_prefix}/dev/devices/rh/USRP_UHD/USRP_UHD.scd.xml
-%{_prefix}/dev/devices/rh/USRP_UHD/USRP_UHD.prf.xml
-%{_prefix}/dev/devices/rh/USRP_UHD/USRP_UHD.spd.xml
-%{_prefix}/dev/devices/rh/USRP_UHD/cpp
-
-%changelog
-* Wed Jun 21 2017 Ryan Bauman <rbauman@lgsinnovations.com> - 5.0.0-7
-- Mass rebuild for REDHAWK 2.1.1
+%dir %{_sdrroot}/dev/devices/USRP
+%{_prefix}/dev/devices/USRP/USRP.scd.xml
+%{_prefix}/dev/devices/USRP/USRP.prf.xml
+%{_prefix}/dev/devices/USRP/USRP.spd.xml
+%{_prefix}/dev/devices/USRP/cpp
 

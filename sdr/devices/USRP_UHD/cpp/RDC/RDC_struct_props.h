@@ -17,8 +17,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see http://www.gnu.org/licenses/.
  */
-#ifndef STRUCTPROPS_H
-#define STRUCTPROPS_H
+#ifndef RDC_STRUCTPROPS_H
+#define RDC_STRUCTPROPS_H
 
 /*******************************************************************************************
 
@@ -30,8 +30,8 @@
 #include <CF/cf.h>
 #include <ossie/PropertyMap.h>
 
-#include <frontend/fe_tuner_struct_props.h>
 
+namespace RDC_ns {
 struct device_characteristics_struct {
     device_characteristics_struct ()
     {
@@ -65,8 +65,9 @@ struct device_characteristics_struct {
     double clock_max;
     std::vector<std::string> available_antennas;
 };
+};
 
-inline bool operator>>= (const CORBA::Any& a, device_characteristics_struct& s) {
+inline bool operator>>= (const CORBA::Any& a, RDC_ns::device_characteristics_struct& s) {
     CF::Properties* temp;
     if (!(a >>= temp)) return false;
     const redhawk::PropertyMap& props = redhawk::PropertyMap::cast(*temp);
@@ -130,7 +131,7 @@ inline bool operator>>= (const CORBA::Any& a, device_characteristics_struct& s) 
     return true;
 }
 
-inline void operator<<= (CORBA::Any& a, const device_characteristics_struct& s) {
+inline void operator<<= (CORBA::Any& a, const RDC_ns::device_characteristics_struct& s) {
     redhawk::PropertyMap props;
  
     props["device_characteristics::ch_name"] = s.ch_name;
@@ -173,7 +174,7 @@ inline void operator<<= (CORBA::Any& a, const device_characteristics_struct& s) 
     a <<= props;
 }
 
-inline bool operator== (const device_characteristics_struct& s1, const device_characteristics_struct& s2) {
+inline bool operator== (const RDC_ns::device_characteristics_struct& s1, const RDC_ns::device_characteristics_struct& s2) {
     if (s1.ch_name!=s2.ch_name)
         return false;
     if (s1.tuner_type!=s2.tuner_type)
@@ -215,10 +216,11 @@ inline bool operator== (const device_characteristics_struct& s1, const device_ch
     return true;
 }
 
-inline bool operator!= (const device_characteristics_struct& s1, const device_characteristics_struct& s2) {
+inline bool operator!= (const RDC_ns::device_characteristics_struct& s1, const RDC_ns::device_characteristics_struct& s2) {
     return !(s1==s2);
 }
 
+namespace RDC_ns {
 struct frontend_tuner_status_struct_struct : public frontend::default_frontend_tuner_status_struct_struct {
     frontend_tuner_status_struct_struct () : frontend::default_frontend_tuner_status_struct_struct()
     {
@@ -229,16 +231,17 @@ struct frontend_tuner_status_struct_struct : public frontend::default_frontend_t
     }
 
     static const char* getFormat() {
-        return "sddbssdbbsdd";
+        return "sddbssdsddds";
     }
 
-    bool scan_mode_enabled;
-    bool supports_scan;
     double bandwidth_tolerance;
     double sample_rate_tolerance;
+    double gain;
+    std::string stream_id;
+};
 };
 
-inline bool operator>>= (const CORBA::Any& a, frontend_tuner_status_struct_struct& s) {
+inline bool operator>>= (const CORBA::Any& a, RDC_ns::frontend_tuner_status_struct_struct& s) {
     CF::Properties* temp;
     if (!(a >>= temp)) return false;
     const redhawk::PropertyMap& props = redhawk::PropertyMap::cast(*temp);
@@ -263,12 +266,6 @@ inline bool operator>>= (const CORBA::Any& a, frontend_tuner_status_struct_struc
     if (props.contains("FRONTEND::tuner_status::sample_rate")) {
         if (!(props["FRONTEND::tuner_status::sample_rate"] >>= s.sample_rate)) return false;
     }
-    if (props.contains("FRONTEND::tuner_status::scan_mode_enabled")) {
-        if (!(props["FRONTEND::tuner_status::scan_mode_enabled"] >>= s.scan_mode_enabled)) return false;
-    }
-    if (props.contains("FRONTEND::tuner_status::supports_scan")) {
-        if (!(props["FRONTEND::tuner_status::supports_scan"] >>= s.supports_scan)) return false;
-    }
     if (props.contains("FRONTEND::tuner_status::tuner_type")) {
         if (!(props["FRONTEND::tuner_status::tuner_type"] >>= s.tuner_type)) return false;
     }
@@ -278,10 +275,16 @@ inline bool operator>>= (const CORBA::Any& a, frontend_tuner_status_struct_struc
     if (props.contains("FRONTEND::tuner_status::sample_rate_tolerance")) {
         if (!(props["FRONTEND::tuner_status::sample_rate_tolerance"] >>= s.sample_rate_tolerance)) return false;
     }
+    if (props.contains("FRONTEND::tuner_status::gain")) {
+        if (!(props["FRONTEND::tuner_status::gain"] >>= s.gain)) return false;
+    }
+    if (props.contains("FRONTEND::tuner_status::stream_id")) {
+        if (!(props["FRONTEND::tuner_status::stream_id"] >>= s.stream_id)) return false;
+    }
     return true;
 }
 
-inline void operator<<= (CORBA::Any& a, const frontend_tuner_status_struct_struct& s) {
+inline void operator<<= (CORBA::Any& a, const RDC_ns::frontend_tuner_status_struct_struct& s) {
     redhawk::PropertyMap props;
  
     props["FRONTEND::tuner_status::allocation_id_csv"] = s.allocation_id_csv;
@@ -298,19 +301,19 @@ inline void operator<<= (CORBA::Any& a, const frontend_tuner_status_struct_struc
  
     props["FRONTEND::tuner_status::sample_rate"] = s.sample_rate;
  
-    props["FRONTEND::tuner_status::scan_mode_enabled"] = s.scan_mode_enabled;
- 
-    props["FRONTEND::tuner_status::supports_scan"] = s.supports_scan;
- 
     props["FRONTEND::tuner_status::tuner_type"] = s.tuner_type;
  
     props["FRONTEND::tuner_status::bandwidth_tolerance"] = s.bandwidth_tolerance;
  
     props["FRONTEND::tuner_status::sample_rate_tolerance"] = s.sample_rate_tolerance;
+ 
+    props["FRONTEND::tuner_status::gain"] = s.gain;
+ 
+    props["FRONTEND::tuner_status::stream_id"] = s.stream_id;
     a <<= props;
 }
 
-inline bool operator== (const frontend_tuner_status_struct_struct& s1, const frontend_tuner_status_struct_struct& s2) {
+inline bool operator== (const RDC_ns::frontend_tuner_status_struct_struct& s1, const RDC_ns::frontend_tuner_status_struct_struct& s2) {
     if (s1.allocation_id_csv!=s2.allocation_id_csv)
         return false;
     if (s1.bandwidth!=s2.bandwidth)
@@ -325,20 +328,20 @@ inline bool operator== (const frontend_tuner_status_struct_struct& s1, const fro
         return false;
     if (s1.sample_rate!=s2.sample_rate)
         return false;
-    if (s1.scan_mode_enabled!=s2.scan_mode_enabled)
-        return false;
-    if (s1.supports_scan!=s2.supports_scan)
-        return false;
     if (s1.tuner_type!=s2.tuner_type)
         return false;
     if (s1.bandwidth_tolerance!=s2.bandwidth_tolerance)
         return false;
     if (s1.sample_rate_tolerance!=s2.sample_rate_tolerance)
         return false;
+    if (s1.gain!=s2.gain)
+        return false;
+    if (s1.stream_id!=s2.stream_id)
+        return false;
     return true;
 }
 
-inline bool operator!= (const frontend_tuner_status_struct_struct& s1, const frontend_tuner_status_struct_struct& s2) {
+inline bool operator!= (const RDC_ns::frontend_tuner_status_struct_struct& s1, const RDC_ns::frontend_tuner_status_struct_struct& s2) {
     return !(s1==s2);
 }
 
