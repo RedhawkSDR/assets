@@ -24,6 +24,7 @@ ossieName = rh.FmRdsSimulator
 bindir = $(prefix)/dev/devices/rh/FmRdsSimulator/cpp
 bin_PROGRAMS = FmRdsSimulator
 
+confdir = $(prefix)/dev/devices/rh/FmRdsSimulator/
 dist_conf_SCRIPTS = ../nodeconfig.py
 
 xmldir = $(prefix)/dev/devices/rh/FmRdsSimulator
