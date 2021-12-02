@@ -24,6 +24,9 @@ ossieName = rh.USRP_UHD
 bindir = $(prefix)/dev/devices/rh/USRP_UHD/cpp
 bin_PROGRAMS = USRP_UHD
 
+confdir = $(prefix)/dev/devices/rh/USRP_UHD/
+dist_conf_SCRIPTS = ../nodeconfig.py
+
 xmldir = $(prefix)/dev/devices/rh/USRP_UHD
 dist_xml_DATA = ../TDC.prf.xml ../USRP_UHD.scd.xml ../TDC.scd.xml ../USRP_UHD.prf.xml ../RDC.scd.xml ../USRP_UHD.spd.xml ../RDC.prf.xml
 
@@ -51,3 +54,5 @@ USRP_UHD_LDADD = $(SOFTPKG_LIBS) $(PROJECTDEPS_LIBS) $(BOOST_LDFLAGS) $(BOOST_FI
 USRP_UHD_CXXFLAGS = -Wall $(SOFTPKG_CFLAGS) $(PROJECTDEPS_CFLAGS) $(BOOST_CPPFLAGS) $(INTERFACEDEPS_CFLAGS) $(redhawk_INCLUDES_auto) $(LIBUUID_FLAGS) -std=c++11 -Wno-deprecated
 USRP_UHD_LDFLAGS = -Wall $(redhawk_LDFLAGS_auto)
 
+create-usrp-uhd-node: install-am
+	../nodeconfig.py --inplace --clean --dommainname=$(DOMAINNAME) --usrptype=$(USRPTYPE) --usrpip=$(USRPIP)
