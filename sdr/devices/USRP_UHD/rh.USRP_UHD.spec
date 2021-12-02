@@ -93,8 +93,14 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/dev/devices/rh/USRP_UHD/nodeconfig.py
 %{_prefix}/dev/devices/rh/USRP_UHD/nodeconfig.pyc
 %{_prefix}/dev/devices/rh/USRP_UHD/nodeconfig.pyo
-%{_prefix}/dev/devices/rh/USRP_UHD/USRP.scd.xml
-%{_prefix}/dev/devices/rh/USRP_UHD/USRP.prf.xml
-%{_prefix}/dev/devices/rh/USRP_UHD/USRP.spd.xml
+%{_prefix}/dev/devices/rh/USRP_UHD/USRP_UHD.scd.xml
+%{_prefix}/dev/devices/rh/USRP_UHD/USRP_UHD.prf.xml
+%{_prefix}/dev/devices/rh/USRP_UHD/USRP_UHD.spd.xml
+%{_prefix}/dev/devices/rh/USRP_UHD/RDC.scd.xml
+%{_prefix}/dev/devices/rh/USRP_UHD/RDC.prf.xml
+%{_prefix}/dev/devices/rh/USRP_UHD/RDC.spd.xml
+%{_prefix}/dev/devices/rh/USRP_UHD/TDC.scd.xml
+%{_prefix}/dev/devices/rh/USRP_UHD/TDC.prf.xml
+%{_prefix}/dev/devices/rh/USRP_UHD/TDC.spd.xml
 %{_prefix}/dev/devices/rh/USRP_UHD/cpp
 

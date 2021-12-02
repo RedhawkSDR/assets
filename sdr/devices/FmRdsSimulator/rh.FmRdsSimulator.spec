@@ -96,6 +96,9 @@ rm -rf $RPM_BUILD_ROOT
 %{_prefix}/dev/devices/rh/FmRdsSimulator/FmRdsSimulator.scd.xml
 %{_prefix}/dev/devices/rh/FmRdsSimulator/FmRdsSimulator.prf.xml
 %{_prefix}/dev/devices/rh/FmRdsSimulator/FmRdsSimulator.spd.xml
+%{_prefix}/dev/devices/rh/FmRdsSimulator/RDC.scd.xml
+%{_prefix}/dev/devices/rh/FmRdsSimulator/RDC.prf.xml
+%{_prefix}/dev/devices/rh/FmRdsSimulator/RDC.spd.xml
 %{_prefix}/dev/devices/rh/FmRdsSimulator/cpp
 
 %changelog

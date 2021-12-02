@@ -25,10 +25,10 @@ with this program.  If not, see http://www.gnu.org/licenses/.
     <name>null</name>
   </author>
   <propertyfile type="PRF">
-    <localfile name="USRP.prf.xml"/>
+    <localfile name="USRP_UHD.prf.xml"/>
   </propertyfile>
   <descriptor>
-    <localfile name="USRP.scd.xml"/>
+    <localfile name="USRP_UHD.scd.xml"/>
   </descriptor>
   <implementation id="cpp">
     <description>The implementation contains descriptive information about the template for a software resource.</description>

@@ -28,7 +28,7 @@ confdir = $(prefix)/dev/devices/rh/USRP_UHD/
 dist_conf_SCRIPTS = ../nodeconfig.py
 
 xmldir = $(prefix)/dev/devices/rh/USRP_UHD
-dist_xml_DATA = ../TDC.prf.xml ../USRP_UHD.scd.xml ../TDC.scd.xml ../USRP_UHD.prf.xml ../RDC.scd.xml ../USRP_UHD.spd.xml ../RDC.prf.xml
+dist_xml_DATA = ../RDC.prf.xml ../RDC.scd.xml ../RDC.spd.xml ../TDC.prf.xml ../TDC.scd.xml ../TDC.spd.xml ../USRP_UHD.prf.xml ../USRP_UHD.scd.xml ../USRP_UHD.spd.xml
 
 distclean-local:
 	rm -rf m4

@@ -28,7 +28,7 @@ confdir = $(prefix)/dev/devices/rh/FmRdsSimulator/
 dist_conf_SCRIPTS = ../nodeconfig.py
 
 xmldir = $(prefix)/dev/devices/rh/FmRdsSimulator
-dist_xml_DATA = ../FmRdsSimulator.spd.xml ../FmRdsSimulator.scd.xml ../FmRdsSimulator.prf.xml ../RDC.spd.xml ../RDC.prf.xml ../RDC.scd.xml
+dist_xml_DATA = ../FmRdsSimulator.prf.xml ../FmRdsSimulator.scd.xml ../FmRdsSimulator.spd.xml ../RDC.prf.xml ../RDC.scd.xml ../RDC.spd.xml
 
 distclean-local:
 	rm -rf m4
