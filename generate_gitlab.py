@@ -301,6 +301,9 @@ if __name__ == '__main__':
     candidate_components = os.listdir(base_component_dir)
     devices = []
     for comp in candidate_components:
+        # These need to be updated to FEI 3.0 before being released for Redhawk 3.0
+        if comp in ['MSDD', 'MSDD_Controller', 'RTL2832U']:
+            continue
         if os.path.isfile(base_component_dir+'/'+comp+'/'+comp+'.spd.xml'):
             components.append(comp)
             devices.append(comp)
