@@ -73,6 +73,9 @@ TDC_base::~TDC_base()
 
 void TDC_base::construct()
 {
+    size_t last_slash = this->_softwareProfile.find_last_of("/");
+    std::string base_directory = this->_softwareProfile.substr(0,last_slash);
+    this->_softwareProfile=base_directory+"/TDC.spd.xml";
     loadProperties();
 
     TransmitControl_in = new frontend::InTransmitControlPort("TransmitControl_in", this);
