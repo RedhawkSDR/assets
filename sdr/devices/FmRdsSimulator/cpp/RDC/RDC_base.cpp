@@ -73,6 +73,9 @@ RDC_base::~RDC_base()
 
 void RDC_base::construct()
 {
+    size_t last_slash = this->_softwareProfile.find_last_of("/");
+    std::string base_directory = this->_softwareProfile.substr(0,last_slash);
+    this->_softwareProfile=base_directory+"/RDC.spd.xml";
     loadProperties();
 
     RFInfo_in = new frontend::InRFInfoPort("RFInfo_in", this);
