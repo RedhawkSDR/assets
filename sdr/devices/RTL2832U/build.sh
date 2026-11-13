@@ -23,9 +23,9 @@ if [ "$1" = "rpm" ]; then
     if [ -e rh.RTL2832U.spec ]; then
         mydir=`dirname $0`
         tmpdir=`mktemp -d`
-        cp -r ${mydir} ${tmpdir}/rh.RTL2832U-2.1.0
-        tar czf ${tmpdir}/rh.RTL2832U-2.1.0.tar.gz --exclude=".svn" --exclude=".git" -C ${tmpdir} rh.RTL2832U-2.1.0
-        rpmbuild -ta ${tmpdir}/rh.RTL2832U-2.1.0.tar.gz
+        cp -r ${mydir} ${tmpdir}/rh.RTL2832U-2.1.1
+        tar czf ${tmpdir}/rh.RTL2832U-2.1.1.tar.gz --exclude=".svn" --exclude=".git" -C ${tmpdir} rh.RTL2832U-2.1.1
+        rpmbuild -ta ${tmpdir}/rh.RTL2832U-2.1.1.tar.gz
         rm -rf $tmpdir
     else
         echo "Missing RPM spec file in" `pwd`

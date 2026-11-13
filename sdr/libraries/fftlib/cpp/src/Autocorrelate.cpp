@@ -48,7 +48,7 @@ void Autocorrelator<T>::run(VectorT& realInput)
             zeroMean(frame->begin, frame->end, framedTimeDomain_.begin());
         }
         else
-            framedTimeDomain_.assign(frame->begin, frame->end);
+	  framedTimeDomain_.assign(frame->begin, frame->end);
         // take the fft
         realInputFft_.run();
         // take the norm of the fft output

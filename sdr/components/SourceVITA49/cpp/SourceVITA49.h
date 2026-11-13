@@ -81,15 +81,18 @@ public:
     // REDHAWK Life Cycle //
     ////////////////////////
     int serviceFunction();
-    void start() throw (CF::Resource::StartError, CORBA::SystemException);
-    void stop() throw (CF::Resource::StopError, CORBA::SystemException);
+    void start();
+    void stop();
 
     ///////////////////////////////
     // VITA49 Callback Interface //
     ///////////////////////////////
     //std::string attach(BULKIO::VITA49StreamDefinition stream, std::string userid); // TODO: Can we remove this?
-    virtual char* attach(const BULKIO::VITA49StreamDefinition& stream, const char* userid)
-    throw (BULKIO::dataVITA49::AttachError, BULKIO::dataVITA49::StreamInputError);
+    /**
+     * @throw BULKIO::dataVITA49::AttachError
+     * @throw BULKIO::dataVITA49::StreamInputError
+     */
+    virtual char* attach(const BULKIO::VITA49StreamDefinition& stream, const char* userid);
 
     //void detach(std::string attachId);    // TODO: Can we remove this?
     virtual void detach(const char* attachId);

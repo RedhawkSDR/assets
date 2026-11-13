@@ -39,6 +39,7 @@ libfftlib_la_SOURCES = $(redhawk_SOURCES_auto)
 libfftlib_la_LIBADD = $(SOFTPKG_LIBS) $(REDHAWK_LIBS)
 libfftlib_la_CPPFLAGS = -I $(srcdir)/include $(SOFTPKG_CFLAGS) $(REDHAWK_CFLAGS) $(BOOST_CPPFLAGS)
 libfftlib_la_CXXFLAGS = -Wall
+libfftlib_la_LDFLAGS = $(redhawk_LDFLAGS_auto)
 
 redhawk_HEADERS_auto ?= $(filter include/%,$(redhawk_SOURCES_auto))
 include_HEADERS = $(redhawk_HEADERS_auto)

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -117,7 +117,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         props = dict((x.id, any.from_any(x.value)) for x in props)
         # Query may return more than expected, but not less
         for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
+            self.assertEqual(expectedProp.id in props, True)
         
         #######################################################################
         # Verify that all expected ports are available
@@ -135,22 +135,22 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
 
                 
     def testOne(self):
-        input = [random.random() for _ in xrange(1024)] 
+        input = [random.random() for _ in range(1024)] 
         output = self.main(input)
         self.checkResults(input, output,threshold = .03)
     
     def testTwo(self):
         #send data through to initialize it - then send another batch through with lower power to make sure the averaging is working
-        input = [random.random() for _ in xrange(1024)] 
+        input = [random.random() for _ in range(1024)] 
         output = self.main(input)
-        input = [random.random()/10 for _ in xrange(1024*32)] 
+        input = [random.random()/10 for _ in range(1024*32)] 
         output = self.main(input)
         self.checkResults(input, output,threshold=.2)
         
     def testMultiStream(self):
         streamA= 'streamA'
         streamB = 'streamB'
-        input = [random.random() for _ in xrange(1024)] 
+        input = [random.random() for _ in range(1024)] 
         output = self.main(input, streamID = streamA)
         self.assertEqual(self.sink.sri().streamID, streamA)
         self.checkResults(input, output,threshold = .03)
@@ -169,40 +169,40 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
     
     def testDisabled(self):
-        input = [random.random() for _ in xrange(1024)] 
+        input = [random.random() for _ in range(1024)] 
         output = self.main(input)
         self.checkResults(input, output,threshold = .03)
         
         #make sure it is a pass through if it is disabled
         self.setProps(enabled=False)
-        input = [random.random() for _ in xrange(1024)]
+        input = [random.random() for _ in range(1024)]
         output = self.main(input)
         self.checkResults(input, output,threshold=.001)
         
         #now re-enable it to ensure AGC kicks back in
         
         self.setProps(enabled=True)
-        input = [random.random() for _ in xrange(1024)]
+        input = [random.random() for _ in range(1024)]
         output = self.main(input)
         self.checkResults(input, output,threshold=.03)
 
     def testAlphaUpdate(self):
-        input = [random.random() for _ in xrange(1024)] 
+        input = [random.random() for _ in range(1024)] 
         output = self.main(input)
         self.checkResults(input, output,threshold = .03)
         self.setProps(alpha=.99)
         
-        input = [random.random() for _ in xrange(1024)] 
+        input = [random.random() for _ in range(1024)] 
         output = self.main(input)
         self.checkResults(input, output,threshold = .05)
 
     def testPowerUpdate(self):
-        input = [random.random() for _ in xrange(1024)] 
+        input = [random.random() for _ in range(1024)] 
         output = self.main(input)
         self.checkResults(input, output,threshold = .03)
         self.setProps(avgPower=500)
         
-        input = [5*random.random() for _ in xrange(1024)] 
+        input = [5*random.random() for _ in range(1024)] 
         output = self.main(input)
         self.checkResults(input, output,threshold = .05)
     
@@ -210,7 +210,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         """Send in some bad alpha values and ensure it stays between 0 and 1
         """
         self.setProps(alpha=1.5)
-        input = [random.random() for _ in xrange(1024)] 
+        input = [random.random() for _ in range(1024)] 
         output = self.main(input)
         res = self.comp.query([CF.DataType(id='alpha',value=CORBA.Any(CORBA.TC_float, 0.0))])
         self.assertTrue(0<res[0].value.value()<1)
@@ -225,31 +225,31 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         #using a low alpha so it doesn't have too much memory and can handle the big swing
         self.setProps(minPower = 100, maxPower=10000, alpha=.75)
         #Send in some big  data which needs AGC
-        input = [random.uniform(20000.0,80000.0) for _ in xrange(1024)]
+        input = [random.uniform(20000.0,80000.0) for _ in range(1024)]
         output = self.main(input)
         self.checkResults(input, output,threshold = .05)
         #Send in little data which must be AGC'd
-        input = [random.uniform(-8.0,8.0) for _ in xrange(1024)]
+        input = [random.uniform(-8.0,8.0) for _ in range(1024)]
         output = self.main(input)
         self.checkResults(input, output,threshold = .2)
         
         #send in medium data which is just right - no agc on it
         #lets put in a bunch of data to make sure that all the memory is out of the system
         #because we will be applying AGC for the first few points
-        input = [random.uniform(20,80) for _ in xrange(1024)]
+        input = [random.uniform(20,80) for _ in range(1024)]
         output = self.main(input)
         
         #send in the final bit of data which should have no AGC applied
-        input = [random.uniform(20,80) for _ in xrange(1024)]
+        input = [random.uniform(20,80) for _ in range(1024)]
         output = self.main(input)
         self.checkResults(input, output,threshold = .001)
     
     def testComplex(self):
         
-        input = [random.random() for _ in xrange(1024)] 
+        input = [random.random() for _ in range(1024)] 
         output = self.main(input, True)
         self.checkResults(input, output,threshold=.05, cmplx = True)
-        input = [random.random()/10 for _ in xrange(1024*32)] 
+        input = [random.random()/10 for _ in range(1024*32)] 
         output = self.main(input, True)
         self.checkResults(input, output,threshold=.05, cmplx = True)
 
@@ -257,18 +257,18 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         """First send real data than send complex data
         """
         
-        input = [random.random() for _ in xrange(1024)] 
+        input = [random.random() for _ in range(1024)] 
         output = self.main(input, False)
         self.checkResults(input, output,threshold=.05, cmplx = False)
-        input = [random.random()/10 for _ in xrange(1024*32)] 
+        input = [random.random()/10 for _ in range(1024*32)] 
         output = self.main(input, False)
         self.checkResults(input, output,threshold=.05, cmplx = False)
         
-        input = [random.random() for _ in xrange(32*1024)] 
+        input = [random.random() for _ in range(32*1024)] 
         output = self.main(input, True)
         self.checkResults(input, output,threshold=.1, cmplx = True)
         
-        input = [random.random()/10 for _ in xrange(1024*32)] 
+        input = [random.random()/10 for _ in range(1024*32)] 
         output = self.main(input, True)
         self.checkResults(input, output,threshold=.1, cmplx = True)
         
@@ -284,7 +284,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.src.connect(self.comp)        
         self.comp.connect(self.sink,'floatIn')
         
-        input = [random.random() for _ in xrange(1024)] 
+        input = [random.random() for _ in range(1024)] 
         output = self.main(input)
         self.checkResults(input, output,threshold = .03)
         
@@ -294,7 +294,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         sri = bulkio.sri.create('TEST_STREAM', srate=256000, xunits=1)
         sri.mode = 1;
         
-        input = [random.random() for _ in xrange(1024)]
+        input = [random.random() for _ in range(1024)]
         self.src.push(input, sampleRate = 256000, streamID = "TEST_STREAM", complexData=True)
         time.sleep(.1)
         sriOut = self.sink.sri()

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -51,12 +51,12 @@ def flip(dataStr, numBytes):
     Given data packed into a string, reverse bytes for a given
     word length and returned the byte-flipped string
     """
-    out = ""
+    out = bytes()
 
-    for i in xrange(len(dataStr)/numBytes):
+    for i in range(len(dataStr)//numBytes):
         l = list(dataStr[numBytes*i:numBytes*(i+1)])
         l.reverse()
-        out += (''.join(l))
+        out += bytes(l)
 
     return out
 
@@ -65,13 +65,13 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     Test for all component implementations in sinksocket
     """
     PORT = 8645
-    OCTET_DATA = [range(256)*100]
-    CHAR_DATA = [range(-128, 128)*100]
-    U_SHORT_DATA = [range(i*16384, (i+1)*16384) for i in xrange(4)]
-    SHORT_DATA = [range(i*16384, (i+1)*16384) for i in xrange(-2, 2)]
-    U_LONG_DATA = [range(i*2**30, (i+1)*2**30, 500000) for i in xrange(0, 4)]
-    LONG_DATA = [range(i*2**30, (i+1)*2**30, 500000) for i in xrange(-2, 2)]
-    FLOAT_DATA = DOUBLE_DATA = [[float(x) for x in range(i*4096, (i+1)*4096)] for i in xrange(16)]
+    OCTET_DATA = [list(range(256))*100]
+    CHAR_DATA = [list(range(-128, 128))*100]
+    U_SHORT_DATA = [list(range(i*16384, (i+1)*16384)) for i in range(4)]
+    SHORT_DATA = [list(range(i*16384, (i+1)*16384)) for i in range(-2, 2)]
+    U_LONG_DATA = [list(range(i*2**30, (i+1)*2**30, 500000)) for i in range(0, 4)]
+    LONG_DATA = [list(range(i*2**30, (i+1)*2**30, 500000)) for i in range(-2, 2)]
+    FLOAT_DATA = DOUBLE_DATA = [[float(x) for x in range(i*4096, (i+1)*4096)] for i in range(16)]
 
     def testScaBasicBehavior(self):
         #######################################################################
@@ -84,7 +84,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         props = dict((x.id, any.from_any(x.value)) for x in props)
         # Query may return more than expected, but not less
         for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
+            self.assertEqual(expectedProp.id in props, True)
 
         #######################################################################
         # Verify that all expected ports are available
@@ -222,20 +222,20 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
 
     # Test sending a bunch of little packets
     def testLITTLE_PACKETS(self):
-        print "testLITTLE_PACKETS"
-        self.runTest(clientFirst=True, client='sinksocket', dataPackets=[range(200) for _ in xrange(50000)], maxBytes=256*256, minBytes=0)
+        print("testLITTLE_PACKETS")
+        self.runTest(clientFirst=True, client='sinksocket', dataPackets=[list(range(200)) for _ in range(50000)], maxBytes=256*256, minBytes=0)
 
     def testLITTLE_PACKETS_2(self):
-        print "testLITTLE_PACKETS_2"
-        self.runTest(clientFirst=True, client='sourcesocket', dataPackets=[range(200) for _ in xrange(50000)], maxBytes=256*256, minBytes=0)
+        print("testLITTLE_PACKETS_2")
+        self.runTest(clientFirst=True, client='sourcesocket', dataPackets=[list(range(200)) for _ in range(50000)], maxBytes=256*256, minBytes=0)
 
     # Test sending two BIG PACKETS
     def testBIG_PACKETS(self):
-        print "testBIG_PACKETS"
-        self.runTest(clientFirst=True, client='sinksocket', dataPackets=[range(200)*25000 for _ in xrange(2)])
+        print("testBIG_PACKETS")
+        self.runTest(clientFirst=True, client='sinksocket', dataPackets=[list(range(200))*25000 for _ in range(2)])
     def testBIG_PACKETS_2(self):
-        print "testBIG_PACKETS_2"
-        self.runTest(clientFirst=True, client='sourcesocket', dataPackets=[range(200)*25000 for _ in xrange(2)])
+        print("testBIG_PACKETS_2")
+        self.runTest(clientFirst=True, client='sourcesocket', dataPackets=[list(range(200))*25000 for _ in range(2)])
 
     # A bunch of tests for byte swapping
     # start with octet port and using various number of bytes for swapping
@@ -243,7 +243,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap1(self):
         TYPE = 'octet'
         SWAP = 2
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -252,7 +252,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap2(self):
         TYPE = 'octet'
         SWAP = 2
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -261,7 +261,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap3(self):
         TYPE = 'octet'
         SWAP = 4
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -270,7 +270,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap4(self):
         TYPE = 'octet'
         SWAP = 4
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -279,7 +279,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap5(self):
         TYPE = 'octet'
         SWAP = 8
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -288,7 +288,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap6(self):
         TYPE = 'octet'
         SWAP = 8
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -297,7 +297,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap7(self):
         TYPE = 'octet'
         SWAP = 10
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -306,7 +306,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap8(self):
         TYPE = 'octet'
         SWAP = 10
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -317,7 +317,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap9(self):
         TYPE = 'octet'
         SWAP = 10
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=SWAP, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=SWAP, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         self.assertEqual(s[:len(so)], so)
@@ -325,7 +325,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap10(self):
         TYPE = 'octet'
         SWAP = 8
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=SWAP, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=SWAP, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         self.assertEqual(s[:len(so)], so)
@@ -333,7 +333,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap11(self):
         TYPE = 'octet'
         SWAP = 4
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=SWAP, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=SWAP, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         self.assertEqual(s[:len(so)], so)
@@ -341,7 +341,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap12(self):
         TYPE = 'octet'
         SWAP = 2
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=SWAP, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=SWAP, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         self.assertEqual(s[:len(so)], so)
@@ -351,7 +351,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap13(self):
         TYPE = 'short'
         SWAP = 1
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, 2)
@@ -360,7 +360,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap14(self):
         TYPE = 'short'
         SWAP = 1
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, 2)
@@ -369,7 +369,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap15(self):
         TYPE = 'ushort'
         SWAP = 1
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, 2)
@@ -378,7 +378,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap16(self):
         TYPE = 'ushort'
         SWAP = 1
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, 2)
@@ -388,7 +388,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap17(self):
         TYPE = 'long'
         SWAP = 1
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, 4)
@@ -397,7 +397,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap18(self):
         TYPE = 'long'
         SWAP = 1
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, 4)
@@ -406,7 +406,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap19(self):
         TYPE = 'ulong'
         SWAP = 1
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, 4)
@@ -415,7 +415,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap20(self):
         TYPE = 'ulong'
         SWAP = 1
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, 4)
@@ -424,7 +424,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap21(self):
         TYPE = 'float'
         SWAP = 1
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, 4)
@@ -433,7 +433,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap22(self):
         TYPE = 'float'
         SWAP = 1
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, 4)
@@ -443,7 +443,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap23(self):
         TYPE = 'double'
         SWAP = 1
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, 8)
@@ -452,7 +452,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap24(self):
         TYPE = 'double'
         SWAP = 1
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 100)*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 100))*10], byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, 8)
@@ -462,7 +462,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap25(self):
         TYPE = 'short'
         SWAP = 5
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 99)]*9, byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 99))]*9, byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -471,7 +471,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap26(self):
         TYPE = 'short'
         SWAP = 5
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 99)]*9, byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 99))]*9, byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -480,7 +480,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap27(self):
         TYPE = 'ushort'
         SWAP = 5
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 99)]*9, byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 99))]*9, byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -489,7 +489,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap28(self):
         TYPE = 'ushort'
         SWAP = 5
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 99)]*9, byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 99))]*9, byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -498,7 +498,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap29(self):
         TYPE = 'long'
         SWAP = 5
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 99)]*9, byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 99))]*9, byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -508,7 +508,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap30(self):
         TYPE = 'long'
         SWAP = 5
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 99)]*9, byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 99))]*9, byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -517,7 +517,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap31(self):
         TYPE = 'ulong'
         SWAP = 5
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 99)]*9, byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 99))]*9, byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -526,7 +526,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap32(self):
         TYPE = 'ulong'
         SWAP = 5
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 99)]*9, byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 99))]*9, byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -535,7 +535,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap33(self):
         TYPE = 'float'
         SWAP = 5
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 99)]*9, byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 99))]*9, byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -544,7 +544,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap34(self):
         TYPE = 'float'
         SWAP = 5
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 99)]*9, byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 99))]*9, byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -553,7 +553,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap35(self):
         TYPE = 'double'
         SWAP = 5
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 99)]*9, byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 99))]*9, byteSwapSrc=None, byteSwapSink=SWAP, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -562,7 +562,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testByteSwap36(self):
         TYPE = 'double'
         SWAP = 5
-        self.runTest(client='sourcesocket', dataPackets=[range(0, 99)]*9, byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
+        self.runTest(client='sourcesocket', dataPackets=[list(range(0, 99))]*9, byteSwapSrc=SWAP, byteSwapSink=None, minBytes=1, portType=TYPE)
         s = toStr(self.input, TYPE)
         so = toStr(self.output, TYPE)
         f = flip(so, SWAP)
@@ -601,7 +601,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
 
             if newdata:
                 if portType == 'octet':
-                    self.output.extend([ord(x) for x in newdata])
+                    self.output.extend(newdata)
                 else:
                     self.output.extend(newdata)
 
@@ -616,7 +616,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
                 noData = 0
 
                 if portType == 'octet':
-                    self.output.extend([ord(x) for x in newdata])
+                    self.output.extend(newdata)
                 else:
                     self.output.extend(newdata)
             else:
@@ -627,20 +627,20 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
 
                 time.sleep(.01)
 
-        print "self.sourceSocket.bytes_per_sec", self.sourceSocket.bytes_per_sec
-        print "self.sinkSocket.bytes_per_sec", self.sinkSocket.bytes_per_sec
+        print("self.sourceSocket.bytes_per_sec", self.sourceSocket.bytes_per_sec)
+        print("self.sinkSocket.bytes_per_sec", self.sinkSocket.bytes_per_sec)
 
-        print "self.sinkSocket.total_bytes", self.sinkSocket.total_bytes
-        print "self.sourceSocket.total_bytes",  self.sourceSocket.total_bytes
+        print("self.sinkSocket.total_bytes", self.sinkSocket.total_bytes)
+        print("self.sourceSocket.total_bytes",  self.sourceSocket.total_bytes)
 
-        print "len(self.input)", len(self.input), "len(self.output)", len(self.output)
+        print("len(self.input)", len(self.input), "len(self.output)", len(self.output))
 
         self.assertTrue(len(self.output) > 0)
         self.assertTrue(len(self.input) - len(self.output) < self.sourceSocket.max_bytes)
         self.assertTrue(len(self.input) >= len(self.output))
 
         if byteSwapSrc == byteSwapSink:
-            self.assertEquals(self.input[:len(self.output)], self.output)
+            self.assertEqual(self.input[:len(self.output)], self.output)
 
     def runMultiConnectionTest(self, client='sinksocket', dataPackets=[], maxBytes=None, minBytes=None, portType='octet', byteSwapSrc=None, byteSwapSink=None):
         self.startTests(client, portType)
@@ -708,7 +708,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
                     noData = 0
 
                     if portType == 'octet':
-                        self.output1.extend([ord(x) for x in newdata1])
+                        self.output1.extend(newdata1)
                     else:
                         self.output1.extend(newdata1)
 
@@ -716,19 +716,19 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
                     noData = 0
 
                     if portType == 'octet':
-                        self.output2.extend([ord(x) for x in newdata2])
+                        self.output2.extend(newdata2)
                     else:
                         self.output2.extend(newdata2)
 
-        print "self.sourceSocket.bytes_per_sec", self.sourceSocket.bytes_per_sec
-        print "self.sourceSocket2.bytes_per_sec", self.sourceSocket2.bytes_per_sec
-        print "self.sinkSocket.bytes_per_sec", self.sinkSocket.bytes_per_sec
+        print("self.sourceSocket.bytes_per_sec", self.sourceSocket.bytes_per_sec)
+        print("self.sourceSocket2.bytes_per_sec", self.sourceSocket2.bytes_per_sec)
+        print("self.sinkSocket.bytes_per_sec", self.sinkSocket.bytes_per_sec)
 
-        print "self.sinkSocket.total_bytes", self.sinkSocket.total_bytes
-        print "self.source1Socket.total_bytes",  self.sourceSocket.total_bytes
-        print "self.source1Socket2.total_bytes",  self.sourceSocket2.total_bytes
+        print("self.sinkSocket.total_bytes", self.sinkSocket.total_bytes)
+        print("self.source1Socket.total_bytes",  self.sourceSocket.total_bytes)
+        print("self.source1Socket2.total_bytes",  self.sourceSocket2.total_bytes)
 
-        print "len(self.input)", len(self.input), "len(self.output1)", len(self.output1), "len(self.output2)", len(self.output2)
+        print("len(self.input)", len(self.input), "len(self.output1)", len(self.output1), "len(self.output2)", len(self.output2))
 
         self.assertTrue(len(self.output1) > 0)
         self.assertTrue(len(self.output2) > 0)
@@ -738,8 +738,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.assertTrue(len(self.input) >= len(self.output2))
 
         if byteSwapSrc == byteSwapSink:
-            self.assertEquals(self.input[:len(self.output1)], self.output1)
-            self.assertEquals(self.input[:len(self.output2)], self.output2)
+            self.assertEqual(self.input[:len(self.output1)], self.output1)
+            self.assertEqual(self.input[:len(self.output2)], self.output2)
 
     def configureClient(self, byteSwapSrc, byteSwapSink):
         if self.client == self.sinkSocket:

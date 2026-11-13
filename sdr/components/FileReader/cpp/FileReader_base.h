@@ -34,11 +34,23 @@ class FileReader_base : public Component, protected ThreadedComponent
         FileReader_base(const char *uuid, const char *label);
         ~FileReader_base();
 
-        void start() throw (CF::Resource::StartError, CORBA::SystemException);
+        /**
+         * @throw CF::Resource::StartError
+         * @throw CORBA::SystemException
+         */
+        void start();
+        
+        /**
+         * @throw CF::Resource::StopError
+         * @throw CORBA::SystemException
+         */
+        void stop();
 
-        void stop() throw (CF::Resource::StopError, CORBA::SystemException);
-
-        void releaseObject() throw (CF::LifeCycle::ReleaseError, CORBA::SystemException);
+        /**
+         * @throw CF::LIfeCycle::ReleaseError
+         * @throw CORBA::SystemException
+         */
+        void releaseObject();
 
         void loadProperties();
 

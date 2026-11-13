@@ -88,7 +88,7 @@ void decoder_impl::decode_group(unsigned int *group) {
 
 void decoder_impl::work (std::vector<short> &in) {
 
-	int i=0,j;
+	unsigned int i=0, j;
 	unsigned long bit_distance, block_distance;
 	unsigned int block_calculated_crc, block_received_crc, checkword,dataword;
 	unsigned int reg_syndrome;

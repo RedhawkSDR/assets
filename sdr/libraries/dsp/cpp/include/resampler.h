@@ -59,7 +59,7 @@ public:
      * computation, etc.
      */
     LanczosKernel(size_t a);
-    OutType getValue(InType& x);
+    OutType getValue(InType x);
     size_t _a;
 };
 
@@ -69,7 +69,7 @@ LanczosKernel<OutType, InType>::LanczosKernel(size_t a) :
  {}
 
 template<typename OutType, typename InType>
-OutType LanczosKernel<OutType, InType>::getValue(InType& x)
+OutType LanczosKernel<OutType, InType>::getValue(InType x)
  {
     if (x==0)
         return 1.0;

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -60,7 +60,7 @@ class HardLimit_i(HardLimit_base):
             return NOOP
         
         # Output sri equals the input sri for this component.  If anything is updated, then push that update out.  
-        if sriChanged or not self.port_dataFloat_out.sriDict.has_key(streamID):
+        if sriChanged or streamID not in self.port_dataFloat_out.sriDict:
             self.port_dataFloat_out.pushSRI(sri);
 
         # Implement the hard limit logic

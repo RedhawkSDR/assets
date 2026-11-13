@@ -35,10 +35,14 @@ class SourceSDDS_i : public SourceSDDS_base, public bulkio::InSDDSPort::Callback
         ~SourceSDDS_i();
 
         void constructor();
-        void start() throw (CORBA::SystemException, CF::Resource::StartError);
-        void stop () throw (CF::Resource::StopError, CORBA::SystemException);
+        void start();
+        void stop ();
         int serviceFunction();
-        char* attach(const BULKIO::SDDSStreamDefinition& stream, const char* userid) throw (BULKIO::dataSDDS::AttachError, BULKIO::dataSDDS::StreamInputError);
+        /**
+         * @throw BULKIO::dataSDDS::AttachError
+         * @throw BULKIO::dataSDDS::StreamInputError
+         */
+        char* attach(const BULKIO::SDDSStreamDefinition& stream, const char* userid);
 		void detach(const char* attachId);
 		void newSriListener(const BULKIO::StreamSRI & newSri);
     private:
@@ -51,7 +55,10 @@ class SourceSDDS_i : public SourceSDDS_base, public bulkio::InSDDSPort::Callback
 
         SocketReader m_socketReader;
         SddsToBulkIOProcessor m_sddsToBulkIO;
-        void setupSocketReaderOptions() throw (BadParameterError);
+        /**
+         * @throw BadParameterError
+         */
+        void setupSocketReaderOptions();
         void setupSddsToBulkIOOptions();
         void destroyBuffersAndJoinThreads();
         struct advanced_configuration_struct get_advanced_configuration_struct();
@@ -59,7 +66,10 @@ class SourceSDDS_i : public SourceSDDS_base, public bulkio::InSDDSPort::Callback
         struct status_struct get_status_struct();
         void set_advanced_configuration_struct(struct advanced_configuration_struct request);
         void set_advanced_optimization_struct(struct advanced_optimizations_struct request);
-        void _start() throw (CF::Resource::StartError);
+        /**
+         * @throw CF::Resource::StartError
+         */
+        void _start();
         struct attach_stream {
             std::string id;
             std::string multicastAddress;

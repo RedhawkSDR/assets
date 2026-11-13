@@ -38,17 +38,13 @@ License:        GPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
-Requires:       redhawk >= 2.0
+BuildRequires:  redhawk-devel >= 4.0
+Requires:       redhawk >= 4.0
 
 BuildRequires:  rh.RedhawkDevUtils-devel >= 4.0
 Requires:       rh.RedhawkDevUtils >= 4.0
 BuildRequires:  rh.blueFileLib-devel >= 2.1.0
 Requires:       rh.blueFileLib >= 2.1.0
-
-# Interface requirements
-BuildRequires:  bulkioInterfaces >= 2.0
-Requires:       bulkioInterfaces >= 2.0
 
 # Allow upgrades from previous package name
 Obsoletes:      FileWriter < 4.0.0

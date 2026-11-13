@@ -165,7 +165,8 @@ namespace vrt {
      */
     inline void packInetAddr (void *ptr, int32_t off, const InetAddress &val) {
       char *buf = (char*)ptr;
-      memcpy(&buf[off], &val.toIPv6().s6_addr[0], 16);
+      auto tmp = val.toIPv6().s6_addr[0];
+      memcpy(&buf[off], &tmp, 16);
     }
 
     /** Pack a 16-byte IPv6 address into a buffer.
@@ -174,7 +175,8 @@ namespace vrt {
      *  @param val   value to pack [INPUT]
      */
     inline void packInetAddr (vector<char> &buf, int32_t off, const InetAddress &val) {
-      memcpy(&buf[off], &val.toIPv6().s6_addr[0], 16);
+      auto tmp = val.toIPv6().s6_addr[0];
+      memcpy(&buf[off], &tmp, 16);
     }
 
     /** Unpack a 16-byte IPv6 address from a buffer.

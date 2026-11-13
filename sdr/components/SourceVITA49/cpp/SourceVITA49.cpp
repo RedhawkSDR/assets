@@ -799,7 +799,7 @@ int SourceVITA49_i::serviceFunction() {
     return NORMAL;
 }
 
-void SourceVITA49_i::start() throw (CF::Resource::StartError, CORBA::SystemException) {
+void SourceVITA49_i::start() {
     SourceVITA49_base::start();
     sched_param myPrior;
 
@@ -819,7 +819,7 @@ void SourceVITA49_i::start() throw (CF::Resource::StartError, CORBA::SystemExcep
         serviceThread->updateDelay(0.1);
 }
 
-void SourceVITA49_i::stop() throw (CF::Resource::StopError, CORBA::SystemException) {
+void SourceVITA49_i::stop() {
     boost::mutex::scoped_lock runLock(startstop_lock);
     SourceVITA49_base::stop();
 
@@ -1226,8 +1226,7 @@ void SourceVITA49_i::applyAttachSettings(attachment& attachSettings) {
  *    inside of port_impl.cpp.  This function pulls the relevant information out of the
  *    StreamDefinition to open a connection to the socket.  The streamID is returned
  ***********************************************************************************************/
-char* SourceVITA49_i::attach(const BULKIO::VITA49StreamDefinition& stream, const char* userid)
-throw (BULKIO::dataVITA49::AttachError, BULKIO::dataVITA49::StreamInputError) {
+char* SourceVITA49_i::attach(const BULKIO::VITA49StreamDefinition& stream, const char* userid) {
     printStreamDef(stream);
     boost::mutex::scoped_lock runLock(running_lock);
 

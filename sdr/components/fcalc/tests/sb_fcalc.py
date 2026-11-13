@@ -19,7 +19,7 @@ from ossie.utils import sb
 from ossie.properties import props_from_dict
 
 import ossie.properties
-print ossie.properties.__file__
+print(ossie.properties.__file__)
 import math
 from math import cos
 
@@ -35,12 +35,12 @@ src2.connect(c,'b')
 c.connect(sink,'floatIn')
 
 c.equation="math.sin(3*a)+cos(5*b)"
-print c.query([])
+print(c.query([]))
 
 sb.start()
-data1 = [float(x) for x in xrange(1024)]
-data2 = [float(x) for x in xrange(-512,0)]
-data3 = [float(x) for x in xrange(0,512)]
+data1 = [float(x) for x in range(1024)]
+data2 = [float(x) for x in range(-512,0)]
+data3 = [float(x) for x in range(0,512)]
 src1.push(data1)
 src2.push(data2)
 src2.push(data3)
@@ -50,13 +50,13 @@ time.sleep(1.0)
 out =  sink.getData()
 myOut = []
 eq = str(c.equation)
-print len(out)
+print(len(out))
 data4 = data2
 data4.extend(data3)
-print len(data1), len(data4)
+print(len(data1), len(data4))
 for a,b,o in zip(data1,data4,out):
   if eval(eq) !=o:
-    print a,b,o
+    print(a,b,o)
 
-print "test is done"
+print("test is done")
 

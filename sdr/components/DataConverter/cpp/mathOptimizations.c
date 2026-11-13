@@ -19,6 +19,8 @@
  */
 
 #include "mathOptimizations.h"
+#include <stdio.h>
+
 void char2ucharScaled(unsigned char* dst, const char* src, int n){
 int k = 0;
 #ifdef __SSE2__
@@ -97,12 +99,14 @@ int k = 0;
     if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
         for( ; k+7<n;k+=8){
             __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-            a1 = _mm_cvtepi8_epi16(a1);
-#else
+// #ifdef __SSE4_1__
+//             // a1 = _mm_cvtepi8_epi16(a1);
+//             a1 = _mm_unpacklo_epi8(a1,a1);
+//             a1 = _mm_srai_epi16(a1,0x8);
+// #else
             a1 = _mm_unpacklo_epi8(a1,a1);
             a1 = _mm_srai_epi16(a1,0x8);
-#endif
+// #endif
             _mm_store_si128((__m128i*)(dst+k),a1);
         }
 
@@ -114,12 +118,14 @@ int k = 0;
     }else{
         for( ; k+7<n;k+=8){
            __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-            a1 = _mm_cvtepi8_epi16(a1);
-#else
+// #ifdef __SSE4_1__
+//             // a1 = _mm_cvtepi8_epi16(a1);
+//             a1 = _mm_unpacklo_epi8(a1,a1);
+//             a1 = _mm_srai_epi16(a1,0x8);
+// #else
             a1 = _mm_unpacklo_epi8(a1,a1);
             a1 = _mm_srai_epi16(a1,0x8);
-#endif
+// #endif
             _mm_storeu_si128((__m128i*)(dst+k),a1);
         }
         if(k<(n)){
@@ -144,12 +150,14 @@ int k = 0;
         for( ; k+7<n;k+=8){
             __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
             a1 = _mm_xor_si128(a1,constant);
-#ifdef __SSE4_1__
-            a1 = _mm_cvtepi8_epi16(a1);
-#else
+// #ifdef __SSE4_1__
+//             // a1 = _mm_cvtepi8_epi16(a1);
+//             a1 = _mm_unpacklo_epi8(a1,a1);
+//             a1 = _mm_srli_epi16(a1,0x8);
+// #else
             a1 = _mm_unpacklo_epi8(a1,a1);
             a1 = _mm_srli_epi16(a1,0x8);
-#endif
+// #endif
             _mm_store_si128((__m128i*)(dst+k),a1);
         }
 
@@ -162,12 +170,14 @@ int k = 0;
         for( ; k+7<n;k+=8){
             __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
              a1 = _mm_xor_si128(a1,constant);
-#ifdef __SSE4_1__
-            a1 = _mm_cvtepi8_epi16(a1);
-#else
+// #ifdef __SSE4_1__
+//             a1 = _mm_unpacklo_epi8(a1,a1);
+//             a1 = _mm_srli_epi16(a1,0x8);
+//             // a1 = _mm_cvtepi8_epi16(a1);
+// #else
             a1 = _mm_unpacklo_epi8(a1,a1);
             a1 = _mm_srli_epi16(a1,0x8);
-#endif
+// #endif
             _mm_storeu_si128((__m128i*)(dst+k),a1);
         }
 
@@ -192,12 +202,14 @@ int k = 0;
     if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
         for( ; k+7<n;k+=8){
             __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-            a1 = _mm_cvtepi8_epi16(a1);
-#else
+// #ifdef __SSE4_1__
+//             // a1 = _mm_cvtepi8_epi16(a1);
+//             a1 = _mm_unpacklo_epi8(a1,a1);
+//             a1 = _mm_srli_epi16(a1,0x8);
+// #else
             a1 = _mm_unpacklo_epi8(a1,a1);
             a1 = _mm_srli_epi16(a1,0x8);
-#endif
+// #endif
             a1 = _mm_sub_epi16(a1,s_min);
             a1 = _mm_mullo_epi16(a1,range);
             a1 = _mm_add_epi16(a1,d_min);
@@ -214,12 +226,14 @@ int k = 0;
     }else{
         for( ; k+7<n;k+=8){
             __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-            a1 = _mm_cvtepi8_epi16(a1);
-#else
+// #ifdef __SSE4_1__
+//             // a1 = _mm_cvtepi8_epi16(a1);
+//             a1 = _mm_unpacklo_epi8(a1,a1);
+//             a1 = _mm_srli_epi16(a1,0x8);
+// #else
             a1 = _mm_unpacklo_epi8(a1,a1);
             a1 = _mm_srli_epi16(a1,0x8);
-#endif
+// #endif
             a1 = _mm_sub_epi16(a1,s_min);
             a1 = _mm_mullo_epi16(a1,range);
             a1 = _mm_add_epi16(a1,d_min);
@@ -267,12 +281,14 @@ int k = 0;
     if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
         for( ; k+7<n;k+=8){
             __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-            a1 = _mm_cvtepi8_epi16(a1);
-#else
+// #ifdef __SSE4_1__
+//             // a1 = _mm_cvtepi8_epi16(a1);
+//             a1 = _mm_unpacklo_epi8(a1,a1);
+//             a1 = _mm_srli_epi16(a1,0x8);
+// #else
             a1 = _mm_unpacklo_epi8(a1,a1);
             a1 = _mm_srli_epi16(a1,0x8);
-#endif
+// #endif
             a1 = _mm_sub_epi16(a1,s_min);
             a1 = _mm_mullo_epi16(a1,range);
             a1 = _mm_add_epi16(a1,d_min);
@@ -289,12 +305,14 @@ int k = 0;
     }else{
         for( ; k+7<n;k+=8){
             __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-            a1 = _mm_cvtepi8_epi16(a1);
-#else
+// #ifdef __SSE4_1__
+//             // a1 = _mm_cvtepi8_epi16(a1);
+//             a1 = _mm_unpacklo_epi8(a1,a1);
+//             a1 = _mm_srli_epi16(a1,0x8);
+// #else
             a1 = _mm_unpacklo_epi8(a1,a1);
             a1 = _mm_srli_epi16(a1,0x8);
-#endif
+// #endif
             a1 = _mm_sub_epi16(a1,s_min);
             a1 = _mm_mullo_epi16(a1,range);
             a1 = _mm_add_epi16(a1,d_min);
@@ -326,12 +344,14 @@ int k = 0;
             __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
             //a1 = _mm_xor_si128(a1,constant);
             //a1 = _mm_sub_epi8(a1,s_min);
-#ifdef __SSE4_1__
-            a1 = _mm_cvtepi8_epi16(a1);
-#else
+// #ifdef __SSE4_1__
+//             // a1 = _mm_cvtepi8_epi16(a1);
+//             a1 = _mm_unpacklo_epi8(a1,a1);
+//             a1 = _mm_srai_epi16(a1,0x8);
+// #else
             a1 = _mm_unpacklo_epi8(a1,a1);
             a1 = _mm_srai_epi16(a1,0x8);
-#endif
+// #endif
             a1 = _mm_sub_epi16(a1,s_min);
             a1 = _mm_mullo_epi16(a1,range);
             a1 = _mm_add_epi16(a1,d_min);
@@ -350,12 +370,14 @@ int k = 0;
             __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
             //a1 = _mm_xor_si128(a1,constant);
             //a1 = _mm_sub_epi8(a1,s_min);
-#ifdef __SSE4_1__
-            a1 = _mm_cvtepi8_epi16(a1);
-#else
+// #ifdef __SSE4_1__
+//             // a1 = _mm_cvtepi8_epi16(a1);
+//             a1 = _mm_unpacklo_epi8(a1,a1);
+//             a1 = _mm_srai_epi16(a1,0x8);
+// #else
             a1 = _mm_unpacklo_epi8(a1,a1);
             a1 = _mm_srai_epi16(a1,0x8);
-#endif
+// #endif
             a1 = _mm_sub_epi16(a1,s_min);
             a1 = _mm_mullo_epi16(a1,range);
             a1 = _mm_add_epi16(a1,d_min);
@@ -385,12 +407,14 @@ int k = 0;
         for( ; k+7<n;k+=8){
             __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
              a1 = _mm_xor_si128(a1,constant);
-#ifdef __SSE4_1__
-            a1 = _mm_cvtepi8_epi16(a1);
-#else
+// #ifdef __SSE4_1__
+//             //a1 = _mm_cvtepi8_epi16(a1);
+//             a1 = _mm_unpacklo_epi8(a1,a1);
+//             a1 = _mm_srli_epi16(a1,0x8);
+// #else
             a1 = _mm_unpacklo_epi8(a1,a1);
             a1 = _mm_srli_epi16(a1,0x8);
-#endif
+// #endif
             a1 = _mm_mullo_epi16(a1,range);
             a1 = _mm_add_epi16(a1,d_min);
             _mm_store_si128((__m128i*)(dst+k),a1);
@@ -407,12 +431,14 @@ int k = 0;
         for( ; k+7<n;k+=8){
             __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
              a1 = _mm_xor_si128(a1,constant);
-#ifdef __SSE4_1__
-            a1 = _mm_cvtepi8_epi16(a1);
-#else
+// #ifdef __SSE4_1__
+//             // a1 = _mm_cvtepi8_epi16(a1);
+//             a1 = _mm_unpacklo_epi8(a1,a1);
+//             a1 = _mm_srli_epi16(a1,0x8);
+// #else
             a1 = _mm_unpacklo_epi8(a1,a1);
             a1 = _mm_srli_epi16(a1,0x8);
-#endif
+// #endif
             a1 = _mm_mullo_epi16(a1,range);
             a1 = _mm_add_epi16(a1,d_min);
             _mm_storeu_si128((__m128i*)(dst+k),a1);
@@ -435,29 +461,29 @@ void char2float( float *dst, const char* src, int n){
 #else
     int k=0;
 
-#ifdef __SSE4_1__
-    if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
-        for( ; k+7<n;k+=8){
-            // load 8 16bit words
-              __m128i a1 = _mm_load_si128((const __m128i*)( src+k));
-              __m128i a2 = _mm_load_si128((const __m128i*)( src+k+4));
+// #ifdef __SSE4_1__
+//     if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
+//         for( ; k+7<n;k+=8){
+//             // load 8 16bit words
+//               __m128i a1 = _mm_load_si128((const __m128i*)( src+k));
+//               __m128i a2 = _mm_load_si128((const __m128i*)( src+k+4));
 
-              a1 = _mm_cvtepi8_epi32(a1);
-              a2 = _mm_cvtepi8_epi32(a2);
+//               a1 = _mm_cvtepi8_epi32(a1);
+//               a2 = _mm_cvtepi8_epi32(a2);
 
-            __m128 c1 = _mm_cvtepi32_ps(a1);
-            __m128 c2 = _mm_cvtepi32_ps(a2);
+//             __m128 c1 = _mm_cvtepi32_ps(a1);
+//             __m128 c2 = _mm_cvtepi32_ps(a2);
 
-            _mm_store_ps((float*)(dst+k),c1);
-            _mm_store_ps((float*)(dst+k+4),c2);
-        }
-        if(k<(n-1)){
-            for(;k<n;++k){
-                dst[k]=(float)src[k];
-            }
-            }
-      }
-#else
+//             _mm_store_ps((float*)(dst+k),c1);
+//             _mm_store_ps((float*)(dst+k+4),c2);
+//         }
+//         if(k<(n-1)){
+//             for(;k<n;++k){
+//                 dst[k]=(float)src[k];
+//             }
+//             }
+//       }
+// #else
 
 #ifdef __SSE2__
     if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
@@ -485,7 +511,7 @@ void char2float( float *dst, const char* src, int n){
     }
 #endif
 #endif
-#endif
+// #endif
 }
 void uchar2float( float *dst, const unsigned char* src, int n){
 #ifdef HAVE_IPP
@@ -493,29 +519,29 @@ void uchar2float( float *dst, const unsigned char* src, int n){
 #else
     int k=0;
 
-#ifdef __SSE4_1__
-    if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
-        for( ; k+7<n;k+=8){
-            // load 8 16bit words
-              __m128i a1 = _mm_load_si128((const __m128i*)( src+k));
-              __m128i a2 = _mm_load_si128((const __m128i*)( src+k+4));
+// #ifdef __SSE4_1__
+//     if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
+//         for( ; k+7<n;k+=8){
+//             // load 8 16bit words
+//               __m128i a1 = _mm_load_si128((const __m128i*)( src+k));
+//               __m128i a2 = _mm_load_si128((const __m128i*)( src+k+4));
 
-              a1 = _mm_cvtepu8_epi32(a1);
-              a2 = _mm_cvtepu8_epi32(a2);
+//               a1 = _mm_cvtepu8_epi32(a1);
+//               a2 = _mm_cvtepu8_epi32(a2);
 
-            __m128 c1 = _mm_cvtepi32_ps(a1);
-            __m128 c2 = _mm_cvtepi32_ps(a2);
+//             __m128 c1 = _mm_cvtepi32_ps(a1);
+//             __m128 c2 = _mm_cvtepi32_ps(a2);
 
-            _mm_store_ps((float*)(dst+k),c1);
-            _mm_store_ps((float*)(dst+k+4),c2);
-        }
-        if(k<(n-1)){
-            for(;k<n;++k){
-                dst[k]=(float)src[k];
-            }
-        }
-      }
-#else
+//             _mm_store_ps((float*)(dst+k),c1);
+//             _mm_store_ps((float*)(dst+k+4),c2);
+//         }
+//         if(k<(n-1)){
+//             for(;k<n;++k){
+//                 dst[k]=(float)src[k];
+//             }
+//         }
+//       }
+// #else
 
 #ifdef __SSE2__
     if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
@@ -543,7 +569,7 @@ void uchar2float( float *dst, const unsigned char* src, int n){
     }
 #endif
 #endif
-#endif
+// #endif
 }
 void char2floatScaled( float *dst, const char* src, int n, float sMin,float dRange, float sRange, float dMin){
 int k=0;
@@ -557,17 +583,17 @@ int k=0;
         for( ; k+7<n;k+=8){
             // load 8 16bit words
           __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-          __m128i a2 = _mm_load_si128((const __m128i*)( src+k+4));
-          a1 = _mm_cvtepi8_epi32(a1);
-          a2 = _mm_cvtepi8_epi32(a2);
-#else
+// #ifdef __SSE4_1__
+//           __m128i a2 = _mm_load_si128((const __m128i*)( src+k+4));
+//           a1 = _mm_cvtepi8_epi32(a1);
+//           a2 = _mm_cvtepi8_epi32(a2);
+// #else
         a1 = _mm_unpacklo_epi8(a1,a1);
         __m128i a2 = _mm_unpackhi_epi16(a1,a1);
         a1 = _mm_unpacklo_epi16(a1,a1);
         a1 = _mm_srai_epi32(a1,0x18);
         a2 = _mm_srai_epi32(a2,0x18);
-#endif
+// #endif
         __m128 c1 = _mm_cvtepi32_ps(a1);
         __m128 c2 = _mm_cvtepi32_ps(a2);
 
@@ -593,17 +619,17 @@ int k=0;
         for( ; k+7<n;k+=8){
             // load 8 16bit words
           __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-          __m128i a2 = _mm_loadu_si128((const __m128i*)( src+k+4));
-          a1 = _mm_cvtepi8_epi32(a1);
-          a2 = _mm_cvtepi8_epi32(a2);
-#else
+// #ifdef __SSE4_1__
+//           __m128i a2 = _mm_loadu_si128((const __m128i*)( src+k+4));
+//           a1 = _mm_cvtepi8_epi32(a1);
+//           a2 = _mm_cvtepi8_epi32(a2);
+// #else
         a1 = _mm_unpacklo_epi8(a1,a1);
         __m128i a2 = _mm_unpackhi_epi16(a1,a1);
         a1 = _mm_unpacklo_epi16(a1,a1);
         a1 = _mm_srai_epi32(a1,0x18);
         a2 = _mm_srai_epi32(a2,0x18);
-#endif
+// #endif
         __m128 c1 = _mm_cvtepi32_ps(a1);
         __m128 c2 = _mm_cvtepi32_ps(a2);
 
@@ -643,17 +669,17 @@ int k=0;
         for( ; k+7<n;k+=8){
             // load 8 16bit words
               __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE_4_1__
-            __m128i a2 = _mm_loadu_si128((const __m128i*)( src+k+4));
-            a1 = _mm_cvtepu8_epi32(a1);
-              a2 = _mm_cvtepu8_epi32(a2);
-#else
+// #ifdef __SSE_4_1__
+//             __m128i a2 = _mm_loadu_si128((const __m128i*)( src+k+4));
+//             a1 = _mm_cvtepu8_epi32(a1);
+//               a2 = _mm_cvtepu8_epi32(a2);
+// #else
             a1 = _mm_unpacklo_epi8(a1,a1);
             __m128i a2 = _mm_unpackhi_epi16(a1,a1);
             a1 = _mm_unpacklo_epi16(a1,a1);
             a1 = _mm_srli_epi32(a1,0x18);
             a2 = _mm_srli_epi32(a2,0x18);
-#endif
+// #endif
             __m128 c1 = _mm_cvtepi32_ps(a1);
             __m128 c2 = _mm_cvtepi32_ps(a2);
 
@@ -680,17 +706,17 @@ int k=0;
         for( ; k+7<n;k+=8){
             // load 8 16bit words
               __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE_4_1__
-            __m128i a2 = _mm_loadu_si128((const __m128i*)( src+k+4));
-            a1 = _mm_cvtepu8_epi32(a1);
-              a2 = _mm_cvtepu8_epi32(a2);
-#else
+// #ifdef __SSE_4_1__
+//             __m128i a2 = _mm_loadu_si128((const __m128i*)( src+k+4));
+//             a1 = _mm_cvtepu8_epi32(a1);
+//               a2 = _mm_cvtepu8_epi32(a2);
+// #else
             a1 = _mm_unpacklo_epi8(a1,a1);
             __m128i a2 = _mm_unpackhi_epi16(a1,a1);
             a1 = _mm_unpacklo_epi16(a1,a1);
             a1 = _mm_srli_epi32(a1,0x18);
             a2 = _mm_srli_epi32(a2,0x18);
-#endif
+// #endif
             __m128 c1 = _mm_cvtepi32_ps(a1);
             __m128 c2 = _mm_cvtepi32_ps(a2);
 
@@ -729,16 +755,16 @@ int k = 0;
         for( ; k+7<n;k+=8){
             //load values
             __m128i a1 = _mm_load_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-               __m128i a2 = _mm_load_si128((const __m128i*)( src+4+k));
-            a1 = _mm_cvtepi16_epi32(a1);
-            a2 = _mm_cvtepi16_epi32(a2);
-#else
+// #ifdef __SSE4_1__
+//                __m128i a2 = _mm_load_si128((const __m128i*)( src+4+k));
+//             a1 = _mm_cvtepi16_epi32(a1);
+//             a2 = _mm_cvtepi16_epi32(a2);
+// #else
             __m128i a2 = _mm_unpackhi_epi16(a1,a1);
             a1 = _mm_unpacklo_epi16(a1,a1);
             a1 = _mm_srai_epi32(a1,0x10);
             a2 = _mm_srai_epi32(a2,0x10);
-#endif
+// #endif
             __m128 c1 =  _mm_cvtepi32_ps(a1);
             __m128 c2 =  _mm_cvtepi32_ps(a2);
             c1 = _mm_sub_ps(c1,s_min);
@@ -750,10 +776,10 @@ int k = 0;
             c2 = _mm_div_ps(c2,srange);
             c1 = _mm_add_ps(c1,d_min);
             c2 = _mm_add_ps(c2,d_min);
-#ifdef __SSE4_1__
-            //c1 = _mm_floor_ps(c1);
-            //c2 = _mm_float_ps(c2);
-#endif
+// #ifdef __SSE4_1__
+//             //c1 = _mm_floor_ps(c1);
+//             //c2 = _mm_float_ps(c2);
+// #endif
             a1 = _mm_cvtps_epi32(c1);
             a2 = _mm_cvtps_epi32(c2);
             a1 = _mm_packs_epi32(a1,a2);
@@ -773,16 +799,16 @@ int k = 0;
             for( ; k+7<n;k+=8){
             //load values
             __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-               __m128i a2 = _mm_loadu_si128((const __m128i*)( src+4+k));
-            a1 = _mm_cvtepi16_epi32(a1);
-            a2 = _mm_cvtepi16_epi32(a2);
-#else
+// #ifdef __SSE4_1__
+//                __m128i a2 = _mm_loadu_si128((const __m128i*)( src+4+k));
+//             a1 = _mm_cvtepi16_epi32(a1);
+//             a2 = _mm_cvtepi16_epi32(a2);
+// #else
             __m128i a2 = _mm_unpackhi_epi16(a1,a1);
             a1 = _mm_unpacklo_epi16(a1,a1);
             a1 = _mm_srai_epi32(a1,0x10);
             a2 = _mm_srai_epi32(a2,0x10);
-#endif
+// #endif
             __m128 c1 =  _mm_cvtepi32_ps(a1);
             __m128 c2 =  _mm_cvtepi32_ps(a2);
             c1 = _mm_sub_ps(c1,s_min);
@@ -947,16 +973,16 @@ int k = 0;
     if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
         for( ; k+7<n;k+=8){
             __m128i a1 = _mm_load_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-               __m128i a2 = _mm_load_si128((const __m128i*)( src+4+k));
-            a1 = _mm_cvtepu16_epi32(a1);
-            a2 = _mm_cvtepu16_epi32(a2);
-#else
+// #ifdef __SSE4_1__
+//                __m128i a2 = _mm_load_si128((const __m128i*)( src+4+k));
+//             a1 = _mm_cvtepu16_epi32(a1);
+//             a2 = _mm_cvtepu16_epi32(a2);
+// #else
             __m128i a2 = _mm_unpackhi_epi16(a1,a1);
             a1 = _mm_unpacklo_epi16(a1,a1);
             a1 = _mm_srli_epi32(a1,0x10);
             a2 = _mm_srli_epi32(a2,0x10);
-#endif
+// #endif
             __m128 c1 =  _mm_cvtepi32_ps(a1);
             __m128 c2 =  _mm_cvtepi32_ps(a2);
             c1 = _mm_sub_ps(c1,s_min);
@@ -984,16 +1010,16 @@ int k = 0;
     }else{
         for( ; k+7<n;k+=8){
             __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-               __m128i a2 = _mm_loadu_si128((const __m128i*)( src+4+k));
-            a1 = _mm_cvtepu16_epi32(a1);
-            a2 = _mm_cvtepu16_epi32(a2);
-#else
+// #ifdef __SSE4_1__
+//                __m128i a2 = _mm_loadu_si128((const __m128i*)( src+4+k));
+//             a1 = _mm_cvtepu16_epi32(a1);
+//             a2 = _mm_cvtepu16_epi32(a2);
+// #else
             __m128i a2 = _mm_unpackhi_epi16(a1,a1);
             a1 = _mm_unpacklo_epi16(a1,a1);
             a1 = _mm_srli_epi32(a1,0x10);
             a2 = _mm_srli_epi32(a2,0x10);
-#endif
+// #endif
             __m128 c1 =  _mm_cvtepi32_ps(a1);
             __m128 c2 =  _mm_cvtepi32_ps(a2);
             c1 = _mm_sub_ps(c1,s_min);
@@ -1045,16 +1071,16 @@ int k = 0;
     if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
         for( ; k+7<n;k+=8){
             __m128i a1 = _mm_load_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-               __m128i a2 = _mm_load_si128((const __m128i*)( src+4+k));
-            a1 = _mm_cvtepu16_epi32(a1);
-            a2 = _mm_cvtepu16_epi32(a2);
-#else
+// #ifdef __SSE4_1__
+//                __m128i a2 = _mm_load_si128((const __m128i*)( src+4+k));
+//             a1 = _mm_cvtepu16_epi32(a1);
+//             a2 = _mm_cvtepu16_epi32(a2);
+// #else
             __m128i a2 = _mm_unpackhi_epi16(a1,a1);
             a1 = _mm_unpacklo_epi16(a1,a1);
             a1 = _mm_srli_epi32(a1,0x10);
             a2 = _mm_srli_epi32(a2,0x10);
-#endif
+// #endif
             __m128 c1 =  _mm_cvtepi32_ps(a1);
             __m128 c2 =  _mm_cvtepi32_ps(a2);
             c1 = _mm_sub_ps(c1,s_min);
@@ -1082,16 +1108,16 @@ int k = 0;
     }else{
         for( ; k+7<n;k+=8){
             __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-               __m128i a2 = _mm_loadu_si128((const __m128i*)( src+4+k));
-            a1 = _mm_cvtepu16_epi32(a1);
-            a2 = _mm_cvtepu16_epi32(a2);
-#else
+// #ifdef __SSE4_1__
+//                __m128i a2 = _mm_loadu_si128((const __m128i*)( src+4+k));
+//             a1 = _mm_cvtepu16_epi32(a1);
+//             a2 = _mm_cvtepu16_epi32(a2);
+// #else
             __m128i a2 = _mm_unpackhi_epi16(a1,a1);
             a1 = _mm_unpacklo_epi16(a1,a1);
             a1 = _mm_srli_epi32(a1,0x10);
             a2 = _mm_srli_epi32(a2,0x10);
-#endif
+// #endif
             __m128 c1 =  _mm_cvtepi32_ps(a1);
             __m128 c2 =  _mm_cvtepi32_ps(a2);
 
@@ -1133,16 +1159,16 @@ int k = 0;
     if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
         for( ; k+7<n;k+=8){
                 __m128i a1 = _mm_load_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-               __m128i a2 = _mm_load_si128((const __m128i*)( src+4+k));
-            a1 = _mm_cvtepi16_epi32(a1);
-            a2 = _mm_cvtepi16_epi32(a2);
-#else
+// #ifdef __SSE4_1__
+//                __m128i a2 = _mm_load_si128((const __m128i*)( src+4+k));
+//             a1 = _mm_cvtepi16_epi32(a1);
+//             a2 = _mm_cvtepi16_epi32(a2);
+// #else
             __m128i a2 = _mm_unpackhi_epi16(a1,a1);
             a1 = _mm_unpacklo_epi16(a1,a1);
             a1 = _mm_srai_epi32(a1,0x10);
             a2 = _mm_srai_epi32(a2,0x10);
-#endif
+// #endif
             __m128 c1 =  _mm_cvtepi32_ps(a1);
             __m128 c2 =  _mm_cvtepi32_ps(a2);
             c1 = _mm_sub_ps(c1,s_min);
@@ -1171,16 +1197,16 @@ int k = 0;
     }else{
         for( ; k+7<n;k+=8){
                 __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-               __m128i a2 = _mm_loadu_si128((const __m128i*)( src+4+k));
-            a1 = _mm_cvtepi16_epi32(a1);
-            a2 = _mm_cvtepi16_epi32(a2);
-#else
+// #ifdef __SSE4_1__
+//                __m128i a2 = _mm_loadu_si128((const __m128i*)( src+4+k));
+//             a1 = _mm_cvtepi16_epi32(a1);
+//             a2 = _mm_cvtepi16_epi32(a2);
+// #else
             __m128i a2 = _mm_unpackhi_epi16(a1,a1);
             a1 = _mm_unpacklo_epi16(a1,a1);
             a1 = _mm_srai_epi32(a1,0x10);
             a2 = _mm_srai_epi32(a2,0x10);
-#endif
+// #endif
             __m128 c1 =  _mm_cvtepi32_ps(a1);
             __m128 c2 =  _mm_cvtepi32_ps(a2);
             c1 = _mm_sub_ps(c1,s_min);
@@ -1318,59 +1344,59 @@ void short2float( float *dst, const short *src, int n){
            ippsConvert_16s32f((const Ipp16s*) src, (Ipp32f*)dst, n);
        #else
            int k=0;
-       #ifdef __SSE4_1__
-           if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
+    //    #ifdef __SSE4_1__
+    //        if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
 
-               for( ; k+15<n;k+=16){
-                   __m128i a1 = _mm_load_si128((const __m128i*)( src+k));
-                     __m128i a2 = _mm_load_si128((const __m128i*)( src+k+4));
-                     __m128i a3 = _mm_load_si128((const __m128i*)( src+k+8));
-                     __m128i a4 = _mm_load_si128((const __m128i*)( src+k+12));
-                     a1 = _mm_cvtepi16_epi32(a1);
-                     a2 = _mm_cvtepi16_epi32(a2);
-                   a3 = _mm_cvtepi16_epi32(a3);
-                     a4 = _mm_cvtepi16_epi32(a4);
-                   __m128 c1 = _mm_cvtepi32_ps(a1);
-                   __m128 c2 = _mm_cvtepi32_ps(a2);
-                   __m128 c3 = _mm_cvtepi32_ps(a3);
-                   __m128 c4 = _mm_cvtepi32_ps(a4);
-                   _mm_store_ps((float*)(dst+k),c1);
-                   _mm_store_ps((float*)(dst+k+4),c2);
-                   _mm_store_ps((float*)(dst+k+8),c3);
-                   _mm_store_ps((float*)(dst+k+12),c4);
-               }
-               if(k<(n-1)){
-                   for(;k<n;++k){
-                       dst[k]=(float)src[k];
-                   }
-               }
-           }else{
-                 for( ; k+15<n;k+=16){
-                      __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-                      __m128i a2 = _mm_loadu_si128((const __m128i*)( src+k+4));
-                      __m128i a3 = _mm_loadu_si128((const __m128i*)( src+k+8));
-                      __m128i a4 = _mm_loadu_si128((const __m128i*)( src+k+12));
-                              a1 = _mm_cvtepi16_epi32(a1);
-                             a2 = _mm_cvtepi16_epi32(a2);
-                           a3 = _mm_cvtepi16_epi32(a3);
-                             a4 = _mm_cvtepi16_epi32(a4);
-                           __m128 c1 = _mm_cvtepi32_ps(a1);
-                           __m128 c2 = _mm_cvtepi32_ps(a2);
-                           __m128 c3 = _mm_cvtepi32_ps(a3);
-                           __m128 c4 = _mm_cvtepi32_ps(a4);
-                           _mm_storeu_ps((float*)(dst+k),c1);
-                           _mm_storeu_ps((float*)(dst+k+4),c2);
-                           _mm_storeu_ps((float*)(dst+k+8),c3);
-                           _mm_storeu_ps((float*)(dst+k+12),c4);
-                   }
-                   if(k<(n-1)){
-                       for(;k<n;++k){
-                           dst[k]=(float)src[k];
-                       }
-                   }
-           }
+    //            for( ; k+15<n;k+=16){
+    //                __m128i a1 = _mm_load_si128((const __m128i*)( src+k));
+    //                  __m128i a2 = _mm_load_si128((const __m128i*)( src+k+4));
+    //                  __m128i a3 = _mm_load_si128((const __m128i*)( src+k+8));
+    //                  __m128i a4 = _mm_load_si128((const __m128i*)( src+k+12));
+    //                  a1 = _mm_cvtepi16_epi32(a1);
+    //                  a2 = _mm_cvtepi16_epi32(a2);
+    //                a3 = _mm_cvtepi16_epi32(a3);
+    //                  a4 = _mm_cvtepi16_epi32(a4);
+    //                __m128 c1 = _mm_cvtepi32_ps(a1);
+    //                __m128 c2 = _mm_cvtepi32_ps(a2);
+    //                __m128 c3 = _mm_cvtepi32_ps(a3);
+    //                __m128 c4 = _mm_cvtepi32_ps(a4);
+    //                _mm_store_ps((float*)(dst+k),c1);
+    //                _mm_store_ps((float*)(dst+k+4),c2);
+    //                _mm_store_ps((float*)(dst+k+8),c3);
+    //                _mm_store_ps((float*)(dst+k+12),c4);
+    //            }
+    //            if(k<(n-1)){
+    //                for(;k<n;++k){
+    //                    dst[k]=(float)src[k];
+    //                }
+    //            }
+    //        }else{
+    //              for( ; k+15<n;k+=16){
+    //                   __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
+    //                   __m128i a2 = _mm_loadu_si128((const __m128i*)( src+k+4));
+    //                   __m128i a3 = _mm_loadu_si128((const __m128i*)( src+k+8));
+    //                   __m128i a4 = _mm_loadu_si128((const __m128i*)( src+k+12));
+    //                           a1 = _mm_cvtepi16_epi32(a1);
+    //                          a2 = _mm_cvtepi16_epi32(a2);
+    //                        a3 = _mm_cvtepi16_epi32(a3);
+    //                          a4 = _mm_cvtepi16_epi32(a4);
+    //                        __m128 c1 = _mm_cvtepi32_ps(a1);
+    //                        __m128 c2 = _mm_cvtepi32_ps(a2);
+    //                        __m128 c3 = _mm_cvtepi32_ps(a3);
+    //                        __m128 c4 = _mm_cvtepi32_ps(a4);
+    //                        _mm_storeu_ps((float*)(dst+k),c1);
+    //                        _mm_storeu_ps((float*)(dst+k+4),c2);
+    //                        _mm_storeu_ps((float*)(dst+k+8),c3);
+    //                        _mm_storeu_ps((float*)(dst+k+12),c4);
+    //                }
+    //                if(k<(n-1)){
+    //                    for(;k<n;++k){
+    //                        dst[k]=(float)src[k];
+    //                    }
+    //                }
+    //        }
 
-       #else
+    //    #else
        #ifdef __SSE2__
            if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
        
@@ -1450,7 +1476,7 @@ void short2float( float *dst, const short *src, int n){
            }
        #endif
        #endif
-       #endif
+    //    #endif
        }
 
 
@@ -1460,34 +1486,34 @@ void ushort2float( float *dst, const unsigned short *src, int n){
     ippsConvert_16s32f((const Ipp16s*) src, (Ipp32f*)dst, n);
 #else
     int k=0;
-#ifdef __SSE4_1__ 
-    if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
+// #ifdef __SSE4_1__ 
+//     if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
 
-        for( ; k+15<n;k+=16){
-            __m128i a1 = _mm_load_si128((const __m128i*)( src+k));
-              __m128i a2 = _mm_load_si128((const __m128i*)( src+k+4));
-              __m128i a3 = _mm_load_si128((const __m128i*)( src+k+8));
-              __m128i a4 = _mm_load_si128((const __m128i*)( src+k+12));
-              a1 = _mm_cvtepu16_epi32(a1);
-              a2 = _mm_cvtepu16_epi32(a2);
-            a3 = _mm_cvtepu16_epi32(a3);
-              a4 = _mm_cvtepu16_epi32(a4);
-            __m128 c1 = _mm_cvtepi32_ps(a1);
-            __m128 c2 = _mm_cvtepi32_ps(a2);
-            __m128 c3 = _mm_cvtepi32_ps(a3);
-            __m128 c4 = _mm_cvtepi32_ps(a4);
-            _mm_store_ps((float*)(dst+k),c1);
-            _mm_store_ps((float*)(dst+k+4),c2);
-            _mm_store_ps((float*)(dst+k+8),c3);
-            _mm_store_ps((float*)(dst+k+12),c4);
-        }
-        if(k<(n-1)){
-            for(;k<n;++k){
-                dst[k]=(float)src[k];
-            }
-        }
-    }
-#else
+//         for( ; k+15<n;k+=16){
+//             __m128i a1 = _mm_load_si128((const __m128i*)( src+k));
+//               __m128i a2 = _mm_load_si128((const __m128i*)( src+k+4));
+//               __m128i a3 = _mm_load_si128((const __m128i*)( src+k+8));
+//               __m128i a4 = _mm_load_si128((const __m128i*)( src+k+12));
+//               a1 = _mm_cvtepu16_epi32(a1);
+//               a2 = _mm_cvtepu16_epi32(a2);
+//             a3 = _mm_cvtepu16_epi32(a3);
+//               a4 = _mm_cvtepu16_epi32(a4);
+//             __m128 c1 = _mm_cvtepi32_ps(a1);
+//             __m128 c2 = _mm_cvtepi32_ps(a2);
+//             __m128 c3 = _mm_cvtepi32_ps(a3);
+//             __m128 c4 = _mm_cvtepi32_ps(a4);
+//             _mm_store_ps((float*)(dst+k),c1);
+//             _mm_store_ps((float*)(dst+k+4),c2);
+//             _mm_store_ps((float*)(dst+k+8),c3);
+//             _mm_store_ps((float*)(dst+k+12),c4);
+//         }
+//         if(k<(n-1)){
+//             for(;k<n;++k){
+//                 dst[k]=(float)src[k];
+//             }
+//         }
+//     }
+// #else
 #ifdef __SSE2__
     if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
         for( ; k+15<n;k+=16){
@@ -1562,7 +1588,7 @@ void ushort2float( float *dst, const unsigned short *src, int n){
     }
 #endif
 #endif
-#endif
+// #endif
 } 
 /*
 void short2ushortScaled( float *dst, const short *src, int n, float sMin,float dRange,float sRange, float dMin){
@@ -1659,18 +1685,18 @@ void short2floatScaled( float *dst, const short *src, int n, float sMin,float dR
     if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
         for( ; k+7<n;k+=8){
                 __m128i a1 = _mm_load_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-              __m128i a2 = _mm_load_si128((const __m128i*)( src+k+4));
-            a1 = _mm_cvtepi16_epi32(a1);
-              a2 = _mm_cvtepi16_epi32(a2);
-#else
+// #ifdef __SSE4_1__
+//               __m128i a2 = _mm_load_si128((const __m128i*)( src+k+4));
+//             a1 = _mm_cvtepi16_epi32(a1);
+//               a2 = _mm_cvtepi16_epi32(a2);
+// #else
             __m128i a2 = a1;
             a1 = _mm_unpacklo_epi16(a1,a1);
               a2 = _mm_unpackhi_epi16(a2,a2);
               a1 = _mm_srai_epi32(a1,0x10);
               a2 = _mm_srai_epi32(a2,0x10);
 
-#endif
+// #endif
             __m128 c1 = _mm_cvtepi32_ps(a1);
             __m128 c2 = _mm_cvtepi32_ps(a2);
 
@@ -1694,18 +1720,18 @@ void short2floatScaled( float *dst, const short *src, int n, float sMin,float dR
     }else{
         for( ; k+7<n;k+=8){
                 __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__
-              __m128i a2 = _mm_loadu_si128((const __m128i*)( src+k+4));
-            a1 = _mm_cvtepi16_epi32(a1);
-              a2 = _mm_cvtepi16_epi32(a2);
-#else
+// #ifdef __SSE4_1__
+//               __m128i a2 = _mm_loadu_si128((const __m128i*)( src+k+4));
+//             a1 = _mm_cvtepi16_epi32(a1);
+//               a2 = _mm_cvtepi16_epi32(a2);
+// #else
             __m128i a2 = a1;
             a1 = _mm_unpacklo_epi16(a1,a1);
               a2 = _mm_unpackhi_epi16(a2,a2);
               a1 = _mm_srai_epi32(a1,0x10);
               a2 = _mm_srai_epi32(a2,0x10);
 
-#endif
+// #endif
             __m128 c1 = _mm_cvtepi32_ps(a1);
             __m128 c2 = _mm_cvtepi32_ps(a2);
 
@@ -1742,18 +1768,18 @@ void ushort2floatScaled( float *dst,const  unsigned short *src, int n, float sMi
     if ( ALIGNED2(src,dst) && stack_simd_aligned() ) {
         for( ; k+7<n;k+=8){
                 __m128i a1 = _mm_load_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__ 
-            __m128i a2 = _mm_load_si128((const __m128i*)( src+k+4));
-              a1 = _mm_cvtepu16_epi32(a1);
-              a2 = _mm_cvtepu16_epi32(a2);
-#else
+// #ifdef __SSE4_1__ 
+//             __m128i a2 = _mm_load_si128((const __m128i*)( src+k+4));
+//               a1 = _mm_cvtepu16_epi32(a1);
+//               a2 = _mm_cvtepu16_epi32(a2);
+// #else
             __m128i a2 = a1;
                a1 = _mm_unpacklo_epi16(a1,a1);
               a2 = _mm_unpackhi_epi16(a2,a2);
 
               a1 = _mm_srli_epi32(a1,0x10);
               a2 = _mm_srli_epi32(a2,0x10);
-#endif
+// #endif
             __m128 c1 = _mm_cvtepi32_ps(a1);
             __m128 c2 = _mm_cvtepi32_ps(a2);
             c1 = _mm_sub_ps(c1,s_min);
@@ -1776,18 +1802,18 @@ void ushort2floatScaled( float *dst,const  unsigned short *src, int n, float sMi
     }else{
         for( ; k+7<n;k+=8){
                 __m128i a1 = _mm_loadu_si128((const __m128i*)( src+k));
-#ifdef __SSE4_1__ 
-            __m128i a2 = _mm_loadu_si128((const __m128i*)( src+k+4));
-              a1 = _mm_cvtepu16_epi32(a1);
-              a2 = _mm_cvtepu16_epi32(a2);
-#else
+// #ifdef __SSE4_1__ 
+//             __m128i a2 = _mm_loadu_si128((const __m128i*)( src+k+4));
+//               a1 = _mm_cvtepu16_epi32(a1);
+//               a2 = _mm_cvtepu16_epi32(a2);
+// #else
             __m128i a2 = a1;
                a1 = _mm_unpacklo_epi16(a1,a1);
               a2 = _mm_unpackhi_epi16(a2,a2);
 
               a1 = _mm_srli_epi32(a1,0x10);
               a2 = _mm_srli_epi32(a2,0x10);
-#endif
+// #endif
             __m128 c1 = _mm_cvtepi32_ps(a1);
             __m128 c2 = _mm_cvtepi32_ps(a2);
             c1 = _mm_sub_ps(c1,s_min);
@@ -2245,14 +2271,14 @@ int k=0;
               __m128 a2 = _mm_load_ps((const float*)( src+k+4));
             __m128i b1 = _mm_cvtps_epi32(a1);
               __m128i b2 = _mm_cvtps_epi32(a2);
-#ifdef __SSE4_1__
-            _mm_packus_epi32(b1,b2);
-#else
+// #ifdef __SSE4_1__
+//             _mm_packus_epi32(b1,b2);
+// #else
             b1 = _mm_sub_epi32(b1,_mm_set1_epi32(0x8000));
             b2 = _mm_sub_epi32(b2,_mm_set1_epi32(0x8000));
             b1 = _mm_packs_epi32(b1,b2);
             b1 = _mm_xor_si128(b1,_mm_set1_epi16(0x8000));
-#endif
+// #endif
             _mm_store_si128((__m128i*)(dst+k),b1);
         }
 
@@ -2289,14 +2315,14 @@ int k=0;
             a2 = _mm_add_ps(a2,d_min);
         __m128i b1 = _mm_cvtps_epi32(a1);
         __m128i b2 = _mm_cvtps_epi32(a2);
-#ifdef __SSE4_1__
-        _mm_packus_epi32(b1,b2);
-#else
+// #ifdef __SSE4_1__
+//         _mm_packus_epi32(b1,b2);
+// #else
         b1 = _mm_sub_epi32(b1,_mm_set1_epi32(0x8000));
         b2 = _mm_sub_epi32(b2,_mm_set1_epi32(0x8000));
         b1 = _mm_packs_epi32(b1,b2);
         b1 = _mm_xor_si128(b1,_mm_set1_epi16(0x8000));
-#endif
+// #endif
             _mm_store_si128((__m128i*)(dst+k),b1);
         }
 
@@ -2320,14 +2346,14 @@ for( ; k+7<n;k+=8){
             a2 = _mm_add_ps(a2,d_min);
         __m128i b1 = _mm_cvtps_epi32(a1);
         __m128i b2 = _mm_cvtps_epi32(a2);
-#ifdef __SSE4_1__
-        _mm_packus_epi32(b1,b2);
-#else
+// #ifdef __SSE4_1__
+//         _mm_packus_epi32(b1,b2);
+// #else
         b1 = _mm_sub_epi32(b1,_mm_set1_epi32(0x8000));
         b2 = _mm_sub_epi32(b2,_mm_set1_epi32(0x8000));
         b1 = _mm_packs_epi32(b1,b2);
         b1 = _mm_xor_si128(b1,_mm_set1_epi16(0x8000));
-#endif
+// #endif
             _mm_storeu_si128((__m128i*)(dst+k),b1);
             }
 

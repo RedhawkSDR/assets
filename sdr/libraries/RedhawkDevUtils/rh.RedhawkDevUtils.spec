@@ -28,9 +28,11 @@
 %define _mandir        %{_prefix}/man
 %define _infodir       %{_prefix}/info
 
+%global debug_package %{nil}
+
 Name:           rh.RedhawkDevUtils
 Version:        5.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        REDHAWK shared library %{name}
 
 Group:          REDHAWK/Shared Libraries
@@ -38,8 +40,8 @@ License:        LGPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
-BuildRequires:  bulkioInterfaces >= 2.0
+BuildRequires:  redhawk-devel >= 4.0
+BuildRequires:  bulkioInterfaces >= 4.0
 
 # Allow upgrades from previous package name
 Obsoletes:      RedhawkDevUtils_v1 < 4.0.0
@@ -72,8 +74,8 @@ Libraries and header files for REDHAWK shared library %{name}
 # Implementation cpp
 pushd cpp
 ./reconf
-%configure --with-sdr=%{_sdrroot}
-make %{?_smp_mflags}
+./configure --with-sdr=%{_sdrroot}
+make -j4
 popd
 
 

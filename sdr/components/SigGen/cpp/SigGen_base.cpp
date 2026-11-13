@@ -51,13 +51,13 @@ SigGen_base::~SigGen_base()
     Framework-level functions
     These functions are generally called by the framework to perform housekeeping.
 *******************************************************************************************/
-void SigGen_base::start() throw (CORBA::SystemException, CF::Resource::StartError)
+void SigGen_base::start()
 {
     Resource_impl::start();
     ThreadedComponent::startThread();
 }
 
-void SigGen_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
+void SigGen_base::stop()
 {
     Resource_impl::stop();
     if (!ThreadedComponent::stopThread()) {
@@ -65,7 +65,7 @@ void SigGen_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
     }
 }
 
-void SigGen_base::releaseObject() throw (CORBA::SystemException, CF::LifeCycle::ReleaseError)
+void SigGen_base::releaseObject()
 {
     // This function clears the component running condition so main shuts down everything
     try {

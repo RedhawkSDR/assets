@@ -50,7 +50,10 @@ public:
     void shutDown();
     void setPktsPerRead(size_t pkts_per_read);
     size_t getPktsPerRead();
-    void setConnectionInfo(std::string interface, std::string ip, uint16_t vlan, uint16_t port) throw (BadParameterError);
+    /**
+     * @throw BadParameterError
+     */
+    void setConnectionInfo(std::string interface, std::string ip, uint16_t vlan, uint16_t port);
     void setSocketBufferSize(int socket_buffer_size);
     size_t getSocketBufferSize();
     std::string getInterface();

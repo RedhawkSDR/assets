@@ -26,9 +26,11 @@
 %define _mandir        %{_prefix}/man
 %define _infodir       %{_prefix}/info
 
+%global debug_package %{nil}
+
 Name:           rh.fftlib
 Version:        2.1.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        REDHAWK shared library %{name}
 
 Group:          REDHAWK/Shared Libraries
@@ -36,7 +38,7 @@ License:        GPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
+BuildRequires:  redhawk-devel >= 4.0
 BuildRequires:  fftw-devel >= 3
 BuildRequires:  autoconf automake libtool
 
@@ -71,8 +73,8 @@ Libraries and header files for REDHAWK shared library %{name}
 # Implementation cpp
 pushd cpp
 ./reconf
-%configure --with-sdr=%{_sdrroot}
-make %{?_smp_mflags}
+./configure --with-sdr=%{_sdrroot}
+make -j4
 popd
 
 

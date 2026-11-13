@@ -27,7 +27,7 @@
 #include <vector>
 
    template <typename Tp>
-   class fftwf_allocator : public std::allocator<Tp>
+   class fftwf_allocator 
 
    {
 
@@ -35,7 +35,7 @@
        //only allow allocator to be made for float and complex<float> types
        fftwf_allocator()
        {
-           throw "fftwf_allocator bad type - must be float or complex<float> only";
+	 throw "fftwf_allocator bad type - must be float or complex<float> only";
        }
 
        typedef typename std::allocator<Tp>::size_type size_type;
@@ -46,7 +46,7 @@
        typedef typename std::allocator<Tp>::const_reference const_reference;
        typedef Tp value_type;
 
-      pointer allocate(size_type n, const void* = 0)
+      pointer allocate(size_type n)
       {    return static_cast<Tp*>( fftwf_malloc(n * sizeof(Tp))); }
 
       void deallocate(pointer p, size_type) {  fftwf_free(p); }
@@ -56,11 +56,11 @@
 typedef std::complex<float> complex_float;
 
 template <> inline
-fftwf_allocator<float>::fftwf_allocator() : std::allocator<float>()
+fftwf_allocator<float>::fftwf_allocator() 
 {};
 
 template <> inline
-fftwf_allocator<complex_float>::fftwf_allocator() : std::allocator<complex_float>()
+fftwf_allocator<complex_float>::fftwf_allocator() 
 {};
 
 typedef std::vector<float, fftwf_allocator<float> > RealFFTWVector;

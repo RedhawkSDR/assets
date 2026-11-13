@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -98,7 +98,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         props = dict((x.id, any.from_any(x.value)) for x in props)
         # Query may return more than expected, but not less
         for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
+            self.assertEqual(expectedProp.id in props, True)
         
         #######################################################################
         # Verify that all expected ports are available
@@ -120,22 +120,22 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testA(self):
         """Test sending to port a only
         """
-        self.myTestCase("3*a+4", [float(x) for x in xrange(1024)],[])
+        self.myTestCase("3*a+4", [float(x) for x in range(1024)],[])
     
     def testB(self):
         """Test sending to port b only
         """
-        self.myTestCase("cos(3*b+4)", [], [float(x) for x in xrange(1024)])
+        self.myTestCase("cos(3*b+4)", [], [float(x) for x in range(1024)])
     
     def testBoth1(self):
         """test sending both to a and b
         """
-        self.myTestCase("math.sin(.01*a)+math.cos(.1*b)",[float(x) for x in xrange(1024)],[float(x-512) for x in xrange(1024)])
+        self.myTestCase("math.sin(.01*a)+math.cos(.1*b)",[float(x) for x in range(1024)],[float(x-512) for x in range(1024)])
     
     def testComplexA(self):
         """multiply complex input times j
         """
-        inData= [float(x) for x in xrange(1024)]
+        inData= [float(x) for x in range(1024)]
         outData = []
         for (re,cx) in zip(inData[::2],inData[1::2]):
             outData.append(-cx)
@@ -145,7 +145,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testComplexB(self):
         """multiply real input times j
         """
-        inData= [float(x) for x in xrange(1024)]
+        inData= [float(x) for x in range(1024)]
         outData = []
         for x in inData:
             outData.append(0)
@@ -155,7 +155,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testComplexC(self):
         """multiply real input times j
         """
-        inData= [float(x) for x in xrange(1024)]
+        inData= [float(x) for x in range(1024)]
         outData = []
         for x in inData:
             outData.append(0)
@@ -163,8 +163,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.myTestCase("1j*b", None, inData, outData)
     
     def testComplexD(self):
-        inDataA= [float(x) for x in xrange(1024)]
-        inDataB = [2*float(x) for x in xrange(1024)]
+        inDataA= [float(x) for x in range(1024)]
+        inDataB = [2*float(x) for x in range(1024)]
         outData = []
         for re,cx in zip(inDataA, inDataB):
             outData.append(re)
@@ -172,44 +172,44 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.myTestCase("a+1j*b", inDataA, inDataB, outData)
 
     def testComplexE(self):
-        inDataA= [float(x) for x in xrange(1024)]
-        inDataB = [2*float(x) for x in xrange(2048)]
+        inDataA= [float(x) for x in range(1024)]
+        inDataB = [2*float(x) for x in range(2048)]
         outData = []
-        for i in xrange(1024):
+        for i in range(1024):
             outData.append(inDataA[i]+inDataB[2*i])
             outData.append(inDataB[2*i+1])
         self.myTestCase("a+b", inDataA, inDataB, outData,data2Cx=True)
 
     def testComplexF(self):
-        inDataA= [float(x) for x in xrange(2048)]
-        inDataB = [2*float(x) for x in xrange(1024)]
+        inDataA= [float(x) for x in range(2048)]
+        inDataB = [2*float(x) for x in range(1024)]
         outData = []
-        for i in xrange(1024):
+        for i in range(1024):
             outData.append(inDataA[2*i]+2*inDataB[i])
             outData.append(inDataA[2*i+1])
         self.myTestCase("a+2*b", inDataA, inDataB, outData,data1Cx=True)
 
     def testComplexG(self):
-        inDataA= [float(x) for x in xrange(1024)]
-        inDataB = [2*float(x) for x in xrange(1024)]
+        inDataA= [float(x) for x in range(1024)]
+        inDataB = [2*float(x) for x in range(1024)]
         outData = []
-        for i in xrange(512):
+        for i in range(512):
             outData.append(inDataA[2*i])
             outData.append(inDataB[2*i+1])
         self.myTestCase("complex(a.real,b.imag)", inDataA, inDataB, outData,data1Cx=True,data2Cx=True)
 
     def testComplexH(self):
-        inDataA= [float(x) for x in xrange(1024)]
+        inDataA= [float(x) for x in range(1024)]
         outData = []
-        for i in xrange(512):
+        for i in range(512):
             outData.append(inDataA[2*i])
             outData.append(0.0)
         self.myTestCase("a.real", inDataA, None, outData,data1Cx=True)
 
     def testComplexI(self):
-        inDataA= [float(x) for x in xrange(1024)]
+        inDataA= [float(x) for x in range(1024)]
         outData = []
-        for i in xrange(512):
+        for i in range(512):
             outData.append(0.0)
             outData.append(inDataA[2*i+1])
         self.myTestCase("1j*a.imag", inDataA, None, outData,data1Cx=True)
@@ -217,8 +217,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testBothLag(self):
         """Test sending data to a and b but send data to b in two different chunks to demonstrate asychronous buffering behavior
         """
-        inA = [float(x) for x in xrange(1024)]
-        inB = [float(x-512) for x in xrange(512)]
+        inA = [float(x) for x in range(1024)]
+        inB = [float(x-512) for x in range(512)]
         equation = "a**2+math.sin(.01*b)"
         outA = self.myTestCase(equation,inA,inB,False)
         outB = self.myTestCase(None,[],inB,False)
@@ -228,27 +228,27 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testBadEquation(self):
         """Do a test with a bad equation to verify we have an invalid configuration
         """
-        print "\n... running testBadEquation"
-        print "FYI: A successful test will also cause a stack trace to be displayed"
+        print("\n... running testBadEquation")
+        print("FYI: A successful test will also cause a stack trace to be displayed")
         try:
             self.comp.configure(props_from_dict({'equation':"a+asdf+b"}))
-        except CF.PropertySet.InvalidConfiguration, e:
+        except CF.PropertySet.InvalidConfiguration as e:
             return 
-        except Exception, e:
+        except Exception as e:
             raise e
 
     def testImport(self):
         """Do a test with a valid import
         """
-        print "\n... running testImport"
+        print("\n... running testImport")
         self.comp.configure(props_from_dict({'import':['time']}))
         # This produces the GMT year of seconds since epoch
-        self.myTestCase("time.gmtime(a)[0]*1.0", [float(x*60*60*24*5) for x in xrange(1024)],[])
+        self.myTestCase("time.gmtime(a)[0]*1.0", [float(x*60*60*24*5) for x in range(1024)],[])
         
     def testNoneImport(self):
         """Do a test with import configured to None rather than a sequence
         """
-        print "\n... running testNoneImport"
+        print("\n... running testNoneImport")
         self.comp.configure(props_from_dict({'import':None}))
         props=props_to_dict(self.comp.query(props_from_dict({})))
         self.assertEqual(props['import'],[],
@@ -257,33 +257,33 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
     def testBadImport(self):
         """Do a test with various import values known to be bad to verify we have an invalid configuration
         """
-        print "\n... running testBadImport"
-        print "FYI: A successful test will also cause stack traces to be displayed"
+        print("\n... running testBadImport")
+        print("FYI: A successful test will also cause stack traces to be displayed")
         for val in [6, 6.6, 'foo', 'time', [6], [6.6], ['foo'], [None], '' ]:
             try:
                 self.comp.configure(props_from_dict({'import':val}))
-            except CF.PropertySet.InvalidConfiguration, e:
+            except CF.PropertySet.InvalidConfiguration as e:
                 continue 
-            except Exception, e:
-                print 'Configure of import with "%s" did not produce InvalidConfiguration exception, but should.'%val
+            except Exception as e:
+                print('Configure of import with "%s" did not produce InvalidConfiguration exception, but should.'%val)
                 raise e
             else:
-                print 'Configure of import with "%s" did not produce InvalidConfiguration exception, but should.'%val
+                print('Configure of import with "%s" did not produce InvalidConfiguration exception, but should.'%val)
                 self.assertTrue(False, 'Configure of import with "%s" did not produce InvalidConfiguration exception, but should.'%val) 
 
     def testZeroDiv(self):
         """Test the zero division and validate the component handles it correctly
         """
-        print "\n... running ZeroDiv test"
-        out = self.myTestCase("1/a", [float(x) for x in xrange(1024)],[],False)
+        print("\n... running ZeroDiv test")
+        out = self.myTestCase("1/a", [float(x) for x in range(1024)],[],False)
         self.assertTrue(len(out)==1024)
         self.assertTrue(math.isnan(out[0]))
 
     def testDefaultConfiguration(self):
         """Test that default configuration doesn't fail miserably
         """
-        print "\n... running DefaultConfiguration test"
-        inDataA= [float(x) for x in xrange(1024)]
+        print("\n... running DefaultConfiguration test")
+        inDataA= [float(x) for x in range(1024)]
         
         # Skip sri validation - Component only sends SRI on equation change
         self.myTestCase(None,inDataA,inDataA,checkResults=False, validateSRI=False)
@@ -294,7 +294,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         """
         streamID = "RandomStreamName"
         if testEquation:
-            print "\n... running myTestCase %s" %testEquation
+            print("\n... running myTestCase %s" %testEquation)
             self.comp.configure(props_from_dict({'equation':testEquation}))
         if data1:
             self.src1.push(data1,complexData=data1Cx, streamID=streamID)

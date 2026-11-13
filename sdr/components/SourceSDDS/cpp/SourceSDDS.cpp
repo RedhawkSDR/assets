@@ -248,7 +248,7 @@ void SourceSDDS_i::set_advanced_optimization_struct(struct advanced_optimization
  * the SDDS to BulkIO processor thread.  If any errors occur during startup, a StartError is thrown.
  * Thread affinity and priority is set here if the user has elected to set those properties.
  */
-void SourceSDDS_i::start() throw (CORBA::SystemException, CF::Resource::StartError) {
+void SourceSDDS_i::start() {
 	if (started()) {
 		RH_WARN(_baseLog, "Already started, call to start ignored.");
 		return;
@@ -268,7 +268,7 @@ void SourceSDDS_i::start() throw (CORBA::SystemException, CF::Resource::StartErr
 	SourceSDDS_base::start();
 }
 
-void SourceSDDS_i::_start() throw (CF::Resource::StartError) {
+void SourceSDDS_i::_start() {
 
 	std::stringstream errorText;
 	// This also destroys all of our buffers
@@ -315,7 +315,7 @@ void SourceSDDS_i::_start() throw (CF::Resource::StartError) {
  * Will stop the component and join the Socket Reader and SDDS to BulkIO processor threads.
  * Overridden from the Component API stop but calls the base class stop method as well.
  */
-void SourceSDDS_i::stop () throw (CF::Resource::StopError, CORBA::SystemException) {
+void SourceSDDS_i::stop () {
 	RH_DEBUG(_baseLog, "Stop Called cleaning up");
 	destroyBuffersAndJoinThreads();
 	RH_DEBUG(_baseLog, "Calling parent stop method");
@@ -329,7 +329,7 @@ void SourceSDDS_i::stop () throw (CF::Resource::StopError, CORBA::SystemExceptio
  *
  * @throws BadParameterError is thrown by the underlying setConnectionInfo call in the socketReader class for a number of reasons
  */
-void SourceSDDS_i::setupSocketReaderOptions() throw (BadParameterError) {
+void SourceSDDS_i::setupSocketReaderOptions() {
 	if (attachment_override.enabled) {
 		m_socketReader.setConnectionInfo(interface, attachment_override.ip_address, attachment_override.vlan, attachment_override.port);
 	} else {
@@ -351,7 +351,7 @@ void SourceSDDS_i::setupSocketReaderOptions() throw (BadParameterError) {
  * @return The attachId which will either be the supplied Stream ID or a unique identifier if no stream ID is provided. This is used during the detach call.
  *
  */
-char* SourceSDDS_i::attach(const BULKIO::SDDSStreamDefinition& stream, const char* userid) throw (BULKIO::dataSDDS::AttachError, BULKIO::dataSDDS::StreamInputError) {
+char* SourceSDDS_i::attach(const BULKIO::SDDSStreamDefinition& stream, const char* userid) {
 	RH_INFO(_baseLog, "Attach called by: " << userid);
 	if (m_attach_stream.attached) {
 		RH_ERROR(_baseLog, "Can only handle a single attach. Detach current stream: " << m_attach_stream.id);

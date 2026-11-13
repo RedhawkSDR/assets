@@ -30,11 +30,11 @@ class ArbitraryRateResampler_base : public Resource_impl, protected ThreadedComp
         ArbitraryRateResampler_base(const char *uuid, const char *label);
         ~ArbitraryRateResampler_base();
 
-        void start() throw (CF::Resource::StartError, CORBA::SystemException);
+        void start();
 
-        void stop() throw (CF::Resource::StopError, CORBA::SystemException);
+        void stop();
 
-        void releaseObject() throw (CF::LifeCycle::ReleaseError, CORBA::SystemException);
+        void releaseObject();
 
         void loadProperties();
 

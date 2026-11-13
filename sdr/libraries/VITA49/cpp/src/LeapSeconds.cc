@@ -230,10 +230,10 @@ LeapSeconds* LeapSeconds::getInstance (string fname) {
       int32_t mon  = 0;
       int32_t day  = atoi(d.c_str());
 
-      if (m == "JAN") mon = 1;  if (m == "FEB") mon = 2;  if (m == "MAR") mon = 3;
-      if (m == "APR") mon = 4;  if (m == "MAY") mon = 5;  if (m == "JUN") mon = 6;
-      if (m == "JUL") mon = 7;  if (m == "AUG") mon = 8;  if (m == "SEP") mon = 9;
-      if (m == "OCT") mon =10;  if (m == "NOV") mon =11;  if (m == "DEC") mon =12;
+      if (m == "JAN") {mon = 1;}  if (m == "FEB") {mon = 2;}  if (m == "MAR") {mon = 3;}
+      if (m == "APR") {mon = 4;}  if (m == "MAY") {mon = 5;}  if (m == "JUN") {mon = 6;}
+      if (m == "JUL") {mon = 7;}  if (m == "AUG") {mon = 8;}  if (m == "SEP") {mon = 9;}
+      if (m == "OCT") {mon =10;}  if (m == "NOV") {mon =11;}  if (m == "DEC") {mon =12;}
       if (mon == 0) {
         throw VRTException("TAI to UTC mapping file (%s) appears to be out of date or invalid.", fname.c_str());
       }

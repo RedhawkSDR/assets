@@ -60,13 +60,13 @@ AmFmPmBasebandDemod_base::~AmFmPmBasebandDemod_base()
     Framework-level functions
     These functions are generally called by the framework to perform housekeeping.
 *******************************************************************************************/
-void AmFmPmBasebandDemod_base::start() throw (CORBA::SystemException, CF::Resource::StartError)
+void AmFmPmBasebandDemod_base::start()
 {
     Resource_impl::start();
     ThreadedComponent::startThread();
 }
 
-void AmFmPmBasebandDemod_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
+void AmFmPmBasebandDemod_base::stop()
 {
     Resource_impl::stop();
     if (!ThreadedComponent::stopThread()) {
@@ -74,7 +74,7 @@ void AmFmPmBasebandDemod_base::stop() throw (CORBA::SystemException, CF::Resourc
     }
 }
 
-void AmFmPmBasebandDemod_base::releaseObject() throw (CORBA::SystemException, CF::LifeCycle::ReleaseError)
+void AmFmPmBasebandDemod_base::releaseObject()
 {
     // This function clears the component running condition so main shuts down everything
     try {

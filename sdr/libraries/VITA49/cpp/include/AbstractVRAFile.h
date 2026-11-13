@@ -208,8 +208,7 @@ namespace vrt {
       try {
         return equals(*checked_dynamic_cast<const AbstractVRAFile*>(&o));
       }
-      catch (VRTException e) {
-        UNUSED_VARIABLE(e);
+      catch (const VRTException&) {
         return false;
       }
     }

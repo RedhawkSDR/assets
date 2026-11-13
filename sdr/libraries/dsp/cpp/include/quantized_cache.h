@@ -39,7 +39,7 @@ public:
     /**
      * Call to use the cache and retrieve your output value
      */
-    OutType getValue(InType& input);
+    OutType getValue(InType input);
 private:
     std::vector<OutType> cachVec;
     size_t getIndex(InType& input);
@@ -78,7 +78,7 @@ QuantizedCash<OutType, InType>::QuantizedCash(function f, size_t numPts, InType 
 }
 
 template<typename OutType, typename InType>
-OutType QuantizedCash<OutType, InType>::getValue(InType& input)
+OutType QuantizedCash<OutType, InType>::getValue(InType input)
 {
     //if the value is in the cached range - look up the input index and return the output value
     if (cachVec.size()>0 && input <=maxVal && input>=minVal)

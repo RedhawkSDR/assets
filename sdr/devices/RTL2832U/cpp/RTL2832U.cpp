@@ -307,7 +307,7 @@ int RTL2832U_i::serviceFunction()
 }
 
 /* acquires the prop_lock and the rtl_tuner.lock */
-//void RTL2832U_i::initialize() throw (CF::LifeCycle::InitializeError, CORBA::SystemException)
+//void RTL2832U_i::initialize()
 //{
 //    RTL2832U_base::initialize();
 //
@@ -1060,9 +1060,10 @@ void RTL2832U_i::groupIdChanged(const std::string* old_value, const std::string*
 /* acquires the rtl_tuner.lock */
 void RTL2832U_i::rtl2832uAgcEnableChanged(const bool* old_value, const bool* new_value){
     LOG_TRACE(RTL2832U_i,__PRETTY_FUNCTION__);
-    if(rtl_device_ptr != NULL)
+    if(rtl_device_ptr != NULL) {
         scoped_tuner_lock tuner_lock(rtl_tuner.lock);
         rtl_device_ptr->setAgcMode(*new_value);
+    }
 }
 
 /* acquires the prop_lock and the rtl_tuner.lock */
@@ -1151,7 +1152,7 @@ void RTL2832U_i::updateAvailableDevices(){
 
 /* acquire prop_lock prior to calling this function */
 /* acquires the rtl_tuner.lock */
-void RTL2832U_i::initRtl() throw (CF::PropertySet::InvalidConfiguration) {
+void RTL2832U_i::initRtl() {
     LOG_TRACE(RTL2832U_i,__PRETTY_FUNCTION__);
     try {
         // clear current configuration

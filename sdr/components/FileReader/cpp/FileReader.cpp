@@ -109,7 +109,7 @@ void FileReader_i::constructor()
     LOG_DEBUG(FileReader_i,"Output BulkIO byte order set to "<<BULKIO_BYTE_ORDER<<" (L=1234,B=4321)");
 }
 
-void FileReader_i::initialize() throw (CF::LifeCycle::InitializeError, CORBA::SystemException)
+void FileReader_i::initialize()
 {
     LOG_TRACE(FileReader_i,"FileReader_i::initialize - ENTER");
     FileReader_base::initialize();
@@ -144,7 +144,7 @@ void FileReader_i::initialize() throw (CF::LifeCycle::InitializeError, CORBA::Sy
     reset_throttle();
 }
 
-void FileReader_i::start() throw (CF::Resource::StartError, CORBA::SystemException) {
+void FileReader_i::start() {
 
     if(source_uri != FILE_READER::DEF_SOURCE_URI && file_status.size() == 0){
         throw CF::Resource::StartError(CF::CF_NOTSET,"NO FILES TO PROCESS");
@@ -155,7 +155,7 @@ void FileReader_i::start() throw (CF::Resource::StartError, CORBA::SystemExcepti
 
 }
 
-void FileReader_i::stop() throw (CF::Resource::StopError, CORBA::SystemException) {
+void FileReader_i::stop() {
     try{
         CF::Properties props;
         props.length(1);

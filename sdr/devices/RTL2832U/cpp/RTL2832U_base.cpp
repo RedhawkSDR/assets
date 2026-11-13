@@ -88,13 +88,13 @@ void RTL2832U_base::construct()
     Framework-level functions
     These functions are generally called by the framework to perform housekeeping.
 *******************************************************************************************/
-void RTL2832U_base::start() throw (CORBA::SystemException, CF::Resource::StartError)
+void RTL2832U_base::start()
 {
     frontend::FrontendScanningTunerDevice<frontend_tuner_status_struct_struct>::start();
     ThreadedComponent::startThread();
 }
 
-void RTL2832U_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
+void RTL2832U_base::stop()
 {
     frontend::FrontendScanningTunerDevice<frontend_tuner_status_struct_struct>::stop();
     if (!ThreadedComponent::stopThread()) {
@@ -102,7 +102,7 @@ void RTL2832U_base::stop() throw (CORBA::SystemException, CF::Resource::StopErro
     }
 }
 
-void RTL2832U_base::releaseObject() throw (CORBA::SystemException, CF::LifeCycle::ReleaseError)
+void RTL2832U_base::releaseObject()
 {
     // This function clears the device running condition so main shuts down everything
     try {

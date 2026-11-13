@@ -11,11 +11,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/time.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h> 
 #include <math.h> 
+#include <time.h> 
 
 /* 
  * error - wrapper for perror
@@ -83,7 +85,7 @@ int main(int argc, char **argv) {
 
     /* check command line arguments */
     if (argc != 5) {
-       fprintf(stderr,"usage: %s <hostname> <port> <target rate (Bps)> <run time (s)>\n", argv[0]);
+       //fprintf(stderr,"usage: %s <hostname> <port> <target rate (Bps)> <run time (s)>\n", argv[0]);
        exit(0);
     }
 
@@ -102,7 +104,7 @@ int main(int argc, char **argv) {
     /* gethostbyname: get the server's DNS entry */
     server = gethostbyname(hostname);
     if (server == NULL) {
-        fprintf(stderr,"ERROR, no such host as %s\n", hostname);
+        //fprintf(stderr,"ERROR, no such host as %s\n", hostname);
         exit(0);
     }
 
@@ -135,7 +137,7 @@ int main(int argc, char **argv) {
         printf("%f\n",a_rate);
         break;
       }
-      n = sendto(sockfd, &p, sizeof(p), 0, (const struct sockaddr*)(&serveraddr), serverlen);
+      n = sendto(sockfd, &p, sizeof(p), 0, (const struct sockaddr *) &serveraddr, serverlen);
       p_sent++;
       if (p_sent % pkts_per_sleep == 0) {
         usleep(t_wait);

@@ -308,7 +308,7 @@ int USRP_UHD_i::serviceFunctionTransmit(){
 
 }
 
-void USRP_UHD_i::start() throw (CORBA::SystemException, CF::Resource::StartError) {
+void USRP_UHD_i::start() {
     LOG_TRACE(USRP_UHD_i,__PRETTY_FUNCTION__);
     USRP_UHD_base::start();
     dataShortTX_in->unblock();
@@ -346,7 +346,7 @@ void USRP_UHD_i::start() throw (CORBA::SystemException, CF::Resource::StartError
     }*/
 }
 
-void USRP_UHD_i::stop() throw (CORBA::SystemException, CF::Resource::StopError) {
+void USRP_UHD_i::stop() {
     LOG_TRACE(USRP_UHD_i,__PRETTY_FUNCTION__);
     dataShortTX_in->block();
     dataShortTX_in->block();
@@ -1186,7 +1186,8 @@ void USRP_UHD_i::updateAvailableDevices(){
     for (size_t i = 0; i < device_addrs.size(); i++) {
         usrp_device_struct availDev;
 
-        BOOST_FOREACH(std::string key, device_addrs[i].keys()) {
+        for (auto key : device_addrs[i].keys()) {
+        //BOOST_FOREACH(std::string key, device_addrs[i].keys()) {
             LOG_DEBUG(USRP_UHD_i,"updateAvailableDevices|i=" << i << " key=" << key << " device_addrs[i].get(key)=" << device_addrs[i].get(key));
             if (key == "type")
                 availDev.type = device_addrs[i].get(key);
@@ -1202,7 +1203,7 @@ void USRP_UHD_i::updateAvailableDevices(){
 }
 
 /* call acquire prop_lock prior to calling this function */
-void USRP_UHD_i::initUsrp() throw (CF::PropertySet::InvalidConfiguration) {
+void USRP_UHD_i::initUsrp() {
     LOG_TRACE(USRP_UHD_i,__PRETTY_FUNCTION__);
 
     clearBookkeeping();
@@ -2026,7 +2027,7 @@ void USRP_UHD_i::setTunerCenterFrequency(const std::string& allocation_id, doubl
                 LOG_WARN(USRP_UHD_i,msg.str() );
                 throw FRONTEND::BadParameterException(msg.str().c_str());
             }
-        } catch (FRONTEND::BadParameterException) {
+        } catch (FRONTEND::BadParameterException&) {
             throw;
         } catch (...) {
             std::ostringstream msg;
@@ -2179,7 +2180,7 @@ void USRP_UHD_i::setTunerOutputSampleRate(const std::string& allocation_id, doub
 
             opt_sr = optimizeRate(sr, idx);
             LOG_DEBUG(USRP_UHD_i,"setTunerOutputSampleRate|REQ_SR=" << sr << " OPT_SR=" << opt_sr);
-        } catch (FRONTEND::BadParameterException) {
+        } catch (FRONTEND::BadParameterException &) {
             throw;
         } catch (...) {
             std::ostringstream msg;

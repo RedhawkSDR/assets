@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -36,7 +36,7 @@ import struct
 from omniORB import any
 from ossie.cf import CF
 from omniORB import CORBA
-import __builtin__
+import builtins
 
 #Numpy changed the api for correlate in version 1.5
 from distutils.version import LooseVersion
@@ -66,7 +66,7 @@ def genSinWave(fs, freq, numPts, cx=True, startTime=0, amp=1):
     phase =  2*math.pi*startTime
     phaseInc = 2*math.pi*freq/fs
     output = []
-    for i in xrange(numPts): 
+    for i in range(int(numPts)): 
         output.append(amp*math.cos(phase))
         if cx:
             output.append(amp*math.sin(phase))
@@ -78,7 +78,7 @@ def genSqWave(fs, freq, numPts, cx=True, startTime=0, amp=1):
     output = []
     freqDelta = 1.0/freq
     nextTransition = 0  
-    for i in xrange(numPts): 
+    for i in range(int(numPts)): 
         output.append(amp)
         startTime+=xd
         if startTime > nextTransition:
@@ -91,7 +91,7 @@ def genCorrelatedData(numPts, taps, mean=0, stddev=1,cx=False):
     input =[]
     #simple FIR filter to correlate the data
     
-    for i in xrange(numPts):
+    for i in range(int(numPts)):
         if cx:
             next = complex(random.gauss(mean,stddev),random.gauss(mean,stddev)) #white noise input data
         else:
@@ -389,7 +389,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         output = self.main(mainInput, cx, sampleRate,eos=True, streamID=streamID)
         outFrameB = output[0]
         assert len(outFrameB)==len(outFrameA)
-        self.assertTrue(__builtin__.any([abs(x-y)>.1 for x, y in zip(outFrameA, outFrameB)]))
+        self.assertTrue(builtins.any([abs(x-y)>.1 for x, y in zip(outFrameA, outFrameB)]))
         
         #work arround a bug here to force an SRI push by the src
         self.src._sri=None
@@ -410,7 +410,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         output = self.main(mainInput, cx, sampleRate,streamID = 'stream_a')
         outFrameB = output[0]
         assert len(outFrameB)==len(outFrameA)
-        self.assertTrue(__builtin__.any([abs(x-y)>.1 for x, y in zip(outFrameA, outFrameB)]))
+        self.assertTrue(builtins.any([abs(x-y)>.1 for x, y in zip(outFrameA, outFrameB)]))
         
         output = self.main(mainInput, cx, sampleRate, streamID = 'stream_b')
         outFrameC = output[0]
@@ -486,8 +486,8 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         #the outFrame is the first frame we care about
         outFrame = output[0]
         if DISPLAY:
-            matplotlib.pyplot.plot(range(frameLen), outFrame)
-            matplotlib.pyplot.plot(range(frameLen), c)
+            matplotlib.pyplot.plot(list(range(frameLen)), outFrame)
+            matplotlib.pyplot.plot(list(range(frameLen)), c)
             matplotlib.pyplot.show()
         
         #make sure the outputFrame is the right length
@@ -549,7 +549,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         props = dict((x.id, any.from_any(x.value)) for x in props)
         # Query may return more than expected, but not less
         for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
+            self.assertEqual(expectedProp.id in props, True)
         
         #######################################################################
         # Verify that all expected ports are available

@@ -97,7 +97,7 @@ static connection_t unicast_open_ (const char* iface, const char* group, int por
 }
 
 
-connection_t unicast_client (const char* iface, const char* group, int port) throw (BadParameterError)
+connection_t unicast_client (const char* iface, const char* group, int port)
 {
   connection_t client = unicast_open_(iface, group, port, true);
   return client;

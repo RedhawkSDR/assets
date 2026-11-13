@@ -39,15 +39,15 @@ License:        LGPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
-Requires:       redhawk >= 2.0
+BuildRequires:  redhawk-devel >= 4.0
+Requires:       redhawk >= 4.0
 
 Requires:       libuuid-devel
 BuildRequires:  libuuid-devel
 
 # Interface requirements
-BuildRequires:  frontendInterfaces >= 2.2 bulkioInterfaces >= 2.0
-Requires:       frontendInterfaces >= 2.2 bulkioInterfaces >= 2.0
+BuildRequires:  frontendInterfaces >= 4.0 bulkioInterfaces >= 4.0
+Requires:       frontendInterfaces >= 4.0 bulkioInterfaces >= 4.0
 
 BuildRequires:  uhd-devel
 
@@ -91,8 +91,6 @@ rm -rf $RPM_BUILD_ROOT
 %dir %{_sdrroot}/dev/devices/rh
 %dir %{_sdrroot}/dev/devices/rh/USRP_UHD
 %{_prefix}/dev/devices/rh/USRP_UHD/nodeconfig.py
-%{_prefix}/dev/devices/rh/USRP_UHD/nodeconfig.pyc
-%{_prefix}/dev/devices/rh/USRP_UHD/nodeconfig.pyo
 %{_prefix}/dev/devices/rh/USRP_UHD/USRP_UHD.scd.xml
 %{_prefix}/dev/devices/rh/USRP_UHD/USRP_UHD.prf.xml
 %{_prefix}/dev/devices/rh/USRP_UHD/USRP_UHD.spd.xml

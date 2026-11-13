@@ -58,7 +58,7 @@ class SigGen_i : public SigGen_base
         SigGen_i(const char *uuid, const char *label);
         ~SigGen_i();
         int serviceFunction();
-        void start() throw (CF::Resource::StartError, CORBA::SystemException);
+        void start();
 
     private:
         boost::mutex sigGenLock_;

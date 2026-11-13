@@ -86,11 +86,11 @@ void FileWriter_i::constructor() {
     }
 }
 
-void FileWriter_i::start() throw (CF::Resource::StartError, CORBA::SystemException) {
+void FileWriter_i::start() {
     FileWriter_base::start();
 }
 
-void FileWriter_i::stop() throw (CF::Resource::StopError, CORBA::SystemException) {
+void FileWriter_i::stop() {
     FileWriter_base::stop();
 
     exclusive_lock lock(service_thread_lock);

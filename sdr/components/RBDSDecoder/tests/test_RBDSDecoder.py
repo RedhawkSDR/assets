@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -107,7 +107,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         self.responses.append(msgStr)
 
     def setUp(self):
-        print "\nSetting up a Test\n"
+        print("\nSetting up a Test\n")
         # Generate RBDS type 0 and 2 messages
         self.dummyBlocks = []
         self.typeABlocks = []
@@ -142,7 +142,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
 
 
     def tearDown(self):
-        print "\nTearing down a Test\n"
+        print("\nTearing down a Test\n")
         self.responses = []
         self.messageSink.stop()
         self.binarySource.stop()
@@ -178,7 +178,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
     def typeFullTextTest(self, matchText):
         type = "RBDS_Output::Full_Text"
-        print "Running %s" % (whoami())
+        print("Running %s" % (whoami()))
         msgReceived = False
         receivedCorrectText = True
         
@@ -207,7 +207,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
 
     def shortTextTest(self):
         type = "RBDS_Output::Short_Text"
-        print "Running %s" % (whoami())
+        print("Running %s" % (whoami()))
         msgReceived = False
         receivedCorrectText = True
         
@@ -236,7 +236,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
 
     def stationTypeTest(self):
         type = "RBDS_Output::Station_Type"
-        print "Running %s" % (whoami())
+        print("Running %s" % (whoami()))
         msgReceived = False
         receivedCorrectText = True
 
@@ -267,7 +267,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
     def callSignTest(self):
         type = "RBDS_Output::Call_Sign"
-        print "Running %s" % (whoami())
+        print("Running %s" % (whoami()))
         msgReceived = False
         receivedCorrectText = True
         
@@ -295,7 +295,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         
     def piStringTest(self):
         type = "RBDS_Output::PI_String"
-        print "Running %s" % (whoami())
+        print("Running %s" % (whoami()))
         msgReceived = False
         receivedCorrectText = True
         
@@ -322,7 +322,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
 
     def groupFlagTest(self, group):
         type = "RBDS_Output::Group"
-        print "Running %s" % (whoami())
+        print("Running %s" % (whoami()))
         msgReceived = False
         receivedCorrectText = True
         

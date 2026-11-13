@@ -63,13 +63,13 @@ SourceSDDS_base::~SourceSDDS_base()
     Framework-level functions
     These functions are generally called by the framework to perform housekeeping.
 *******************************************************************************************/
-void SourceSDDS_base::start() throw (CORBA::SystemException, CF::Resource::StartError)
+void SourceSDDS_base::start()
 {
     Component::start();
     ThreadedComponent::startThread();
 }
 
-void SourceSDDS_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
+void SourceSDDS_base::stop()
 {
     Component::stop();
     if (!ThreadedComponent::stopThread()) {
@@ -77,7 +77,7 @@ void SourceSDDS_base::stop() throw (CORBA::SystemException, CF::Resource::StopEr
     }
 }
 
-void SourceSDDS_base::releaseObject() throw (CORBA::SystemException, CF::LifeCycle::ReleaseError)
+void SourceSDDS_base::releaseObject()
 {
     // This function clears the component running condition so main shuts down everything
     try {

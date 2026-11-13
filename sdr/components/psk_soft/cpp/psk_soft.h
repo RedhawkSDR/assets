@@ -62,7 +62,7 @@ class psk_soft_i : public psk_soft_base
         void constructor();
         int serviceFunction();
     private:
-        static const double M_2PI = 2*M_PI;
+        static constexpr double M_2PI = 2*M_PI;
         std::deque<std::complex<float> > samples;
         std::deque<double> energy;
         std::vector<double> symbolEnergy;

@@ -39,16 +39,11 @@ License:        GPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.1
-Requires:       redhawk >= 2.1
-Requires:       redhawk-sdrroot-dom-mgr >= 2.1
+BuildRequires:  redhawk-devel >= 4.0
+Requires:       redhawk >= 4.0
 
 BuildRequires:  rh.fftlib-devel >= 2.1
 Requires:       rh.fftlib >= 2.1
-
-# Interface requirements
-BuildRequires:  bulkioInterfaces >= 2.1
-Requires:       bulkioInterfaces >= 2.1
 
 # C++ requirements
 BuildRequires:  fftw-devel >= 3.2

@@ -84,13 +84,13 @@ void FmRdsSimulator_base::construct()
     Framework-level functions
     These functions are generally called by the framework to perform housekeeping.
 *******************************************************************************************/
-void FmRdsSimulator_base::start() throw (CORBA::SystemException, CF::Resource::StartError)
+void FmRdsSimulator_base::start()
 {
     frontend::FrontendTunerDevice<frontend_tuner_status_struct_struct>::start();
     ThreadedComponent::startThread();
 }
 
-void FmRdsSimulator_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
+void FmRdsSimulator_base::stop()
 {
     frontend::FrontendTunerDevice<frontend_tuner_status_struct_struct>::stop();
     if (!ThreadedComponent::stopThread()) {
@@ -98,7 +98,7 @@ void FmRdsSimulator_base::stop() throw (CORBA::SystemException, CF::Resource::St
     }
 }
 
-void FmRdsSimulator_base::releaseObject() throw (CORBA::SystemException, CF::LifeCycle::ReleaseError)
+void FmRdsSimulator_base::releaseObject()
 {
     // This function clears the device running condition so main shuts down everything
     try {

@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -36,7 +36,7 @@ class unicast_server(object):
     def send(self, data):
         bytessent = self.sock.sendto(data, (self.addr, self.port))
         if bytessent != len(data):
-            print "Failure sending all bytes"
+            print("Failure sending all bytes")
             
 class unicast_client(object):
     def __init__(self, addr, port):

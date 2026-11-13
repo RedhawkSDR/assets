@@ -141,8 +141,7 @@ bool AbstractVRAFile::isFileValid () const {
       ++this_begin; // <-- throws exception if invalid
     }
   }
-  catch (VRTException e) {
-    UNUSED_VARIABLE(e);
+  catch (const VRTException&) {
     return false;
   }
   return true;

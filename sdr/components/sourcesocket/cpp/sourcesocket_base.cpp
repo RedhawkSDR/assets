@@ -75,13 +75,13 @@ sourcesocket_base::~sourcesocket_base()
     Framework-level functions
     These functions are generally called by the framework to perform housekeeping.
 *******************************************************************************************/
-void sourcesocket_base::start() throw (CORBA::SystemException, CF::Resource::StartError)
+void sourcesocket_base::start()
 {
     Component::start();
     ThreadedComponent::startThread();
 }
 
-void sourcesocket_base::stop() throw (CORBA::SystemException, CF::Resource::StopError)
+void sourcesocket_base::stop()
 {
     Component::stop();
     if (!ThreadedComponent::stopThread()) {
@@ -89,7 +89,7 @@ void sourcesocket_base::stop() throw (CORBA::SystemException, CF::Resource::Stop
     }
 }
 
-void sourcesocket_base::releaseObject() throw (CORBA::SystemException, CF::LifeCycle::ReleaseError)
+void sourcesocket_base::releaseObject()
 {
     // This function clears the component running condition so main shuts down everything
     try {

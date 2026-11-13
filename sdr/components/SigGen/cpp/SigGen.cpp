@@ -67,7 +67,7 @@ SigGen_i::~SigGen_i()
 {
 }
 
-void SigGen_i::start() throw (CF::Resource::StartError, CORBA::SystemException) {
+void SigGen_i::start() {
 	if (!started()){
 		nextTime = bulkio::time::utils::now();
 	}

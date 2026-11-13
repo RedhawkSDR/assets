@@ -16,6 +16,7 @@
  * program.  If not, see http://www.gnu.org/licenses/.
  */
 
+#define BOOST_BIND_GLOBAL_PLACEHOLDERS
 #include "InternalConnection.h"
 
 PREPARE_LOGGING(InternalConnection)

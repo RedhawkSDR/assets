@@ -72,8 +72,7 @@ namespace vrt {
         const ConstPacketIterator *pi = checked_dynamic_cast<const ConstPacketIterator*>(&obj);
         return equals(*pi);
       }
-      catch (VRTException e) {
-        UNUSED_VARIABLE(e);
+      catch (const VRTException&) {
         return false;
       }
     }

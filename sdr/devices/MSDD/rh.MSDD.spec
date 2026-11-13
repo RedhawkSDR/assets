@@ -39,11 +39,11 @@ License:        None
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.1.1
-Requires:       redhawk >= 2.1.1
+BuildRequires:  redhawk-devel >= 4.0
+Requires:       redhawk >= 4.0
 
 # Interface requirements
-BuildRequires:  frontendInterfaces >= 2.4.1 bulkioInterfaces >= 2.1.1
+BuildRequires:  frontendInterfaces >= 4.0 bulkioInterfaces >= 4.0
 
 BuildArch: noarch
 

@@ -39,7 +39,10 @@ typedef struct {
   struct sockaddr_in addr;
 } connection_t;
 
-connection_t unicast_client (const char* iface, const char* group, int port) throw (BadParameterError);
+/**
+ * @throw BadParameterError
+ */
+connection_t unicast_client (const char* iface, const char* group, int port);
 ssize_t unicast_receive (connection_t client, void* buffer, size_t bytes, unsigned int to_in_msecs= 0);
 connection_t unicast_server (const char* iface, const char* group, int port);
 ssize_t unicast_transmit (connection_t server, const void* buffer, size_t bytes);

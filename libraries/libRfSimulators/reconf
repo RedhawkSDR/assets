@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+# This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
+# source distribution.
+# 
+
+# All that is necessary is the standard autoreconf -i 
+
+autoreconf -i

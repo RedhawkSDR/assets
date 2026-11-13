@@ -196,8 +196,9 @@ void mergeUpstreamSRI(BULKIO::StreamSRI &currSRI, BULKIO::StreamSRI &upstreamSRI
     }
 	if (!compareSRI(currSRI, upstreamSRI)) {
 		changed = true;
-	    if (currSRI.streamID != upstreamSRI.streamID)
-	    	streamIDChanged = true;
+		if (currSRI.streamID != upstreamSRI.streamID) {
+			streamIDChanged = true;
+		}
 
 		currSRI.streamID = upstreamSRI.streamID;
 

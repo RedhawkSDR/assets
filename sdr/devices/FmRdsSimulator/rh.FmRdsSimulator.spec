@@ -39,12 +39,12 @@ License:        GPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
-Requires:       redhawk >= 2.0
+BuildRequires:  redhawk-devel >= 4.0
+Requires:       redhawk >= 4.0
 
 # Interface requirements
-BuildRequires:  frontendInterfaces >= 2.2 bulkioInterfaces >= 2.0
-Requires:       frontendInterfaces >= 2.2 bulkioInterfaces >= 2.0
+BuildRequires:  frontendInterfaces >= 4.0 bulkioInterfaces >= 4.0
+Requires:       frontendInterfaces >= 4.0 bulkioInterfaces >= 4.0
 
 # Library requires
 BuildRequires:  libRfSimulators-devel
@@ -89,8 +89,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,redhawk,redhawk,-)
 %dir %{_prefix}/dev/devices/rh/FmRdsSimulator
 %{_prefix}/dev/devices/rh/FmRdsSimulator/nodeconfig.py
-%{_prefix}/dev/devices/rh/FmRdsSimulator/nodeconfig.pyc
-%{_prefix}/dev/devices/rh/FmRdsSimulator/nodeconfig.pyo
 %{_prefix}/dev/devices/rh/FmRdsSimulator/FmRdsSimulator.scd.xml
 %{_prefix}/dev/devices/rh/FmRdsSimulator/FmRdsSimulator.prf.xml
 %{_prefix}/dev/devices/rh/FmRdsSimulator/FmRdsSimulator.spd.xml

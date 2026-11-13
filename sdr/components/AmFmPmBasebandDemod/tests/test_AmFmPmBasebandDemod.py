@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file distributed with this 
 # source distribution.
@@ -132,7 +132,7 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         props = dict((x.id, any.from_any(x.value)) for x in props)
         # Query may return more than expected, but not less
         for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
+            self.assertEqual(expectedProp.id in props, True)
         
         #######################################################################
         # Verify that all expected ports are available
@@ -168,11 +168,11 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         #print "sending in %s real samples" %len(testIn)
         outAM, outFM, outPM = self.myTestCase(testIn, sampleRate = 1e6)
         if outAM:
-            print "am", len(outAM)
+            print("am", len(outAM))
         if outFM:
-            print "fm", len(outFM)
+            print("fm", len(outFM))
         if outPM:
-            print "pm", len(outPM)
+            print("pm", len(outPM))
         sampleDelay = cxmodulation.getFilterDelay(expected,testInCx)
         #print "sampleDelay = %s" %sampleDelay
         #print 
@@ -199,11 +199,11 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         #print "sending in %s real samples" %len(testIn)
         outAM, outFM, outPM = self.myTestCase(testIn, sampleRate = 5e6)
         if outAM:
-            print "am", len(outAM)
+            print("am", len(outAM))
         if outFM:
-            print "fm", len(outFM)
+            print("fm", len(outFM))
         if outPM:
-            print "pm", len(outPM)
+            print("pm", len(outPM))
         sampleDelay = cxmodulation.getFilterDelay(expected,testInCx)
         #print "sampleDelay = %s" %sampleDelay
         #print 
@@ -228,11 +228,11 @@ class ComponentTests(ossie.utils.testing.ScaComponentTestCase):
         #print "sending in %s real samples" %len(testIn)
         outAM, outFM, outPM = self.myTestCase(testIn)
         if outAM:
-            print "am", len(outAM)
+            print("am", len(outAM))
         if outFM:
-            print "fm", len(outFM)
+            print("fm", len(outFM))
         if outPM:
-            print "pm", len(outPM)
+            print("pm", len(outPM))
         sampleDelay = cxmodulation.getFilterDelay(expected,testInCx)
         #print "sampleDelay = %s" %sampleDelay
         #print 

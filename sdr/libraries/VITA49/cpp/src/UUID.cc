@@ -81,8 +81,7 @@ bool UUID::equals (const VRTObject &o) const {
   try {
     return equals(*checked_dynamic_cast<const UUID*>(&o));
   }
-  catch (ClassCastException e) {
-    UNUSED_VARIABLE(e);
+  catch (const ClassCastException&) {
     return false;
   }
 }

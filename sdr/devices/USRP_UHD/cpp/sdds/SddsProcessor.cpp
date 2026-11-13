@@ -49,7 +49,7 @@ SddsProcessor<DATA_TYPE>::SddsProcessor(bulkio::OutSDDSPort * dataSddsOut, size_
     m_pkt_template.msg_iovlen = 3; // We use three iov. One is the SDDS header and the second is the payload, the third for any zero padding if necessary.
     m_pkt_template.msg_control = NULL;
     m_pkt_template.msg_controllen = 0;
-    m_pkt_template.msg_flags = NULL;
+    m_pkt_template.msg_flags = 0;
 
     m_msg_iov[0].iov_base = &m_sdds_template;
     m_msg_iov[0].iov_len = SDDS_HEADER_SIZE;
@@ -400,11 +400,12 @@ size_t SddsProcessor<DATA_TYPE>::getDataPointer() {
         if (m_byte_swap) {
             //char *dataPointer = reinterpret_cast<char*>(m_metadata.data()+existing_samples);
             char *dataPointer = reinterpret_cast<char*>(m_metadata.data()) + existing_bytes;
+            char *dataPointer_dest = dataPointer;
             uint32_t *buf = reinterpret_cast<uint32_t*>(dataPointer);
 
             switch (sizeof(DATA_TYPE)) {
             case sizeof(short):
-                swab(dataPointer, dataPointer, bytes_read-existing_bytes);
+                swab(dataPointer, dataPointer_dest, bytes_read-existing_bytes);
                 break;
             case sizeof(float):
                 for (size_t i = 0; i < m_metadata.size()-existing_samples; ++i) {

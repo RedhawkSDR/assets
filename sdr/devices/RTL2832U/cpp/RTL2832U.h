@@ -147,7 +147,7 @@ class RTL2832U_i : public RTL2832U_base
         int serviceFunction();
 
         /* acquires the prop_lock and the rtl_tuner.lock */
-       // void initialize() throw (CF::LifeCycle::InitializeError, CORBA::SystemException);
+       // void initialize();
 
     protected:
 
@@ -302,7 +302,7 @@ class RTL2832U_i : public RTL2832U_base
 
         /* acquire prop_lock prior to calling this function */
         /* acquires the rtl_tuner.lock */
-        void initRtl() throw (CF::PropertySet::InvalidConfiguration);
+        void initRtl();
 
         /* acquire rtl_tuner.lock prior to calling this function */
         long rtlReceive(double timeout = 0.0);

@@ -31,7 +31,7 @@ Prefix:         %{_prefix}
 %define _infodir       %{_prefix}/info
 
 Name:           rh.RTL2832U
-Version:        2.1.0
+Version:        2.1.1
 Release:        2%{?dist}
 Summary:        Device %{name}
 
@@ -40,17 +40,17 @@ License:        GPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.1.3
-Requires:       redhawk >= 2.1.3
+BuildRequires:  redhawk-devel >= 4.0
+Requires:       redhawk >= 4.0
 
 # Interface requirements
-BuildRequires:  frontendInterfaces >= 2.3 bulkioInterfaces >= 2.1
-Requires:       frontendInterfaces >= 2.3 bulkioInterfaces >= 2.1
+BuildRequires:  frontendInterfaces >= 4.0 bulkioInterfaces >= 4.0
+Requires:       frontendInterfaces >= 4.0 bulkioInterfaces >= 4.0
 
 # RTL requirements
 BuildRequires:  libusb1-devel >= 1.0.0
-BuildRequires:  librtlsdr >= 0.5.2
-Requires:       librtlsdr >= 0.5.2
+BuildRequires:  rtl-sdr-devel >= 0.5.2
+Requires:       rtl-sdr >= 0.5.2
 
 Obsoletes:      RTL2832U < 2.0.0
 
@@ -92,8 +92,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,redhawk,redhawk,-)
 %dir %{_prefix}/dev/devices/rh/RTL2832U
 %{_prefix}/dev/devices/rh/RTL2832U/nodeconfig.py
-%{_prefix}/dev/devices/rh/RTL2832U/nodeconfig.pyc
-%{_prefix}/dev/devices/rh/RTL2832U/nodeconfig.pyo
 %{_prefix}/dev/devices/rh/RTL2832U/RTL2832U.scd.xml
 %{_prefix}/dev/devices/rh/RTL2832U/RTL2832U.prf.xml
 %{_prefix}/dev/devices/rh/RTL2832U/RTL2832U.spd.xml

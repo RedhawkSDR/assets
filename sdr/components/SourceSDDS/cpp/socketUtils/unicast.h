@@ -42,7 +42,10 @@ typedef struct {
 } unicast_t;
 
 
-unicast_t unicast_client (const char* iface, const char* group, int port, std::string& chosen_iface, LOGGER _log=LOGGER()) throw (BadParameterError);
+/**
+ * @throw BadParameterError
+ */
+unicast_t unicast_client (const char* iface, const char* group, int port, std::string& chosen_iface, LOGGER _log=LOGGER());
 ssize_t unicast_receive (unicast_t client, void* buffer, size_t bytes, unsigned int to_in_msecs= 0);
 unicast_t unicast_server (const char* iface, const char* group, int port, std::string& chosen_iface, LOGGER _log=LOGGER());
 ssize_t unicast_transmit (unicast_t server, const void* buffer, size_t bytes);

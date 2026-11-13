@@ -37,13 +37,13 @@ License:        LGPLv3+
 Source0:        %{name}-%{version}.tar.gz
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  redhawk-devel >= 2.0
-Requires:       redhawk >= 2.0
+BuildRequires:  redhawk-devel >= 4.0
+Requires:       redhawk >= 4.0
 
 
 # Interface requirements
-BuildRequires:  bulkioInterfaces >= 2.0
-Requires:       bulkioInterfaces >= 2.0
+BuildRequires:  bulkioInterfaces >= 4.0
+Requires:       bulkioInterfaces >= 4.0
 
 # Allow upgrades from previous package name
 Obsoletes:      sourcesocket < 2.0.0

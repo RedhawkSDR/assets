@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 #
 # This file is protected by Copyright. Please refer to the COPYRIGHT file
 # distributed with this source distribution.
@@ -81,9 +81,9 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def componentSetup(self):
         """Standard start-up for testing the component
         """
-        print ' * Note:'
-        print ' * During this unit test, SourceVITA49 will warn about using a built-in table'
-        print ' * for leap seconds if no leap seconds file is found at the indicated location.'
+        print(' * Note:')
+        print(' * During this unit test, SourceVITA49 will warn about using a built-in table')
+        print(' * for leap seconds if no leap seconds file is found at the indicated location.')
         #######################################################################
         # Launch the component with the default execparams
         execparams = self.getPropertySet(kinds=("execparam",), modes=("readwrite", "writeonly"), includeNil=False)
@@ -151,9 +151,9 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         
         try:
             attachId = self.input_vita49_port.attach(streamDef, 'test') 
-        except Exception, e:
-            print str(e)
-            print "ATTACH FAILED"
+        except Exception as e:
+            print(str(e))
+            print("ATTACH FAILED")
             attachId = ''
         
         self.assertTrue(attachId != '', "Failed to attach to Vita49 component")
@@ -254,9 +254,9 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     
         #######################################################################
         # Make sure start and stop can be called without throwing exceptions
-        print ' * Note:'
-        print ' * During this unit test, SourceVITA49 will be unable to determine attachment'
-        print ' * settings using the default configuration, and will fail to launch RX thread.'
+        print(' * Note:')
+        print(' * During this unit test, SourceVITA49 will be unable to determine attachment')
+        print(' * settings using the default configuration, and will fail to launch RX thread.')
         self.comp.start()
         #self.comp.stop()
 
@@ -284,7 +284,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         props = dict((x.id, any.from_any(x.value)) for x in props)
         # Query may return more than expected, but not less
         for expectedProp in expectedProps:
-            self.assertEquals(props.has_key(expectedProp.id), True)
+            self.assertEqual(expectedProp.id in props, True)
 
         #######################################################################
         # Verify that all expected ports are available
@@ -316,9 +316,9 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         
         #######################################################################
         # Make sure start and stop can be called without throwing exceptions
-        print ' * Note:'
-        print ' * During this unit test, SourceVITA49 will be unable to determine attachment'
-        print ' * settings using the default configuration, and will fail to launch RX thread.'
+        print(' * Note:')
+        print(' * During this unit test, SourceVITA49 will be unable to determine attachment')
+        print(' * settings using the default configuration, and will fail to launch RX thread.')
 
         self.comp.start()
 
@@ -351,9 +351,9 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
         
         #######################################################################
         # Make sure start and stop can be called without throwing exceptions
-        print ' * Note:'
-        print ' * During this unit test, SourceVITA49 will fail to connect to unicast'
-        print ' * udp socket and will fail to launch the RX thread.'
+        print(' * Note:')
+        print(' * During this unit test, SourceVITA49 will fail to connect to unicast')
+        print(' * udp socket and will fail to launch the RX thread.')
         self.comp.start()
 
     def testAttachDetach(self):
@@ -461,7 +461,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def testSendDataBigEndianSI(self, mcast=False):
         if mcast:
             if MULTICAST_INTERFACE is None:
-                print 'WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY'
+                print('WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY')
                 return
             self.comp.interface = MULTICAST_INTERFACE
         
@@ -485,7 +485,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def testSendDataBigEndianCI(self, mcast=False):
         if mcast:
             if MULTICAST_INTERFACE is None:
-                print 'WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY'
+                print('WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY')
                 return
             self.comp.interface = MULTICAST_INTERFACE
                 
@@ -507,7 +507,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def testSendDataBigEndianSF(self, mcast=False):
         if mcast:
             if MULTICAST_INTERFACE is None:
-                print 'WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY'
+                print('WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY')
                 return
             self.comp.interface = MULTICAST_INTERFACE
                 
@@ -530,7 +530,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def testSendDataLittleEndianSI(self, mcast=False):
         if mcast:
             if MULTICAST_INTERFACE is None:
-                print 'WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY'
+                print('WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY')
                 return
             self.comp.interface = MULTICAST_INTERFACE
         
@@ -553,7 +553,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def testSendDataLittleEndianCI(self, mcast=False):
         if mcast:
             if MULTICAST_INTERFACE is None:
-                print 'WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY'
+                print('WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY')
                 return
             self.comp.interface = MULTICAST_INTERFACE
                 
@@ -576,7 +576,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def testSendDataLittleEndianSF(self, mcast=False):
         if mcast:
             if MULTICAST_INTERFACE is None:
-                print 'WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY'
+                print('WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY')
                 return
             self.comp.interface = MULTICAST_INTERFACE
                 
@@ -599,7 +599,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def testSendDataDefaultEndianSI(self, mcast=False):
         if mcast:
             if MULTICAST_INTERFACE is None:
-                print 'WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY'
+                print('WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY')
                 return
             self.comp.interface = MULTICAST_INTERFACE
         
@@ -622,7 +622,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def testSendDataDefaultEndianCI(self, mcast=False):
         if mcast:
             if MULTICAST_INTERFACE is None:
-                print 'WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY'
+                print('WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY')
                 return
             self.comp.interface = MULTICAST_INTERFACE
                 
@@ -645,7 +645,7 @@ class ResourceTests(ossie.utils.testing.ScaComponentTestCase):
     def testSendDataDefaultEndianSF(self, mcast=False):
         if mcast:
             if MULTICAST_INTERFACE is None:
-                print 'WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY'
+                print('WARNING - SKIPPING MULTICAST TESTS BECAUSE MULTICAST_INTERFACE IS NOT SET CORRECTLY')
                 return
             self.comp.interface = MULTICAST_INTERFACE
                 

@@ -84,7 +84,7 @@ int main(int argc, char **argv) {
 
     /* check command line arguments */
     if (argc != 5) {
-       fprintf(stderr,"usage: %s <hostname> <port> <target rate (Bps)> <packets sent>\n", argv[0]);
+       //fprintf(stderr,"usage: %s <hostname> <port> <target rate (Bps)> <packets sent>\n", argv[0]);
        exit(0);
     }
 
@@ -103,7 +103,7 @@ int main(int argc, char **argv) {
     /* gethostbyname: get the server's DNS entry */
     server = gethostbyname(hostname);
     if (server == NULL) {
-        fprintf(stderr,"ERROR, no such host as %s\n", hostname);
+        //fprintf(stderr,"ERROR, no such host as %s\n", hostname);
         exit(0);
     }
 

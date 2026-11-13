@@ -38,9 +38,8 @@ AC_SUBST(DOMAINNAME, $fmrdssim_node_domain)
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 
 # Dependencies
-PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 2.0 omniORB4 >= 4.1.0 librfsimulators >= 1.1])
-PKG_CHECK_MODULES([INTERFACEDEPS], [frontend >= 2.2, bulkio >= 2.0])
-OSSIE_ENABLE_LOG4CXX
+PKG_CHECK_MODULES([PROJECTDEPS], [ossie >= 4.0 omniORB4 >= 4.1.0 librfsimulators >= 1.1])
+PKG_CHECK_MODULES([INTERFACEDEPS], [frontend >= 4.0, bulkio >= 4.0])
 AX_BOOST_BASE([1.41])
 AX_BOOST_SYSTEM
 AX_BOOST_THREAD
